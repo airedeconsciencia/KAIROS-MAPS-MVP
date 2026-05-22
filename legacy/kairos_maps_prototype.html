@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kairos Maps — Prototipo Visual</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0F1115;
+      color: #F4F1EA;
+      overflow: hidden;
+    }
+    
+    #map {
+      width: 100vw;
+      height: 100vh;
+      background: #0a0a0f;
+    }
+    
+    /* Logo superior izquierdo */
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: rgba(15, 17, 21, 0.95);
+      padding: 16px 24px;
+      border-radius: 12px;
+      border: 1px solid rgba(215, 193, 136, 0.15);
+      backdrop-filter: blur(10px);
+    }
+    
+    .logo-container svg {
+      display: block;
+      margin-bottom: 8px;
+    }
+    
+    .logo-text {
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: #F4F1EA;
+    }
+    
+    .logo-subtext {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: #AAB2BF;
+      margin-top: 2px;
+    }
+    
+    /* Buscador superior derecho */
+    .search-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      width: 320px;
+    }
+    
+    .search-box {
+      background: rgba(15, 17, 21, 0.95);
+      border: 1px solid rgba(215, 193, 136, 0.15);
+      border-radius: 999px;
+      padding: 14px 20px;
+      color: #F4F1EA;
+      font-size: 14px;
+      width: 100%;
+      outline: none;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s;
+    }
+    
+    .search-box:focus {
+      border-color: rgba(215, 193, 136, 0.4);
+      box-shadow: 0 0 0 3px rgba(215, 193, 136, 0.1);
+    }
+    
+    .search-box::placeholder {
+      color: #AAB2BF;
+    }
+    
+    /* Panel de interpretación */
+    .interpretation-panel {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(15, 17, 21, 0.98);
+      border-top: 1px solid rgba(215, 193, 136, 0.2);
+      padding: 32px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease-out;
+      max-height: 50vh;
+      overflow-y: auto;
+      backdrop-filter: blur(20px);
+    }
+    
+    .interpretation-panel.active {
+      transform: translateY(0);
+    }
+    
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+    
+    .panel-city {
+      font-size: 28px;
+      font-weight: 500;
+      color: #d7c188;
+      margin-bottom: 4px;
+    }
+    
+    .panel-coords {
+      font-size: 12px;
+      color: #AAB2BF;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    
+    .panel-close {
+      background: none;
+      border: none;
+      color: #AAB2BF;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    
+    .panel-close:hover {
+      color: #F4F1EA;
+    }
+    
+    .panel-content {
+      line-height: 1.7;
+      color: #F4F1EA;
+      font-size: 15px;
+    }
+    
+    .panel-content p {
+      margin-bottom: 16px;
+    }
+    
+    .planet-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    /* Leyenda inferior izquierda */
+    .legend {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: rgba(15, 17, 21, 0.95);
+      border: 1px solid rgba(215, 193, 136, 0.15);
+      border-radius: 12px;
+      padding: 16px;
+      backdrop-filter: blur(10px);
+      max-width: 200px;
+    }
+    
+    .legend-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #AAB2BF;
+      margin-bottom: 12px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    
+    .legend-line {
+      width: 24px;
+      height: 2px;
+      margin-right: 10px;
+      border-radius: 1px;
+    }
+    
+    /* Estilos de Leaflet customizados */
+    .leaflet-container {
+      background: #0a0a0f;
+    }
+    
+    .leaflet-tile {
+      filter: brightness(0.3) contrast(1.2) saturate(0.5);
+    }
+    
+    .leaflet-control-attribution {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo -->
+  <div class="logo-container">
+    <svg width="48" height="60" viewBox="0 0 48 60">
+      <circle cx="24" cy="30" r="22" fill="none" stroke="#1c2b45" stroke-width="1.5"/>
+      <ellipse cx="24" cy="30" rx="22" ry="11" fill="none" stroke="#1c2b45" stroke-width="0.5" opacity="0.25"/>
+      <ellipse cx="24" cy="30" rx="11" ry="22" fill="none" stroke="#1c2b45" stroke-width="0.5" opacity="0.25"/>
+      <path d="M 9,30 Q 16.5,20, 24,30 Q 31.5,40, 39,30" fill="none" stroke="#d7c188" stroke-width="1.3"/>
+      <line x1="24" y1="12" x2="24" y2="48" stroke="#d7c188" stroke-width="0.7" opacity="0.4"/>
+      <circle cx="24" cy="30" r="1.4" fill="#d7c188"/>
+      <path d="M 10,35 A 25,33 0 0 1 44,20" fill="none" stroke="#1c2b45" stroke-width="1.5"/>
+      <polygon points="0,0 -3.2,-1.4 -3.2,1.4" fill="#1c2b45" transform="translate(44,20) rotate(38)"/>
+    </svg>
+    <div class="logo-text">KAIROS</div>
+    <div class="logo-subtext">MAPS</div>
+  </div>
+  
+  <!-- Buscador -->
+  <div class="search-container">
+    <input type="text" class="search-box" placeholder="Buscar ciudad..." id="citySearch">
+  </div>
+  
+  <!-- Leyenda -->
+  <div class="legend">
+    <div class="legend-title">Líneas activas</div>
+    <div class="legend-item">
+      <div class="legend-line" style="background: #BE185D;"></div>
+      <span>Venus DC</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="background: #D97706;"></div>
+      <span>Júpiter MC</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="background: #7C3AED;"></div>
+      <span>Luna IC</span>
+    </div>
+  </div>
+  
+  <!-- Mapa -->
+  <div id="map"></div>
+  
+  <!-- Panel de interpretación -->
+  <div class="interpretation-panel" id="interpretationPanel">
+    <div class="panel-header">
+      <div>
+        <div class="panel-city" id="panelCity">Lisboa</div>
+        <div class="panel-coords" id="panelCoords">38.7223°N, 9.1393°W</div>
+      </div>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="panel-content" id="panelContent">
+      <p>Cargando análisis...</p>
+    </div>
+  </div>
+  
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <script>
+    // Inicializar mapa
+    const map = L.map('map', {
+      center: [20, 0],
+      zoom: 2,
+      minZoom: 2,
+      maxZoom: 10,
+      zoomControl: false
+    });
+    
+    // Capa de mapa oscuro
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+    
+    // Datos de ejemplo: Carta natal hardcodeada
+    // Fecha: 1990-06-12, 14:35, Maó (39.8885, 4.2658)
+    const SAMPLE_LINES = {
+      venus_dc: [
+        [60, -10], [55, -9.5], [50, -9], [45, -8.5], [40, -8], 
+        [35, -7.5], [30, -7], [25, -6.5], [20, -6], [15, -5.5],
+        [10, -5], [5, -4.5], [0, -4], [-5, -3.5], [-10, -3],
+        [-15, -2.5], [-20, -2], [-25, -1.5], [-30, -1], [-35, -0.5],
+        [-40, 0], [-45, 0.5], [-50, 1], [-55, 1.5], [-60, 2]
+      ],
+      jupiter_mc: [
+        [-85, 15], [-80, 15], [-70, 15], [-60, 15], [-50, 15],
+        [-40, 15], [-30, 15], [-20, 15], [-10, 15], [0, 15],
+        [10, 15], [20, 15], [30, 15], [40, 15], [50, 15],
+        [60, 15], [70, 15], [80, 15], [85, 15]
+      ],
+      luna_ic: [
+        [70, 45], [65, 44], [60, 43], [55, 42], [50, 41],
+        [45, 40], [40, 39], [35, 38], [30, 37], [25, 36],
+        [20, 35], [15, 34], [10, 33], [5, 32], [0, 31],
+        [-5, 30], [-10, 29], [-15, 28], [-20, 27], [-25, 26],
+        [-30, 25], [-35, 24], [-40, 23], [-45, 22], [-50, 21]
+      ]
+    };
+    
+    const PLANET_COLORS = {
+      venus_dc: '#BE185D',
+      jupiter_mc: '#D97706',
+      luna_ic: '#7C3AED'
+    };
+    
+    // Dibujar líneas
+    Object.keys(SAMPLE_LINES).forEach(lineKey => {
+      const coords = SAMPLE_LINES[lineKey];
+      const color = PLANET_COLORS[lineKey];
+      
+      L.polyline(coords, {
+        color: color,
+        weight: 2,
+        opacity: 0.7,
+        smoothFactor: 1
+      }).addTo(map);
+    });
+    
+    // Ciudades de ejemplo
+    const CITIES = [
+      { name: 'Lisboa', lat: 38.7223, lng: -9.1393, lines: ['venus_dc'] },
+      { name: 'Londres', lat: 51.5074, lng: -0.1278, lines: ['jupiter_mc'] },
+      { name: 'París', lat: 48.8566, lng: 2.3522, lines: ['luna_ic'] },
+      { name: 'Barcelona', lat: 41.3851, lng: 2.1734, lines: ['venus_dc'] },
+      { name: 'Nueva York', lat: 40.7128, lng: -74.0060, lines: ['jupiter_mc'] }
+    ];
+    
+    // Añadir marcadores de ciudades
+    CITIES.forEach(city => {
+      const marker = L.circleMarker([city.lat, city.lng], {
+        radius: 6,
+        fillColor: '#d7c188',
+        color: '#0F1115',
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.8
+      }).addTo(map);
+      
+      marker.on('click', () => showCityAnalysis(city));
+    });
+    
+    // Función para mostrar análisis de ciudad
+    function showCityAnalysis(city) {
+      document.getElementById('panelCity').textContent = city.name;
+      document.getElementById('panelCoords').textContent = 
+        `${city.lat.toFixed(4)}°${city.lat > 0 ? 'N' : 'S'}, ${Math.abs(city.lng).toFixed(4)}°${city.lng > 0 ? 'E' : 'W'}`;
+      
+      // Interpretación de ejemplo
+      const interpretations = {
+        'Lisboa': `<p>En ${city.name} tu línea de <span class="planet-badge" style="background: rgba(190,24,93,0.2); border: 1px solid #BE185D; color: #BE185D;">Venus DC</span> favorece vínculos y relaciones profundas.</p><p>El lugar activa tu capacidad de establecer conexiones equilibradas, donde das y recibes sin perder tu centro. La energía venusina aquí no es superficial — pide autenticidad emocional.</p><p>Si buscas amor, ${city.name} ofrece el escenario más favorable. La condición es que llegues sin desesperación. El lugar huele el hambre y la aplaza.</p>`,
+        
+        'Londres': `<p>En ${city.name} tu línea de <span class="planet-badge" style="background: rgba(217,119,6,0.2); border: 1px solid #D97706; color: #D97706;">Júpiter MC</span> amplifica oportunidades profesionales y crecimiento.</p><p>El lugar activa tu capacidad de pensar en grande y de atraer a personas que piensan como tú. Tu visión tiene más eco aquí que en otros lugares del mapa.</p><p>Es el escenario más favorable para un salto profesional significativo. La condición: que el salto ya esté en ti — el lugar lo amplifica, no lo crea de la nada.</p>`,
+        
+        'París': `<p>En ${city.name} tu línea de <span class="planet-badge" style="background: rgba(124,58,237,0.2); border: 1px solid #7C3AED; color: #7C3AED;">Luna IC</span> genera una conexión visceral con el hogar.</p><p>El lugar activa tus raíces más profundas — no necesariamente tu familia biológica, sino tu sentido interno de pertenencia y seguridad. Aquí es fácil sentir que encajas.</p><p>Si necesitas reponer energía, sanar, o simplemente recordar quién eres debajo de todo lo que haces, ${city.name} es el lugar.</p>`
+      };
+      
+      document.getElementById('panelContent').innerHTML = 
+        interpretations[city.name] || '<p>Análisis en construcción para esta ciudad.</p>';
+      
+      document.getElementById('interpretationPanel').classList.add('active');
+      
+      // Centrar mapa en la ciudad
+      map.flyTo([city.lat, city.lng], 6, { duration: 1 });
+    }
+    
+    function closePanel() {
+      document.getElementById('interpretationPanel').classList.remove('active');
+    }
+    
+    // Buscador simple
+    document.getElementById('citySearch').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      if (query.length < 2) return;
+      
+      const matches = CITIES.filter(c => c.name.toLowerCase().includes(query));
+      if (matches.length > 0) {
+        showCityAnalysis(matches[0]);
+      }
+    });
+  </script>
+</body>
+</html>

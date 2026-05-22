@@ -1,0 +1,546 @@
+﻿Roadmap de Desarrollo — Kairos Maps
+MVP vs V2 vs V3
+Introducción
+Este documento define la estrategia real de construcción de Kairos Maps.
+Su objetivo es evitar uno de los mayores errores de productos digitales complejos:
+intentar construir todo a la vez.
+________________
+
+
+Kairos Maps tiene:
+* astrología,
+* astrocartografía,
+* relocación,
+* interpretación IA,
+* mapas interactivos,
+* perfiles humanos,
+* motor contextual,
+* decisiones emocionales,
+* personalización,
+* y recomendaciones dinámicas.
+Si intentáis construirlo todo simultáneamente:
+nunca publicaréis.
+________________
+
+
+Objetivo del Roadmap
+Definir:
+* qué entra en la primera versión real,
+* qué debe esperar,
+* qué es imprescindible,
+* qué es opcional,
+* y qué será diferencial más adelante.
+________________
+
+
+Filosofía Estratégica
+Primero:
+que funcione.
+Después:
+que impresione.
+________________
+
+
+Error Mortal
+Intentar construir:
+* IA emocional avanzada,
+* voz,
+* wearables,
+* recomendaciones hiperprofundas,
+* comunidad,
+* mapas ultra complejos,
+* compatibilidad,
+* y coaching…
+antes de validar:
+si la gente realmente usa el producto.
+________________
+
+
+Principio Fundamental
+El MVP NO debe demostrar:
+todo lo que Kairos Maps podría ser.
+Debe demostrar:
+que la idea tiene valor real.
+________________
+
+
+Arquitectura Temporal
+MVP → validar utilidad
+V2 → aumentar profundidad
+V3 → construir ecosistema
+
+
+________________
+
+
+MVP — Primera Versión Publicable
+Objetivo
+Lanzar una experiencia funcional, clara y emocionalmente útil.
+________________
+
+
+Lo que el MVP DEBE resolver
+El usuario debe poder:
+registrarse
+introducir datos natales
+ver su mapa astrocartográfico
+explorar líneas planetarias
+buscar ciudades
+recibir interpretación básica útil
+guardar lugares
+comparar sensaciones generales
+
+
+________________
+
+
+El MVP NO necesita todavía
+IA ultra avanzada
+voz
+wearables
+coach emocional
+comunidad
+predicción compleja
+gamificación
+chat infinito
+compatibilidad
+ranking mundial de ciudades
+
+
+________________
+
+
+Componentes Reales del MVP
+________________
+
+
+1. Sistema de Cuenta
+Incluye
+* email,
+* contraseña,
+* login,
+* recuperación de cuenta,
+* onboarding inicial.
+________________
+
+
+2. Datos Natales
+Incluye
+* fecha,
+* hora,
+* ciudad,
+* validación horaria,
+* geolocalización básica.
+________________
+
+
+3. Motor Astrológico
+Incluye
+* Swiss Ephemeris,
+* carta natal,
+* líneas astrocartográficas,
+* cálculo relocado básico.
+________________
+
+
+4. Mapa Interactivo
+Incluye
+* mapa mundial,
+* zoom,
+* líneas principales,
+* activación/desactivación de capas,
+* búsqueda de ciudades.
+________________
+
+
+5. Interpretación Modular Básica
+Incluye
+* planeta,
+* ángulo,
+* significado,
+* ventajas,
+* advertencias suaves,
+* orientación básica.
+________________
+
+
+6. Sistema de Objetivos Humanos
+El usuario puede elegir
+amor
+trabajo
+descanso
+mudanza
+crecimiento
+viaje
+
+
+Y la interpretación cambia.
+________________
+
+
+7. Guardado de Lugares
+Incluye
+* favoritos,
+* historial,
+* comparación simple.
+________________
+
+
+8. Sistema Premium Básico
+Incluye
+* análisis completos,
+* más ciudades,
+* comparativas avanzadas,
+* guardado ilimitado.
+________________
+
+
+Qué NO construir todavía
+________________
+
+
+IA conversacional avanzada
+No necesaria aún.
+________________
+
+
+Voz IA
+Muy cara y compleja.
+________________
+
+
+Wearables
+No validéis eso todavía.
+________________
+
+
+Comunidad
+Peligro:
+* ruido,
+* moderación,
+* toxicidad,
+* distracción.
+________________
+
+
+Gamificación
+Puede destruir la profundidad.
+________________
+
+
+Coaching emocional profundo
+Riesgo legal + psicológico.
+________________
+
+
+Objetivo Real del MVP
+Responder:
+“¿La gente realmente encuentra valor en explorar lugares mediante astrología contextual?”
+________________
+
+
+Métricas del MVP
+NO obsesionarse con:
+* descargas.
+________________
+
+
+Lo importante
+retención
+lugares guardados
+análisis repetidos
+tiempo real de exploración
+usuarios que vuelven
+usuarios premium
+
+
+________________
+
+
+MVP Correcto
+Pequeño pero profundo.
+________________
+
+
+MVP Incorrecto
+Gigante pero roto.
+________________
+
+
+V2 — Expansión Inteligente
+Objetivo
+Convertir Kairos Maps en una experiencia realmente personalizada.
+________________
+
+
+Qué entra en V2
+________________
+
+
+1. Motor de Prioridad Inteligente
+La app empieza a decidir:
+* qué pesa más,
+* qué mostrar primero,
+* qué energía domina.
+________________
+
+
+2. Interpretación IA Contextual
+La IA adapta:
+* tono,
+* profundidad,
+* recomendaciones,
+* intensidad.
+________________
+
+
+3. Sistema de Estado Humano
+El usuario puede indicar:
+crisis
+burnout
+reinicio
+expansión
+duelo
+búsqueda
+
+
+Y la interpretación cambia.
+________________
+
+
+4. Relocación Avanzada
+Incluye
+* casas relocadas,
+* cambios psicológicos,
+* reorientación vital,
+* diferencias entre ciudades.
+________________
+
+
+5. Comparador Inteligente
+Ejemplo:
+Lisboa vs Berlín
+
+
+Según:
+* amor,
+* trabajo,
+* estabilidad,
+* descanso,
+* transformación.
+________________
+
+
+6. Memoria Interpretativa
+La app recuerda:
+* preferencias,
+* patrones,
+* lugares repetidos,
+* respuestas emocionales.
+________________
+
+
+7. Sistema de Alertas Inteligentes
+No engagement tóxico.
+Sí:
+* orientación útil,
+* timing,
+* conciencia.
+________________
+
+
+8. Visualización Avanzada
+Incluye
+* intensidades,
+* capas,
+* zonas activas,
+* parans,
+* calor energético.
+________________
+
+
+Qué seguir evitando en V2
+red social
+foro abierto
+predicciones extremas
+dependencia emocional
+
+
+________________
+
+
+Objetivo Real de V2
+Convertir Kairos Maps en una herramienta emocionalmente inteligente.
+________________
+
+
+V3 — Ecosistema Completo
+Objetivo
+Transformar Kairos Maps en una plataforma viva de orientación espacial y humana.
+________________
+
+
+Qué entra en V3
+________________
+
+
+1. IA Conversacional Avanzada
+El usuario puede conversar con la app:
+* sobre lugares,
+* etapas vitales,
+* decisiones,
+* comparativas.
+________________
+
+
+2. Voz IA
+Modo:
+* guía,
+* reflexión,
+* orientación suave.
+________________
+
+
+3. Integración Wearables
+Posibles
+* Oura,
+* Apple Watch,
+* HRV,
+* sueño,
+* fatiga.
+________________
+
+
+4. Motor Predictivo Contextual
+NO fatalista.
+Sí:
+* ventanas,
+* ritmos,
+* etapas,
+* tendencias humanas.
+________________
+
+
+5. Sistema de Viajes Inteligentes
+La app puede sugerir:
+* momentos,
+* destinos,
+* tipos de experiencia.
+________________
+
+
+6. Modo Parejas
+Comparación espacial:
+* emocional,
+* vital,
+* convivencia,
+* viajes.
+________________
+
+
+7. Sistema de Vida Global
+La app entiende:
+* dónde floreces,
+* dónde descansas,
+* dónde produces,
+* dónde sanas,
+* dónde te transformas.
+________________
+
+
+8. Motor de Evolución Personal
+La app detecta:
+* patrones repetidos,
+* bloqueos,
+* tendencias,
+* zonas de crecimiento.
+________________
+
+
+Qué V3 NO Debe Convertirse
+gurú digital
+terapeuta absoluto
+oráculo de decisiones
+dependencia psicológica
+
+
+________________
+
+
+Filosofía Técnica del Roadmap
+________________
+
+
+MVP
+Validar.
+________________
+
+
+V2
+Profundizar.
+________________
+
+
+V3
+Expandir.
+________________
+
+
+Error Estratégico Más Grave
+Intentar construir:
+V3 en fase MVP.
+Eso mata:
+* dinero,
+* tiempo,
+* energía,
+* claridad.
+________________
+
+
+Orden Correcto de Construcción
+motor astrológico
++
+mapa
++
+interpretación
++
+objetivos humanos
++
+guardado
++
+premium
+
+
+↓
+Después:
+IA contextual
++
+priorización
++
+memoria
++
+recomendaciones
+
+
+↓
+Después:
+voz
+wearables
+ecosistema
+coach
+
+
+________________
+
+
+Regla de Oro
+Todo lo que no ayude al usuario a entender un lugar NO entra en el MVP.
+________________
+
+
+Arquitectura Mental Correcta
+Kairos Maps no es:
+una app de astrología.
+Es:
+un sistema de orientación espacial humana.
+Y este roadmap debe proteger esa visión sin destruirla por exceso de ambición temprana.

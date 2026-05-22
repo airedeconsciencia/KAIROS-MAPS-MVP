@@ -1,0 +1,542 @@
+﻿KAIROS MAPS — DOC-08 REVISADO
+ARQUITECTURA DE DATOS DEL USUARIO
+Versión 2.0 | Mayo 2026 — CORREGIDA
+Corrección principal: alineación con arquitectura MVP en cliente (Fase 1)
+
+
+════════════════════════════════════════════════════════
+NOTA DE CORRECCIÓN v2.0
+════════════════════════════════════════════════════════
+
+
+La versión anterior (v1.0) definía todos los cálculos complejos
+en Cloud Functions / backend. Esto es la arquitectura IDEAL a largo plazo,
+pero es incompatible con el motor actual de KAIROS, que funciona
+100% en el cliente (JavaScript + Swiss Ephemeris WASM).
+
+
+DECISIÓN ARQUITECTURAL:
+  Fase 1 — MVP: Todo el cálculo en cliente (JS + WASM)
+  Fase 2 — Escalado: Migrar cálculos a Cloud Functions
+
+
+Esta versión corregida refleja la Fase 1 correctamente.
+El documento original permanece en la carpeta como referencia para Fase 2.
+
+
+════════════════════════════════════════════════════════
+0. PRINCIPIO BASE DEL SISTEMA (FASE 1 — MVP)
+════════════════════════════════════════════════════════
+
+
+Regla fundamental para el MVP:
+
+
+  CALCULAR en el cliente (JS + WASM)
+  GUARDAR en Firestore solo lo necesario
+  CACHEAR resultados pesados para no recalcular
+  MANTENER la estructura lista para migrar a backend en Fase 2
+
+
+┌─────────────────────────────────────────────────────┐
+│ Tipo                  │ Fase 1 (MVP)  │ Fase 2      │
+├─────────────────────────────────────────────────────┤
+│ Datos personales      │ Firestore     │ Firestore   │
+│ Preferencias          │ Firestore     │ Firestore   │
+│ Carta natal           │ Cliente+Cache │ Backend     │
+│ Líneas astrocarto.    │ Cliente+Cache │ Backend     │
+│ Relocación            │ Cliente       │ Backend     │
+│ Tránsitos             │ Cliente       │ Backend     │
+│ Scores                │ Cliente+Cache │ Backend     │
+│ Interpretación IA     │ API Anthropic │ API Anthrop.│
+│ Mapas pesados (JSON)  │ LocalStorage  │ Cloud Store │
+│ Render visual         │ Cliente       │ Cliente     │
+└─────────────────────────────────────────────────────┘
+
+
+════════════════════════════════════════════════════════
+0.1 PRIVACIDAD Y MINIMIZACIÓN DE DATOS
+════════════════════════════════════════════════════════
+
+
+Kairos Maps trabaja con datos sensibles:
+  - fecha de nacimiento
+  - ubicación
+  - patrones emocionales
+  - objetivos vitales
+
+
+La privacidad debe estar integrada desde el diseño.
+La app debe:
+  - pedir permisos claros
+  - permitir borrar todos los datos
+  - permitir desactivar localización en cualquier momento
+  - NO almacenar historial GPS continuo
+  - minimizar almacenamiento de datos emocionales
+
+
+════════════════════════════════════════════════════════
+1. COLECCIÓN PRINCIPAL DEL USUARIO
+════════════════════════════════════════════════════════
+
+
+users/{userId}
+
+
+{
+  "email": "usuario@email.com",
+  "displayName": "Nombre",
+  "createdAt": "timestamp",
+  "updatedAt": "timestamp",
+  "language": "es",
+  "timezone": "Europe/Madrid",
+  "subscriptionStatus": "free | premium | lifetime",
+  "onboardingCompleted": true
+}
+
+
+════════════════════════════════════════════════════════
+2. DATOS NATALES
+════════════════════════════════════════════════════════
+
+
+users/{userId}/birthData/main
+
+
+{
+  "date": "1990-06-12",
+  "time": "14:35",
+  "timeAccuracy": "exact | approximate | unknown",
+  "birthPlace": {
+    "name": "Maó, Menorca, España",
+    "lat": 39.8885,
+    "lng": 4.2658,
+    "timezone": "Europe/Madrid"
+  },
+  "createdAt": "timestamp",
+  "updatedAt": "timestamp"
+}
+
+
+Consentimiento:
+{
+  "allowBirthDataStorage": true,
+  "allowAstrologicalAnalysis": true
+}
+
+
+════════════════════════════════════════════════════════
+3. CARTA NATAL CACHEADA (calculada en cliente, guardada una vez)
+════════════════════════════════════════════════════════
+
+
+users/{userId}/charts/natal
+
+
+FASE 1: El cliente calcula con planetary_engine.js + ascendant_engine.js
+y guarda el resultado en Firestore para no recalcular en cada sesión.
+
+
+{
+  "calculatedAt": "timestamp",
+  "engineVersion": "kairos_client_v1.7.1",
+  "calculatedBy": "client",
+  "ayanamsa": "tropical",
+  "houseSystem": "placidus",
+  "planets": {
+    "SUN": { "longitude": 81.5, "sign": "Géminis", "deg": 21, "min": 30 },
+    "MOON": { ... },
+    ... (todos los planetas)
+  },
+  "angles": {
+    "ascendant": { "longitude": 245.3, "sign": "Sagitario", "deg": 5, "min": 18 },
+    "mc": { ... },
+    "descendant": { ... },
+    "ic": { ... }
+  },
+  "aspects": [ ... ],
+  "dominantPlanets": ["VENUS", "SATURN"],
+  "chartHash": "hash_para_detectar_si_hay_que_recalcular"
+}
+
+
+NOTA: chartHash se genera a partir de los datos natales.
+Si el usuario corrige su hora de nacimiento, el hash cambia y
+el cliente recalcula automáticamente.
+
+
+════════════════════════════════════════════════════════
+4. LÍNEAS ASTROCARTOGRÁFICAS CACHEADAS
+════════════════════════════════════════════════════════
+
+
+FASE 1: Las líneas se calculan en el cliente con astrocarto_engine.js
+y se cachean en localStorage para la sesión actual.
+Solo el resumen (metadata) se guarda en Firestore.
+
+
+users/{userId}/astroMaps/main
+
+
+{
+  "calculatedAt": "timestamp",
+  "engineVersion": "astrocarto_engine_v1.0",
+  "calculatedBy": "client",
+  "totalLines": 48,
+  "planets": ["SOL", "LUNA", "MERCURIO", "VENUS", "MARTE",
+              "JÚPITER", "SATURNO", "URANO", "NEPTUNO", "PLUTÓN",
+              "NODO_NORTE", "QUIRÓN"],
+  "angles": ["AC", "DC", "MC", "IC"]
+}
+
+
+Las líneas completas (JSON pesado) se guardan en localStorage:
+  localStorage.setItem('kairos_astro_lines', JSON.stringify(lines))
+
+
+En Fase 2 esto migrará a Cloud Storage.
+
+
+════════════════════════════════════════════════════════
+5. PREFERENCIAS HUMANAS DEL USUARIO
+════════════════════════════════════════════════════════
+
+
+users/{userId}/profile/preferences
+
+
+{
+  "mainGoals": ["amor", "trabajo", "salud", "descanso"],
+  "currentLifeStage": "reinvention | growth | burnout | stable | transition",
+  "emotionalSensitivity": "high | medium | low",
+  "preferredTone": "therapeutic | direct | exploratory",
+  "showTechnicalAstrology": false,
+  "updatedAt": "timestamp"
+}
+
+
+Integración planetaria (inferida + confirmada con el tiempo):
+{
+  "planetIntegration": {
+    "VENUS": "integrated | projected | shadow",
+    "SATURN": "integrated | projected | shadow",
+    ... (se rellena progresivamente)
+  }
+}
+
+
+════════════════════════════════════════════════════════
+6. UBICACIÓN ACTUAL
+════════════════════════════════════════════════════════
+
+
+users/{userId}/location/current
+
+
+{
+  "lat": 39.8885,
+  "lng": 4.2658,
+  "city": "Maó",
+  "country": "España",
+  "permissionGranted": true,
+  "lastUpdatedAt": "timestamp"
+}
+
+
+REGLAS ÉTICAS:
+  NO rastrear continuamente
+  NO guardar historial de movimientos
+  SÍ permitir desactivar en cualquier momento
+  SÍ permitir borrar en cualquier momento
+
+
+════════════════════════════════════════════════════════
+7. LUGARES GUARDADOS
+════════════════════════════════════════════════════════
+
+
+users/{userId}/savedPlaces/{placeId}
+
+
+{
+  "name": "Lisboa",
+  "lat": 38.7223,
+  "lng": -9.1393,
+  "country": "Portugal",
+  "type": "travel | living | wishlist",
+  "userNote": "Quiero vivir aquí",
+  "savedAt": "timestamp"
+}
+
+
+════════════════════════════════════════════════════════
+8. ANÁLISIS DE UN LUGAR CONCRETO
+════════════════════════════════════════════════════════
+
+
+users/{userId}/placeAnalyses/{analysisId}
+
+
+FASE 1: El cliente calcula, la IA interpreta vía API Anthropic,
+el resultado se guarda en Firestore para no repetir el análisis.
+
+
+{
+  "placeId": "lisboa_PT",
+  "placeName": "Lisboa",
+  "placeCoords": { "lat": 38.7223, "lng": -9.1393 },
+  "userGoal": "amor",
+  "stayType": "travel_short | temporary | permanent",
+  "calculatedAt": "timestamp",
+  "calculatedBy": "client_v1",
+
+
+  "rawCalculation": {
+    "nearbyLines": [
+      {
+        "planet": "Venus",
+        "angle": "DC",
+        "distanceKm": 87,
+        "influence": 0.71
+      }
+    ],
+    "relocatedAngles": {
+      "ascendant": { "sign": "Escorpio", "deg": 14 },
+      "mc": { "sign": "Leo", "deg": 8 }
+    },
+    "activeTransits": ["Jupiter_trine_Venus", "Mercury_direct"]
+  },
+
+
+  "decisionLayer": {
+    "dominantEnergy": "venus_dc",
+    "mainBenefits": ["amor", "descanso"],
+    "mainRisks": ["idealizacion"],
+    "scores": {
+      "amor": 8.4,
+      "trabajo": 6.1,
+      "salud": 7.2,
+      "descanso": 8.9,
+      "crecimiento": 5.5
+    }
+  },
+
+
+  "aiInterpretation": {
+    "shortSummary": "Lisboa favorece vínculos y descanso emocional.",
+    "longAnalysis": "Texto completo generado por IA...",
+    "recommendations": [
+      "Dedica tiempo a relacionarte sin agenda",
+      "Evita tomar decisiones importantes los primeros días"
+    ],
+    "warnings": [
+      "Si buscas amor desde el vacío, el lugar lo amplificará"
+    ],
+    "aiModel": "claude-sonnet-4-20250514",
+    "generatedAt": "timestamp"
+  },
+
+
+  "audit": {
+    "status": "success",
+    "engineVersion": "astrocarto_engine_v1.0",
+    "interpretationVersion": "kairos_interpretation_v1"
+  }
+}
+
+
+════════════════════════════════════════════════════════
+9. CARTA RELOCADA
+════════════════════════════════════════════════════════
+
+
+Se calcula en cliente con getRelocatedAngles() de astrocarto_engine.js.
+Solo se guarda si el usuario guarda el lugar.
+
+
+users/{userId}/relocatedCharts/{chartId}
+
+
+{
+  "place": { "name": "Lisboa", "lat": 38.7223, "lng": -9.1393 },
+  "calculatedAt": "timestamp",
+  "angles": {
+    "ascendant": { "sign": "Escorpio", "deg": 14, "min": 23 },
+    "mc": { "sign": "Leo", "deg": 8, "min": 45 },
+    "descendant": { "sign": "Tauro", "deg": 14, "min": 23 },
+    "ic": { "sign": "Acuario", "deg": 8, "min": 45 }
+  },
+  "dominantChanges": [
+    "Venus pasa de casa 3 a casa 7",
+    "Saturno se vuelve angular en AC"
+  ]
+}
+
+
+════════════════════════════════════════════════════════
+10. MEMORIA INTERPRETATIVA (aprende con el tiempo)
+════════════════════════════════════════════════════════
+
+
+users/{userId}/insights/{insightId}
+
+
+{
+  "type": "pattern | preference | feedback",
+  "category": "amor | trabajo | descanso | crecimiento",
+  "text": "El usuario responde mejor a lugares con energía lunar.",
+  "confidence": 0.85,
+  "createdAt": "timestamp"
+}
+
+
+El usuario puede borrar su memoria en cualquier momento.
+
+
+════════════════════════════════════════════════════════
+11. COMPARADOR DE LUGARES
+════════════════════════════════════════════════════════
+
+
+users/{userId}/placeComparisons/{comparisonId}
+
+
+{
+  "places": ["lisboa_PT", "berlin_DE", "amsterdam_NL"],
+  "userGoal": "trabajo",
+  "scores": {
+    "lisboa_PT": { "trabajo": 6.1, "amor": 8.4 },
+    "berlin_DE": { "trabajo": 8.9, "amor": 5.2 },
+    "amsterdam_NL": { "trabajo": 7.8, "amor": 6.6 }
+  },
+  "bestFor": {
+    "trabajo": "berlin_DE",
+    "amor": "lisboa_PT"
+  },
+  "createdAt": "timestamp"
+}
+
+
+════════════════════════════════════════════════════════
+12. PRIVACIDAD Y BORRADO
+════════════════════════════════════════════════════════
+
+
+users/{userId}/privacy/settings
+
+
+{
+  "allowLocationStorage": true,
+  "allowAnalysisHistory": true,
+  "allowPersonalizedMemory": true,
+  "deleteRequestedAt": null
+}
+
+
+Si deleteRequestedAt no es null, todos los datos del usuario
+se eliminan en las siguientes 48 horas.
+
+
+════════════════════════════════════════════════════════
+13. QUÉ SE CALCULA DÓNDE — FASE 1 vs FASE 2
+════════════════════════════════════════════════════════
+
+
+FASE 1 — MVP (cliente JS):
+  ✓ Posiciones planetarias (planetary_engine.js + Swiss Ephemeris WASM)
+  ✓ Ascendente y ángulos (ascendant_engine.js)
+  ✓ Líneas astrocartográficas (astrocarto_engine.js — nuevo)
+  ✓ Ángulos relocados (astrocarto_engine.js)
+  ✓ Aspectos (aspects_engine.js)
+  ✓ Scores de lugar (lógica JS)
+  ✓ Interpretación IA (llamada a API Anthropic desde cliente)
+  ✓ Render del mapa (Leaflet.js)
+
+
+  Se guarda en Firestore:
+  ✓ Datos natales
+  ✓ Carta natal calculada (cache)
+  ✓ Preferencias
+  ✓ Análisis de lugares (resultado final)
+  ✓ Lugares guardados
+  ✓ Memoria interpretativa
+
+
+FASE 2 — Escalado (Cloud Functions):
+  → Los cálculos pesados migran a Firebase Functions
+  → La estructura de Firestore no cambia (esto es clave:
+     diseñar bien Firestore en Fase 1 evita migraciones costosas)
+
+
+════════════════════════════════════════════════════════
+14. FLUJO COMPLETO — FASE 1
+════════════════════════════════════════════════════════
+
+
+1. Usuario se registra → Firestore crea users/{userId}
+2. Introduce datos natales → guardados en birthData/main
+3. Cliente calcula carta natal con planetary_engine.js
+4. Carta natal cacheada en charts/natal (no recalcula en cada sesión)
+5. Cliente calcula líneas astrocartográficas con astrocarto_engine.js
+6. Líneas guardadas en localStorage (JSON pesado)
+7. Resumen de líneas guardado en astroMaps/main (Firestore)
+8. Usuario busca un lugar
+9. Cliente calcula análisis del lugar:
+   - getLinesNearCity() → líneas cercanas
+   - getRelocatedAngles() → ángulos relocados
+   - Lógica de scores
+10. Cliente llama a API Anthropic con el contexto estructurado
+11. IA genera interpretación personalizada
+12. Resultado guardado en placeAnalyses/{analysisId}
+13. Usuario puede comparar lugares, guardar favoritos, ver historial
+
+
+════════════════════════════════════════════════════════
+15. ERROR CRÍTICO A EVITAR
+════════════════════════════════════════════════════════
+
+
+NO guardar el análisis completo como texto plano:
+
+
+MAL:
+{ "analysis": "Texto larguísimo generado por la IA..." }
+
+
+BIEN:
+{
+  "scores": { "amor": 8.4, "trabajo": 6.1 },
+  "dominantEnergy": "venus_dc",
+  "warnings": ["idealización"],
+  "aiInterpretation": { "shortSummary": "...", "longAnalysis": "..." }
+}
+
+
+Por qué: los scores y la estructura son estables y consultables.
+El texto de la IA puede regenerarse si mejora el modelo.
+Los datos estructurados permiten comparar y rankear ciudades.
+
+
+════════════════════════════════════════════════════════
+VISIÓN FINAL
+════════════════════════════════════════════════════════
+
+
+Si esta arquitectura se construye correctamente en Fase 1,
+Kairos Maps puede evolucionar en Fase 2 hacia:
+  - Rankings mundiales de ciudades
+  - Comparativas entre usuarios
+  - IA emocional contextual avanzada
+  - Alertas geográficas en tiempo real
+  - Compatibilidad de pareja por lugares
+  - Sistema predictivo personalizado
+
+
+Y ahí deja de ser una app de astrocartografía.
+Ahí empieza una plataforma.
+
+
+════════════════════════════════════════════════════════
+FIN DEL DOCUMENTO — DOC-08 v2.0 REVISADO
+Kairos Maps | Mayo 2026
+════════════════════════════════════════════════════════

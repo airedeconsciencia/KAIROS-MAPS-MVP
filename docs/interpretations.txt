@@ -1,0 +1,656 @@
+﻿KAIROS MAPS — DOC-17
+BIBLIOTECA DE INTERPRETACIONES MODULARES
+Templates de texto por planeta × ángulo × objetivo × estado de integración
+Versión 1.0 | Mayo 2026
+Estado: BASE COMPLETA — Expandible con IA
+
+
+════════════════════════════════════════════════════════
+0. CÓMO USAR ESTE DOCUMENTO
+════════════════════════════════════════════════════════
+
+
+Este documento contiene los templates base para la IA interpretativa de Kairos Maps.
+Cada template tiene 4 partes (los 4 tiempos del sistema):
+  T1 — Experiencia corporal/sensorial
+  T2 — Patrón psicológico activado
+  T3 — Oportunidad real (con condición)
+  T4 — Acción práctica concreta
+
+
+Variables que se sustituyen en tiempo real:
+  {nombre} — nombre del usuario
+  {ciudad} — ciudad analizada
+  {objetivo} — objetivo declarado (amor/trabajo/descanso/etc.)
+  {duración} — tipo de estancia (viaje corto / temporal / permanente)
+
+
+ESTADOS DE INTEGRACIÓN:
+  [I] = Integrado (el usuario maneja bien esa energía)
+  [P] = Proyectado (tiende a externalizarla en otros)
+  [S] = En sombra (la reprime o niega)
+
+
+════════════════════════════════════════════════════════
+1. SOL
+════════════════════════════════════════════════════════
+
+
+── SOL en AC (Ascendente) ──
+
+
+[I] OBJETIVO: cualquiera
+T1: En {ciudad} notarás que algo en ti se ilumina desde el primer momento. Tu presencia
+    tiene más peso del habitual — la gente te ve antes de que hables.
+T2: Este lugar activa tu necesidad de ser auténtico. Lo que escondes en casa aquí quiere
+    salir. No es incómodo — es un permiso que el entorno te da para ser exactamente quien eres.
+T3: Si estás buscando {objetivo}, este es un lugar donde puedes conseguirlo siendo tú mismo
+    sin disculparte. La condición es que no te escondas.
+T4: Haz una cosa al día que normalmente evitarías por miedo al juicio. Aquí el entorno
+    te respalda más de lo que crees.
+
+
+[S] OBJETIVO: cualquiera
+T1: {ciudad} puede sentirse extrañamente incómoda al principio, como si hubiera demasiada
+    luz sobre ti. Querrás hacerte pequeño o pasar desapercibido.
+T2: El lugar está activando una parte de ti que llevas tiempo ignorando: tu propio brillo.
+    No es que el lugar sea difícil — es que te está pidiendo que te veas a ti mismo.
+T3: La oportunidad real aquí no es {objetivo} todavía. Es aprender a ocupar espacio sin
+    pedir permiso. Cuando eso ocurra, lo demás se abre.
+T4: Cada vez que sientas el impulso de pasar desapercibido, haz exactamente lo contrario.
+    Una vez al día. Solo una.
+
+
+── SOL en MC (Medio Cielo) ──
+
+
+[I] OBJETIVO: trabajo/carrera
+T1: Aquí tu trabajo se ve. No en el sentido de fama — en el sentido de que lo que haces
+    llega a las personas que necesitan verlo.
+T2: El lugar activa tu ambición más genuina, la que no tiene que ver con el ego sino con
+    el legado. Querrás hacer algo que importe.
+T3: Las oportunidades profesionales en {ciudad} son reales, pero solo para quien llega
+    con algo concreto que ofrecer. El lugar amplifica lo que traes — no inventa lo que no tienes.
+T4: Define antes de llegar qué quieres lograr aquí específicamente. El lugar responde
+    a la intención, no a la vaguedad.
+
+
+[S] OBJETIVO: trabajo/carrera
+T1: Puede que en {ciudad} sientas una presión extraña a destacar, o todo lo contrario:
+    una parálisis frente a la visibilidad.
+T2: Este lugar está activando tu relación con el éxito y el reconocimiento. Si en el fondo
+    crees que no mereces ser visto, el entorno lo va a poner sobre la mesa.
+T3: Antes de que {ciudad} te dé reconocimiento profesional, te va a pedir que resuelvas
+    tu relación con merecer ese reconocimiento.
+T4: Trabaja en un proyecto pequeño que puedas completar aquí. El éxito visible, por pequeño
+    que sea, cambia la narrativa interna.
+
+
+── SOL en IC (Fondo del Cielo) ──
+
+
+[I] OBJETIVO: descanso/familia
+T1: {ciudad} tiene algo que pocas ciudades dan: el permiso de no hacer nada y que eso
+    esté completamente bien. Tu sistema nervioso lo siente casi de inmediato.
+T2: Este lugar activa tu capacidad de estar presente sin producir. Para alguien que
+    normalmente se define por lo que hace, eso puede ser más profundo de lo que parece.
+T3: El regalo de {ciudad} para ti es tiempo real — no tiempo libre que aprovechas para
+    ser productivo, sino tiempo que simplemente vives.
+T4: Desactiva las notificaciones de trabajo el primer día. Solo el primero. Ver lo que pasa.
+
+
+[I] OBJETIVO: cualquiera (general)
+T1: Aquí te sentirás más tú mismo en privado que en público. Es un lugar para la vida
+    interior, no para el escaparate.
+T2: {ciudad} nutre tus raíces. Te conecta con lo que realmente importa cuando nadie mira.
+T3: No es el mejor lugar para lograr grandes cosas visibles, pero sí para saber por qué
+    quieres lograrlas.
+T4: Dedica tiempo a estar sin agenda. Literalmente: un día sin planes.
+
+
+── SOL en DC (Descendente) ──
+
+
+[I] OBJETIVO: amor/relaciones
+T1: En {ciudad} el otro te ve. Hay algo en el entorno que hace que tus vínculos tengan
+    más definición, más presencia mutua.
+T2: El lugar activa tu capacidad de encontrarte de verdad con otra persona — no de
+    desaparecer en ella ni de mantenerla a distancia, sino de estar.
+T3: Si buscas amor o conexión real, {ciudad} ofrece el escenario. La condición es que
+    llegues dispuesto a ser visto tú también, no solo a ver al otro.
+T4: En tus encuentros aquí, practica hablar de ti mismo con la misma curiosidad con que
+    preguntas por los demás.
+
+
+════════════════════════════════════════════════════════
+2. LUNA
+════════════════════════════════════════════════════════
+
+
+── LUNA en AC ──
+
+
+[I] OBJETIVO: cualquiera
+T1: {ciudad} baja tus defensas de forma casi inmediata. Te sentirás más permeable,
+    más sensible a lo que te rodea — los olores, los sonidos, la temperatura del aire.
+T2: El lugar activa tu instinto de pertenencia. Aquí es fácil sentir que encajas,
+    que el entorno te acoge sin que tengas que ganártelo.
+T3: Esa apertura emocional es el activo principal de {ciudad} para ti. Úsala para
+    conectar, para descansar, para sanar lo que en casa no encuentras espacio de sanar.
+T4: Permite que la ciudad te afecte. No racionalices demasiado lo que sientes aquí.
+
+
+[S] OBJETIVO: cualquiera
+T1: Puede que en {ciudad} te sientas más emocional de lo que esperabas. Más reactivo,
+    más fácil de herir o de conmover.
+T2: El lugar está bajando tus defensas habituales. Si normalmente controlas mucho lo
+    que sientes y muestras, aquí ese control se afloja — y eso puede sentirse vulnerable.
+T3: La incomodidad emocional en {ciudad} no es una señal de que el lugar no es para ti.
+    Es una señal de que algo en ti necesitaba espacio para respirar.
+T4: Lleva un cuaderno. Escribe lo que sientes sin editarlo. No tienes que entenderlo todo.
+
+
+── LUNA en IC ──
+
+
+[I] OBJETIVO: descanso/familia/sanación
+T1: De todos los lugares que podrías visitar, {ciudad} es probablemente el que más
+    se siente como hogar sin serlo. Una calidez que no necesita explicación.
+T2: El lugar activa tus raíces más profundas — no necesariamente tu familia biológica,
+    sino tu sentido interno de pertenencia y seguridad.
+T3: Si necesitas reponer energía, sanar, o simplemente recordar quién eres debajo de
+    todo lo que haces, {ciudad} es el lugar.
+T4: Come comida local, duerme bien, camina sin destino. Deja que la ciudad te cuide.
+
+
+── LUNA en MC ──
+
+
+[I] OBJETIVO: trabajo/carrera
+T1: En {ciudad} tu trabajo tiene una dimensión emocional que en otros lugares no aparece.
+    Lo que haces aquí conecta con las personas a un nivel más íntimo.
+T2: El lugar activa tu capacidad de cuidar y nutrir a través de tu trabajo. Eres más
+    empático, más intuitivo, más conectado con lo que las personas realmente necesitan.
+T3: Profesiones de cuidado, educación, hostelería, bienes raíces, psicología — todas
+    florecen aquí. La condición es que el trabajo venga desde un lugar genuino, no performativo.
+T4: Pregunta a las personas con las que trabajas aquí cómo se sienten, no solo qué necesitan.
+
+
+── LUNA en DC ──
+
+
+[I] OBJETIVO: amor/relaciones
+T1: {ciudad} atrae hacia ti a personas que necesitan ser cuidadas — o que pueden cuidarte
+    a ti. La dinámica emocional de tus vínculos aquí es más profunda e intensa.
+T2: El lugar activa tu instinto de nutrir y de ser nutrido. Es un escenario ideal para
+    conexiones auténticas, pero también para repetir patrones de codependencia si no estás atento.
+T3: El amor que puedes encontrar o profundizar en {ciudad} es del tipo que dura —
+    pero solo si entras en él desde la plenitud, no desde el vacío.
+T4: Observa si en tus relaciones aquí das más de lo que recibes o al revés.
+    El equilibrio en {ciudad} importa más que en otros lugares.
+
+
+════════════════════════════════════════════════════════
+3. MERCURIO
+════════════════════════════════════════════════════════
+
+
+── MERCURIO en AC ──
+
+
+[I] OBJETIVO: aprendizaje/creatividad
+T1: Tu mente en {ciudad} funciona de forma diferente: más rápida, más conectada,
+    más capaz de saltar entre ideas sin perder el hilo.
+T2: El lugar activa tu capacidad analítica y comunicativa. Eres más curioso aquí,
+    más dispuesto a escuchar perspectivas que normalmente descartarías.
+T3: {ciudad} es ideal para escribir, estudiar, aprender un idioma, o iniciar proyectos
+    que requieran claridad mental. La condición es que uses esa energía — si no, se convierte en ansiedad.
+T4: Escribe algo cada día que estés aquí. No importa qué. El movimiento mental necesita salida.
+
+
+[S] OBJETIVO: cualquiera
+T1: En {ciudad} puede que te sientas forzado a comunicarte más de lo que te resulta
+    cómodo — con extraños, en otro idioma, en situaciones sociales inesperadas.
+T2: El lugar está activando tu relación con la expresión. Si tienes miedo de hablar,
+    de ser malinterpretado o de no saber lo suficiente, {ciudad} va a ponerte en situaciones
+    donde esas creencias se examinen.
+T3: La incomodidad comunicativa aquí no es el problema — es el proceso.
+    Al otro lado hay una versión de ti que se expresa con más soltura.
+T4: Habla con una persona nueva al día. Sin agenda. Solo por practicar estar presente
+    en una conversación.
+
+
+── MERCURIO en MC ──
+
+
+[I] OBJETIVO: trabajo/carrera
+T1: En {ciudad} tu inteligencia se ve. Tu forma de pensar y de comunicar tiene peso
+    profesional aquí de una forma que en otros lugares puede no tener.
+T2: El lugar activa tu capacidad de posicionarte como referente en lo que sabes.
+    La claridad con la que explicas las cosas aquí abre puertas.
+T3: Ideal para escritores, periodistas, profesores, consultores, vendedores — cualquier
+    profesión donde las palabras son el producto. El trabajo aquí fluye si tienes algo real que decir.
+T4: Crea contenido mientras estás en {ciudad}. Escribe, graba, publica.
+    El lugar amplifica tu voz — úsala.
+
+
+════════════════════════════════════════════════════════
+4. VENUS
+════════════════════════════════════════════════════════
+
+
+── VENUS en AC ──
+
+
+[I] OBJETIVO: amor/descanso/bienestar
+T1: {ciudad} tiene una estética que te entra bien. La belleza del lugar — su arquitectura,
+    su luz, su ritmo — no te resulta extraña sino familiar.
+T2: El lugar activa tu sentido del placer y del valor propio. Aquí es más fácil disfrutar
+    sin culpa, invertir en ti mismo sin justificarlo.
+T3: Si buscas descanso o bienestar, {ciudad} es un escenario generoso. Si buscas amor,
+    el lugar pone las condiciones — pero solo si ya te tratas bien a ti mismo.
+T4: Haz algo que sea puramente placentero sin ningún propósito productivo.
+    Una comida lenta, un museo, un paseo sin destino.
+
+
+[S] OBJETIVO: amor
+T1: En {ciudad} puede que veas parejas felices por todas partes mientras tú te sientes
+    más solo que nunca. Es una experiencia específica y algo cruel, pero tiene un propósito.
+T2: El lugar está usando el contraste para mostrarte algo: que la distancia entre tú
+    y lo que buscas no está en la geografía, está en cómo te relacionas contigo mismo.
+T3: {ciudad} no te va a dar amor mientras sigas buscándolo desde el vacío. Pero sí puede
+    darte el espacio para empezar a llenarte desde dentro.
+T4: Haz una lista de tres cosas que te darías a ti mismo si te quisieras más.
+    Dátelas aquí, sin esperar a que venga alguien a dártelas.
+
+
+── VENUS en MC ──
+
+
+[I] OBJETIVO: trabajo/carrera
+T1: En {ciudad} tu trabajo tiene un componente estético o relacional que lo hace atractivo
+    para los demás. No es solo lo que haces — es cómo lo presentas.
+T2: El lugar activa tu capacidad de ser valorado sin desgastarte. Aquí el reconocimiento
+    llega de forma más natural, más fluida.
+T3: Ideal para diseñadores, creativos, profesionales de la imagen, del lujo, de la moda,
+    de la gastronomía. También para cualquier trabajo que implique persuadir o conectar.
+    La condición: que lo que ofreces tenga valor real, no solo empaquetado bonito.
+T4: Invierte en cómo presentas tu trabajo mientras estás en {ciudad}.
+    La forma importa aquí tanto como el fondo.
+
+
+── VENUS en DC ──
+
+
+[I] OBJETIVO: amor/relaciones
+T1: {ciudad} atrae hacia ti a personas con quienes hay química real — algo en el ambiente
+    facilita el encuentro genuino.
+T2: El lugar activa tu capacidad de establecer vínculos equilibrados, donde das y recibes
+    sin perder tu centro.
+T3: Si buscas amor, {ciudad} ofrece el escenario más favorable de los que tendrías disponibles.
+    La condición es que llegues sin desesperación — el lugar huele el hambre y la aplaza.
+T4: Sé el primero en iniciar conversación. Aquí el entorno te respalda más de lo que crees.
+
+
+[P] OBJETIVO: amor/relaciones
+T1: En {ciudad} atraerás a personas muy atractivas, encantadoras, o aparentemente perfectas.
+    Pronto notarás que algo no cuadra.
+T2: El lugar está usando el espejo de las relaciones para mostrarte lo que proyectas en
+    los demás. Lo que admiras tanto en esas personas — ¿qué parte de ti representa?
+T3: Las relaciones en {ciudad} serán reveladoras si estás dispuesto a aprender de ellas,
+    frustrantes si solo buscas confirmar lo que ya crees.
+T4: Antes de juzgar a alguien que conoces aquí, pregúntate qué te dice esa persona
+    de ti mismo.
+
+
+════════════════════════════════════════════════════════
+5. MARTE
+════════════════════════════════════════════════════════
+
+
+── MARTE en AC ──
+
+
+[I] OBJETIVO: cualquiera
+T1: {ciudad} te activa físicamente. Tu cuerpo tiene más energía, más urgencia.
+    Caminas más rápido, te impacientas en las colas, no soportas que las cosas vayan lentas.
+T2: El lugar inyecta coraje y asertividad. Aquí dices lo que piensas con más facilidad.
+    También te vuelves más competitivo, más reactivo, más intolerante con la mediocridad.
+T3: Si tienes algo que iniciar, {ciudad} es donde arrancarlo. La energía está ahí.
+    La condición es canalizar esa energía — si no tienes hacia dónde, se convierte en irritabilidad.
+T4: Haz ejercicio físico intenso cada día que estés aquí. No es opcional — es higiene básica
+    para no colapsar en frustración.
+
+
+[S] OBJETIVO: cualquiera
+T1: {ciudad} puede generarte una ansiedad de fondo que no sabes explicar bien.
+    Tensión en el cuerpo, dificultad para relajarte, sensación de que algo va a pasar.
+T2: El lugar está activando tu energía marciana reprimida — toda esa asertividad,
+    ese coraje, esa capacidad de defender lo que es tuyo que no te permites expresar.
+T3: {ciudad} te pide que aprendas a ocupar espacio, a decir no, a actuar en lugar de esperar.
+    Eso no es agresividad — es salud.
+T4: Identifica algo que llevas tiempo queriendo hacer o decir y no has hecho. Hazlo aquí.
+
+
+── MARTE en MC ──
+
+
+[I] OBJETIVO: trabajo/carrera
+T1: En {ciudad} tu trabajo tiene urgencia y fuerza. No eres solo competente — eres
+    alguien que hace que las cosas ocurran.
+T2: El lugar activa tu liderazgo activo, tu capacidad de tomar decisiones rápidas
+    y de ejecutar sin parálisis.
+T3: Ideal para emprendedores, deportistas, militares, cirujanos, ingenieros —
+    cualquier trabajo donde la acción directa importa más que la deliberación.
+    La condición: no quemar puentes en el proceso.
+T4: Define un objetivo concreto y measurable para tu estancia en {ciudad}.
+    Marte necesita una diana, no solo energía suelta.
+
+
+── MARTE en DC ──
+
+
+[I] OBJETIVO: relaciones
+T1: En {ciudad} tus relaciones tienen más fricción de lo habitual. Más discusiones,
+    más tensión, más dinamismo también.
+T2: El lugar atrae hacia ti a personas activas, directas, a veces confrontacionales.
+    O pone esa dinámica en tus relaciones existentes.
+T3: No es un lugar para relaciones tranquilas. Sí es un lugar para relaciones reales,
+    donde las cosas se dicen y se resuelven en lugar de dejarse pudrir en silencio.
+T4: Si hay algo no resuelto con alguien, {ciudad} es el lugar para hablarlo.
+    El entorno te da el coraje que en casa no encuentras.
+
+
+════════════════════════════════════════════════════════
+6. JÚPITER
+════════════════════════════════════════════════════════
+
+
+── JÚPITER en AC ──
+
+
+[I] OBJETIVO: cualquiera
+T1: {ciudad} expande tu sentido de lo posible. Las cosas que en casa parecen inalcanzables
+    aquí parecen solo cuestión de tiempo y de acción.
+T2: El lugar activa tu optimismo más genuino — no el optimismo de quien niega los problemas,
+    sino el de quien cree que puede superarlos.
+T3: {ciudad} es generosa contigo. Lo que pidas aquí llega más fácil que en otros lugares.
+    La condición: que pidas cosas reales y actúes en dirección a ellas.
+T4: Haz algo que normalmente te parecería demasiado ambicioso o demasiado grande.
+    El lugar te respalda más de lo que crees.
+
+
+[S] OBJETIVO: cualquiera
+T1: En {ciudad} puede que te sientas abrumado por la escala de las cosas.
+    Demasiado grande, demasiado ruidoso, demasiado exigente.
+T2: El lugar está activando tu relación con la abundancia y la expansión.
+    Si en el fondo crees que no mereces más, el tamaño de {ciudad} te va a incomodar.
+T3: La incomodidad aquí es una señal de crecimiento, no de incompatibilidad.
+    El lugar te está pidiendo que amplíes tu idea de lo que es posible para ti.
+T4: Cada vez que pienses "esto no es para mí", pregúntate de dónde viene esa creencia.
+    No la aceptes como verdad sin examinarla.
+
+
+── JÚPITER en MC ──
+
+
+[I] OBJETIVO: trabajo/carrera
+T1: En {ciudad} tu carrera tiene viento a favor. Las oportunidades llegan con más facilidad,
+    los contactos correctos aparecen, las puertas que estaban cerradas se abren.
+T2: El lugar activa tu capacidad de pensar en grande y de atraer a personas que piensan
+    como tú. Tu visión tiene más eco aquí.
+T3: Es el escenario más favorable para un salto profesional significativo.
+    La condición: que el salto ya esté en ti — el lugar lo amplifica, no lo crea de la nada.
+T4: Haz al menos tres contactos profesionales mientras estás en {ciudad}.
+    El networking aquí tiene un rendimiento mayor que en cualquier otro lugar de tu mapa.
+
+
+════════════════════════════════════════════════════════
+7. SATURNO
+════════════════════════════════════════════════════════
+
+
+── SATURNO en AC ──
+
+
+[I] OBJETIVO: cualquiera
+T1: {ciudad} no es un lugar ligero. Aquí todo cuesta un poco más — los planes se retrasan,
+    las cosas requieren más esfuerzo del esperado, la vida exige organización.
+T2: El lugar activa tu capacidad de comprometerte a largo plazo con algo que valga la pena.
+    No es un lugar para el placer fácil — es un lugar para construir.
+T3: Si lo que buscas en {ciudad} requiere tiempo y disciplina, este es tu lugar.
+    La condición: llegar con paciencia y sin expectativas de resultados inmediatos.
+T4: Define qué estás dispuesto a construir aquí a largo plazo antes de llegar.
+    Saturno no recompensa la improvisación.
+
+
+[S] OBJETIVO: cualquiera
+T1: {ciudad} puede sentirse opresiva. Como si hubiera reglas invisibles que no entiendes,
+    o personas en posiciones de autoridad que no te facilitan las cosas.
+T2: El lugar está activando tu relación con la responsabilidad y la autoridad.
+    Si externalizas mucho el control (esperas que otros decidan, organicen, o te cuiden),
+    {ciudad} te va a poner en situaciones donde eso no va a funcionar.
+T3: La fricción en {ciudad} no es personal — es el lugar diciéndote que es hora de
+    asumir más autoridad sobre tu propia vida.
+T4: Identifica una decisión que llevas tiempo postergando y tómala mientras estás aquí.
+
+
+── SATURNO en MC ──
+
+
+[I] OBJETIVO: trabajo/carrera
+T1: En {ciudad} tu trabajo se vuelve serio. No en el sentido de aburrido —
+    en el sentido de que tiene peso, credibilidad, estructura.
+T2: El lugar activa tu capacidad de ser reconocido como alguien competente y fiable.
+    La reputación que construyes aquí dura.
+T3: Es el lugar ideal para sentar las bases de algo que quieras que dure décadas,
+    no meses. La condición: disciplina constante y visión a largo plazo.
+T4: Trabaja en {ciudad} como si cada cosa que haces fuera a quedar registrada.
+    Porque aquí, de alguna manera, así es.
+
+
+════════════════════════════════════════════════════════
+8. URANO
+════════════════════════════════════════════════════════
+
+
+── URANO en AC ──
+
+
+[I] OBJETIVO: reinvención/autenticidad
+T1: {ciudad} te libera de lo que esperan de ti. Aquí puedes ser raro, diferente,
+    incluso contradictorio — y el entorno no solo lo tolera sino que lo celebra.
+T2: El lugar activa tu necesidad de autenticidad radical. Lo que en casa reprimes
+    por encajar, aquí simplemente sale.
+T3: Si buscas reinventarte o explorar una versión de ti que todavía no has tenido
+    espacio de ser, {ciudad} es el laboratorio. La condición: que estés dispuesto a
+    sorprenderte a ti mismo.
+T4: Haz algo en {ciudad} que nunca hayas hecho y que normalmente no considerarías.
+    No lo planifiques demasiado — solo hazlo.
+
+
+[I] OBJETIVO: trabajo/creatividad
+T1: Tu mente en {ciudad} trabaja de forma no lineal. Las ideas más originales vienen
+    aquí de forma inesperada, en momentos que no planificaste.
+T2: El lugar activa tu capacidad innovadora. Ves conexiones que otros no ven.
+    Propones soluciones que nadie había considerado.
+T3: Ideal para creativos, tecnólogos, emprendedores, investigadores — cualquier trabajo
+    donde la originalidad sea el valor diferencial.
+T4: Rompe tu rutina creativa en {ciudad}. Trabaja en lugares diferentes, a horas
+    diferentes. El cambio de patrón activa el pensamiento lateral.
+
+
+── URANO en MC ──
+
+
+[I] OBJETIVO: trabajo/carrera
+T1: En {ciudad} tu carrera no sigue el camino convencional. Los cambios son repentinos,
+    las oportunidades llegan de donde no esperas, y la estabilidad predecible no es
+    la forma en que funciona el lugar para ti.
+T2: El lugar activa tu capacidad de adaptarte a los giros y de encontrar oportunidad
+    en lo inesperado. Aquí el cambio es el estado natural de las cosas.
+T3: No es un lugar para quien busca una carrera lineal y predecible. Sí es el lugar
+    para quien quiere hacer algo que no existía antes.
+T4: Mantén tus planes flexibles en {ciudad}. Lo que parecía una desviación puede
+    ser la mejor dirección.
+
+
+════════════════════════════════════════════════════════
+9. NEPTUNO
+════════════════════════════════════════════════════════
+
+
+── NEPTUNO en AC ──
+
+
+[I] OBJETIVO: espiritualidad/creatividad/descanso
+T1: {ciudad} tiene algo etéreo. Los bordes entre las cosas se difuminan — entre tú
+    y el lugar, entre lo que piensas y lo que sientes, entre el sueño y la vigilia.
+T2: El lugar activa tu intuición y tu dimensión espiritual o artística.
+    Aquí confías más en lo que sientes que en lo que puedes probar.
+T3: Ideal para retiros, creación artística profunda, meditación, conexión con algo
+    más grande que tú. La condición: que estés dispuesto a soltarte sin perderte.
+T4: Dedica tiempo en {ciudad} a algo sin estructura ni objetivo. El arte, la
+    contemplación, el silencio. Deja que el lugar te hable a su ritmo.
+
+
+[S] OBJETIVO: cualquiera
+T1: En {ciudad} puede que pierdas el sentido del tiempo, de la dirección, de lo que
+    realmente quieres. Una niebla amable pero confusa.
+T2: El lugar está disolviendo tus defensas y tus certezas habituales. Si normalmente
+    funcionas desde la lógica y el control, aquí ese sistema no funciona igual.
+T3: Antes de que {ciudad} te dé claridad, te va a dar confusión. Eso es parte del proceso,
+    no una señal de que algo va mal.
+T4: No tomes decisiones importantes mientras estés bajo el efecto de {ciudad}.
+    Espera a que la niebla se asiente.
+
+
+════════════════════════════════════════════════════════
+10. PLUTÓN
+════════════════════════════════════════════════════════
+
+
+── PLUTÓN en AC ──
+
+
+[I] OBJETIVO: transformación/reinvención
+T1: {ciudad} no da mensajes sutiles. Algo en el lugar te pone cara a cara con lo que
+    llevas tiempo evitando — una verdad, un patrón, una parte de ti que querías ignorar.
+T2: El lugar activa un proceso de despojo. Lo que no necesitas — creencias, relaciones,
+    identidades — empieza a desprenderse aunque no quieras.
+T3: Si estás dispuesto al proceso, {ciudad} puede ser el lugar donde algo en ti muere
+    para que algo más auténtico nazca. Si no estás dispuesto, será simplemente un lugar
+    difícil y confuso.
+T4: No luches contra lo que {ciudad} pone sobre la mesa. Escúchalo.
+    La resistencia aquí cuesta el doble que la rendición.
+
+
+[I] OBJETIVO: cualquiera
+T1: {ciudad} intensifica todo. No es un lugar para el término medio — aquí las cosas
+    son o muy bien o muy difíciles, raramente neutras.
+T2: El lugar activa tu sombra — las partes de ti que normalmente no integras.
+    Eso puede ser perturbador o liberador, dependiendo de tu disposición.
+T3: La experiencia en {ciudad} será proporcional a tu disposición de ir a fondo.
+    Quien va a la superficie recibe solo fricción. Quien va a lo profundo recibe transformación.
+T4: Lleva un diario en {ciudad}. Lo que emerja aquí tiene valor aunque incomode.
+
+
+── PLUTÓN en MC ──
+
+
+[I] OBJETIVO: trabajo/carrera
+T1: En {ciudad} tu trabajo toca poder. No necesariamente el poder visible —
+    el poder de transformar, de hacer que las cosas cambien de raíz.
+T2: El lugar activa tu capacidad de impacto profundo. Lo que haces aquí no es
+    superficial aunque lo parezca.
+T3: Ideal para psicólogos, investigadores, estrategas, periodistas de investigación,
+    cirujanos, cualquier trabajo que implique ir a las raíces de las cosas.
+    La condición: integridad absoluta. El poder sin integridad aquí tiene consecuencias.
+T4: Define cuál es el impacto real que quieres tener en {ciudad}. No el visible —
+    el real.
+
+
+════════════════════════════════════════════════════════
+11. NODO NORTE
+════════════════════════════════════════════════════════
+
+
+── NODO NORTE en AC / MC / IC / DC ──
+
+
+[I] OBJETIVO: propósito/crecimiento
+T1: {ciudad} te saca de tu zona de confort de formas que no siempre se sienten cómodas.
+    Hay una sensación de que debes estar aquí aunque no sepas exactamente por qué.
+T2: El lugar activa tu línea de evolución — lo que tu alma vino a aprender en esta vida,
+    no lo que ya sabe hacer. Por eso puede sentirse exigente.
+T3: Las sincronías en {ciudad} son reales. Las personas que aparecen, las situaciones
+    que se dan — no son casualidad. La condición: estar atento y no huir cuando
+    el crecimiento se siente incómodo.
+T4: Cuando algo en {ciudad} te asuste o te incomode, pregúntate si esa incomodidad
+    viene de un peligro real o de una expansión que no conoces todavía.
+
+
+════════════════════════════════════════════════════════
+12. QUIRÓN
+════════════════════════════════════════════════════════
+
+
+── QUIRÓN en AC / IC / DC / MC ──
+
+
+[I] OBJETIVO: sanación/crecimiento personal
+T1: {ciudad} toca algo antiguo en ti. Una herida que creías superada — o que nunca
+    terminaste de mirar — vuelve a hacerse presente de formas inesperadas.
+T2: El lugar no te va a curar automáticamente. Pero sí va a poner la herida donde
+    puedas verla con más claridad que en otros lugares.
+T3: Si estás en un proceso terapéutico o de trabajo interior, {ciudad} puede ser
+    un catalizador poderoso. Si no lo estás, puede ser el lugar donde decidas empezarlo.
+T4: Sé amable contigo mismo en {ciudad}. Lo que emerge aquí merece compasión,
+    no juicio.
+
+
+════════════════════════════════════════════════════════
+13. NOTAS PARA EL SISTEMA DE IA
+════════════════════════════════════════════════════════
+
+
+INSTRUCCIONES DE ENSAMBLAJE:
+
+
+El sistema de IA debe seleccionar el template correcto según:
+  1. Planeta angular en el destino (prioridad por intensidad: exacto > cercano)
+  2. Ángulo (AC / MC / IC / DC)
+  3. Objetivo declarado por el usuario en la sesión
+  4. Estado de integración del planeta (inferido de la carta natal + historial)
+  5. Tipo de estancia (viaje corto = tono de observación / permanente = tono de gestión)
+
+
+VARIABLES DE PERSONALIZACIÓN:
+  - Sustituir {nombre}, {ciudad}, {objetivo}, {duración} antes de mostrar al usuario
+  - Añadir referencia al tránsito activo si lo hay (Mercurio Retrógrado, Júpiter en...)
+  - Añadir nota sobre distancia a la línea si > 200km ("estás a {X}km de la línea,
+    la influencia es notable pero no máxima")
+
+
+REGLAS DE COMBINACIÓN (cuando hay múltiples líneas):
+  - Máximo 2 planetas interpretados en profundidad por sesión
+  - El planeta más cercano geográficamente tiene prioridad
+  - Si el objetivo del usuario corresponde a un ángulo específico (amor = DC/Venus,
+    trabajo = MC) priorizar ese aunque esté más lejos
+  - Las contradicciones (ej. Júpiter MC + Saturno AC) se presentan como tensión
+    evolutiva, nunca como contradicción sin salida
+
+
+TONO SIEMPRE:
+  ✓ Segunda persona directa ("notarás", "el lugar te pide")
+  ✓ Terminar con acción concreta y cotidiana
+  ✓ Nombrar la dificultad sin dramatizarla
+  ✗ Nunca: "las estrellas dicen", "el universo te envía", "esto significa que"
+  ✗ Nunca: promesas absolutas ("aquí encontrarás el amor")
+  ✗ Nunca: fatalismo ("este lugar es malo para ti")
+
+
+════════════════════════════════════════════════════════
+FIN DEL DOCUMENTO — DOC-17
+Kairos Maps | Mayo 2026
+════════════════════════════════════════════════════════

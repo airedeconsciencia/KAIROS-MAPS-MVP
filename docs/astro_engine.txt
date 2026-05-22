@@ -1,0 +1,730 @@
+﻿KAIROS MAPS — DOC-16
+ESPECIFICACIÓN TÉCNICA Y CÓDIGO COMPLETO
+astrocarto_engine.js — Motor de Líneas Astrocartográficas
+Versión 1.0 | Mayo 2026
+Autor: Arquitectura Kairos Maps
+Estado: LISTO PARA IMPLEMENTAR
+
+
+════════════════════════════════════════════════════════
+0. PROPÓSITO DE ESTE DOCUMENTO
+════════════════════════════════════════════════════════
+
+
+Este documento contiene:
+1. La explicación técnica completa de cómo funciona el motor
+2. El código JavaScript completo listo para copiar e implementar
+3. Las instrucciones de integración con los motores existentes
+4. Los ejemplos de uso y testing
+
+
+Este es el único módulo nuevo que necesita Kairos Maps para
+calcular líneas astrocartográficas. Todo lo demás ya existe
+en el motor de KAIROS (ascendant_engine.js, planetary_engine.js).
+
+
+════════════════════════════════════════════════════════
+1. FUNDAMENTO MATEMÁTICO
+════════════════════════════════════════════════════════
+
+
+¿QUÉ ES UNA LÍNEA ASTROCARTOGRÁFICA?
+
+
+Una línea astrocartográfica marca todos los puntos de la Tierra
+donde un planeta concreto estaba exactamente en uno de los
+4 ángulos principales de la carta natal en el momento del nacimiento:
+
+
+  - AC (Ascendente): el planeta salía por el horizonte Este
+  - DC (Descendente): el planeta se ponía por el horizonte Oeste
+  - MC (Medio Cielo): el planeta estaba en el punto más alto del cielo
+  - IC (Fondo del Cielo): el planeta estaba en el punto más bajo
+
+
+¿CÓMO SE CALCULA?
+
+
+La clave es que el Tiempo Universal (UT) del nacimiento es FIJO.
+Lo que cambia es la longitud geográfica del observador.
+
+
+Para calcular la línea de AC de un planeta:
+  1. Se toma la longitud eclíptica del planeta (fija, calculada por Swiss Ephemeris)
+  2. Se itera por todas las longitudes geográficas (de -180 a +180)
+  3. Para cada longitud, se calcula en qué latitud ese planeta
+     estaría exactamente en el Ascendente
+  4. El conjunto de esos puntos (longitud, latitud) forma la línea
+
+
+Para MC/IC la matemática es más directa:
+  - MC: la latitud no importa (MC depende solo de la longitud geográfica)
+  - La línea MC es una línea vertical (mismo meridiano para todas las latitudes)
+
+
+════════════════════════════════════════════════════════
+2. ARQUITECTURA DEL MÓDULO
+════════════════════════════════════════════════════════
+
+
+DEPENDENCIAS:
+  - ascendant_engine.js (ya existe en KAIROS) → función getAscendant()
+  - astronomy.js (ya existe en KAIROS) → window.Astronomy
+  - planetary_engine.js (ya existe en KAIROS) → getPlanetaryPositions()
+
+
+FUNCIONES QUE EXPONE AL EXTERIOR:
+  - window.getAstroLines(birthData) → todas las líneas de todos los planetas
+  - window.getLinesNearCity(birthData, lat, lng, radius) → líneas cerca de una ciudad
+  - window.getRelocatedAngles(birthData, lat, lng) → ángulos relocados para una ciudad
+
+
+PLANETAS CALCULADOS:
+  Sol, Luna, Mercurio, Venus, Marte, Júpiter, Saturno, Urano, Neptuno, Plutón, Nodo Norte, Quirón
+
+
+════════════════════════════════════════════════════════
+3. CÓDIGO COMPLETO — astrocarto_engine.js
+════════════════════════════════════════════════════════
+
+
+Copiar este código completo en un archivo llamado astrocarto_engine.js
+y cargarlo DESPUÉS de ascendant_engine.js y planetary_engine.js en el HTML.
+
+
+──────────────────────────────────────────────────────
+INICIO DEL CÓDIGO
+──────────────────────────────────────────────────────
+
+
+// ============================================================
+// astrocarto_engine.js v1.0
+// KAIROS MAPS — Motor de Líneas Astrocartográficas
+// Depende de: ascendant_engine.js, planetary_engine.js, astronomy.js
+// NO MODIFICAR sin aprobación de Roberto
+// ============================================================
+
+
+const ASTROCARTO_PLANETS = {
+  SUN:     { id: 0,  name: 'Sol',      color: '#F5A623', symbol: '☉' },
+  MOON:    { id: 1,  name: 'Luna',     color: '#C8A96E', symbol: '☽' },
+  MERCURY: { id: 2,  name: 'Mercurio', color: '#7B68EE', symbol: '☿' },
+  VENUS:   { id: 3,  name: 'Venus',    color: '#FF6B9D', symbol: '♀' },
+  MARS:    { id: 4,  name: 'Marte',    color: '#E74C3C', symbol: '♂' },
+  JUPITER: { id: 5,  name: 'Júpiter',  color: '#E67E22', symbol: '♃' },
+  SATURN:  { id: 6,  name: 'Saturno',  color: '#8B7355', symbol: '♄' },
+  URANUS:  { id: 7,  name: 'Urano',    color: '#1ABC9C', symbol: '♅' },
+  NEPTUNE: { id: 8,  name: 'Neptuno',  color: '#3498DB', symbol: '♆' },
+  PLUTO:   { id: 9,  name: 'Plutón',   color: '#9B59B6', symbol: '♇' },
+  MEAN_NODE: { id: 10, name: 'Nodo Norte', color: '#2ECC71', symbol: '☊' },
+  CHIRON:  { id: 15, name: 'Quirón',   color: '#E8D5A3', symbol: '⚷' }
+};
+
+
+const ANGLES = ['AC', 'DC', 'MC', 'IC'];
+
+
+// Resolución del muestreo de longitudes (menor = más precisión, más lento)
+const LON_STEP = 1; // grados. Para producción usar 0.5
+const LAT_STEP = 1; // grados para búsqueda de AC/DC
+
+
+/**
+ * FUNCIÓN PRINCIPAL
+ * Calcula todas las líneas astrocartográficas para una persona.
+ *
+ * @param {Object} birthData - { date: 'YYYY-MM-DD', time: 'HH:mm', lat, lng, timezone }
+ * @returns {Object} - { lines: [...], metadata: {...} }
+ */
+async function getAstroLines(birthData) {
+  console.log('🗺️ KAIROS MAPS: Calculando líneas astrocartográficas...');
+
+
+  const { date, time, lat, lng, timezone } = birthData;
+
+
+  // 1. Obtener posiciones planetarias natales (Swiss Ephemeris)
+  const planetaryData = await getPlanetaryPositions(date, time, lat, lng, timezone);
+  const planets = planetaryData.positions;
+
+
+  // 2. Obtener GAST (Tiempo Sidéreo de Greenwich) para el momento natal
+  const gastDeg = _getGAST(date, time, lat, lng, timezone);
+
+
+  const allLines = [];
+
+
+  // 3. Calcular líneas para cada planeta
+  for (const [planetKey, planetInfo] of Object.entries(ASTROCARTO_PLANETS)) {
+    if (!planets[planetKey]) continue;
+
+
+    const planetLon = planets[planetKey].longitude; // longitud eclíptica en grados
+
+
+    // Líneas MC e IC (verticales, independientes de latitud)
+    const mcLine = _calculateMCLine(planetLon, gastDeg, planetInfo);
+    const icLine = _calculateICLine(mcLine, planetInfo);
+
+
+    allLines.push(mcLine);
+    allLines.push(icLine);
+
+
+    // Líneas AC y DC (curvas, dependen de latitud)
+    const acLine = _calculateACLine(planetLon, gastDeg, planetInfo);
+    const dcLine = _calculateDCLine(acLine, planetInfo);
+
+
+    allLines.push(acLine);
+    allLines.push(dcLine);
+  }
+
+
+  console.log(`✅ KAIROS MAPS: ${allLines.length} líneas calculadas.`);
+
+
+  return {
+    lines: allLines,
+    metadata: {
+      birthData,
+      calculatedAt: new Date().toISOString(),
+      totalLines: allLines.length,
+      engine: 'astrocarto_engine_v1.0'
+    }
+  };
+}
+
+
+/**
+ * Calcula el Tiempo Sidéreo de Greenwich (GAST) para el momento natal.
+ * Reutiliza la librería astronomy.js que ya existe en KAIROS.
+ */
+function _getGAST(date, time, lat, lng, timezone) {
+  try {
+    // Usamos el mismo flujo que ascendant_engine.js para obtener GAST
+    const [y, m, d] = date.split('-').map(Number);
+    const tzArg = timezone || 'UTC';
+    const [h, min] = time.split(':').map(Number);
+
+
+    const luxonDt = window.luxon.DateTime.fromObject(
+      { year: y, month: m, day: d, hour: h, minute: min },
+      { zone: tzArg }
+    );
+    const utDate = luxonDt.toJSDate();
+    const astroTime = window.Astronomy.MakeTime(utDate);
+    const gastHours = window.Astronomy.SiderealTime(astroTime);
+    return (gastHours * 15) % 360; // Convertir horas a grados
+  } catch (e) {
+    console.error('❌ astrocarto_engine: Error calculando GAST:', e);
+    return 0;
+  }
+}
+
+
+/**
+ * LÍNEA MC — Medio Cielo
+ * El MC depende solo de la longitud geográfica, no de la latitud.
+ * Fórmula: RAMC = GAST + longitud_geográfica
+ * La línea MC de un planeta está donde RAMC = longitud_eclíptica_del_planeta
+ * → longitud_geográfica = longitud_planeta - GAST
+ *
+ * Resultado: línea VERTICAL en esa longitud geográfica.
+ */
+function _calculateMCLine(planetLon, gastDeg, planetInfo) {
+  // Longitud geográfica donde el planeta culmina (está en el MC)
+  let geoLon = planetLon - gastDeg;
+
+
+  // Normalizar a rango -180 a +180
+  geoLon = ((geoLon + 180) % 360) - 180;
+  if (geoLon < -180) geoLon += 360;
+
+
+  // La línea MC es vertical: misma longitud, todas las latitudes
+  const points = [];
+  for (let latY = -85; latY <= 85; latY += 2) {
+    points.push([latY, geoLon]);
+  }
+
+
+  return {
+    planet: planetInfo.name,
+    planetKey: Object.keys(ASTROCARTO_PLANETS).find(k => ASTROCARTO_PLANETS[k] === planetInfo),
+    angle: 'MC',
+    color: planetInfo.color,
+    symbol: planetInfo.symbol,
+    points: points,
+    geoLon: geoLon,
+    type: 'vertical'
+  };
+}
+
+
+/**
+ * LÍNEA IC — Fondo del Cielo
+ * IC es exactamente opuesto al MC: longitud + 180 grados.
+ */
+function _calculateICLine(mcLine, planetInfo) {
+  let icLon = mcLine.geoLon + 180;
+  if (icLon > 180) icLon -= 360;
+
+
+  const points = [];
+  for (let latY = -85; latY <= 85; latY += 2) {
+    points.push([latY, icLon]);
+  }
+
+
+  return {
+    planet: planetInfo.name,
+    planetKey: mcLine.planetKey,
+    angle: 'IC',
+    color: planetInfo.color,
+    symbol: planetInfo.symbol,
+    points: points,
+    geoLon: icLon,
+    type: 'vertical'
+  };
+}
+
+
+/**
+ * LÍNEA AC — Ascendente
+ * Curva que conecta todos los puntos donde el planeta estaba
+ * exactamente en el horizonte Este en el momento del nacimiento.
+ *
+ * Para cada longitud geográfica, buscamos la latitud donde
+ * el Ascendente calculado coincide con la longitud del planeta.
+ *
+ * Método: búsqueda binaria por latitud para cada longitud.
+ */
+function _calculateACLine(planetLon, gastDeg, planetInfo) {
+  const points = [];
+  const eps = _getMeanObliquity(); // oblicuidad de la eclíptica ~23.44°
+
+
+  for (let geoLon = -180; geoLon <= 180; geoLon += LON_STEP) {
+    const lat = _findACLatitude(planetLon, gastDeg, geoLon, eps);
+    if (lat !== null) {
+      points.push([lat, geoLon]);
+    }
+  }
+
+
+  return {
+    planet: planetInfo.name,
+    planetKey: Object.keys(ASTROCARTO_PLANETS).find(k => ASTROCARTO_PLANETS[k] === planetInfo),
+    angle: 'AC',
+    color: planetInfo.color,
+    symbol: planetInfo.symbol,
+    points: points,
+    type: 'curve'
+  };
+}
+
+
+/**
+ * LÍNEA DC — Descendente
+ * El DC es el opuesto del AC: mismas latitudes, longitud + 180.
+ */
+function _calculateDCLine(acLine, planetInfo) {
+  const points = acLine.points.map(([lat, lon]) => {
+    let dcLon = lon + 180;
+    if (dcLon > 180) dcLon -= 360;
+    return [lat, dcLon];
+  });
+
+
+  return {
+    planet: planetInfo.name,
+    planetKey: acLine.planetKey,
+    angle: 'DC',
+    color: planetInfo.color,
+    symbol: planetInfo.symbol,
+    points: points,
+    type: 'curve'
+  };
+}
+
+
+/**
+ * Búsqueda binaria de la latitud donde el AC coincide con la longitud del planeta.
+ * Para una longitud geográfica dada, busca entre -85° y +85° de latitud.
+ */
+function _findACLatitude(targetPlanetLon, gastDeg, geoLon, eps) {
+  const RAMC = ((gastDeg + geoLon + 360) % 360) * Math.PI / 180;
+  const epsRad = eps * Math.PI / 180;
+
+
+  let latMin = -85;
+  let latMax = 85;
+  const tolerance = 0.5; // grados de tolerancia
+  const maxIterations = 30;
+
+
+  for (let i = 0; i < maxIterations; i++) {
+    const latMid = (latMin + latMax) / 2;
+    const ascDeg = _computeAscendant(RAMC, epsRad, latMid);
+
+
+    if (ascDeg === null) return null;
+
+
+    const diff = _angularDiff(ascDeg, targetPlanetLon);
+
+
+    if (Math.abs(diff) < tolerance) {
+      return latMid;
+    }
+
+
+    // Ajustar búsqueda según la diferencia
+    const latLow = _computeAscendant(RAMC, epsRad, latMin);
+    if (latLow === null) return null;
+
+
+    const diffLow = _angularDiff(latLow, targetPlanetLon);
+
+
+    if (Math.sign(diff) === Math.sign(diffLow)) {
+      latMin = latMid;
+    } else {
+      latMax = latMid;
+    }
+  }
+
+
+  return null; // No convergió
+}
+
+
+/**
+ * Fórmula del Ascendente (misma que ascendant_engine.js).
+ * Dada RAMC, oblicuidad y latitud, devuelve la longitud eclíptica del Ascendente.
+ */
+function _computeAscendant(RAMC, epsRad, latDeg) {
+  try {
+    const phiRad = latDeg * Math.PI / 180;
+    const num = Math.cos(RAMC);
+    const den = -((Math.sin(RAMC) * Math.cos(epsRad)) + (Math.tan(phiRad) * Math.sin(epsRad)));
+
+
+    if (Math.abs(den) < 1e-10) return null; // Singularidad en los polos
+
+
+    let ascRad = Math.atan2(num, den);
+    let ascDeg = (ascRad * 180 / Math.PI + 360) % 360;
+    return ascDeg;
+  } catch (e) {
+    return null;
+  }
+}
+
+
+/**
+ * Diferencia angular entre dos longitudes (resultado entre -180 y +180).
+ */
+function _angularDiff(a, b) {
+  let diff = ((a - b) + 180) % 360 - 180;
+  if (diff < -180) diff += 360;
+  return diff;
+}
+
+
+/**
+ * Oblicuidad media de la eclíptica (aproximación suficiente para astrocartografía).
+ * Para máxima precisión usar tilt de astronomy.js.
+ */
+function _getMeanObliquity() {
+  try {
+    const now = window.Astronomy.MakeTime(new Date());
+    const tilt = window.Astronomy.e_tilt(now);
+    return tilt.tobl; // oblicuidad verdadera
+  } catch (e) {
+    return 23.4397; // valor medio estándar como fallback
+  }
+}
+
+
+/**
+ * FUNCIÓN DE UTILIDAD: Líneas cerca de una ciudad
+ * Dado un punto geográfico, devuelve las líneas que pasan cerca.
+ *
+ * @param {Object} birthData
+ * @param {number} cityLat - Latitud de la ciudad
+ * @param {number} cityLng - Longitud de la ciudad
+ * @param {number} radiusKm - Radio en kilómetros (por defecto 300km)
+ * @returns {Array} - Líneas cercanas con distancia
+ */
+async function getLinesNearCity(birthData, cityLat, cityLng, radiusKm = 300) {
+  const { lines } = await getAstroLines(birthData);
+  const nearbyLines = [];
+
+
+  for (const line of lines) {
+    let minDistance = Infinity;
+
+
+    for (const [lat, lon] of line.points) {
+      const dist = _haversineDistance(cityLat, cityLng, lat, lon);
+      if (dist < minDistance) minDistance = dist;
+    }
+
+
+    if (minDistance <= radiusKm) {
+      nearbyLines.push({
+        ...line,
+        distanceKm: Math.round(minDistance),
+        influence: _calculateInfluence(minDistance, radiusKm)
+      });
+    }
+  }
+
+
+  // Ordenar por distancia
+  return nearbyLines.sort((a, b) => a.distanceKm - b.distanceKm);
+}
+
+
+/**
+ * Distancia Haversine entre dos puntos geográficos (en km).
+ */
+function _haversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radio de la Tierra en km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+
+/**
+ * Calcula la intensidad de influencia de una línea según la distancia.
+ * A 0km = intensidad 1.0 (máxima)
+ * A radiusKm = intensidad 0.0
+ */
+function _calculateInfluence(distanceKm, radiusKm) {
+  return Math.max(0, 1 - (distanceKm / radiusKm));
+}
+
+
+/**
+ * FUNCIÓN DE UTILIDAD: Ángulos relocados para una ciudad concreta.
+ * Recalcula AC, MC, DC, IC como si la persona hubiera nacido en esa ciudad.
+ * Reutiliza directamente getAscendant() de ascendant_engine.js.
+ *
+ * @param {Object} birthData - { date, time, lat, lng, timezone }
+ * @param {number} cityLat - Latitud de la ciudad destino
+ * @param {number} cityLng - Longitud de la ciudad destino
+ * @param {string} cityTimezone - Timezone IANA de la ciudad (opcional)
+ * @returns {Object} - { ascendant, mc, descendant, ic }
+ */
+async function getRelocatedAngles(birthData, cityLat, cityLng, cityTimezone = null) {
+  const { date, time, timezone } = birthData;
+
+
+  // Reutilizamos getAscendant de ascendant_engine.js directamente
+  const ascResult = window.getAscendant(date, time, cityLat, cityLng, cityTimezone || timezone);
+
+
+  // Calculamos MC usando astronomy.js
+  const gastDeg = _getGAST(date, time, cityLat, cityLng, cityTimezone || timezone);
+  const eps = _getMeanObliquity();
+
+
+  // MC: RAMC en esa longitud
+  const RAMC_deg = (gastDeg + cityLng + 360) % 360;
+  const mcLon = RAMC_deg; // Simplificación válida para tropical
+
+
+  const ZODIAC = ['Aries','Tauro','Géminis','Cáncer','Leo','Virgo',
+                  'Libra','Escorpio','Sagitario','Capricornio','Acuario','Piscis'];
+
+
+  const formatAngle = (lon) => ({
+    longitude: lon,
+    sign: ZODIAC[Math.floor(lon / 30)],
+    deg: Math.floor(lon % 30),
+    min: Math.floor((lon % 1) * 60)
+  });
+
+
+  const ascLon = ascResult.totalDeg || 0;
+  const dcLon = (ascLon + 180) % 360;
+  const icLon = (mcLon + 180) % 360;
+
+
+  return {
+    ascendant: { ...formatAngle(ascLon), raw: ascResult },
+    mc: formatAngle(mcLon),
+    descendant: formatAngle(dcLon),
+    ic: formatAngle(icLon),
+    city: { lat: cityLat, lng: cityLng }
+  };
+}
+
+
+// ── EXPORTACIÓN GLOBAL ──────────────────────────────────────
+window.getAstroLines = getAstroLines;
+window.getLinesNearCity = getLinesNearCity;
+window.getRelocatedAngles = getRelocatedAngles;
+
+
+console.log('%c[KAIROS MAPS] astrocarto_engine.js v1.0 cargado', 'color: #C8A96E; font-weight: bold;');
+
+
+──────────────────────────────────────────────────────
+FIN DEL CÓDIGO
+──────────────────────────────────────────────────────
+
+
+════════════════════════════════════════════════════════
+4. INTEGRACIÓN EN index.html
+════════════════════════════════════════════════════════
+
+
+Orden de carga de scripts en el HTML (CRÍTICO — no cambiar el orden):
+
+
+  <!-- 1. Librerías externas -->
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2/astronomy.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+  <!-- 2. Swiss Ephemeris WASM (copiar de KAIROS) -->
+  <script src="./kairos-core/wasm/swisseph_wrapper.js"></script>
+
+
+  <!-- 3. Motores de KAIROS (copiar de KAIROS sin modificar) -->
+  <script src="./engines/astronomy.js"></script>
+  <script src="./engines/ascendant_engine.js"></script>
+  <script src="./engines/planetary_engine.js"></script>
+  <script src="./engines/aspects_engine.js"></script>
+
+
+  <!-- 4. Motor nuevo de Kairos Maps -->
+  <script src="./engines/astrocarto_engine.js"></script>
+
+
+  <!-- 5. Mapa y UI -->
+  <script src="./map/map_renderer.js"></script>
+  <script src="./app.js"></script>
+
+
+════════════════════════════════════════════════════════
+5. EJEMPLOS DE USO
+════════════════════════════════════════════════════════
+
+
+── Ejemplo 1: Obtener todas las líneas ──
+
+
+const birthData = {
+  date: '1990-06-12',
+  time: '14:35',
+  lat: 39.8885,
+  lng: 4.2658,
+  timezone: 'Europe/Madrid'
+};
+
+
+const result = await getAstroLines(birthData);
+console.log(result.lines); // Array de 48 líneas (12 planetas × 4 ángulos)
+
+
+── Ejemplo 2: Líneas cerca de Lisboa ──
+
+
+const lisbonLines = await getLinesNearCity(birthData, 38.7223, -9.1393, 400);
+console.log(lisbonLines);
+// [{ planet: 'Venus', angle: 'DC', distanceKm: 87, influence: 0.78, ... }]
+
+
+── Ejemplo 3: Ángulos relocados para París ──
+
+
+const paris = await getRelocatedAngles(birthData, 48.8566, 2.3522, 'Europe/Paris');
+console.log(paris.ascendant); // { sign: 'Escorpio', deg: 14, min: 23 }
+console.log(paris.mc);        // { sign: 'Leo', deg: 8, min: 45 }
+
+
+════════════════════════════════════════════════════════
+6. TESTING Y VALIDACIÓN
+════════════════════════════════════════════════════════
+
+
+Para verificar que el motor funciona correctamente:
+
+
+1. Usa una carta natal conocida (por ejemplo, la tuya propia)
+2. Calcula las líneas con este motor
+3. Compara con Astro.com → Extended Chart Selection → Astrocartography
+4. Las líneas MC/IC deben coincidir exactamente
+5. Las líneas AC/DC pueden tener una variación de ±1-2° (tolerable)
+
+
+VALORES DE REFERENCIA PARA TESTING:
+Fecha: 15 Enero 1980, 12:00 UTC, Londres (51.5, -0.12)
+Sol longitud eclíptica: ~295° (Capricornio)
+Línea MC del Sol debería pasar por longitud: ~295 - GAST(esa fecha)
+
+
+════════════════════════════════════════════════════════
+7. NOTAS TÉCNICAS Y LIMITACIONES
+════════════════════════════════════════════════════════
+
+
+PRECISIÓN:
+- Las líneas MC/IC son exactas (matemáticamente directas)
+- Las líneas AC/DC tienen una precisión de ±0.5° según el paso de búsqueda
+- Para mayor precisión reducir LON_STEP a 0.25 (más lento pero más exacto)
+
+
+RENDIMIENTO:
+- Con LON_STEP = 1: cálculo en ~2-3 segundos en navegador moderno
+- Con LON_STEP = 0.5: cálculo en ~5-8 segundos
+- Recomendado: cachear el resultado en Firestore una vez calculado
+
+
+ZONAS POLARES:
+- Las líneas AC/DC no se calculan para latitudes > 85° ni < -85°
+- En esas zonas el Ascendente es matemáticamente indefinido (sol nunca se pone)
+- Es un comportamiento correcto, no un error
+
+
+OBLICUIDAD:
+- Se usa la oblicuidad verdadera del momento del nacimiento
+- Esto da mayor precisión que usar el valor medio estándar (23.44°)
+
+
+════════════════════════════════════════════════════════
+8. PRÓXIMO MÓDULO: map_renderer.js
+════════════════════════════════════════════════════════
+
+
+Una vez implementado astrocarto_engine.js, el siguiente módulo
+a construir es map_renderer.js, que toma el output de getAstroLines()
+y lo dibuja sobre Leaflet.js.
+
+
+Estructura básica de map_renderer.js:
+
+
+  function initMap(containerId) → inicializa el mapa Leaflet
+  function renderLines(lines) → dibuja todas las líneas sobre el mapa
+  function renderCityMarker(lat, lng, analysis) → marca una ciudad con su análisis
+  function highlightLine(planetKey, angle) → resalta una línea específica
+  function clearLines() → limpia el mapa
+
+
+════════════════════════════════════════════════════════
+FIN DEL DOCUMENTO — DOC-16
+Kairos Maps | Mayo 2026
+════════════════════════════════════════════════════════

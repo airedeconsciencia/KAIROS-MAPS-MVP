@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Kairos Maps — Astrocartografía</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="ui/styles.css" />
+</head>
+<body style="background-color: rgb(255, 255, 255)">
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="32" r="22" stroke="#F4F1EA" stroke-width="1.2" opacity="0.85"></circle>
+        <ellipse cx="32" cy="32" rx="22" ry="8" stroke="#F4F1EA" stroke-width="1" opacity="0.5"></ellipse>
+        <ellipse cx="32" cy="32" rx="8" ry="22" stroke="#F4F1EA" stroke-width="1" opacity="0.5"></ellipse>
+        <line x1="10" y1="32" x2="54" y2="32" stroke="#F4F1EA" stroke-width="1" opacity="0.5"></line>
+        <path d="M 8 46 Q 32 8 56 22" stroke="#d7c188" stroke-width="1.8" fill="none" stroke-linecap="round"></path>
+        <circle cx="56" cy="22" r="2.4" fill="#d7c188"></circle>
+        <circle cx="56" cy="22" r="5" fill="#d7c188" opacity="0.25"></circle>
+      </svg>
+      <div>
+        <div class="brand-name">KAIROS<span>·</span>MAPS</div>
+        <div class="brand-sub">Astrocartografía · v0.2</div>
+      </div>
+    </div>
+
+    <!-- Natal data form -->
+    <div class="section">
+      <h3 class="section-title">Datos Natales</h3>
+      <div class="field">
+        <label for="natal-date">Fecha de nacimiento</label>
+        <input type="date" id="natal-date" value="1990-06-15">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="natal-time">Hora local</label>
+          <input type="time" id="natal-time" value="14:32">
+        </div>
+        <div class="field">
+          <label for="natal-tz">Zona horaria</label>
+          <select id="natal-tz">
+            <optgroup label="Europa">
+              <option value="Europe/Madrid" selected="">Europe/Madrid</option>
+              <option value="Europe/London">Europe/London</option>
+              <option value="Europe/Paris">Europe/Paris</option>
+              <option value="Europe/Berlin">Europe/Berlin</option>
+              <option value="Europe/Rome">Europe/Rome</option>
+              <option value="Europe/Athens">Europe/Athens</option>
+              <option value="Europe/Stockholm">Europe/Stockholm</option>
+              <option value="Europe/Lisbon">Europe/Lisbon</option>
+            </optgroup>
+            <optgroup label="América">
+              <option value="America/New_York">America/New_York</option>
+              <option value="America/Chicago">America/Chicago</option>
+              <option value="America/Los_Angeles">America/Los_Angeles</option>
+              <option value="America/Toronto">America/Toronto</option>
+              <option value="America/Mexico_City">America/Mexico_City</option>
+              <option value="America/Bogota">America/Bogota</option>
+              <option value="America/Lima">America/Lima</option>
+              <option value="America/Santiago">America/Santiago</option>
+              <option value="America/Buenos_Aires">America/Argentina/Buenos_Aires</option>
+              <option value="America/Sao_Paulo">America/Sao_Paulo</option>
+            </optgroup>
+            <optgroup label="Asia / Oceanía">
+              <option value="Asia/Tokyo">Asia/Tokyo</option>
+              <option value="Asia/Shanghai">Asia/Shanghai</option>
+              <option value="Asia/Seoul">Asia/Seoul</option>
+              <option value="Asia/Bangkok">Asia/Bangkok</option>
+              <option value="Asia/Singapore">Asia/Singapore</option>
+              <option value="Asia/Kolkata">Asia/Kolkata</option>
+              <option value="Asia/Dubai">Asia/Dubai</option>
+              <option value="Australia/Sydney">Australia/Sydney</option>
+              <option value="Pacific/Auckland">Pacific/Auckland</option>
+            </optgroup>
+            <optgroup label="África">
+              <option value="Africa/Cairo">Africa/Cairo</option>
+              <option value="Africa/Johannesburg">Africa/Johannesburg</option>
+              <option value="Africa/Nairobi">Africa/Nairobi</option>
+            </optgroup>
+            <optgroup label="UTC">
+              <option value="UTC">UTC</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="natal-place">Lugar de nacimiento</label>
+        <input type="text" id="natal-place" value="Madrid, España" placeholder="Ciudad, país">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="natal-lat">Latitud (decimal)</label>
+          <input type="number" step="0.0001" id="natal-lat" value="40.4168">
+        </div>
+        <div class="field">
+          <label for="natal-lon">Longitud (decimal)</label>
+          <input type="number" step="0.0001" id="natal-lon" value="-3.7038">
+        </div>
+      </div>
+      <button class="calc-btn" id="calc-btn">Calcular mi mapa</button>
+    </div>
+
+    <!-- Legend -->
+    <div class="section">
+      <h3 class="section-title">Líneas Activas</h3>
+      <div class="angle-filter" id="angle-filter">
+        <div class="angle-pill on" data-angle="AC">AC</div>
+        <div class="angle-pill on" data-angle="MC">MC</div>
+        <div class="angle-pill on" data-angle="IC">IC</div>
+        <div class="angle-pill on" data-angle="DC">DC</div>
+      </div>
+      <div class="planet-list" id="planet-list"></div>
+      <div class="legend-empty" id="legend-empty">
+        Aún no hay líneas calculadas.<br>
+        Introduce tus datos natales y pulsa <em>Calcular mi mapa</em>.
+      </div>
+    </div>
+
+    <div class="section" style="border-bottom: none; flex: 1;">
+      <h3 class="section-title">Sobre Kairos</h3>
+      <p style="font-size: 12px; line-height: 1.7; color: var(--text-dim); margin: 0;">
+        La astrocartografía relocaliza tu carta natal sobre la geografía.
+        Cada línea marca un lugar donde un planeta amplifica su influencia
+        — sobre el horizonte (AC/DC), en el meridiano (MC), o en el nadir (IC).
+      </p>
+    </div>
+  </aside>
+
+  <!-- ============ MAP AREA ============ -->
+  <main class="map-area">
+    <div id="map"></div>
+
+    <!-- Search -->
+    <div class="map-overlay-top">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+        </svg>
+        <input type="text" id="search-input" placeholder="Buscar cualquier ciudad del mundo…" autocomplete="off">
+        <div class="search-spinner" id="search-spinner"></div>
+        <div class="search-results" id="search-results"></div>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="map-status">
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-text">Sin carta calculada</span>
+    </div>
+
+    <!-- Empty hint -->
+    <div class="empty-hint" id="empty-hint">
+      <span class="arrow">←</span>
+      Introduce tus datos<br>y calcula tu mapa
+    </div>
+
+    <!-- Compass -->
+    <svg class="compass" viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="30" stroke="#d7c188" stroke-width="0.6"></circle>
+      <circle cx="32" cy="32" r="24" stroke="#d7c188" stroke-width="0.4"></circle>
+      <line x1="32" y1="2" x2="32" y2="62" stroke="#d7c188" stroke-width="0.4"></line>
+      <line x1="2" y1="32" x2="62" y2="32" stroke="#d7c188" stroke-width="0.4"></line>
+      <path d="M 32 8 L 36 32 L 32 28 L 28 32 Z" fill="#d7c188"></path>
+      <path d="M 32 56 L 36 32 L 32 36 L 28 32 Z" fill="#d7c188" opacity="0.4"></path>
+      <text x="32" y="6" font-family="JetBrains Mono" font-size="5" fill="#d7c188" text-anchor="middle">N</text>
+    </svg>
+
+    <!-- Interpretation panel -->
+    <aside class="interp-panel" id="interp-panel">
+      <div class="interp-header">
+        <button class="interp-close" id="interp-close" aria-label="Cerrar">✕</button>
+        <div class="interp-eyebrow">Lectura del lugar</div>
+        <h2 class="interp-city" id="interp-city">—</h2>
+        <div class="interp-coords" id="interp-coords">—</div>
+      </div>
+      <div class="interp-tabs" id="interp-tabs">
+        <div class="interp-tab on" data-aspect="amor">♥ Amor</div>
+        <div class="interp-tab" data-aspect="trabajo">◆ Trabajo</div>
+        <div class="interp-tab" data-aspect="descanso">☾ Descanso</div>
+      </div>
+      <div class="interp-body" id="interp-body"></div>
+      <div class="interp-footer">
+        <span id="interp-footer-meta">Generado para tu carta</span>
+        <span class="kairos-mark">◆ KAIROS</span>
+      </div>
+    </aside>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+  </main>
+</div>
+
+<!-- ============ DEPENDENCIES ============ -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+<script src="content/interpretations.js"></script>
+<script src="engines/astro.js"></script>
+<script src="ui/app.js"></script>
+</body>
+</html>

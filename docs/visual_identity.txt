@@ -1,0 +1,615 @@
+﻿Diseño Visual e Identidad — Kairos Maps
+Introducción
+Este documento define la identidad visual completa de Kairos Maps.
+No es simplemente una guía estética.
+Es el sistema visual que determinará:
+* cómo se percibe emocionalmente la app,
+* qué tipo de confianza transmite,
+* cómo interpreta el usuario la experiencia,
+* y si Kairos Maps se siente:
+   * profunda,
+   * profesional,
+   * elegante,
+   * humana,
+   * inteligente…
+o simplemente:
+* esotérica,
+* genérica,
+* infantil,
+* o pseudomística.
+________________
+
+
+Objetivo del Diseño
+Kairos Maps NO debe parecer:
+* una app de tarot,
+* una app de horóscopos baratos,
+* ni una aplicación espiritual genérica.
+Debe sentirse como:
+una herramienta sofisticada de orientación humana y espacial.
+________________
+
+
+Sensación Emocional Deseada
+La experiencia visual debe transmitir:
+claridad
+profundidad
+calma
+inteligencia
+presencia
+elegancia
+humanidad
+espacio
+sofisticación
+silencio visual
+
+
+________________
+
+
+Lo que NO Debe Transmitir
+misticismo barato
+sobrecarga espiritual
+infantilismo
+estética “new age”
+fatalismo
+caos visual
+pseudo lujo exagerado
+“app de horóscopo adolescente”
+
+
+________________
+
+
+Filosofía Visual
+Kairos Maps debe sentirse como:
+un mapa emocional sofisticado del mundo.
+No como:
+* una tienda esotérica digital,
+* ni una aplicación de entretenimiento astrológico.
+________________
+
+
+Inspiración Conceptual
+La identidad debe inspirarse en:
+cartografía moderna
+diseño editorial premium
+interfaces minimalistas
+arquitectura contemporánea
+sistemas de navegación
+psicología ambiental
+observatorios astronómicos
+documentales de exploración
+
+
+________________
+
+
+Referencias Emocionales Correctas
+Kairos Maps debería sentirse más cerca de:
+* Apple Maps,
+* Notion,
+* Oura,
+* Arc Browser,
+* Headspace,
+* Calm,
+* Airbnb premium,
+* National Geographic moderno.
+Y menos cerca de:
+* apps de tarot,
+* apps zodiacales adolescentes,
+* apps espirituales saturadas,
+* diseños cósmicos cliché.
+________________
+
+
+Paleta de Color
+Principio Base
+La paleta debe transmitir:
+* profundidad,
+* calma,
+* espacio,
+* claridad mental,
+* sofisticación emocional.
+________________
+
+
+Colores Principales
+________________
+
+
+Fondo Principal
+Negro profundo suave
+#0F1115
+
+
+No negro puro absoluto.
+Debe sentirse:
+* orgánico,
+* elegante,
+* respirable.
+________________
+
+
+Fondo Secundario
+Azul noche profundo
+#151A22
+
+
+________________
+
+
+Superficies
+Gris grafito
+#232832
+
+
+________________
+
+
+Texto Principal
+Blanco cálido
+#F4F1EA
+
+
+Nunca blanco puro.
+________________
+
+
+Texto Secundario
+Gris suave
+#AAB2BF
+
+
+________________
+
+
+Colores de Acento
+Usar MUY poco.
+________________
+
+
+Venus
+Oro suave rosado
+#D6B89C
+
+
+________________
+
+
+Luna
+Plateado cálido
+#C8D1D9
+
+
+________________
+
+
+Marte
+Rojo mineral profundo
+#A65B5B
+
+
+________________
+
+
+Júpiter
+Ocre elegante
+#B89C5A
+
+
+________________
+
+
+Saturno
+Gris piedra
+#7C848C
+
+
+________________
+
+
+Neptuno
+Azul petróleo
+#4B6675
+
+
+________________
+
+
+Importante
+Los colores planetarios NO deben:
+* saturar la interfaz,
+* dominar el mapa,
+* ni convertir la experiencia en “fantasía”.
+Son:
+acentos simbólicos discretos.
+________________
+
+
+Lo que Debéis Evitar
+violeta intenso
+magenta brillante
+arcoíris zodiacales
+azules neón
+fondos galácticos cliché
+degradados excesivos
+
+
+________________
+
+
+Tipografía
+Filosofía Tipográfica
+La tipografía debe sentirse:
+* contemporánea,
+* limpia,
+* humana,
+* madura,
+* elegante.
+________________
+
+
+Tipografía Principal
+Recomendadas
+Inter
+SF Pro
+Neue Haas Grotesk
+Manrope
+General Sans
+
+
+________________
+
+
+Sensación Deseada
+Debe parecer:
+* tecnología premium,
+* precisión,
+* claridad.
+No:
+* espiritualidad teatral,
+* manuscritos,
+* tarot,
+* fantasía.
+________________
+
+
+Prohibido
+tipografías manuscritas
+cursivas esotéricas
+fuentes zodiacales
+decoraciones místicas
+
+
+________________
+
+
+Jerarquía Visual
+________________
+
+
+Títulos
+Grandes.
+Respirables.
+Minimalistas.
+________________
+
+
+Texto interpretativo
+* limpio,
+* muy legible,
+* con espacio entre líneas,
+* lectura lenta y tranquila.
+________________
+
+
+Importante
+Kairos Maps será:
+mucho texto emocional.
+La legibilidad es crítica.
+________________
+
+
+Sistema de Iconografía
+Filosofía
+Los iconos deben sentirse:
+* modernos,
+* simbólicos,
+* geométricos,
+* minimalistas.
+No ilustrativos.
+________________
+
+
+Inspiración
+señalética moderna
+cartografía
+símbolos astronómicos refinados
+interfaces científicas
+
+
+________________
+
+
+Planetas
+NO usar símbolos astrológicos clásicos tal cual.
+________________
+
+
+Incorrecto
+♄ ♃ ☿ ♀ ♂
+________________
+
+
+Correcto
+Versiones:
+* rediseñadas,
+* geométricas,
+* minimalistas,
+* coherentes visualmente.
+________________
+
+
+Sistema Visual Recomendado
+Cada planeta debe tener:
+símbolo refinado
+color sutil
+movimiento visual propio
+peso emocional
+
+
+________________
+
+
+Ejemplo
+Venus
+* líneas suaves,
+* curvas equilibradas,
+* sensación armónica.
+________________
+
+
+Marte
+* formas más tensas,
+* dirección,
+* fuerza,
+* impulso.
+________________
+
+
+Sistema de Ángulos
+ASC / MC / DC / IC
+No deben verse técnicos.
+________________
+
+
+Ejemplo
+ASC
+Iconografía:
+* amanecer,
+* aparición,
+* horizonte.
+________________
+
+
+MC
+* verticalidad,
+* cima,
+* dirección,
+* proyección.
+________________
+
+
+Diseño del Mapa
+Filosofía
+El mapa es:
+el corazón emocional de la app.
+Debe sentirse:
+* vivo,
+* elegante,
+* fluido,
+* exploratorio.
+________________
+
+
+El mapa NO debe parecer
+Google Maps con líneas encima
+software técnico astrológico
+mapa militar
+herramienta científica fría
+
+
+________________
+
+
+Estilo Correcto
+Debe sentirse:
+contemplativo y navegable.
+________________
+
+
+Características Visuales
+________________
+
+
+Fondo
+Oscuro.
+Minimalista.
+Sin exceso de detalles políticos.
+________________
+
+
+Océanos
+Profundos.
+Limpios.
+Con textura sutil.
+________________
+
+
+Países
+Muy suaves visualmente.
+La información importante son:
+las líneas y la experiencia humana.
+________________
+
+
+Líneas Planetarias
+________________
+
+
+Principio
+Las líneas deben:
+* respirar,
+* sentirse orgánicas,
+* no saturar.
+________________
+
+
+Incorrecto
+líneas fluorescentes
+colores chillones
+mapa saturado
+50 líneas visibles simultáneamente
+
+
+________________
+
+
+Correcto
+líneas suaves
+transparencias
+activación progresiva
+capas seleccionables
+
+
+________________
+
+
+Sistema de Zoom
+El mapa debe:
+* transformarse,
+* revelar profundidad gradualmente.
+________________
+
+
+Zoom lejano
+Solo:
+* líneas principales,
+* energías generales.
+________________
+
+
+Zoom cercano
+Aparecen:
+* detalles,
+* intensidades,
+* activaciones,
+* recomendaciones.
+________________
+
+
+Experiencia Sensorial
+Kairos Maps debe sentirse:
+lenta y consciente.
+No hiperactiva.
+________________
+
+
+Animaciones
+Muy importantes.
+________________
+
+
+Correctas
+transiciones suaves
+movimientos lentos
+fade elegante
+microanimaciones respirables
+
+
+________________
+
+
+Incorrectas
+rebotes agresivos
+efectos cósmicos
+destellos
+partículas mágicas
+
+
+________________
+
+
+Diseño de Interpretaciones
+Las interpretaciones deben sentirse:
+* editoriales,
+* íntimas,
+* profundas,
+* respirables.
+________________
+
+
+Correcto
+mucho espacio en blanco
+párrafos cortos
+tipografía elegante
+ritmo lento
+
+
+________________
+
+
+Incorrecto
+bloques gigantes de texto
+colores excesivos
+símbolos decorativos
+
+
+________________
+
+
+Fotografía e Ilustración
+Correcto
+paisajes reales
+atmósferas humanas
+arquitectura
+naturaleza silenciosa
+lugares auténticos
+
+
+________________
+
+
+Incorrecto
+galaxias cliché
+mujeres flotando
+mandalas
+ojos místicos
+universo genérico
+
+
+________________
+
+
+Identidad Sonora (Futuro)
+Si existe sonido:
+* ambiental,
+* profundo,
+* minimalista.
+No:
+* espiritualidad cliché,
+* cuencos exagerados,
+* sonidos teatrales.
+________________
+
+
+Filosofía Final
+Kairos Maps NO vende astrología.
+Vende orientación espacial y emocional sofisticada.
+Y su diseño debe transmitir exactamente eso:
+* claridad,
+* inteligencia,
+* profundidad,
+* humanidad,
+* y elegancia silenciosa.
