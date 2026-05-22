@@ -270,23 +270,81 @@
         best = run.slice();
       }
     }
-    return best;
+    if (best) return best;
+
+    const visibleIdx = [];
+    for (let i = 0; i < seg.length; i++) {
+      if (inViewport(seg[i][0], seg[i][1], bounds, pad)) visibleIdx.push(i);
+    }
+    if (!visibleIdx.length) return null;
+
+    const first = visibleIdx[0];
+    const last = visibleIdx[visibleIdx.length - 1];
+    if (last > first) return seg.slice(first, last + 1);
+
+    const i = first;
+    const from = Math.max(0, i - 1);
+    const to = Math.min(seg.length - 1, i + 1);
+    return seg.slice(from, to + 1);
   }
 
-  function longestSegmentInViewport(line, bounds) {
+  function overlayAnchorSegment(seg, bounds, padDeg) {
+    return visibleSubsegment(seg, bounds, padDeg);
+  }
+
+  function labelAnchorOnSegment(seg, bounds, padDeg) {
+    const anchor = overlayAnchorSegment(seg, bounds, padDeg);
+    if (!anchor || anchor.length < 2) return null;
+
+    const pad = padDeg == null ? 2 : padDeg;
+    const visiblePts = anchor.filter((p) => inViewport(p[0], p[1], bounds, pad));
+    if (visiblePts.length) {
+      const pick = visiblePts[Math.floor(visiblePts.length / 2)];
+      return { pt: pick, seg: anchor, t: fractionAtPoint(anchor, pick) };
+    }
+
+    const t = 0.22;
+    return { pt: pointAtFraction(anchor, t), seg: anchor, t };
+  }
+
+  function fractionAtPoint(points, target) {
+    let idx = -1;
+    for (let i = 0; i < points.length; i++) {
+      if (Math.abs(points[i][0] - target[0]) < 1e-6 &&
+          Math.abs(points[i][1] - target[1]) < 1e-6) {
+        idx = i;
+        break;
+      }
+    }
+    if (idx <= 0) return 0.22;
+    const total = segmentLengthKm(points);
+    if (total === 0) return 0.5;
+    let acc = 0;
+    for (let i = 1; i <= idx; i++) {
+      acc += haversineKm(
+        points[i - 1][0], points[i - 1][1],
+        points[i][0], points[i][1]
+      );
+    }
+    return Math.min(0.95, Math.max(0.05, acc / total));
+  }
+
+  function longestSegmentInViewport(line, bounds, padDeg) {
+    const pad = padDeg == null ? 2 : padDeg;
     let best = null;
-    let bestLen = 0;
+    let bestScore = -1;
     line.segments.forEach((seg) => {
       if (seg.length < 2) return;
-      const hasView = seg.some((p) => inViewport(p[0], p[1], bounds));
-      if (!hasView) return;
-      const len = segmentLengthKm(seg);
-      if (len > bestLen) {
-        bestLen = len;
+      const visCount = seg.filter((p) => inViewport(p[0], p[1], bounds, pad)).length;
+      if (!visCount) return;
+      const score = visCount * 10000 + segmentLengthKm(seg);
+      if (score > bestScore) {
+        bestScore = score;
         best = seg;
       }
     });
     if (best) return best;
+    let bestLen = 0;
     line.segments.forEach((seg) => {
       if (seg.length < 2) return;
       const len = segmentLengthKm(seg);
@@ -373,18 +431,20 @@
     const labelW = 24;
     const labelH = 14;
     const bounds = map.getBounds();
+    const overlayPad = 3;
 
     visibleLinesForGlyphs().forEach((line) => {
-      const seg = longestSegmentInViewport(line, bounds);
+      const seg = longestSegmentInViewport(line, bounds, overlayPad);
       if (!seg) return;
 
-      const visSeg = visibleSubsegment(seg, bounds, 2);
+      const visSeg = overlayAnchorSegment(seg, bounds, overlayPad);
       if (!visSeg) return;
 
-      const angleT = 0.22;
-      const anglePt = pointAtFraction(visSeg, angleT);
-      if (inViewport(anglePt[0], anglePt[1], bounds, 2)) {
-        const labelPt = offsetPointPerpendicular(anglePt[0], anglePt[1], visSeg, angleT, angleOffsetPx, -1);
+      const labelAnchor = labelAnchorOnSegment(seg, bounds, overlayPad);
+      if (labelAnchor) {
+        const labelPt = offsetPointPerpendicular(
+          labelAnchor.pt[0], labelAnchor.pt[1], labelAnchor.seg, labelAnchor.t, angleOffsetPx, -1
+        );
         const labelIcon = L.divIcon({
           className: 'line-angle-icon',
           html: `<div class="line-angle-label">${line.angle}</div>`,
@@ -396,7 +456,7 @@
 
       fractions.forEach((t) => {
         const pt = pointAtFraction(visSeg, t);
-        if (!inViewport(pt[0], pt[1], bounds, 2)) return;
+        if (!inViewport(pt[0], pt[1], bounds, overlayPad)) return;
 
         const markerPt = offsetPointPerpendicular(pt[0], pt[1], visSeg, t, offsetPx, 1);
         const glyphInner = Math.round(medallionSize * 0.5);
