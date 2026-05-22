@@ -53,7 +53,8 @@
     enabledAngles:  new Set(ANGLES),
     activeAspect: activeAspect,
     currentCity: null,
-    searchedMarker: null
+    searchedMarker: null,
+    showMapGlyphs: false
   };
 
   // -------- Map setup --------
@@ -74,6 +75,7 @@
 
   // -------- Layer groups for lines --------
   const linesLayer = L.layerGroup().addTo(map);
+  const glyphsLayer = L.layerGroup().addTo(map);
   const lineGroups = {}; // id -> { group, line }
 
   // -------- City markers --------
@@ -102,6 +104,7 @@
   const legendEmpty   = $('legend-empty');
   const planetListEl  = $('planet-list');
   const angleFilterEl = $('angle-filter');
+  const mapGlyphsToggle = $('map-glyphs-toggle');
   const panel         = $('interp-panel');
   const interpCity    = $('interp-city');
   const interpCoords  = $('interp-coords');
@@ -164,8 +167,238 @@
   // -------- Compute & draw lines --------
   function clearLines() {
     linesLayer.clearLayers();
+    glyphsLayer.clearLayers();
     for (const k in lineGroups) delete lineGroups[k];
     state.lines = [];
+  }
+
+  const PRIORITY_PLANETS = ['sol', 'luna', 'venus', 'marte', 'jupiter', 'saturno'];
+  const GLYPH_LOW_ZOOM_CAP = 24;
+
+  function haversineKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function segmentLengthKm(points) {
+    let total = 0;
+    for (let i = 1; i < points.length; i++) {
+      total += haversineKm(points[i - 1][0], points[i - 1][1], points[i][0], points[i][1]);
+    }
+    return total;
+  }
+
+  function pointAtFraction(points, t) {
+    const total = segmentLengthKm(points);
+    if (total === 0) return points[0];
+    const target = total * t;
+    let acc = 0;
+    for (let i = 1; i < points.length; i++) {
+      const seg = haversineKm(points[i - 1][0], points[i - 1][1], points[i][0], points[i][1]);
+      if (acc + seg >= target) {
+        const ratio = (target - acc) / seg;
+        return [
+          points[i - 1][0] + (points[i][0] - points[i - 1][0]) * ratio,
+          points[i - 1][1] + (points[i][1] - points[i - 1][1]) * ratio
+        ];
+      }
+      acc += seg;
+    }
+    return points[points.length - 1];
+  }
+
+  function inViewport(lat, lon, bounds, padDeg) {
+    const pad = padDeg == null ? 3 : padDeg;
+    return lat >= bounds.getSouth() - pad && lat <= bounds.getNorth() + pad &&
+      lon >= bounds.getWest() - pad && lon <= bounds.getEast() + pad;
+  }
+
+  function visibleSubsegment(seg, bounds, padDeg) {
+    const pad = padDeg == null ? 2 : padDeg;
+    let best = null;
+    let bestLen = 0;
+    let run = [];
+
+    for (let i = 0; i < seg.length; i++) {
+      const p = seg[i];
+      if (inViewport(p[0], p[1], bounds, pad)) {
+        run.push(p);
+      } else {
+        if (run.length >= 2) {
+          const len = segmentLengthKm(run);
+          if (len > bestLen) {
+            bestLen = len;
+            best = run.slice();
+          }
+        }
+        run = [];
+      }
+    }
+    if (run.length >= 2) {
+      const len = segmentLengthKm(run);
+      if (len > bestLen) {
+        best = run.slice();
+      }
+    }
+    return best;
+  }
+
+  function longestSegmentInViewport(line, bounds) {
+    let best = null;
+    let bestLen = 0;
+    line.segments.forEach((seg) => {
+      if (seg.length < 2) return;
+      const hasView = seg.some((p) => inViewport(p[0], p[1], bounds));
+      if (!hasView) return;
+      const len = segmentLengthKm(seg);
+      if (len > bestLen) {
+        bestLen = len;
+        best = seg;
+      }
+    });
+    if (best) return best;
+    line.segments.forEach((seg) => {
+      if (seg.length < 2) return;
+      const len = segmentLengthKm(seg);
+      if (len > bestLen) {
+        bestLen = len;
+        best = seg;
+      }
+    });
+    return best;
+  }
+
+  function glyphsPerLine(zoom) {
+    if (zoom >= 6) return 3;
+    if (zoom >= 4) return 2;
+    return 1;
+  }
+
+  function glyphFractions(count) {
+    if (count === 3) return [0.25, 0.5, 0.75];
+    if (count === 2) return [0.35, 0.65];
+    return [0.5];
+  }
+
+  function glyphSizeForZoom(zoom) {
+    return Math.round(Math.max(16, Math.min(20, 10 + zoom * 1.25)));
+  }
+
+  function tangentAtFraction(points, t) {
+    const total = segmentLengthKm(points);
+    if (total === 0) return [0, 1];
+    const target = total * t;
+    let acc = 0;
+    for (let i = 1; i < points.length; i++) {
+      const segLen = haversineKm(points[i - 1][0], points[i - 1][1], points[i][0], points[i][1]);
+      if (acc + segLen >= target) {
+        const a = points[Math.max(0, i - 1)];
+        const b = points[Math.min(points.length - 1, i + 1)];
+        return [b[0] - a[0], b[1] - a[1]];
+      }
+      acc += segLen;
+    }
+    const a = points[0];
+    const b = points[points.length - 1];
+    return [b[0] - a[0], b[1] - a[1]];
+  }
+
+  function offsetPointPerpendicular(lat, lon, seg, t, px, side) {
+    const tan = tangentAtFraction(seg, t);
+    const mult = side == null ? 1 : side;
+    const p0 = map.latLngToContainerPoint([lat, lon]);
+    const p1 = map.latLngToContainerPoint([lat + tan[0] * 0.01, lon + tan[1] * 0.01]);
+    let sx = p1.x - p0.x;
+    let sy = p1.y - p0.y;
+    const len = Math.hypot(sx, sy) || 1;
+    sx /= len;
+    sy /= len;
+    const off = L.point(p0.x - sy * px * mult, p0.y + sx * px * mult);
+    const ll = map.containerPointToLatLng(off);
+    return [ll.lat, ll.lng];
+  }
+
+  function visibleLinesForGlyphs() {
+    let lines = state.lines.filter((l) =>
+      state.enabledPlanets.has(l.planet) && state.enabledAngles.has(l.angle)
+    );
+    const z = map.getZoom();
+    if (z <= 3 && lines.length > GLYPH_LOW_ZOOM_CAP) {
+      lines = lines.filter((l) => PRIORITY_PLANETS.includes(l.planet));
+    }
+    return lines;
+  }
+
+  function refreshMapGlyphs() {
+    glyphsLayer.clearLayers();
+    if (!state.showMapGlyphs || !state.lines.length) return;
+
+    const z = map.getZoom();
+    const count = glyphsPerLine(z);
+    const fractions = glyphFractions(count);
+    const size = glyphSizeForZoom(z);
+    const medallionSize = Math.max(30, size + 14);
+    const offsetPx = 8;
+    const angleOffsetPx = 10;
+    const labelW = 24;
+    const labelH = 14;
+    const bounds = map.getBounds();
+
+    visibleLinesForGlyphs().forEach((line) => {
+      const seg = longestSegmentInViewport(line, bounds);
+      if (!seg) return;
+
+      const visSeg = visibleSubsegment(seg, bounds, 2);
+      if (!visSeg) return;
+
+      const angleT = 0.22;
+      const anglePt = pointAtFraction(visSeg, angleT);
+      if (inViewport(anglePt[0], anglePt[1], bounds, 2)) {
+        const labelPt = offsetPointPerpendicular(anglePt[0], anglePt[1], visSeg, angleT, angleOffsetPx, -1);
+        const labelIcon = L.divIcon({
+          className: 'line-angle-icon',
+          html: `<div class="line-angle-label">${line.angle}</div>`,
+          iconSize: [labelW, labelH],
+          iconAnchor: [labelW / 2, labelH / 2]
+        });
+        L.marker(labelPt, { icon: labelIcon, interactive: false, keyboard: false }).addTo(glyphsLayer);
+      }
+
+      fractions.forEach((t) => {
+        const pt = pointAtFraction(visSeg, t);
+        if (!inViewport(pt[0], pt[1], bounds, 2)) return;
+
+        const markerPt = offsetPointPerpendicular(pt[0], pt[1], visSeg, t, offsetPx, 1);
+        const glyphInner = Math.round(medallionSize * 0.5);
+        const medallionStyle = [
+          'width:100%',
+          'height:100%',
+          'box-sizing:border-box',
+          'border-radius:50%',
+          'display:flex',
+          'align-items:center',
+          'justify-content:center',
+          'background:rgba(244,241,234,0.76)',
+          'border:2px solid #d7c188',
+          'box-shadow:0 2px 8px rgba(0,0,0,0.45),0 0 0 1px rgba(215,193,136,0.4)'
+        ].join(';');
+        const html = `<div class="line-glyph-marker" style="width:100%;height:100%;"><div class="line-glyph-medallion" style="${medallionStyle}"><span class="map-line-glyph-wrap" style="width:${glyphInner}px;height:${glyphInner}px;display:flex;align-items:center;justify-content:center;">${
+          window.KairosPlanetGlyphs.html(line.planet, { color: line.color, className: 'map-line-glyph' })
+        }</span></div></div>`;
+        const icon = L.divIcon({
+          className: 'line-glyph-icon',
+          html,
+          iconSize: [medallionSize, medallionSize],
+          iconAnchor: [medallionSize / 2, medallionSize / 2]
+        });
+        L.marker(markerPt, { icon, interactive: false, keyboard: false }).addTo(glyphsLayer);
+      });
+    });
   }
 
   function drawLine(line) {
@@ -190,6 +423,7 @@
       }
     });
     updateStatus();
+    refreshMapGlyphs();
   }
 
   function updateStatus() {
@@ -271,6 +505,17 @@
 
   calcBtn.addEventListener('click', calculateMap);
 
+  if (mapGlyphsToggle) {
+    mapGlyphsToggle.addEventListener('change', () => {
+      state.showMapGlyphs = mapGlyphsToggle.checked;
+      refreshMapGlyphs();
+    });
+  }
+
+  map.on('zoomend moveend', () => {
+    if (state.showMapGlyphs) refreshMapGlyphs();
+  });
+
   // -------- Legend rendering --------
   function renderLegend() {
     planetListEl.innerHTML = '';
@@ -283,7 +528,10 @@
       el.className = 'planet-item' + (state.enabledPlanets.has(p.id) ? '' : ' off');
       el.innerHTML = `
         <span class="planet-swatch" style="background:${p.color}; color:${p.color}"></span>
-        <span class="planet-glyph" style="color:${p.color}">${p.glyph}</span>
+        ${window.KairosPlanetGlyphs.html(p.id, {
+          color: p.color,
+          className: 'planet-glyph' + (p.id === 'luna' ? ' planet-glyph--luna' : '')
+        })}
         <span class="planet-name">${p.name}</span>
         <span class="planet-count">${visibleForPlanet}/4</span>
       `;
@@ -386,7 +634,7 @@
       el.style.color = line.color;
       el.innerHTML = `
         <div class="influence-head">
-          <span class="influence-glyph">${line.glyph}</span>
+          ${window.KairosPlanetGlyphs.html(line.planet, { color: line.color, className: 'influence-glyph' })}
           <span class="influence-name" style="color: var(--text);">
             ${line.planetName} · ${angleName}
           </span>
@@ -539,6 +787,13 @@
     console.log('[KAIROS-DEBUG] Dependencias OK — motor listo');
     updateStatus();
   }
+
+  window.KairosPlanetGlyphs.whenReady(() => {
+    if (state.lines.length) renderLegend();
+    if (state.currentCity) renderInterpretation(state.currentCity);
+    if (state.showMapGlyphs) refreshMapGlyphs();
+  });
+
   checkDeps();
   } // startApp
 

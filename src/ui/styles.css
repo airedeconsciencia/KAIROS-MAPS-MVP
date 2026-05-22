@@ -149,6 +149,25 @@
     border-color: var(--kairos-gold);
   }
 
+  .map-glyphs-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+  }
+  .map-glyphs-toggle input {
+    accent-color: var(--kairos-gold);
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    cursor: pointer;
+  }
+  .map-glyphs-toggle span { line-height: 1.4; }
+
   /* ---------- Planet legend ---------- */
   .planet-list { display: flex; flex-direction: column; gap: 0; }
   .planet-item {
@@ -167,11 +186,21 @@
     flex-shrink: 0;
     box-shadow: 0 0 8px currentColor;
   }
+  .kairos-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .kairos-glyph svg,
+  .kairos-glyph-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
   .planet-glyph {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 17px;
-    width: 18px; text-align: center;
-    color: var(--text);
+    width: 18px;
+    height: 18px;
   }
   .planet-name { flex: 1; font-size: 12.5px; }
   .planet-count {
@@ -360,6 +389,76 @@
   }
   .city-marker:hover { transform: scale(1.5); }
 
+  .leaflet-div-icon.line-glyph-icon {
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .line-glyph-marker {
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  #map .line-glyph-medallion {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(244, 241, 234, 0.76);
+    border: 2px solid #d7c188;
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.45),
+      0 0 0 1px rgba(215, 193, 136, 0.4);
+  }
+
+  #map .map-line-glyph-wrap {
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  #map .map-line-glyph {
+    width: 100%;
+    height: 100%;
+  }
+
+  #map .map-line-glyph svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .leaflet-div-icon.line-angle-icon {
+    background: transparent !important;
+    border: none !important;
+  }
+
+  #map .line-angle-label {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    background: rgba(28, 31, 44, 0.88);
+    border: 1px solid rgba(215, 193, 136, 0.55);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    color: var(--kairos-gold);
+    pointer-events: none;
+  }
+
+  .planet-glyph--luna svg {
+    filter: brightness(1.35) drop-shadow(0 0 2px rgba(124, 58, 237, 0.35));
+  }
+
   .city-marker.searched {
     background: var(--text);
     box-shadow: 0 0 0 1px var(--text), 0 0 14px rgba(244, 241, 234, 0.6);
@@ -481,8 +580,8 @@
     margin-bottom: 8px;
   }
   .influence-glyph {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px; line-height: 1;
+    width: 22px;
+    height: 22px;
   }
   .influence-name {
     font-size: 13px; color: var(--text);
