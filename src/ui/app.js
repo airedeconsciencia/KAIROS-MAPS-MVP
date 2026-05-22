@@ -1,9 +1,14 @@
 (function () {
   'use strict';
 
+  function startApp(profile) {
   const { DateTime } = luxon;
   const { PLANETS, ANGLES, computeAllLines, distanceKmToLine } = window.KairosAstro;
   const INTERPRETATIONS = window.INTERPRETATIONS;
+
+  const activeAspect = profile && profile.mainGoal
+    ? window.KairosProfile.mapGoalToAspect(profile.mainGoal)
+    : 'amor';
 
   // -------- Cities (predefined gold markers) --------
   const CITIES = [
@@ -46,7 +51,7 @@
     lines: [],
     enabledPlanets: new Set(PLANETS.map(p => p.id)),
     enabledAngles:  new Set(ANGLES),
-    activeAspect: 'amor',
+    activeAspect: activeAspect,
     currentCity: null,
     searchedMarker: null
   };
@@ -107,6 +112,45 @@
   const searchResults = $('search-results');
   const searchSpinner = $('search-spinner');
   const toastEl       = $('toast');
+  const userGreeting  = $('user-greeting');
+  const profileReset  = $('profile-reset');
+
+  function applyProfile(p) {
+    if (!p) return;
+    if (p.displayName && userGreeting) {
+      userGreeting.textContent = 'Hola, ' + p.displayName;
+    }
+    if (p.birthData) {
+      const b = p.birthData;
+      if (b.date) $('natal-date').value = b.date;
+      if (b.time) $('natal-time').value = b.time;
+      if (b.timezone) $('natal-tz').value = b.timezone;
+      if (b.placeFull) $('natal-place').value = b.placeFull;
+      else if (b.place) $('natal-place').value = b.place;
+      if (b.lat != null) $('natal-lat').value = b.lat;
+      if (b.lon != null) $('natal-lon').value = b.lon;
+    }
+    if (emptyHint && p.displayName) {
+      emptyHint.innerHTML = '<span class="arrow">←</span>' +
+        p.displayName + ', pulsa<br><em>Calcular mi mapa</em>';
+    }
+    const aspect = window.KairosProfile.mapGoalToAspect(p.mainGoal || 'amor');
+    state.activeAspect = aspect;
+    interpTabs.querySelectorAll('.interp-tab').forEach((tab) => {
+      tab.classList.toggle('on', tab.dataset.aspect === aspect);
+    });
+  }
+
+  applyProfile(profile);
+
+  if (profileReset) {
+    profileReset.addEventListener('click', () => {
+      if (confirm('¿Borrar tu perfil y volver al inicio?')) {
+        window.KairosProfile.clearProfile();
+        location.reload();
+      }
+    });
+  }
 
   // -------- Toast --------
   let toastTimer = null;
@@ -374,20 +418,6 @@
     ).slice(0, 5);
   }
 
-  async function nominatimSearch(q) {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&accept-language=es`;
-    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-    if (!res.ok) throw new Error('Nominatim error');
-    const data = await res.json();
-    return data.map(r => ({
-      name: (r.display_name || '').split(',')[0].trim() || r.display_name,
-      fullName: r.display_name,
-      country: ((r.display_name || '').split(',').pop() || '').trim(),
-      lat: parseFloat(r.lat),
-      lon: parseFloat(r.lon)
-    }));
-  }
-
   function renderSearchResults(localMatches, remoteMatches) {
     if (!localMatches.length && !remoteMatches.length) {
       searchResults.classList.remove('open');
@@ -466,7 +496,7 @@
     const mySeq = ++searchSeq;
     searchDebounce = setTimeout(async () => {
       try {
-        const remote = await nominatimSearch(q);
+        const remote = await window.KairosPlaces.nominatimSearch(q);
         if (mySeq !== searchSeq) return; // stale
         renderSearchResults(local, remote);
       } catch (e) {
@@ -510,4 +540,11 @@
     updateStatus();
   }
   checkDeps();
+  } // startApp
+
+  initOnboarding({
+    onComplete: function (profile) {
+      startApp(profile);
+    }
+  });
 })();

@@ -583,3 +583,124 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .toast.err { border-color: #B91C1C; }
   .toast.ok  { border-color: var(--kairos-gold); }
+
+  /* ---------- User greeting ---------- */
+  .user-greeting {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    color: var(--kairos-gold);
+    margin-top: 10px;
+    letter-spacing: 0.02em;
+  }
+  .user-greeting:empty { display: none; }
+
+  .profile-reset {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .profile-reset:hover { color: var(--kairos-gold); }
+
+  /* ---------- Onboarding ---------- */
+  .onboarding {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .onboarding[hidden] { display: none; }
+  .onboarding-inner {
+    width: 100%;
+    max-width: 440px;
+    text-align: center;
+  }
+  .onboarding-step { display: none; }
+  .onboarding-step.active { display: block; }
+  .onboarding-mark { margin-bottom: 28px; opacity: 0.9; }
+  .onboarding-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 38px);
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--text);
+    margin: 0 0 16px;
+  }
+  .onboarding-title-sm { font-size: clamp(24px, 4vw, 32px); }
+  .onboarding-sub {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    margin: 0 0 28px;
+  }
+  .onboarding-field input,
+  .onboarding-form .field input,
+  .onboarding-form .field select {
+    text-align: left;
+  }
+  .onboarding-form { text-align: left; margin-bottom: 8px; }
+  .ob-place-search { position: relative; }
+  .ob-place-search .search-results { z-index: 10; max-height: 220px; }
+  .onboarding-btn {
+    width: 100%;
+    max-width: 280px;
+    margin-top: 8px;
+    background: var(--kairos-gold);
+    color: var(--kairos-navy);
+    border: none;
+    padding: 13px 20px;
+    border-radius: 999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s;
+  }
+  .onboarding-btn:hover {
+    box-shadow: 0 0 24px rgba(215, 193, 136, 0.25);
+    transform: translateY(-1px);
+  }
+  .onboarding-error {
+    font-size: 12px;
+    color: #e57373;
+    margin: 0 0 12px;
+  }
+  .goal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .goal-option {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 10px;
+    color: var(--text-dim);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+  .goal-option:hover {
+    border-color: rgba(215, 193, 136, 0.35);
+    color: var(--text);
+  }
+  .goal-option.selected {
+    border-color: var(--kairos-gold);
+    color: var(--text);
+    background: rgba(215, 193, 136, 0.08);
+  }

@@ -11,7 +11,95 @@
 </head>
 <body style="background-color: rgb(255, 255, 255)">
 
-<div class="app">
+<div id="onboarding" class="onboarding">
+  <div class="onboarding-inner">
+
+    <div class="onboarding-step active" data-step="1">
+      <div class="onboarding-mark">
+        <svg viewBox="0 0 64 64" fill="none" width="56" height="56">
+          <circle cx="32" cy="32" r="22" stroke="#F4F1EA" stroke-width="1.2" opacity="0.85"/>
+          <path d="M 8 46 Q 32 8 56 22" stroke="#d7c188" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <circle cx="56" cy="22" r="2.4" fill="#d7c188"/>
+        </svg>
+      </div>
+      <h1 class="onboarding-title">Cada lugar despierta una parte diferente de ti.</h1>
+      <p class="onboarding-sub">Kairos Maps explora cómo distintas zonas del mundo pueden resonar con tu vida, tus vínculos y tu camino.</p>
+      <button type="button" class="onboarding-btn" data-action="next" data-next="2">Comenzar</button>
+    </div>
+
+    <div class="onboarding-step" data-step="2">
+      <h2 class="onboarding-title onboarding-title-sm">¿Cómo quieres que te llamemos?</h2>
+      <p class="onboarding-sub">Tu nombre aparecerá en tu mapa personal.</p>
+      <div class="onboarding-field">
+        <input type="text" id="ob-name" placeholder="Tu nombre" autocomplete="name">
+      </div>
+      <p class="onboarding-error" id="ob-name-error" hidden>Introduce un nombre para continuar.</p>
+      <button type="button" class="onboarding-btn" data-action="next" data-next="3">Continuar</button>
+    </div>
+
+    <div class="onboarding-step" data-step="3">
+      <h2 class="onboarding-title onboarding-title-sm">Tus datos de nacimiento</h2>
+      <p class="onboarding-sub">Necesarios para calcular tus líneas en el mapa.</p>
+      <div class="onboarding-form">
+        <div class="field">
+          <label for="ob-natal-date">Fecha de nacimiento</label>
+          <input type="date" id="ob-natal-date">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="ob-natal-time">Hora local</label>
+            <input type="time" id="ob-natal-time">
+          </div>
+          <div class="field">
+            <label for="ob-natal-tz">Zona horaria</label>
+            <select id="ob-natal-tz"></select>
+          </div>
+        </div>
+        <div class="field ob-place-search">
+          <label for="ob-natal-place">Lugar de nacimiento</label>
+          <input type="text" id="ob-natal-place" placeholder="Ciudad, país" autocomplete="off">
+          <div class="search-results" id="ob-place-results"></div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="ob-natal-lat">Latitud (decimal)</label>
+            <input type="number" step="0.0001" id="ob-natal-lat">
+          </div>
+          <div class="field">
+            <label for="ob-natal-lon">Longitud (decimal)</label>
+            <input type="number" step="0.0001" id="ob-natal-lon">
+          </div>
+        </div>
+      </div>
+      <p class="onboarding-error" id="ob-birth-error" hidden></p>
+      <button type="button" class="onboarding-btn" data-action="next" data-next="4">Continuar</button>
+    </div>
+
+    <div class="onboarding-step" data-step="4">
+      <h2 class="onboarding-title onboarding-title-sm">¿Qué te gustaría explorar ahora?</h2>
+      <p class="onboarding-sub">Elige un foco para orientar tu lectura del mapa.</p>
+      <div class="goal-grid">
+        <button type="button" class="goal-option" data-goal="amor">Amor</button>
+        <button type="button" class="goal-option" data-goal="trabajo">Trabajo</button>
+        <button type="button" class="goal-option" data-goal="descanso">Descanso</button>
+        <button type="button" class="goal-option" data-goal="profesion">Profesión</button>
+        <button type="button" class="goal-option" data-goal="cambio">Cambio vital</button>
+        <button type="button" class="goal-option" data-goal="viaje">Viaje</button>
+      </div>
+      <p class="onboarding-error" id="ob-goal-error" hidden>Elige un objetivo para continuar.</p>
+      <button type="button" class="onboarding-btn" data-action="next" data-next="5">Continuar</button>
+    </div>
+
+    <div class="onboarding-step" data-step="5">
+      <h2 class="onboarding-title onboarding-title-sm" id="ob-final-title">Vamos a construir tu mapa.</h2>
+      <p class="onboarding-sub">Tu geografía personal está a un paso.</p>
+      <button type="button" class="onboarding-btn" data-action="next" data-next="0">Entrar al mapa</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="app" hidden>
 
   <!-- ============ SIDEBAR ============ -->
   <aside class="sidebar">
@@ -28,6 +116,7 @@
       <div>
         <div class="brand-name">KAIROS<span>·</span>MAPS</div>
         <div class="brand-sub">Astrocartografía · v0.2</div>
+        <div class="user-greeting" id="user-greeting"></div>
       </div>
     </div>
 
@@ -36,18 +125,18 @@
       <h3 class="section-title">Datos Natales</h3>
       <div class="field">
         <label for="natal-date">Fecha de nacimiento</label>
-        <input type="date" id="natal-date" value="1990-06-15">
+        <input type="date" id="natal-date">
       </div>
       <div class="field-row">
         <div class="field">
           <label for="natal-time">Hora local</label>
-          <input type="time" id="natal-time" value="14:32">
+          <input type="time" id="natal-time">
         </div>
         <div class="field">
           <label for="natal-tz">Zona horaria</label>
           <select id="natal-tz">
             <optgroup label="Europa">
-              <option value="Europe/Madrid" selected="">Europe/Madrid</option>
+              <option value="Europe/Madrid">Europe/Madrid</option>
               <option value="Europe/London">Europe/London</option>
               <option value="Europe/Paris">Europe/Paris</option>
               <option value="Europe/Berlin">Europe/Berlin</option>
@@ -92,16 +181,16 @@
       </div>
       <div class="field">
         <label for="natal-place">Lugar de nacimiento</label>
-        <input type="text" id="natal-place" value="Madrid, España" placeholder="Ciudad, país">
+        <input type="text" id="natal-place" placeholder="Ciudad, país">
       </div>
       <div class="field-row">
         <div class="field">
           <label for="natal-lat">Latitud (decimal)</label>
-          <input type="number" step="0.0001" id="natal-lat" value="40.4168">
+          <input type="number" step="0.0001" id="natal-lat">
         </div>
         <div class="field">
           <label for="natal-lon">Longitud (decimal)</label>
-          <input type="number" step="0.0001" id="natal-lon" value="-3.7038">
+          <input type="number" step="0.0001" id="natal-lon">
         </div>
       </div>
       <button class="calc-btn" id="calc-btn">Calcular mi mapa</button>
@@ -125,11 +214,12 @@
 
     <div class="section" style="border-bottom: none; flex: 1;">
       <h3 class="section-title">Sobre Kairos</h3>
-      <p style="font-size: 12px; line-height: 1.7; color: var(--text-dim); margin: 0;">
+      <p style="font-size: 12px; line-height: 1.7; color: var(--text-dim); margin: 0 0 12px;">
         La astrocartografía relocaliza tu carta natal sobre la geografía.
         Cada línea marca un lugar donde un planeta amplifica su influencia
         — sobre el horizonte (AC/DC), en el meridiano (MC), o en el nadir (IC).
       </p>
+      <button type="button" class="profile-reset" id="profile-reset">Reiniciar perfil</button>
     </div>
   </aside>
 
@@ -206,6 +296,9 @@
 <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
 <script src="content/interpretations.js"></script>
 <script src="engines/astro.js"></script>
+<script src="ui/places.js"></script>
+<script src="ui/profile.js"></script>
+<script src="ui/onboarding.js"></script>
 <script src="ui/app.js"></script>
 </body>
 </html>
