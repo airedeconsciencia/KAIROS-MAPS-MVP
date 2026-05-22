@@ -174,6 +174,7 @@
 
   const PRIORITY_PLANETS = ['sol', 'luna', 'venus', 'marte', 'jupiter', 'saturno'];
   const GLYPH_LOW_ZOOM_CAP = 24;
+  const VISUAL_DENSIFY_MAX_STEP_KM = 90;
 
   function haversineKm(lat1, lon1, lat2, lon2) {
     const R = 6371;
@@ -191,6 +192,30 @@
       total += haversineKm(points[i - 1][0], points[i - 1][1], points[i][0], points[i][1]);
     }
     return total;
+  }
+
+  function densifySegment(seg, maxStepKm) {
+    if (!seg || seg.length < 2 || maxStepKm <= 0) return seg;
+    const out = [seg[0]];
+    for (let i = 1; i < seg.length; i++) {
+      const a = seg[i - 1];
+      const b = seg[i];
+      const dist = haversineKm(a[0], a[1], b[0], b[1]);
+      if (dist <= maxStepKm) {
+        out.push(b);
+        continue;
+      }
+      const steps = Math.ceil(dist / maxStepKm);
+      for (let s = 1; s < steps; s++) {
+        const t = s / steps;
+        out.push([
+          a[0] + (b[0] - a[0]) * t,
+          a[1] + (b[1] - a[1]) * t
+        ]);
+      }
+      out.push(b);
+    }
+    return out;
   }
 
   function pointAtFraction(points, t) {
@@ -403,13 +428,15 @@
 
   function drawLine(line) {
     const group = L.layerGroup();
+    const densify = line.angle === 'AC' || line.angle === 'DC';
     line.segments.forEach(seg => {
+      const pts = densify ? densifySegment(seg, VISUAL_DENSIFY_MAX_STEP_KM) : seg;
       // glow underlay
-      L.polyline(seg, { color: line.color, weight: 7, opacity: 0.13, interactive: false }).addTo(group);
+      L.polyline(pts, { color: line.color, weight: 7, opacity: 0.13, interactive: false }).addTo(group);
       // soft middle
-      L.polyline(seg, { color: line.color, weight: 3, opacity: 0.32, interactive: false }).addTo(group);
+      L.polyline(pts, { color: line.color, weight: 3, opacity: 0.32, interactive: false }).addTo(group);
       // crisp core
-      L.polyline(seg, { color: line.color, weight: 1.4, opacity: 0.92, lineCap: 'round' }).addTo(group);
+      L.polyline(pts, { color: line.color, weight: 1.4, opacity: 0.92, lineCap: 'round' }).addTo(group);
     });
     return group;
   }

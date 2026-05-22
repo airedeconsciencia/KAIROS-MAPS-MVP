@@ -90,22 +90,82 @@
   }
 
   /**
+   * Interpolate latitude/longitude where a segment crosses the antimeridian (±180°).
+   * Returns boundary points for closing the previous segment and opening the next one.
+   */
+  function antimeridianCrossing(a, b) {
+    const latA = a[0];
+    const lonA = a[1];
+    const latB = b[0];
+    const lonB = b[1];
+    let dLon = lonB - lonA;
+    if (dLon > 180)  dLon -= 360;
+    if (dLon < -180) dLon += 360;
+    const dLat = latB - latA;
+
+    let t = null;
+    let exitLon = 180;
+    let enterLon = -180;
+
+    if (Math.abs(dLon) > 1e-10) {
+      if (dLon > 0) {
+        t = (180 - lonA) / dLon;
+        exitLon = 180;
+        enterLon = -180;
+      } else {
+        t = (-180 - lonA) / dLon;
+        exitLon = -180;
+        enterLon = 180;
+      }
+    }
+
+    if (t == null || t <= 0 || t >= 1) {
+      const latCross = latA + (latB - latA) * 0.5;
+      if (lonA >= 0 || lonB >= 0) {
+        return { latCross, exitLon: 180, enterLon: -180 };
+      }
+      return { latCross, exitLon: -180, enterLon: 180 };
+    }
+
+    return {
+      latCross: latA + t * dLat,
+      exitLon,
+      enterLon
+    };
+  }
+
+  /**
    * Split a polyline into segments wherever the longitude jumps > 180° (antimeridian crossing).
+   * Inserts interpolated boundary points at ±180° so each segment closes on the map edge.
    */
   function splitAtAntimeridian(points) {
     if (points.length < 2) return [points];
     const segments = [];
     let cur = [points[0]];
+
     for (let i = 1; i < points.length; i++) {
       const prev = cur[cur.length - 1];
-      const dLon = points[i][1] - prev[1];
-      if (Math.abs(dLon) > 180) {
+      const next = points[i];
+
+      if (Math.abs(next[1] - prev[1]) > 180) {
+        const { latCross, exitLon, enterLon } = antimeridianCrossing(prev, next);
+        const exitPt = [latCross, exitLon];
+        const enterPt = [latCross, enterLon];
+
+        const prevOnExitEdge = Math.abs(Math.abs(prev[1]) - 180) < 1e-9 &&
+          Math.abs(prev[0] - latCross) < 1e-9;
+        if (!prevOnExitEdge) cur.push(exitPt);
+
         if (cur.length > 1) segments.push(cur);
-        cur = [points[i]];
+
+        const nextOnEnterEdge = Math.abs(Math.abs(next[1]) - 180) < 1e-9 &&
+          Math.abs(next[0] - latCross) < 1e-9;
+        cur = nextOnEnterEdge ? [next] : [enterPt, next];
       } else {
-        cur.push(points[i]);
+        cur.push(next);
       }
     }
+
     if (cur.length > 1) segments.push(cur);
     return segments;
   }
