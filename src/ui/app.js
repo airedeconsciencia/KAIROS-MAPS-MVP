@@ -93,11 +93,6 @@
     });
   }
 
-  function raiseCityMarkers() {
-    cityMarkers.forEach(m => m.bringToFront());
-    if (state.searchedMarker) state.searchedMarker.bringToFront();
-  }
-
   function cityNearMapPoint(latlng, maxPx) {
     const clickPt = map.latLngToContainerPoint(latlng);
     let best = null;
@@ -127,6 +122,15 @@
     m.on('click', () => openInterpretation(city));
     cityMarkers.push(m);
   });
+
+  function raiseCityMarkers() {
+    cityMarkers.forEach((marker) => {
+      if (marker && typeof marker.bringToFront === 'function') marker.bringToFront();
+    });
+    if (state.searchedMarker && typeof state.searchedMarker.bringToFront === 'function') {
+      state.searchedMarker.bringToFront();
+    }
+  }
 
   map.on('click', (e) => {
     if (!isMobileLayout()) return;
@@ -735,6 +739,13 @@
   }
 
   // -------- Calculate map --------
+  function maybeAutoCalculateDesktop() {
+    if (isMobileLayout()) return;
+    if (state.lines.length) return;
+    if (!profile || !profile.birthData) return;
+    calculateMap();
+  }
+
   async function calculateMap() {
     console.log('[KAIROS-DEBUG] calculateMap() llamado', {
       Astronomy: typeof Astronomy,
@@ -770,7 +781,7 @@
       emptyHint.classList.add('hidden');
       legendEmpty.style.display = 'none';
 
-      toast(`Carta calculada · ${lines.length} líneas trazadas`, 'ok');
+      toast(`Mapa listo · ${lines.length} líneas`, 'ok');
       if (isMobileLayout()) setMobileMode('map');
     } catch (e) {
       console.error(e);
@@ -1069,6 +1080,7 @@
     }
     console.log('[KAIROS-DEBUG] Dependencias OK — motor listo');
     updateStatus();
+    maybeAutoCalculateDesktop();
   }
 
   window.KairosPlanetGlyphs.whenReady(() => {
