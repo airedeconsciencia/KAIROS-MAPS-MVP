@@ -101,14 +101,7 @@
       direction: 'bottom', offset: [0, 4],
       permanent: false, opacity: 1
     });
-    m.on('click', () => {
-      if (isMobileLayout()) {
-        state.currentCity = city;
-        updateMobileLecturaBtn();
-        return;
-      }
-      openInterpretation(city);
-    });
+    m.on('click', () => openInterpretation(city));
     cityMarkers.push(m);
   });
 
@@ -980,14 +973,7 @@
     map.flyTo([city.lat, city.lon], 5, { duration: 1.2 });
     searchResults.classList.remove('open');
     searchInput.value = city.name;
-    setTimeout(() => {
-      if (isMobileLayout()) {
-        state.currentCity = city;
-        updateMobileLecturaBtn();
-        return;
-      }
-      openInterpretation(city);
-    }, 1100);
+    setTimeout(() => openInterpretation(city), 1100);
   }
 
   searchInput.addEventListener('input', () => {
