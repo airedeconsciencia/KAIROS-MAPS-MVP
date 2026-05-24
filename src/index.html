@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Kairos Maps — Astrocartografía</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="ui/styles.css" />
 </head>
-<body style="background-color: rgb(255, 255, 255)">
+<body>
 
 <div id="onboarding" class="onboarding">
   <div class="onboarding-inner">
@@ -231,10 +231,13 @@
   <header class="mobile-top-bar" id="mobile-top-bar">
     <div class="mobile-top-greeting" id="mobile-greeting">Hola</div>
     <div class="mobile-top-actions">
+      <button type="button" class="mobile-top-btn mobile-top-btn--active" id="mobile-map-btn" aria-pressed="true">
+        Mapa
+      </button>
       <button type="button" class="mobile-top-btn" id="mobile-controls-btn" aria-controls="sidebar" aria-expanded="false">
         Controles
       </button>
-      <button type="button" class="mobile-top-btn mobile-top-btn--gold" id="mobile-lectura-btn" disabled>
+      <button type="button" class="mobile-top-btn mobile-top-btn--gold mobile-top-btn--hidden" id="mobile-lectura-btn" aria-hidden="true" tabindex="-1">
         Lectura
       </button>
     </div>

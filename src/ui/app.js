@@ -78,20 +78,37 @@
   const glyphsLayer = L.layerGroup().addTo(map);
   const lineGroups = {}; // id -> { group, line }
 
+  function cityMarkerIcon(searched) {
+    const mobile = window.matchMedia('(max-width: 768px)').matches;
+    const px = mobile ? 22 : 10;
+    const half = px / 2;
+    const cls = searched ? 'city-marker searched' : 'city-marker';
+    return L.divIcon({
+      className: '',
+      html: `<div class="${cls}"></div>`,
+      iconSize: [px, px],
+      iconAnchor: [half, half]
+    });
+  }
+
   // -------- City markers --------
   const cityMarkers = [];
   CITIES.forEach(city => {
-    const icon = L.divIcon({
-      className: '', html: '<div class="city-marker"></div>',
-      iconSize: [10, 10], iconAnchor: [5, 5]
-    });
+    const icon = cityMarkerIcon(false);
     const m = L.marker([city.lat, city.lon], { icon }).addTo(map);
     m.bindTooltip(city.name, {
       className: 'city-label',
       direction: 'bottom', offset: [0, 4],
       permanent: false, opacity: 1
     });
-    m.on('click', () => openInterpretation(city));
+    m.on('click', () => {
+      if (isMobileLayout()) {
+        state.currentCity = city;
+        updateMobileLecturaBtn();
+        return;
+      }
+      openInterpretation(city);
+    });
     cityMarkers.push(m);
   });
 
@@ -119,10 +136,12 @@
   const profileReset  = $('profile-reset');
   const sidebar       = $('sidebar');
   const sidebarBackdrop = $('sidebar-backdrop');
+  const mobileMapBtn    = $('mobile-map-btn');
   const mobileControlsBtn = $('mobile-controls-btn');
   const mobileGreeting  = $('mobile-greeting');
   const mobileLecturaBtn = $('mobile-lectura-btn');
   const MOBILE_MQ     = window.matchMedia('(max-width: 768px)');
+  let mobileMode = 'map';
 
   function isMobileLayout() {
     return MOBILE_MQ.matches;
@@ -140,34 +159,58 @@
     if (!sidebarBackdrop) return;
     if (!isMobileLayout()) {
       sidebarBackdrop.classList.remove('visible');
-      document.body.classList.remove('sidebar-sheet-open', 'interp-sheet-open');
+      document.body.classList.remove('mobile-sheet-open', 'sidebar-sheet-open', 'interp-sheet-open');
       return;
     }
-    const sidebarOpen = sidebar && sidebar.classList.contains('sheet-open');
-    const interpOpen = panel && panel.classList.contains('open');
-    sidebarBackdrop.classList.toggle('visible', sidebarOpen || interpOpen);
-    document.body.classList.toggle('sidebar-sheet-open', sidebarOpen);
-    document.body.classList.toggle('interp-sheet-open', interpOpen);
+    const sheetOpen = mobileMode === 'controls' || mobileMode === 'lectura';
+    sidebarBackdrop.classList.toggle('visible', sheetOpen);
+    document.body.classList.toggle('mobile-sheet-open', sheetOpen);
+    document.body.classList.remove('sidebar-sheet-open', 'interp-sheet-open');
   }
 
-  function setSidebarOpen(open) {
-    if (!sidebar) return;
-    if (open && panel.classList.contains('open')) closeInterpPanel();
-    sidebar.classList.toggle('sheet-open', open);
-    if (mobileControlsBtn) {
-      mobileControlsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  function syncMobileBarState() {
+    if (!isMobileLayout()) return;
+    [mobileMapBtn, mobileControlsBtn, mobileLecturaBtn].forEach((btn) => {
+      if (btn) btn.classList.remove('mobile-top-btn--active');
+    });
+    if (mobileMode === 'map' && mobileMapBtn) {
+      mobileMapBtn.classList.add('mobile-top-btn--active');
+      mobileMapBtn.setAttribute('aria-pressed', 'true');
+    } else if (mobileMapBtn) {
+      mobileMapBtn.setAttribute('aria-pressed', 'false');
     }
+    if (mobileControlsBtn) {
+      mobileControlsBtn.classList.toggle('mobile-top-btn--active', mobileMode === 'controls');
+      mobileControlsBtn.setAttribute('aria-expanded', mobileMode === 'controls' ? 'true' : 'false');
+    }
+    if (mobileLecturaBtn) {
+      mobileLecturaBtn.classList.toggle('mobile-top-btn--active', mobileMode === 'lectura');
+    }
+  }
+
+  function setMobileMode(mode) {
+    if (!isMobileLayout()) return;
+    if (mode === 'lectura' && !state.currentCity) mode = 'map';
+    mobileMode = mode;
+
+    if (sidebar) sidebar.classList.toggle('sheet-open', mode === 'controls');
+    if (panel) panel.classList.toggle('open', mode === 'lectura');
+
     syncMobileBackdrop();
+    syncMobileBarState();
     refreshMapSize(320);
   }
 
   function closeSidebarSheet() {
-    setSidebarOpen(false);
+    if (isMobileLayout()) setMobileMode('map');
   }
 
   function closeInterpPanel() {
+    if (isMobileLayout()) {
+      setMobileMode('map');
+      return;
+    }
     panel.classList.remove('open');
-    syncMobileBackdrop();
     refreshMapSize(320);
   }
 
@@ -183,59 +226,64 @@
 
   function updateMobileLecturaBtn() {
     if (!mobileLecturaBtn) return;
-    mobileLecturaBtn.disabled = !state.currentCity;
+    const show = !!state.currentCity;
+    mobileLecturaBtn.classList.toggle('mobile-top-btn--hidden', !show);
+    mobileLecturaBtn.setAttribute('aria-hidden', show ? 'false' : 'true');
+    mobileLecturaBtn.tabIndex = show ? 0 : -1;
+    if (!show && mobileMode === 'lectura') setMobileMode('map');
   }
 
   function updateEmptyHintText(displayName) {
-    if (!emptyHint || emptyHint.classList.contains('hidden')) return;
-    if (isMobileLayout()) {
-      if (displayName) {
-        emptyHint.innerHTML = displayName + ', abre <em>Controles</em> arriba<br>y pulsa <em>Calcular mi mapa</em>';
-      } else {
-        emptyHint.innerHTML = 'Abre <em>Controles</em> arriba<br>y calcula tu mapa';
-      }
-      return;
-    }
+    if (!emptyHint || emptyHint.classList.contains('hidden') || isMobileLayout()) return;
     if (displayName) {
       emptyHint.innerHTML = '<span class="arrow">←</span>' +
         displayName + ', pulsa<br><em>Calcular mi mapa</em>';
     }
   }
 
+  if (mobileMapBtn) {
+    mobileMapBtn.addEventListener('click', () => setMobileMode('map'));
+  }
+
   if (mobileControlsBtn) {
     mobileControlsBtn.addEventListener('click', () => {
-      setSidebarOpen(!sidebar.classList.contains('sheet-open'));
+      setMobileMode(mobileMode === 'controls' ? 'map' : 'controls');
     });
   }
 
   if (sidebarBackdrop) {
-    sidebarBackdrop.addEventListener('click', () => {
-      if (panel.classList.contains('open')) closeInterpPanel();
-      if (sidebar.classList.contains('sheet-open')) closeSidebarSheet();
-    });
+    sidebarBackdrop.addEventListener('click', () => setMobileMode('map'));
   }
 
   if (mobileLecturaBtn) {
     mobileLecturaBtn.addEventListener('click', () => {
-      if (!state.currentCity) {
-        toast('Toca una ciudad en el mapa para leerla', '');
-        return;
+      if (!state.currentCity) return;
+      if (mobileMode === 'lectura') setMobileMode('map');
+      else {
+        renderInterpretation(state.currentCity);
+        setMobileMode('lectura');
       }
-      closeSidebarSheet();
-      openInterpretation(state.currentCity);
     });
   }
 
   MOBILE_MQ.addEventListener('change', () => {
-    if (!isMobileLayout()) closeSidebarSheet();
-    syncMobileBackdrop();
-    syncMobileGreeting(profile && profile.displayName);
-    updateEmptyHintText(profile && profile.displayName);
+    if (!isMobileLayout()) {
+      if (sidebar) sidebar.classList.remove('sheet-open');
+      if (panel) panel.classList.remove('open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.remove('visible');
+      document.body.classList.remove('mobile-sheet-open', 'sidebar-sheet-open', 'interp-sheet-open');
+      mobileMode = 'map';
+    } else {
+      setMobileMode('map');
+      syncMobileGreeting(profile && profile.displayName);
+    }
     refreshMapSize(350);
   });
 
   window.addEventListener('resize', () => refreshMapSize(320));
   window.addEventListener('orientationchange', () => refreshMapSize(450));
+
+  if (isMobileLayout()) setMobileMode('map');
   refreshMapSize(150);
 
   function applyProfile(p) {
@@ -699,7 +747,7 @@
       legendEmpty.style.display = 'none';
 
       toast(`Carta calculada · ${lines.length} líneas trazadas`, 'ok');
-      if (isMobileLayout()) closeSidebarSheet();
+      if (isMobileLayout()) setMobileMode('map');
     } catch (e) {
       console.error(e);
       toast('Error en el cálculo: ' + e.message, 'err');
@@ -858,10 +906,12 @@
   function openInterpretation(city) {
     state.currentCity = city;
     renderInterpretation(city);
-    if (isMobileLayout()) closeSidebarSheet();
-    panel.classList.add('open');
     updateMobileLecturaBtn();
-    syncMobileBackdrop();
+    if (isMobileLayout()) {
+      setMobileMode('lectura');
+      return;
+    }
+    panel.classList.add('open');
     refreshMapSize(350);
   }
 
@@ -918,10 +968,7 @@
     }
     const isPredefined = CITIES.some(c => c.name === city.name && Math.abs(c.lat - city.lat) < 0.01);
     if (!isPredefined) {
-      const icon = L.divIcon({
-        className: '', html: '<div class="city-marker searched"></div>',
-        iconSize: [10, 10], iconAnchor: [5, 5]
-      });
+      const icon = cityMarkerIcon(true);
       const m = L.marker([city.lat, city.lon], { icon }).addTo(map);
       m.bindTooltip(city.name, {
         className: 'city-label', direction: 'bottom',
@@ -933,7 +980,14 @@
     map.flyTo([city.lat, city.lon], 5, { duration: 1.2 });
     searchResults.classList.remove('open');
     searchInput.value = city.name;
-    setTimeout(() => openInterpretation(city), 1100);
+    setTimeout(() => {
+      if (isMobileLayout()) {
+        state.currentCity = city;
+        updateMobileLecturaBtn();
+        return;
+      }
+      openInterpretation(city);
+    }, 1100);
   }
 
   searchInput.addEventListener('input', () => {
