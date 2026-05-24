@@ -263,7 +263,15 @@
     if (!emptyHint || emptyHint.classList.contains('hidden') || isMobileLayout()) return;
     if (displayName) {
       emptyHint.innerHTML = '<span class="arrow">←</span>' +
-        displayName + ', pulsa<br><em>Calcular mi mapa</em>';
+        'Hola, ' + displayName + '<br>preparando tu mapa';
+    }
+  }
+
+  function syncDesktopDevHints() {
+    if (isMobileLayout()) return;
+    if (profile && profile.birthData) {
+      if (emptyHint) emptyHint.classList.add('hidden');
+      if (legendEmpty) legendEmpty.style.display = 'none';
     }
   }
 
@@ -325,9 +333,10 @@
       if (b.lat != null) $('natal-lat').value = b.lat;
       if (b.lon != null) $('natal-lon').value = b.lon;
     }
-    if (emptyHint && p.displayName) {
+    if (emptyHint && p.displayName && isMobileLayout()) {
       updateEmptyHintText(p.displayName);
     }
+    syncDesktopDevHints();
     const aspect = window.KairosProfile.mapGoalToAspect(p.mainGoal || 'amor');
     state.activeAspect = aspect;
     interpTabs.querySelectorAll('.interp-tab').forEach((tab) => {
@@ -713,10 +722,10 @@
     ).length;
     if (!state.lines.length) {
       statusDot.classList.remove('active');
-      statusText.textContent = 'Sin carta calculada';
+      statusText.textContent = 'Mapa pendiente';
     } else {
       statusDot.classList.add('active');
-      statusText.textContent = `${visibleCount} líneas · ${CITIES.length} ciudades`;
+      statusText.textContent = `Mapa activo · ${CITIES.length} lugares`;
     }
   }
 
@@ -747,13 +756,12 @@
   }
 
   async function calculateMap() {
-    console.log('[KAIROS-DEBUG] calculateMap() llamado', {
-      Astronomy: typeof Astronomy,
-      luxon: typeof luxon
-    });
     let cfg;
     try { cfg = readForm(); }
-    catch (e) { toast(e.message, 'err'); return; }
+    catch (e) {
+      toast(isMobileLayout() ? e.message : 'Revisa tus datos de nacimiento.', 'err');
+      return;
+    }
 
     calcBtn.disabled = true;
     const orig = calcBtn.textContent;
@@ -763,14 +771,7 @@
     await new Promise(r => setTimeout(r, 30));
 
     try {
-      console.log('[KAIROS-DEBUG] computeAllLines inicio', cfg.utc);
-      const t0 = performance.now();
       const lines = computeAllLines(cfg.utc);
-      console.log('[KAIROS-DEBUG] computeAllLines fin', {
-        ms: Math.round(performance.now() - t0),
-        count: lines.length,
-        sample: lines[0] && { id: lines[0].id, segments: lines[0].segments.length }
-      });
       clearLines();
       state.lines = lines;
       lines.forEach(line => {
@@ -785,7 +786,12 @@
       if (isMobileLayout()) setMobileMode('map');
     } catch (e) {
       console.error(e);
-      toast('Error en el cálculo: ' + e.message, 'err');
+      toast(
+        isMobileLayout()
+          ? 'Error en el cálculo: ' + e.message
+          : 'No pudimos calcular tu mapa. Revisa tus datos.',
+        'err'
+      );
     } finally {
       calcBtn.disabled = false;
       calcBtn.textContent = orig;
@@ -1055,30 +1061,17 @@
 
   // -------- Init --------
   // Wait until astronomy-engine + luxon are present before allowing calc
-  let checkDepsCount = 0;
   function checkDeps() {
-    checkDepsCount++;
-    const deps = {
-      Astronomy: typeof Astronomy,
-      luxon: typeof luxon,
-      KairosAstro: typeof window.KairosAstro,
-      computeAllLines: typeof (window.KairosAstro && window.KairosAstro.computeAllLines)
-    };
-    console.log('[KAIROS-DEBUG] checkDeps #' + checkDepsCount, deps);
     if (typeof Astronomy === 'undefined') {
-      if (checkDepsCount === 1 || checkDepsCount % 10 === 0) {
-        console.warn('[KAIROS-DEBUG] Astronomy no definido — ¿script astronomy.browser.min.js cargado?');
-      }
-      toast('Cargando motor astronómico…');
+      toast(isMobileLayout() ? 'Cargando motor astronómico…' : 'Preparando tu mapa…');
       setTimeout(checkDeps, 400);
       return;
     }
     if (typeof luxon === 'undefined') {
-      toast('Cargando zonas horarias…');
+      toast(isMobileLayout() ? 'Cargando zonas horarias…' : 'Preparando tu mapa…');
       setTimeout(checkDeps, 400);
       return;
     }
-    console.log('[KAIROS-DEBUG] Dependencias OK — motor listo');
     updateStatus();
     maybeAutoCalculateDesktop();
   }
