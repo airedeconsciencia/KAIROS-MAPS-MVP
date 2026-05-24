@@ -61,9 +61,9 @@
   const map = L.map('map', {
     worldCopyJump: true,
     zoomControl: true,
-    minZoom: 2, maxZoom: 8,
+    minZoom: 3, maxZoom: 8,
     attributionControl: true
-  }).setView([22, 8], 2.5);
+  }).setView([22, 8], 3);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap · © CARTO · Kairos Maps',
@@ -78,9 +78,11 @@
   const glyphsLayer = L.layerGroup().addTo(map);
   const lineGroups = {}; // id -> { group, line }
 
+  const MOBILE_CITY_TAP_PX = 36;
+
   function cityMarkerIcon(searched) {
     const mobile = window.matchMedia('(max-width: 768px)').matches;
-    const px = mobile ? 22 : 10;
+    const px = mobile ? 44 : 10;
     const half = px / 2;
     const cls = searched ? 'city-marker searched' : 'city-marker';
     return L.divIcon({
@@ -91,11 +93,32 @@
     });
   }
 
+  function raiseCityMarkers() {
+    cityMarkers.forEach(m => m.bringToFront());
+    if (state.searchedMarker) state.searchedMarker.bringToFront();
+  }
+
+  function cityNearMapPoint(latlng, maxPx) {
+    const clickPt = map.latLngToContainerPoint(latlng);
+    let best = null;
+    let bestDist = maxPx;
+    cityMarkers.forEach(m => {
+      const pt = map.latLngToContainerPoint(m.getLatLng());
+      const d = Math.hypot(pt.x - clickPt.x, pt.y - clickPt.y);
+      if (d <= bestDist) {
+        bestDist = d;
+        best = m.kairosCity;
+      }
+    });
+    return best;
+  }
+
   // -------- City markers --------
   const cityMarkers = [];
   CITIES.forEach(city => {
     const icon = cityMarkerIcon(false);
-    const m = L.marker([city.lat, city.lon], { icon }).addTo(map);
+    const m = L.marker([city.lat, city.lon], { icon, zIndexOffset: 1000 }).addTo(map);
+    m.kairosCity = city;
     m.bindTooltip(city.name, {
       className: 'city-label',
       direction: 'bottom', offset: [0, 4],
@@ -103,6 +126,12 @@
     });
     m.on('click', () => openInterpretation(city));
     cityMarkers.push(m);
+  });
+
+  map.on('click', (e) => {
+    if (!isMobileLayout()) return;
+    const city = cityNearMapPoint(e.latlng, MOBILE_CITY_TAP_PX);
+    if (city) openInterpretation(city);
   });
 
   // -------- DOM refs --------
@@ -643,6 +672,7 @@
         L.marker(markerPt, { icon, interactive: false, keyboard: false }).addTo(glyphsLayer);
       });
     });
+    raiseCityMarkers();
   }
 
   function drawLine(line) {
@@ -655,7 +685,7 @@
       // soft middle
       L.polyline(pts, { color: line.color, weight: 3, opacity: 0.32, interactive: false }).addTo(group);
       // crisp core
-      L.polyline(pts, { color: line.color, weight: 1.4, opacity: 0.92, lineCap: 'round' }).addTo(group);
+      L.polyline(pts, { color: line.color, weight: 1.4, opacity: 0.92, lineCap: 'round', interactive: false }).addTo(group);
     });
     return group;
   }
@@ -670,6 +700,7 @@
     });
     updateStatus();
     refreshMapGlyphs();
+    raiseCityMarkers();
   }
 
   function updateStatus() {
@@ -962,12 +993,14 @@
     const isPredefined = CITIES.some(c => c.name === city.name && Math.abs(c.lat - city.lat) < 0.01);
     if (!isPredefined) {
       const icon = cityMarkerIcon(true);
-      const m = L.marker([city.lat, city.lon], { icon }).addTo(map);
+      const m = L.marker([city.lat, city.lon], { icon, zIndexOffset: 1000 }).addTo(map);
+      m.kairosCity = city;
       m.bindTooltip(city.name, {
         className: 'city-label', direction: 'bottom',
         offset: [0, 4], permanent: false, opacity: 1
       });
       state.searchedMarker = m;
+      raiseCityMarkers();
     }
 
     map.flyTo([city.lat, city.lon], 5, { duration: 1.2 });

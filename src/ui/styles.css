@@ -389,9 +389,11 @@
   }
   .city-marker:hover { transform: scale(1.5); }
 
-  .leaflet-div-icon.line-glyph-icon {
+  .leaflet-div-icon.line-glyph-icon,
+  .leaflet-div-icon.line-angle-icon {
     background: transparent !important;
     border: none !important;
+    pointer-events: none !important;
   }
 
   .line-glyph-marker {
@@ -430,11 +432,6 @@
     width: 100%;
     height: 100%;
     display: block;
-  }
-
-  .leaflet-div-icon.line-angle-icon {
-    background: transparent !important;
-    border: none !important;
   }
 
   #map .line-angle-label {
