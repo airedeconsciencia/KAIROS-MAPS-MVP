@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Natal Lab (DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="natal-view.css">
+</head>
+<body>
+  <div class="dev-banner">DEV · no conectado a producción</div>
+
+  <div class="page">
+    <header>
+      <h1>Natal Lab</h1>
+      <p>Visualización del motor natal real vía KairosChartService. Aislado de la app principal.</p>
+    </header>
+
+    <section class="panel">
+      <h2 class="panel-title">Datos de nacimiento</h2>
+      <form id="birth-form">
+        <div class="form-grid">
+          <label>Fecha<input type="date" id="field-date" required></label>
+          <label>Hora<input type="time" id="field-time" required></label>
+          <label>Zona horaria<input type="text" id="field-tz" placeholder="Europe/Madrid" required></label>
+          <label>Latitud<input type="number" id="field-lat" step="0.0001" required></label>
+          <label>Longitud<input type="number" id="field-lon" step="0.0001" required></label>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" id="btn-calc">Calcular carta</button>
+          <button type="button" class="btn-secondary preset-btn" data-preset="G1">G1 Maó</button>
+          <button type="button" class="btn-secondary preset-btn" data-preset="G2">G2 Madrid</button>
+          <button type="button" class="btn-secondary preset-btn" data-preset="G3">G3 Buenos Aires</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="status-bar">
+        <span class="status-badge loading" id="status-badge">Esperando</span>
+        <span class="status-meta" id="status-meta">Pulsa «Calcular carta» para iniciar el motor.</span>
+      </div>
+      <div class="error-box" id="error-box"></div>
+    </section>
+
+    <section class="panel hidden" id="results-panel">
+      <h2 class="panel-title">Luminarias y ángulos</h2>
+      <div class="cards" id="angle-cards"></div>
+    </section>
+
+    <section class="panel hidden" id="meta-panel">
+      <h2 class="panel-title">Metadata</h2>
+      <div class="meta-grid" id="meta-grid"></div>
+    </section>
+
+    <section class="panel hidden" id="planets-panel">
+      <h2 class="panel-title">Planetas</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Planeta</th>
+              <th>Signo</th>
+              <th>En signo</th>
+              <th>Longitud</th>
+              <th>Casa (WS)</th>
+              <th>R</th>
+            </tr>
+          </thead>
+          <tbody id="planets-body"></tbody>
+        </table>
+      </div>
+      <p class="note note-warn">Casa (WS) = Whole Sign interno del motor. Las cúspides de abajo son Placidus.</p>
+    </section>
+
+    <section class="panel hidden" id="houses-panel">
+      <h2 class="panel-title">Casas Placidus</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Casa</th>
+              <th>Signo cúspide</th>
+              <th>En signo</th>
+              <th>Longitud</th>
+            </tr>
+          </thead>
+          <tbody id="houses-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="aspects-panel">
+      <h2 class="panel-title">Aspectos principales (top 12 por orbe)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Planeta 1</th>
+              <th>Aspecto</th>
+              <th>Planeta 2</th>
+              <th>Orbe</th>
+              <th>Tendencia</th>
+            </tr>
+          </thead>
+          <tbody id="aspects-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+  <script src="../engines/kairos-core/aspects_engine.js"></script>
+  <script src="../engines/kairos-core/planetary_engine.js"></script>
+  <script src="../engines/kairos-core/chart_engine.js"></script>
+  <script type="module" src="../engines/kairos-core/bootstrap.js"></script>
+  <script src="../services/chart-service.js"></script>
+  <script src="natal-view.js"></script>
+</body>
+</html>
