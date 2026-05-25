@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Natal Test (2.1a-1)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: ui-monospace, monospace; background: #0f1115; color: #d7c188; padding: 24px; line-height: 1.5; }
+    h1 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+    p { color: #9ca3af; font-size: 13px; margin: 0 0 16px; }
+    pre { background: #1a1d24; border: 1px solid #2a2f3a; border-radius: 8px; padding: 16px; overflow: auto; font-size: 12px; color: #e5e7eb; white-space: pre-wrap; word-break: break-word; }
+    .ok { color: #4ade80; }
+    .err { color: #f87171; }
+    .warn { color: #fbbf24; }
+  </style>
+</head>
+<body>
+  <h1>Kairos Core — Natal Test (Fase 2.1a-1)</h1>
+  <p>Aislado de la app principal. Solo Luxon + kairos-core. Sin mapa, sin app.js.</p>
+  <pre id="output">Iniciando…</pre>
+
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+  <script src="../engines/kairos-core/aspects_engine.js"></script>
+  <script src="../engines/kairos-core/planetary_engine.js"></script>
+  <script src="../engines/kairos-core/chart_engine.js"></script>
+  <script type="module" src="../engines/kairos-core/bootstrap.js"></script>
+  <script type="module" src="natal-test-runner.js"></script>
+</body>
+</html>
