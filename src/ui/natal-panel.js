@@ -64,6 +64,30 @@
     Piscis: 'pisces'
   };
 
+  var SIGN_SLUGS = [
+    'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+    'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
+  ];
+
+  var SIGN_FILE_BY_SLUG = {
+    aries: 'aries.svg',
+    taurus: 'taurus.svg',
+    gemini: 'gemini.svg',
+    cancer: 'cancer.svg',
+    leo: 'leo.svg',
+    virgo: 'virgo.svg',
+    libra: 'libra.svg',
+    scorpio: 'scorpio.svg',
+    sagittarius: 'sagittarius.svg',
+    capricorn: 'capricorn.svg',
+    aquarius: 'aquarius.svg',
+    pisces: 'pisces.svg'
+  };
+
+  var signCache = {};
+  var signGlyphsLoaded = false;
+  var signReadyCallbacks = [];
+
   var STATE_MESSAGES = {
     idle: 'Tu carta aparecerá aquí cuando calcules el mapa.',
     loading: 'Calculando Sol, Luna y ángulos…',
@@ -93,11 +117,91 @@
     return pos.deg + '° ' + pos.min + "'";
   }
 
-  function glyphPlanetHTML(glyphId) {
+  function signSlug(signName) {
+    if (!signName) return null;
+    var slug = SIGN_SLUG_BY_NAME[signName];
+    if (slug) return slug;
+    var normalized = String(signName).normalize('NFC');
+    slug = SIGN_SLUG_BY_NAME[normalized];
+    if (slug) return slug;
+    var trimmed = String(signName).trim();
+    return SIGN_SLUG_BY_NAME[trimmed] || SIGN_SLUG_BY_NAME[trimmed.normalize('NFC')] || null;
+  }
+
+  function signAssetPath(slug) {
+    var file = SIGN_FILE_BY_SLUG[slug];
+    if (!file) return '';
+    return ASSETS_SIGNS + file;
+  }
+
+  function sanitizeSignSvg(svgText) {
+    if (!svgText) return '';
+    return String(svgText).replace(/<\?xml[^?]*\?>/i, '').trim();
+  }
+
+  function whenSignGlyphsReady(fn) {
+    if (signGlyphsLoaded) fn();
+    else signReadyCallbacks.push(fn);
+  }
+
+  function refreshMountedSignGlyphs() {
+    var root = document.getElementById('natal-panel-root');
+    if (!root) return;
+
+    root.querySelectorAll('.natal-glyph-slot--sign[data-glyph-id]').forEach(function (slot) {
+      if (slot.querySelector('svg')) return;
+      var slug = slot.getAttribute('data-glyph-id');
+      var svg = signCache[slug];
+      if (!svg) return;
+      slot.innerHTML =
+        '<span class="kairos-glyph natal-glyph-inline" aria-hidden="true">' + svg + '</span>';
+    });
+  }
+
+  function watchNatalPanelRoot() {
+    var root = document.getElementById('natal-panel-root');
+    if (!root || root.__kairosSignWatch) return;
+    root.__kairosSignWatch = true;
+    var observer = new MutationObserver(function () {
+      if (signGlyphsLoaded) refreshMountedSignGlyphs();
+    });
+    observer.observe(root, { childList: true, subtree: true });
+  }
+
+  function notifySignGlyphsReady() {
+    signGlyphsLoaded = true;
+    while (signReadyCallbacks.length) {
+      signReadyCallbacks.shift()();
+    }
+    refreshMountedSignGlyphs();
+  }
+
+  function preloadSignGlyphs() {
+    Promise.all(
+      SIGN_SLUGS.map(function (slug) {
+        return fetch(signAssetPath(slug))
+          .then(function (res) {
+            if (!res.ok) throw new Error('SVG ' + slug);
+            return res.text();
+          })
+          .then(function (svg) {
+            signCache[slug] = sanitizeSignSvg(svg);
+          });
+      })
+    )
+      .then(notifySignGlyphsReady)
+      .catch(function (err) {
+        console.warn('[KairosNatalPanel] Error cargando signos SVG:', err);
+        notifySignGlyphsReady();
+      });
+  }
+
+  function glyphPlanetHTML(glyphId, sizePx) {
     if (!glyphId) return '';
+    var px = sizePx || 16;
 
     var slotOpen =
-      '<span class="natal-glyph-slot" data-glyph-kind="planet" data-glyph-id="' +
+      '<span class="natal-glyph-slot natal-glyph-slot--planet" data-glyph-kind="planet" data-glyph-id="' +
       esc(glyphId) + '">';
     var slotClose = '</span>';
 
@@ -111,7 +215,8 @@
     if (file) {
       return (
         slotOpen +
-        '<img class="natal-glyph-img" src="' + ASSETS_PLANETS + file + '" alt="">' +
+        '<img class="natal-glyph-img" width="' + px + '" height="' + px + '" src="' +
+        ASSETS_PLANETS + file + '" alt="">' +
         slotClose
       );
     }
@@ -119,34 +224,50 @@
     return '';
   }
 
-  function glyphSignHTML(signName) {
-    if (!signName) return '';
-    var slug = SIGN_SLUG_BY_NAME[signName];
+  function glyphSignHTML(signName, sizePx) {
+    var slug = signSlug(signName);
     if (!slug) return '';
+    var px = sizePx || 16;
+    var assetPath = signAssetPath(slug);
+
+    var slotOpen =
+      '<span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="' +
+      esc(slug) + '" data-kairos-sign-src="' + esc(assetPath) + '">';
+    var slotClose = '</span>';
+
+    var svg = signCache[slug];
+    if (svg) {
+      return (
+        slotOpen +
+        '<span class="kairos-glyph natal-glyph-inline" aria-hidden="true">' + svg + '</span>' +
+        slotClose
+      );
+    }
 
     return (
-      '<span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="' +
-      esc(slug) + '">' +
-      '<img class="natal-glyph-img" src="' + ASSETS_SIGNS + slug + '.svg" alt="">' +
-      '</span>'
+      slotOpen +
+      '<img class="natal-glyph-img natal-glyph-img--sign" width="' + px + '" height="' + px + '" src="' +
+      esc(assetPath) + '" alt="">' +
+      slotClose
     );
   }
 
-  function glyphPlanetRow(label, glyphId) {
+  function glyphPlanetRow(label, glyphId, sizePx) {
     return (
-      '<span class="natal-glyph-row">' +
-        glyphPlanetHTML(glyphId) +
+      '<span class="natal-glyph-row natal-glyph-row--planet">' +
+        glyphPlanetHTML(glyphId, sizePx) +
         '<span class="natal-glyph-fallback-text">' + esc(label) + '</span>' +
       '</span>'
     );
   }
 
-  function glyphSignRow(signName) {
+  function glyphSignRow(signName, textClass, sizePx) {
     var text = signName || '—';
+    var cls = textClass || 'natal-panel-sign-text';
     return (
-      '<span class="natal-glyph-row">' +
-        glyphSignHTML(signName) +
-        '<span class="natal-panel-card-sign-text">' + esc(text) + '</span>' +
+      '<span class="natal-glyph-row natal-glyph-row--sign">' +
+        glyphSignHTML(signName, sizePx) +
+        '<span class="' + cls + '">' + esc(text) + '</span>' +
       '</span>'
     );
   }
@@ -163,13 +284,15 @@
     return CARD_KEYS.map(function (def) {
       var pos = getBodyPos(chart, def);
       var labelHtml = def.glyphId
-        ? '<div class="natal-panel-card-label">' + glyphPlanetRow(def.label, def.glyphId) + '</div>'
+        ? '<div class="natal-panel-card-label">' + glyphPlanetRow(def.label, def.glyphId, 18) + '</div>'
         : '<div class="natal-panel-card-label"><span class="natal-glyph-fallback-text">' + esc(def.label) + '</span></div>';
 
       return (
         '<div class="natal-panel-card">' +
           labelHtml +
-          '<div class="natal-panel-card-sign">' + glyphSignRow(pos && pos.sign) + '</div>' +
+          '<div class="natal-panel-card-sign">' +
+            glyphSignRow(pos && pos.sign, 'natal-panel-card-sign-text', 18) +
+          '</div>' +
           '<div class="natal-panel-card-detail">' + esc(fmtSignDegree(pos)) + '</div>' +
         '</div>'
       );
@@ -187,14 +310,11 @@
 
       return (
         '<tr>' +
-          '<td><span class="natal-glyph-row">' +
-            glyphPlanetHTML(glyphId) +
+          '<td><span class="natal-glyph-row natal-glyph-row--planet">' +
+            glyphPlanetHTML(glyphId, 15) +
             '<span class="natal-glyph-fallback-text">' + esc(label) + '</span>' +
           '</span></td>' +
-          '<td><span class="natal-glyph-row">' +
-            glyphSignHTML(p && p.sign) +
-            '<span>' + esc((p && p.sign) || '—') + '</span>' +
-          '</span></td>' +
+          '<td>' + glyphSignRow(p && p.sign, 'natal-panel-table-sign-text', 15) + '</td>' +
           '<td>' + esc(p ? fmtSignDegree(p) : '—') + '</td>' +
           '<td>' + esc(retro) + '</td>' +
         '</tr>'
@@ -255,12 +375,24 @@
     PLANET_GLYPH_ID: PLANET_GLYPH_ID,
     SIGN_SLUG_BY_NAME: SIGN_SLUG_BY_NAME,
     fmtPos: fmtPos,
+    signSlug: signSlug,
+    signAssetPath: signAssetPath,
     glyphPlanetHTML: glyphPlanetHTML,
     glyphSignHTML: glyphSignHTML,
+    whenSignGlyphsReady: whenSignGlyphsReady,
+    refreshMountedSignGlyphs: refreshMountedSignGlyphs,
     renderCardsHTML: renderCardsHTML,
     renderPlanetsTableHTML: renderPlanetsTableHTML,
     renderFootnoteHTML: renderFootnoteHTML,
     renderStateHTML: renderStateHTML,
     renderBodyHTML: renderBodyHTML
   };
+
+  preloadSignGlyphs();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', watchNatalPanelRoot);
+  } else {
+    watchNatalPanelRoot();
+  }
 })();

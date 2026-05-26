@@ -169,6 +169,9 @@
   const profileReset  = $('profile-reset');
   const sidebar       = $('sidebar');
   const sidebarBackdrop = $('sidebar-backdrop');
+  const natalPanelEl  = $('natal-panel');
+  const natalPanelStatusEl = $('natal-panel-status');
+  const natalPanelRootEl = $('natal-panel-root');
   const mobileMapBtn    = $('mobile-map-btn');
   const mobileControlsBtn = $('mobile-controls-btn');
   const mobileGreeting  = $('mobile-greeting');
@@ -778,13 +781,34 @@
     };
   }
 
+  function renderNatalPanel() {
+    const P = window.KairosNatalPanel;
+    if (!natalPanelEl || !natalPanelStatusEl || !natalPanelRootEl || !P) return;
+
+    const chartState = state.chart;
+    let status = chartState.status || 'idle';
+    if (isMobileLayout()) status = 'skipped';
+
+    natalPanelEl.setAttribute('data-state', status);
+
+    if (status === 'skipped') return;
+
+    const statusHtml = P.renderStateHTML(chartState);
+    natalPanelStatusEl.innerHTML = statusHtml;
+    natalPanelStatusEl.style.display = statusHtml ? '' : 'none';
+
+    natalPanelRootEl.innerHTML = P.renderBodyHTML(chartState.natal, chartState);
+  }
+
   async function maybeCalculateNatalSilently(cfg) {
     if (isMobileLayout()) {
       state.chart.status = 'skipped';
+      renderNatalPanel();
       return;
     }
     if (typeof window.KairosChartService === 'undefined') {
       state.chart.status = 'skipped';
+      renderNatalPanel();
       return;
     }
 
@@ -798,11 +822,13 @@
     ].join('|');
 
     if (state.chart.status === 'ready' && state.chart.birthKey === key && state.chart.natal) {
+      renderNatalPanel();
       return;
     }
 
     state.chart.status = 'loading';
     state.chart.error = null;
+    renderNatalPanel();
 
     try {
       await window.KairosChartService.initNatalEngine();
@@ -826,6 +852,8 @@
       };
       kairosDebugLog('natal error', state.chart.error);
     }
+
+    renderNatalPanel();
   }
 
   // -------- Calculate map --------
@@ -1162,6 +1190,7 @@
     if (state.lines.length) renderLegend();
     if (state.currentCity) renderInterpretation(state.currentCity);
     if (state.showMapGlyphs) refreshMapGlyphs();
+    if (state.chart.status === 'ready') renderNatalPanel();
   });
 
   if (kairosDebugEnabled()) {
@@ -1176,6 +1205,7 @@
     };
   }
 
+  renderNatalPanel();
   checkDeps();
   } // startApp
 
