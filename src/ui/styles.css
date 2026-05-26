@@ -316,9 +316,36 @@
     color: var(--text-faint);
     letter-spacing: 0.02em;
   }
-  .natal-panel-card.natal-skeleton,
-  .natal-panel-table tbody tr.natal-skeleton td {
-    opacity: 0.45;
+  .natal-panel-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 28px 20px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .natal-panel-empty-mark {
+    font-size: 22px;
+    line-height: 1;
+    color: var(--kairos-gold);
+    opacity: 0.75;
+    margin-bottom: 14px;
+  }
+  .natal-panel-empty-title {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .natal-panel-empty-sub {
+    margin: 0;
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--text-dim);
+    max-width: 240px;
   }
   .natal-panel-table-wrap {
     overflow-x: auto;

@@ -89,12 +89,22 @@
   var signReadyCallbacks = [];
 
   var STATE_MESSAGES = {
-    idle: 'Tu carta aparecerá aquí cuando calcules el mapa.',
+    idle: 'Pulsa Calcular mi mapa para ver tu carta.',
     loading: 'Calculando Sol, Luna y ángulos…',
     ready: '',
     error: 'No pudimos calcular tu carta natal. El mapa sigue activo. Vuelve a pulsar Calcular mi mapa.',
     skipped: ''
   };
+
+  function renderIdleHTML() {
+    return (
+      '<div class="natal-panel-empty">' +
+        '<div class="natal-panel-empty-mark" aria-hidden="true">◆</div>' +
+        '<p class="natal-panel-empty-title">Tu carta natal aparecerá aquí</p>' +
+        '<p class="natal-panel-empty-sub">Sol, Luna, Ascendente y planetas esenciales — incluido en tu mapa.</p>' +
+      '</div>'
+    );
+  }
 
   function esc(text) {
     if (text == null) return '';
@@ -359,13 +369,15 @@
 
   function renderBodyHTML(chart, chartState) {
     var status = chartState && chartState.status;
-    if (status !== 'ready' || !chart) return '';
-
-    return (
-      '<div class="natal-panel-cards">' + renderCardsHTML(chart) + '</div>' +
-      '<div class="natal-panel-table-wrap">' + renderPlanetsTableHTML(chart) + '</div>' +
-      renderFootnoteHTML(chart)
-    );
+    if (status === 'ready' && chart) {
+      return (
+        '<div class="natal-panel-cards">' + renderCardsHTML(chart) + '</div>' +
+        '<div class="natal-panel-table-wrap">' + renderPlanetsTableHTML(chart) + '</div>' +
+        renderFootnoteHTML(chart)
+      );
+    }
+    if (status === 'idle') return renderIdleHTML();
+    return '';
   }
 
   window.KairosNatalPanel = {
@@ -385,7 +397,8 @@
     renderPlanetsTableHTML: renderPlanetsTableHTML,
     renderFootnoteHTML: renderFootnoteHTML,
     renderStateHTML: renderStateHTML,
-    renderBodyHTML: renderBodyHTML
+    renderBodyHTML: renderBodyHTML,
+    renderIdleHTML: renderIdleHTML
   };
 
   preloadSignGlyphs();
