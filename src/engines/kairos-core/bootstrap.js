@@ -1,7 +1,8 @@
 /**
- * KAIROS MAPS — kairos-core bootstrap (Fase 2.1a)
+ * KAIROS MAPS — kairos-core bootstrap (Fase 2.1a / 3.1a)
  * ES module: init Swiss Ephemeris WASM and expose readiness.
- * Not wired to index.html until a later phase.
+ * Fase 3.1a: init bajo demanda vía KairosChartService.initNatalEngine().
+ * No auto-init en cold start.
  */
 import SwissEph from './wasm/swisseph_wrapper.js';
 
@@ -28,4 +29,3 @@ async function initKairosCore() {
 }
 
 window.initKairosCore = initKairosCore;
-initKairosCore();
