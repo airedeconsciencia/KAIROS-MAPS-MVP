@@ -16,15 +16,13 @@
 </head>
 <body>
   <h1>Kairos Core — Natal Test (Fase 2.1a-2b)</h1>
-  <p>Aislado de la app principal. Luxon + kairos-core + chart-service. Sin mapa, sin app.js.</p>
+  <p>Aislado de la app principal. Luxon + natal-engine-loader + chart-service (lazy). Sin mapa, sin app.js.</p>
   <pre id="output">Iniciando…</pre>
 
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-  <script src="../engines/kairos-core/aspects_engine.js"></script>
-  <script src="../engines/kairos-core/planetary_engine.js"></script>
-  <script src="../engines/kairos-core/chart_engine.js"></script>
-  <script type="module" src="../engines/kairos-core/bootstrap.js"></script>
-  <script src="../services/chart-service.js"></script>
+  <!-- Fase 3.1d — pipeline lazy (paridad con index.html) -->
+  <script src="../services/natal-engine-loader.js?v=3.1d"></script>
+  <script src="../services/chart-service.js?v=3.1d"></script>
   <script type="module" src="natal-test-runner.js"></script>
 </body>
 </html>
