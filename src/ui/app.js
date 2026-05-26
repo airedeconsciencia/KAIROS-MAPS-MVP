@@ -54,7 +54,14 @@
     activeAspect: activeAspect,
     currentCity: null,
     searchedMarker: null,
-    showMapGlyphs: false
+    showMapGlyphs: false,
+    chart: {
+      natal: null,
+      status: 'idle',
+      error: null,
+      lastComputedAt: null,
+      birthKey: null
+    }
   };
 
   // -------- Map setup --------
@@ -747,6 +754,80 @@
     return { utc, lat, lon, tz, dateStr, timeStr, place };
   }
 
+  function kairosDebugEnabled() {
+    try {
+      return localStorage.getItem('kairosDebug') === '1'
+        || new URLSearchParams(location.search).has('debug');
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function kairosDebugLog(label, data) {
+    if (!kairosDebugEnabled()) return;
+    console.info('[KAIROS debug]', label, data);
+  }
+
+  function cfgToBirthData(cfg) {
+    return {
+      date: cfg.dateStr,
+      time: cfg.timeStr,
+      timezone: cfg.tz,
+      lat: cfg.lat,
+      lon: cfg.lon
+    };
+  }
+
+  async function maybeCalculateNatalSilently(cfg) {
+    if (isMobileLayout()) {
+      state.chart.status = 'skipped';
+      return;
+    }
+    if (typeof window.KairosChartService === 'undefined') {
+      state.chart.status = 'skipped';
+      return;
+    }
+
+    const birthData = cfgToBirthData(cfg);
+    const key = [
+      birthData.date,
+      birthData.time,
+      birthData.timezone,
+      birthData.lat,
+      birthData.lon
+    ].join('|');
+
+    if (state.chart.status === 'ready' && state.chart.birthKey === key && state.chart.natal) {
+      return;
+    }
+
+    state.chart.status = 'loading';
+    state.chart.error = null;
+
+    try {
+      await window.KairosChartService.initNatalEngine();
+      const chart = await window.KairosChartService.generateNatalChart(birthData);
+      state.chart.natal = chart;
+      state.chart.status = 'ready';
+      state.chart.birthKey = key;
+      state.chart.lastComputedAt = new Date().toISOString();
+      kairosDebugLog('natal ready', {
+        utc: chart.input && chart.input.utc,
+        asc: chart.angles && chart.angles.ASC,
+        sun: chart.planets && chart.planets.SUN,
+        elapsedMs: chart.elapsedMs
+      });
+    } catch (err) {
+      state.chart.natal = null;
+      state.chart.status = 'error';
+      state.chart.error = {
+        code: err.code || 'NATAL_FAILED',
+        message: err.message || String(err)
+      };
+      kairosDebugLog('natal error', state.chart.error);
+    }
+  }
+
   // -------- Calculate map --------
   function maybeAutoCalculateDesktop() {
     if (isMobileLayout()) return;
@@ -784,6 +865,7 @@
 
       toast(`Mapa listo · ${lines.length} líneas`, 'ok');
       if (isMobileLayout()) setMobileMode('map');
+      void maybeCalculateNatalSilently(cfg);
     } catch (e) {
       console.error(e);
       toast(
@@ -1081,6 +1163,18 @@
     if (state.currentCity) renderInterpretation(state.currentCity);
     if (state.showMapGlyphs) refreshMapGlyphs();
   });
+
+  if (kairosDebugEnabled()) {
+    window.__kairosDebug = {
+      get chart() { return state.chart; },
+      get serviceStatus() {
+        return window.KairosChartService && window.KairosChartService.getStatus
+          ? window.KairosChartService.getStatus()
+          : null;
+      },
+      get lines() { return state.lines.length; }
+    };
+  }
 
   checkDeps();
   } // startApp
