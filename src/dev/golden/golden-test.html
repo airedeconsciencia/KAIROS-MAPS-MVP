@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Golden Tests Natal (2.1a-2c)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0f1115;
+      color: #e5e7eb;
+      line-height: 1.5;
+    }
+    .dev-banner {
+      background: rgba(215, 193, 136, 0.12);
+      border-bottom: 1px solid rgba(215, 193, 136, 0.35);
+      color: #d7c188;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 1100px; margin: 0 auto; padding: 24px 20px 48px; }
+    h1 { margin: 0 0 6px; font-size: 24px; color: #d7c188; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 14px; margin: 0 0 20px; }
+    .panel {
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+    }
+    .panel-title {
+      margin: 0 0 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+      font-size: 13px;
+    }
+    .doc-item {
+      background: #0f1115;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .doc-item strong {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #d7c188;
+      margin-bottom: 4px;
+    }
+    .tol-list { margin: 0; padding-left: 18px; color: #9ca3af; font-size: 13px; }
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .badge.loading { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+    .badge.pass { background: rgba(74, 222, 128, 0.12); color: #4ade80; }
+    .badge.fail { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+    .badge.wait { background: rgba(156, 163, 175, 0.15); color: #9ca3af; }
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #d7c188;
+      color: #0f1115;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 16px;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .case-card {
+      border: 1px solid #2a2f3a;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .case-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      background: #0f1115;
+      border-bottom: 1px solid #2a2f3a;
+    }
+    .case-head h3 { margin: 0; font-size: 16px; color: #e5e7eb; }
+    .case-meta { font-size: 12px; color: #9ca3af; font-family: ui-monospace, monospace; }
+    .case-body { padding: 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #2a2f3a; vertical-align: top; }
+    th {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #9ca3af;
+      background: rgba(255,255,255,0.02);
+    }
+    .row-pass td:last-child { color: #4ade80; font-weight: 600; }
+    .row-fail td:last-child { color: #f87171; font-weight: 600; }
+    .mono { font-family: ui-monospace, monospace; font-size: 11px; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .summary-item {
+      background: #0f1115;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .summary-item .label { font-size: 11px; color: #9ca3af; text-transform: uppercase; }
+    .summary-item .value { font-size: 22px; font-weight: 700; margin-top: 4px; }
+    .summary-item.pass .value { color: #4ade80; }
+    .summary-item.fail .value { color: #f87171; }
+    .error-box {
+      background: rgba(248, 113, 113, 0.08);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #fca5a5;
+      font-size: 13px;
+      display: none;
+    }
+    .error-box.visible { display: block; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV · Golden Tests 2.1a-2c · no conectado a producción</div>
+
+  <div class="page">
+    <header>
+      <h1>Golden Tests — Motor Natal</h1>
+      <p class="sub">Compara KairosChartService vs referencias Astro.com (Tropical · Placidus · Swiss Ephemeris)</p>
+    </header>
+
+    <section class="panel">
+      <h2 class="panel-title">Documentación del test</h2>
+      <div class="docs-grid" id="docs-grid">
+        <div class="doc-item"><strong>Timezone</strong><span id="doc-tz">Cargando…</span></div>
+        <div class="doc-item"><strong>DST</strong><span id="doc-dst">Cargando…</span></div>
+        <div class="doc-item"><strong>Placidus</strong><span id="doc-placidus">Cargando…</span></div>
+        <div class="doc-item"><strong>Mean vs True Node</strong><span id="doc-node">Cargando…</span></div>
+        <div class="doc-item"><strong>Whole Sign interno</strong><span id="doc-ws">Cargando…</span></div>
+        <div class="doc-item"><strong>Referencia</strong><span id="doc-ref">Cargando…</span></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">Tolerancias</h2>
+      <ul class="tol-list" id="tol-list"></ul>
+    </section>
+
+    <section class="panel">
+      <div class="status-bar">
+        <span class="badge wait" id="status-badge">Esperando</span>
+        <span id="status-text" class="case-meta">Pulsa «Ejecutar golden tests»</span>
+        <button type="button" id="btn-run">Ejecutar golden tests</button>
+      </div>
+      <div class="error-box" id="error-box"></div>
+      <div class="summary-grid hidden" id="summary-grid">
+        <div class="summary-item" id="sum-cases"><div class="label">Casos</div><div class="value">—</div></div>
+        <div class="summary-item" id="sum-pass"><div class="label">Checks OK</div><div class="value">—</div></div>
+        <div class="summary-item" id="sum-fail"><div class="label">Checks FAIL</div><div class="value">—</div></div>
+        <div class="summary-item" id="sum-result"><div class="label">Resultado global</div><div class="value">—</div></div>
+      </div>
+    </section>
+
+    <section id="results-root"></section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+  <script src="../../engines/kairos-core/aspects_engine.js"></script>
+  <script src="../../engines/kairos-core/planetary_engine.js"></script>
+  <script src="../../engines/kairos-core/chart_engine.js"></script>
+  <script type="module" src="../../engines/kairos-core/bootstrap.js"></script>
+  <script src="../../services/chart-service.js"></script>
+  <script src="golden-compare.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var els = {
+        docsTz: document.getElementById('doc-tz'),
+        docsDst: document.getElementById('doc-dst'),
+        docsPlacidus: document.getElementById('doc-placidus'),
+        docsNode: document.getElementById('doc-node'),
+        docsWs: document.getElementById('doc-ws'),
+        docsRef: document.getElementById('doc-ref'),
+        tolList: document.getElementById('tol-list'),
+        statusBadge: document.getElementById('status-badge'),
+        statusText: document.getElementById('status-text'),
+        btnRun: document.getElementById('btn-run'),
+        errorBox: document.getElementById('error-box'),
+        summaryGrid: document.getElementById('summary-grid'),
+        sumCases: document.getElementById('sum-cases'),
+        sumPass: document.getElementById('sum-pass'),
+        sumFail: document.getElementById('sum-fail'),
+        sumResult: document.getElementById('sum-result'),
+        resultsRoot: document.getElementById('results-root')
+      };
+
+      var goldenData = null;
+
+      function setStatus(state, text) {
+        els.statusBadge.className = 'badge ' + state;
+        els.statusBadge.textContent =
+          state === 'loading' ? 'Cargando' :
+          state === 'pass' ? 'PASS' :
+          state === 'fail' ? 'FAIL' : 'Esperando';
+        els.statusText.textContent = text || '';
+      }
+
+      function showError(msg) {
+        els.errorBox.textContent = msg;
+        els.errorBox.classList.add('visible');
+      }
+
+      function hideError() {
+        els.errorBox.classList.remove('visible');
+      }
+
+      function renderDocs(meta) {
+        var d = meta.documentation || {};
+        els.docsTz.textContent = d.timezone || '—';
+        els.docsDst.textContent = d.dst || '—';
+        els.docsPlacidus.textContent = d.placidus || '—';
+        els.docsNode.textContent = d.meanNodeVsTrueNode || '—';
+        els.docsWs.textContent = d.wholeSignInternal || '—';
+        els.docsRef.textContent = meta.referenceSource + ' · ' + (meta.referenceSettings && meta.referenceSettings.ephemeris);
+        var t = meta.tolerances;
+        els.tolList.innerHTML =
+          '<li>Planetas (Sol, Luna): ±' + t.planetsDeg + '°</li>' +
+          '<li>ASC / MC: ±' + t.anglesDeg + '°</li>' +
+          '<li>Cúspides Placidus (12 casas): ±' + t.housesDeg + '°</li>' +
+          '<li>Aspectos principales: mismo tipo + orbe ±' + t.aspectsOrbDeg + '°</li>' +
+          '<li>UTC: coincidencia exacta (Luxon → motor)</li>' +
+          '<li>Excluido: planet.house (Whole Sign interno)</li>';
+      }
+
+      function renderReport(report) {
+        var headClass = report.pass ? 'pass' : 'fail';
+        var badge = report.pass ? 'PASS' : 'FAIL';
+        var input = goldenData.cases.find(function (c) { return c.id === report.id; });
+        var inputLine = input ? (
+          input.input.date + ' ' + input.input.time + ' · ' + input.input.timezone +
+          ' · ' + input.input.lat + ', ' + input.input.lon
+        ) : '';
+
+        var rows = (report.results || []).map(function (r) {
+          return (
+            '<tr class="' + (r.pass ? 'row-pass' : 'row-fail') + '">' +
+              '<td>' + r.group + '</td>' +
+              '<td>' + r.field + '</td>' +
+              '<td class="mono">' + r.expected + '</td>' +
+              '<td class="mono">' + r.actual + '</td>' +
+              '<td class="mono">' + r.delta + '</td>' +
+              '<td class="mono">' + r.tolerance + '</td>' +
+              '<td>' + (r.pass ? 'PASS' : 'FAIL') + '</td>' +
+            '</tr>'
+          );
+        }).join('');
+
+        var metaLine = report.chartMeta ? (
+          'UTC motor: ' + (report.chartMeta.utc || '—') +
+          ' · ' + (report.chartMeta.motor || '—') +
+          ' · ' + (report.chartMeta.houseSystem || '—') +
+          ' · ' + (report.chartMeta.elapsedMs != null ? report.chartMeta.elapsedMs + ' ms' : '—')
+        ) : '';
+
+        return (
+          '<div class="case-card">' +
+            '<div class="case-head">' +
+              '<div>' +
+                '<h3>' + report.id + ' — ' + report.label + '</h3>' +
+                '<div class="case-meta">' + inputLine + '</div>' +
+                (report.error ? '<div class="case-meta" style="color:#f87171">' + report.error + '</div>' : '') +
+                (metaLine ? '<div class="case-meta">' + metaLine + '</div>' : '') +
+              '</div>' +
+              '<span class="badge ' + headClass + '">' + badge + ' (' +
+                (report.summary ? report.summary.passed + '/' + report.summary.total : '0') +
+              ')</span>' +
+            '</div>' +
+            '<div class="case-body">' +
+              '<table>' +
+                '<thead><tr>' +
+                  '<th>Grupo</th><th>Campo</th><th>Referencia</th><th>Motor</th><th>Δ</th><th>Tolerancia</th><th>OK</th>' +
+                '</tr></thead>' +
+                '<tbody>' + rows + '</tbody>' +
+              '</table>' +
+            '</div>' +
+          '</div>'
+        );
+      }
+
+      function renderSummary(result) {
+        var totalChecks = 0;
+        var totalPass = 0;
+        var totalFail = 0;
+        result.reports.forEach(function (r) {
+          if (r.summary) {
+            totalChecks += r.summary.total;
+            totalPass += r.summary.passed;
+            totalFail += r.summary.failed;
+          }
+        });
+        els.summaryGrid.classList.remove('hidden');
+        els.sumCases.querySelector('.value').textContent = result.reports.length;
+        els.sumPass.className = 'summary-item pass';
+        els.sumPass.querySelector('.value').textContent = totalPass;
+        els.sumFail.className = 'summary-item ' + (totalFail ? 'fail' : 'pass');
+        els.sumFail.querySelector('.value').textContent = totalFail;
+        els.sumResult.className = 'summary-item ' + (result.allPass ? 'pass' : 'fail');
+        els.sumResult.querySelector('.value').textContent = result.allPass ? 'PASS' : 'FAIL';
+      }
+
+      async function loadGoldenData() {
+        var res = await fetch('golden-charts.json');
+        if (!res.ok) throw new Error('No se pudo cargar golden-charts.json');
+        goldenData = await res.json();
+        renderDocs(goldenData.meta);
+      }
+
+      async function runTests() {
+        hideError();
+        els.resultsRoot.innerHTML = '';
+        els.summaryGrid.classList.add('hidden');
+        els.btnRun.disabled = true;
+        setStatus('loading', 'Inicializando WASM y calculando G1, G2, G3…');
+
+        try {
+          var S = window.KairosChartService;
+          var G = window.GoldenCompare;
+          if (!S) throw new Error('KairosChartService no disponible');
+          if (!G) throw new Error('GoldenCompare no disponible');
+          if (!goldenData) await loadGoldenData();
+
+          await S.initNatalEngine();
+          if (S.clearCache) S.clearCache();
+
+          var chartsById = {};
+          for (var i = 0; i < goldenData.cases.length; i++) {
+            var refCase = goldenData.cases[i];
+            setStatus('loading', 'Calculando ' + refCase.id + '…');
+            chartsById[refCase.id] = await S.generateNatalChart(refCase.input, { skipCache: true });
+          }
+
+          var result = G.compareAll(chartsById, goldenData);
+          window.__goldenTestResult = result;
+
+          els.resultsRoot.innerHTML = result.reports.map(renderReport).join('');
+          renderSummary(result);
+          setStatus(
+            result.allPass ? 'pass' : 'fail',
+            result.allPass
+              ? 'Todos los casos dentro de tolerancia'
+              : 'Hay desviaciones fuera de tolerancia — revisar tabla'
+          );
+        } catch (err) {
+          showError(err.message || String(err));
+          setStatus('fail', 'Error al ejecutar tests');
+          window.__goldenTestResult = { allPass: false, error: err.message };
+        } finally {
+          els.btnRun.disabled = false;
+        }
+      }
+
+      els.btnRun.addEventListener('click', runTests);
+      loadGoldenData().catch(function (err) {
+        showError('Error cargando golden-charts.json: ' + err.message);
+      });
+    })();
+  </script>
+</body>
+</html>

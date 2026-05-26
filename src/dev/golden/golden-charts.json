@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "version": "1.0",
+    "phase": "2.1a-2c",
+    "capturedAt": "2026-05-22",
+    "referenceSource": "Astro.com Extended Chart Selection (astro.com/cgi/chart.cgi)",
+    "referenceSettings": {
+      "zodiac": "Tropical",
+      "coordinateSystem": "Geocentric",
+      "houseSystem": "Placidus",
+      "ephemeris": "Swiss Ephemeris",
+      "nodeDefault": "Mean Node (MEAN_NODE en motor Kairos)"
+    },
+    "tolerances": {
+      "planetsDeg": 0.1,
+      "anglesDeg": 0.5,
+      "housesDeg": 0.5,
+      "aspectsOrbDeg": 0.3,
+      "utcExact": true
+    },
+    "documentation": {
+      "timezone": "Luxon convierte hora local IANA → UTC. El golden exige coincidencia exacta de UTC.",
+      "dst": "G2 cae en domingo de cambio DST España 1985 (31-mar). 08:15 CEST = 06:15 UTC.",
+      "placidus": "Referencias de ASC, MC y cúspides son Placidus. Es el sistema declarado en metadata del motor.",
+      "meanNodeVsTrueNode": "Referencias de nodos usan Mean Node (estándar Astro.com). TRUE_NODE existe en motor pero no se compara salvo aspectos listados.",
+      "wholeSignInternal": "planet.house del motor usa Whole Sign interno. NO se compara en golden 2.1a-2c."
+    }
+  },
+  "cases": [
+    {
+      "id": "G1",
+      "label": "Maó, Menorca",
+      "description": "Perfil demo Maps — latitud mediterránea, sin DST ambiguo en junio.",
+      "input": {
+        "date": "1990-06-12",
+        "time": "14:35",
+        "timezone": "Europe/Madrid",
+        "lat": 39.8885,
+        "lon": 4.2658
+      },
+      "notes": {
+        "timezone": "Europe/Madrid (CEST, UTC+2 en junio)",
+        "dst": "Horario de verano activo → UTC 12:35",
+        "expectedUtc": "1990-06-12T12:35:00.000Z"
+      },
+      "reference": {
+        "utc": "1990-06-12T12:35:00.000Z",
+        "bodies": {
+          "SUN": { "longitude": 81.2869, "sign": "Géminis" },
+          "MOON": { "longitude": 306.9715, "sign": "Acuario" },
+          "ASC": { "longitude": 182.8755, "sign": "Libra" },
+          "MC": { "longitude": 93.2985, "sign": "Cáncer" }
+        },
+        "houses": [
+          182.8755, 209.2884, 239.8400, 273.2985,
+          306.6532, 336.9224, 2.8755, 29.2884,
+          59.8400, 93.2985, 126.6532, 156.9224
+        ],
+        "aspects": [
+          { "p1": "VENUS", "p2": "JUPITER", "aspect": "Sextil", "orb": 0.0350 },
+          { "p1": "VENUS", "p2": "PLUTO", "aspect": "Oposición", "orb": 0.1808 },
+          { "p1": "JUPITER", "p2": "PLUTO", "aspect": "Trígono", "orb": 0.2158 },
+          { "p1": "PLUTO", "p2": "CHIRON", "aspect": "Trígono", "orb": 0.2981 },
+          { "p1": "SATURN", "p2": "MEAN_APOG", "aspect": "Sextil", "orb": 0.4163 },
+          { "p1": "VENUS", "p2": "CHIRON", "aspect": "Sextil", "orb": 0.4790 },
+          { "p1": "JUPITER", "p2": "CHIRON", "aspect": "Conjunción", "orb": 0.5139 },
+          { "p1": "MARS", "p2": "URANUS", "aspect": "Cuadratura", "orb": 0.6172 }
+        ]
+      }
+    },
+    {
+      "id": "G2",
+      "label": "Madrid — DST primavera 1985",
+      "description": "Caso DST histórico España. Valida Luxon + motor en cambio de horario.",
+      "input": {
+        "date": "1985-03-31",
+        "time": "08:15",
+        "timezone": "Europe/Madrid",
+        "lat": 40.4168,
+        "lon": -3.7038
+      },
+      "notes": {
+        "timezone": "Europe/Madrid",
+        "dst": "31-mar-1985: último domingo de marzo. Tras 02:00→03:00, 08:15 = CEST (UTC+2).",
+        "expectedUtc": "1985-03-31T06:15:00.000Z"
+      },
+      "reference": {
+        "utc": "1985-03-31T06:15:00.000Z",
+        "bodies": {
+          "SUN": { "longitude": 10.4834, "sign": "Aries" },
+          "MOON": { "longitude": 119.6596, "sign": "Cáncer" },
+          "ASC": { "longitude": 14.7616, "sign": "Aries" },
+          "MC": { "longitude": 277.9109, "sign": "Capricornio" }
+        },
+        "houses": [
+          14.7616, 51.8997, 76.7430, 97.9109,
+          120.3716, 149.8479, 194.7616, 231.8997,
+          256.7430, 277.9109, 300.3716, 329.8479
+        ],
+        "aspects": [
+          { "p1": "MERCURY", "p2": "VENUS", "aspect": "Conjunción", "orb": 0.0986 },
+          { "p1": "SUN", "p2": "JUPITER", "aspect": "Sextil", "orb": 0.3335 },
+          { "p1": "NEPTUNE", "p2": "PLUTO", "aspect": "Sextil", "orb": 0.3854 },
+          { "p1": "MARS", "p2": "JUPITER", "aspect": "Cuadratura", "orb": 0.7570 },
+          { "p1": "NEPTUNE", "p2": "OSCU_APOG", "aspect": "Trígono", "orb": 0.9616 },
+          { "p1": "PLUTO", "p2": "OSCU_APOG", "aspect": "Oposición", "orb": 1.3470 },
+          { "p1": "MEAN_NODE", "p2": "TRUE_NODE", "aspect": "Conjunción", "orb": 1.5445 },
+          { "p1": "VENUS", "p2": "URANUS", "aspect": "Trígono", "orb": 1.5863 }
+        ]
+      }
+    },
+    {
+      "id": "G3",
+      "label": "Buenos Aires — hemisferio sur",
+      "description": "Latitud sur, zona horaria americana. Valida casas Placidus en el sur.",
+      "input": {
+        "date": "2000-01-01",
+        "time": "00:30",
+        "timezone": "America/Argentina/Buenos_Aires",
+        "lat": -34.6037,
+        "lon": -58.3816
+      },
+      "notes": {
+        "timezone": "America/Argentina/Buenos_Aires (ART, UTC−3)",
+        "dst": "Sin DST en esta fecha → UTC 03:30 del mismo día calendario.",
+        "expectedUtc": "2000-01-01T03:30:00.000Z"
+      },
+      "reference": {
+        "utc": "2000-01-01T03:30:00.000Z",
+        "bodies": {
+          "SUN": { "longitude": 280.0079, "sign": "Capricornio" },
+          "MOON": { "longitude": 219.0565, "sign": "Escorpio" },
+          "ASC": { "longitude": 186.5653, "sign": "Libra" },
+          "MC": { "longitude": 93.8802, "sign": "Cáncer" }
+        },
+        "houses": [
+          186.5653, 224.3722, 251.2129, 273.8802,
+          297.1301, 325.9276, 6.5653, 44.3722,
+          71.2129, 93.8802, 117.1301, 145.9276
+        ],
+        "aspects": [
+          { "p1": "PLUTO", "p2": "CHIRON", "aspect": "Conjunción", "orb": 0.1348 },
+          { "p1": "SUN", "p2": "SATURN", "aspect": "Trígono", "orb": 0.3950 },
+          { "p1": "NEPTUNE", "p2": "TRUE_NODE", "aspect": "Oposición", "orb": 0.7921 },
+          { "p1": "CHIRON", "p2": "OSCU_APOG", "aspect": "Conjunción", "orb": 0.8661 },
+          { "p1": "SUN", "p2": "MOON", "aspect": "Sextil", "orb": 0.9514 },
+          { "p1": "PLUTO", "p2": "OSCU_APOG", "aspect": "Conjunción", "orb": 1.0009 },
+          { "p1": "MEAN_NODE", "p2": "TRUE_NODE", "aspect": "Conjunción", "orb": 1.0868 },
+          { "p1": "MOON", "p2": "SATURN", "aspect": "Oposición", "orb": 1.3463 }
+        ]
+      }
+    }
+  ]
+}
