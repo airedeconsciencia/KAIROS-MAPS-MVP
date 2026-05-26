@@ -196,30 +196,15 @@
       <button class="calc-btn" id="calc-btn">Calcular mi mapa</button>
     </div>
 
-    <!-- Fase 2.2a Natal Panel Shell — desktop only; datos reales en 2.2b/c -->
-    <section class="section natal-panel" id="natal-panel" data-state="idle" aria-label="Tu carta natal">
-      <h3 class="section-title">Tu carta natal</h3>
-      <p class="natal-panel-sub">Swiss Ephemeris · Placidus · vista esencial</p>
+    <nav class="workspace-rail" id="workspace-rail" aria-label="Módulos Kairos">
+      <button type="button" class="workspace-rail-btn is-active" data-workspace="map" aria-pressed="true">Mapa</button>
+      <button type="button" class="workspace-rail-btn" data-workspace="natal" aria-pressed="false">Carta</button>
+      <button type="button" class="workspace-rail-btn workspace-rail-btn--locked" data-workspace="reloc" aria-pressed="false">Reloc <span class="workspace-rail-lock" aria-hidden="true">◆</span></button>
+      <button type="button" class="workspace-rail-btn workspace-rail-btn--locked" data-workspace="relationship" aria-pressed="false">Pareja <span class="workspace-rail-lock" aria-hidden="true">◆</span></button>
+      <button type="button" class="workspace-rail-btn workspace-rail-btn--locked" data-workspace="destiny" aria-pressed="false">Destino <span class="workspace-rail-lock" aria-hidden="true">◆</span></button>
+    </nav>
 
-      <div class="natal-panel-status" id="natal-panel-status">
-        <span class="natal-panel-status-dot" aria-hidden="true"></span>
-        Pulsa Calcular mi mapa para ver tu carta.
-      </div>
-
-      <div class="natal-panel-body" id="natal-panel-root"></div>
-
-      <!-- Teaser premium (shell estático; unlock en fase posterior) -->
-      <div class="natal-panel-teaser" id="natal-panel-teaser" data-tier="premium">
-        <div class="natal-panel-teaser-lock" aria-hidden="true">🔒</div>
-        <div class="natal-panel-teaser-text">
-          <strong>Carta natal completa</strong>
-          <span>Casas Placidus · aspectos · Urano–Plutón · informe PDF</span>
-        </div>
-        <span class="natal-panel-teaser-badge">Próximamente</span>
-      </div>
-    </section>
-    <!-- /Fase 2.2a Natal Panel Shell -->
-
+    <div class="workspace-panel" id="workspace-map" data-workspace-panel="map">
     <!-- Legend -->
     <div class="section">
       <h3 class="section-title">Líneas Activas</h3>
@@ -239,7 +224,7 @@
       </div>
     </div>
 
-    <div class="section" style="border-bottom: none; flex: 1;">
+    <div class="section workspace-map-about" style="border-bottom: none; flex: 1;">
       <h3 class="section-title">Sobre Kairos</h3>
       <p style="font-size: 12px; line-height: 1.7; color: var(--text-dim); margin: 0 0 12px;">
         La astrocartografía relocaliza tu carta natal sobre la geografía.
@@ -247,6 +232,39 @@
         — sobre el horizonte (AC/DC), en el meridiano (MC), o en el nadir (IC).
       </p>
       <button type="button" class="profile-reset" id="profile-reset">Reiniciar perfil</button>
+    </div>
+    </div>
+
+    <div class="workspace-panel" id="workspace-natal" data-workspace-panel="natal" hidden>
+    <section class="section natal-panel" id="natal-panel" data-state="idle" aria-label="Tu carta natal">
+      <h3 class="section-title">Tu carta natal</h3>
+      <p class="natal-panel-sub">Swiss Ephemeris · Placidus · vista esencial</p>
+
+      <div class="natal-panel-status" id="natal-panel-status">
+        <span class="natal-panel-status-dot" aria-hidden="true"></span>
+        Pulsa Calcular mi mapa para ver tu carta.
+      </div>
+
+      <div class="natal-panel-body" id="natal-panel-root"></div>
+
+      <div class="natal-panel-teaser" id="natal-panel-teaser" data-tier="premium">
+        <div class="natal-panel-teaser-lock" aria-hidden="true">🔒</div>
+        <div class="natal-panel-teaser-text">
+          <strong>Carta natal completa</strong>
+          <span>Casas Placidus · aspectos · Urano–Plutón · informe PDF</span>
+        </div>
+        <span class="natal-panel-teaser-badge">Próximamente</span>
+      </div>
+    </section>
+    </div>
+
+    <div class="workspace-panel workspace-module-teaser" id="workspace-teaser" data-workspace-panel="teaser" hidden>
+      <div class="workspace-module-teaser-inner">
+        <div class="workspace-module-teaser-mark" aria-hidden="true">◆</div>
+        <h3 class="workspace-module-teaser-title" id="workspace-teaser-title">Relocación</h3>
+        <p class="workspace-module-teaser-desc" id="workspace-teaser-desc">Cómo cambia tu carta según la ciudad donde vives.</p>
+        <span class="workspace-module-teaser-badge">Próximamente</span>
+      </div>
     </div>
   </aside>
 

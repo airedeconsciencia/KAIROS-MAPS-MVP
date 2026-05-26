@@ -61,8 +61,26 @@
       error: null,
       lastComputedAt: null,
       birthKey: null
+    },
+    workspace: 'map'
+  };
+
+  const WORKSPACE_TEASERS = {
+    reloc: {
+      title: 'Relocación',
+      desc: 'Cómo cambia tu carta según la ciudad donde vives.'
+    },
+    relationship: {
+      title: 'Pareja',
+      desc: 'Sinastría, carta compuesta y vínculos geográficos.'
+    },
+    destiny: {
+      title: 'Destino',
+      desc: 'Las mejores ciudades para amor, trabajo y propósito.'
     }
   };
+
+  const LOCKED_WORKSPACES = new Set(['reloc', 'relationship', 'destiny']);
 
   // -------- Map setup --------
   const map = L.map('map', {
@@ -172,6 +190,12 @@
   const natalPanelEl  = $('natal-panel');
   const natalPanelStatusEl = $('natal-panel-status');
   const natalPanelRootEl = $('natal-panel-root');
+  const workspaceRail   = $('workspace-rail');
+  const workspaceMapEl  = $('workspace-map');
+  const workspaceNatalEl = $('workspace-natal');
+  const workspaceTeaserEl = $('workspace-teaser');
+  const workspaceTeaserTitle = $('workspace-teaser-title');
+  const workspaceTeaserDesc = $('workspace-teaser-desc');
   const mobileMapBtn    = $('mobile-map-btn');
   const mobileControlsBtn = $('mobile-controls-btn');
   const mobileGreeting  = $('mobile-greeting');
@@ -181,6 +205,64 @@
 
   function isMobileLayout() {
     return MOBILE_MQ.matches;
+  }
+
+  function isLockedWorkspace(ws) {
+    return LOCKED_WORKSPACES.has(ws);
+  }
+
+  function setWorkspace(ws) {
+    if (ws !== 'map' && ws !== 'natal' && !isLockedWorkspace(ws)) return;
+    state.workspace = ws;
+    renderWorkspace();
+  }
+
+  function renderWorkspace() {
+    if (!workspaceMapEl) return;
+
+    if (isMobileLayout()) {
+      workspaceMapEl.hidden = false;
+      if (workspaceNatalEl) workspaceNatalEl.hidden = true;
+      if (workspaceTeaserEl) workspaceTeaserEl.hidden = true;
+      return;
+    }
+
+    const ws = state.workspace || 'map';
+    const showMap = ws === 'map';
+    const showNatal = ws === 'natal';
+    const showTeaser = isLockedWorkspace(ws);
+
+    workspaceMapEl.hidden = !showMap;
+    if (workspaceNatalEl) workspaceNatalEl.hidden = !showNatal;
+    if (workspaceTeaserEl) workspaceTeaserEl.hidden = !showTeaser;
+
+    if (workspaceRail) {
+      workspaceRail.querySelectorAll('[data-workspace]').forEach((btn) => {
+        const id = btn.getAttribute('data-workspace');
+        const active = id === ws;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    if (showTeaser && workspaceTeaserTitle && workspaceTeaserDesc) {
+      const teaser = WORKSPACE_TEASERS[ws];
+      if (teaser) {
+        workspaceTeaserTitle.textContent = teaser.title;
+        workspaceTeaserDesc.textContent = teaser.desc;
+      }
+    }
+  }
+
+  function initWorkspaceRail() {
+    if (!workspaceRail) return;
+    workspaceRail.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-workspace]');
+      if (!btn || !workspaceRail.contains(btn)) return;
+      setWorkspace(btn.getAttribute('data-workspace'));
+    });
+    MOBILE_MQ.addEventListener('change', renderWorkspace);
+    renderWorkspace();
   }
 
   function refreshMapSize(delayMs) {
@@ -1201,10 +1283,12 @@
           ? window.KairosChartService.getStatus()
           : null;
       },
-      get lines() { return state.lines.length; }
+      get lines() { return state.lines.length; },
+      get workspace() { return state.workspace; }
     };
   }
 
+  initWorkspaceRail();
   renderNatalPanel();
   checkDeps();
   } // startApp

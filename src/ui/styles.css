@@ -124,6 +124,111 @@
     opacity: 0.5; cursor: wait; transform: none;
   }
 
+  /* ---------- Fase 3.2b — Workspace rail (desktop) ---------- */
+  .workspace-rail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 14px 28px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .workspace-rail-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 9px 8px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s, box-shadow 0.15s;
+  }
+  .workspace-rail-btn:hover {
+    border-color: rgba(215, 193, 136, 0.35);
+    color: var(--text);
+  }
+  .workspace-rail-btn.is-active {
+    border-color: rgba(215, 193, 136, 0.55);
+    color: var(--text);
+    background: rgba(215, 193, 136, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(215, 193, 136, 0.12);
+  }
+  .workspace-rail-btn--locked {
+    opacity: 0.72;
+    cursor: pointer;
+  }
+  .workspace-rail-btn--locked.is-active {
+    opacity: 1;
+  }
+  .workspace-rail-lock {
+    font-size: 7px;
+    color: var(--kairos-gold);
+    opacity: 0.85;
+    line-height: 1;
+  }
+  .workspace-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+  .workspace-panel[hidden] {
+    display: none !important;
+  }
+  .workspace-module-teaser {
+    padding: 20px 28px;
+    flex: 1;
+  }
+  .workspace-module-teaser-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 28px 22px;
+    background: var(--bg-elev);
+    border: 1px dashed rgba(215, 193, 136, 0.28);
+    border-radius: 4px;
+  }
+  .workspace-module-teaser-mark {
+    font-size: 18px;
+    line-height: 1;
+    color: var(--kairos-gold);
+    opacity: 0.8;
+  }
+  .workspace-module-teaser-title {
+    margin: 0;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+  .workspace-module-teaser-desc {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    max-width: 280px;
+  }
+  .workspace-module-teaser-badge {
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--kairos-gold);
+    border: 1px solid rgba(215, 193, 136, 0.35);
+    border-radius: 3px;
+    padding: 4px 8px;
+  }
+
   /* ---------- Fase 2.2a — Natal Panel Shell (desktop) ---------- */
   .natal-panel {
     padding-top: 18px;
@@ -1140,6 +1245,16 @@
     /* Fase 2.2a — panel natal solo desktop */
     .natal-panel {
       display: none !important;
+    }
+
+    .workspace-rail,
+    #workspace-teaser,
+    #workspace-natal {
+      display: none !important;
+    }
+
+    #workspace-map {
+      display: flex !important;
     }
 
     .app {
