@@ -241,6 +241,15 @@
     color: var(--text-faint);
     letter-spacing: 0.02em;
   }
+  .natal-panel-summary {
+    margin: -6px 0 16px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15.5px;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: 0.03em;
+    color: rgba(215, 193, 136, 0.92);
+  }
   .natal-panel-status {
     display: flex;
     align-items: flex-start;

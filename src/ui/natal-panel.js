@@ -96,6 +96,51 @@
     skipped: ''
   };
 
+  var PANEL_SUB_TECH = 'Swiss Ephemeris · Placidus · vista esencial';
+
+  /** Máx. caracteres para incluir Luna en una línea del sidebar (~360px). */
+  var SUMMARY_WITH_MOON_MAX_LEN = 54;
+
+  function buildHumanSummary(chart, includeMoon) {
+    if (!chart) return '';
+
+    var sunSign = chart.planets && chart.planets.SUN && chart.planets.SUN.sign;
+    var moonSign = chart.planets && chart.planets.MOON && chart.planets.MOON.sign;
+    var ascSign = chart.angles && chart.angles.ASC && chart.angles.ASC.sign;
+
+    var parts = [];
+    if (sunSign) parts.push('Sol en ' + sunSign);
+    if (includeMoon && moonSign) parts.push('Luna en ' + moonSign);
+    if (ascSign) parts.push('Ascendente en ' + ascSign);
+
+    return parts.join(' · ');
+  }
+
+  function buildHumanSummaryAuto(chart) {
+    if (!chart) return '';
+    var withMoon = buildHumanSummary(chart, true);
+    if (withMoon && withMoon.length <= SUMMARY_WITH_MOON_MAX_LEN) return withMoon;
+    return buildHumanSummary(chart, false);
+  }
+
+  function syncPanelSub(chart, chartState) {
+    var el = document.querySelector('#natal-panel .natal-panel-sub, #natal-panel .natal-panel-summary');
+    if (!el) return;
+
+    var status = chartState && chartState.status;
+    if (status === 'ready' && chart) {
+      var summary = buildHumanSummaryAuto(chart);
+      if (summary) {
+        el.className = 'natal-panel-summary';
+        el.textContent = summary;
+        return;
+      }
+    }
+
+    el.className = 'natal-panel-sub';
+    el.textContent = PANEL_SUB_TECH;
+  }
+
   function renderIdleHTML() {
     return (
       '<div class="natal-panel-empty">' +
@@ -369,6 +414,7 @@
 
   function renderBodyHTML(chart, chartState) {
     var status = chartState && chartState.status;
+    syncPanelSub(chart, chartState);
     if (status === 'ready' && chart) {
       return (
         '<div class="natal-panel-cards">' + renderCardsHTML(chart) + '</div>' +
@@ -398,7 +444,10 @@
     renderFootnoteHTML: renderFootnoteHTML,
     renderStateHTML: renderStateHTML,
     renderBodyHTML: renderBodyHTML,
-    renderIdleHTML: renderIdleHTML
+    renderIdleHTML: renderIdleHTML,
+    buildHumanSummary: buildHumanSummary,
+    buildHumanSummaryAuto: buildHumanSummaryAuto,
+    syncPanelSub: syncPanelSub
   };
 
   preloadSignGlyphs();
