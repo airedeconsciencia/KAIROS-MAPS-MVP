@@ -452,12 +452,9 @@
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-<!-- Fase 2.1a-3a — motor natal (paralelo a astro.js; orden = golden-test) -->
-<script src="engines/kairos-core/aspects_engine.js"></script>
-<script src="engines/kairos-core/planetary_engine.js"></script>
-<script src="engines/kairos-core/chart_engine.js"></script>
-<script type="module" src="engines/kairos-core/bootstrap.js"></script>
-<script src="services/chart-service.js"></script>
+<!-- Fase 3.1c — motor natal lazy vía loader + chart-service (no cold start WASM) -->
+<script src="services/natal-engine-loader.js?v=3.1c"></script>
+<script src="services/chart-service.js?v=3.1c"></script>
 <script src="content/interpretations.js"></script>
 <script src="engines/astro.js"></script>
 <script src="ui/places.js"></script>
