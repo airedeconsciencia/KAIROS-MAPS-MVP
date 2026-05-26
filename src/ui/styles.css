@@ -124,6 +124,241 @@
     opacity: 0.5; cursor: wait; transform: none;
   }
 
+  /* ---------- Fase 2.2a — Natal Panel Shell (desktop) ---------- */
+  .natal-panel {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+  .natal-panel-sub {
+    margin: -8px 0 14px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-faint);
+    letter-spacing: 0.02em;
+  }
+  .natal-panel-status {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text-dim);
+  }
+  .natal-panel-status-dot {
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    margin-top: 5px;
+    border-radius: 50%;
+    background: var(--text-faint);
+    opacity: 0.7;
+  }
+  .natal-panel[data-state="loading"] .natal-panel-status-dot {
+    background: var(--kairos-gold);
+    opacity: 1;
+    animation: natal-pulse 1.2s ease-in-out infinite;
+  }
+  .natal-panel[data-state="ready"] .natal-panel-status-dot {
+    background: #4ade80;
+    opacity: 1;
+  }
+  .natal-panel[data-state="error"] .natal-panel-status-dot {
+    background: #f87171;
+    opacity: 1;
+  }
+  @keyframes natal-pulse {
+    0%, 100% { opacity: 0.45; transform: scale(0.92); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+  .natal-panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .natal-panel-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .natal-panel-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 11px;
+    min-height: 72px;
+  }
+  .natal-panel-card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+  }
+  .natal-glyph-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  .natal-glyph-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    color: var(--kairos-gold);
+  }
+  .natal-glyph-slot--sign {
+    width: 15px;
+    height: 15px;
+  }
+  .natal-panel-card-sign .natal-glyph-slot--sign {
+    width: 16px;
+    height: 16px;
+  }
+  .natal-glyph-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+  .natal-glyph-fallback-text {
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .natal-panel-table .natal-glyph-row {
+    gap: 5px;
+  }
+  .natal-panel-table .natal-glyph-slot {
+    width: 13px;
+    height: 13px;
+  }
+  .natal-panel-table .natal-glyph-fallback-text {
+    font-size: 11px;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    color: var(--text);
+  }
+  .natal-panel-card-sign {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--kairos-gold);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .natal-panel-card-sign-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--kairos-gold);
+    line-height: 1.2;
+  }
+  .natal-panel-card-detail {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.02em;
+  }
+  .natal-panel-card.natal-skeleton,
+  .natal-panel-table tbody tr.natal-skeleton td {
+    opacity: 0.45;
+  }
+  .natal-panel-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+  }
+  .natal-panel-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .natal-panel-table th,
+  .natal-panel-table td {
+    text-align: left;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .natal-panel-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    font-weight: 500;
+    background: var(--bg-elev);
+  }
+  .natal-panel-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .natal-panel-table td:nth-child(3),
+  .natal-panel-table td:nth-child(4) {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .natal-panel-footnote {
+    margin: 0;
+    font-size: 10.5px;
+    line-height: 1.55;
+    color: var(--text-faint);
+  }
+  .natal-panel-teaser {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 12px 12px;
+    background: rgba(215, 193, 136, 0.06);
+    border: 1px dashed rgba(215, 193, 136, 0.28);
+    border-radius: 4px;
+  }
+  .natal-panel-teaser-lock {
+    flex-shrink: 0;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0.85;
+  }
+  .natal-panel-teaser-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .natal-panel-teaser-text strong {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .natal-panel-teaser-text span {
+    font-size: 10.5px;
+    line-height: 1.45;
+    color: var(--text-dim);
+  }
+  .natal-panel-teaser-badge {
+    flex-shrink: 0;
+    align-self: flex-start;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--kairos-gold);
+    padding: 4px 6px;
+    border: 1px solid rgba(215, 193, 136, 0.35);
+    border-radius: 3px;
+  }
+
   /* ---------- Angle filter pills ---------- */
   .angle-filter {
     display: grid; grid-template-columns: repeat(4, 1fr);
@@ -810,6 +1045,11 @@
   @media (max-width: 768px) {
     :root {
       --mobile-top-h: 44px;
+    }
+
+    /* Fase 2.2a — panel natal solo desktop */
+    .natal-panel {
+      display: none !important;
     }
 
     .app {

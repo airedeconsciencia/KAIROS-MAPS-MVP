@@ -196,6 +196,144 @@
       <button class="calc-btn" id="calc-btn">Calcular mi mapa</button>
     </div>
 
+    <!-- Fase 2.2a Natal Panel Shell — desktop only; datos reales en 2.2b/c -->
+    <section class="section natal-panel" id="natal-panel" data-state="idle" aria-label="Tu carta natal">
+      <h3 class="section-title">Tu carta natal</h3>
+      <p class="natal-panel-sub">Swiss Ephemeris · Placidus · vista esencial</p>
+
+      <!-- Estado idle (placeholder 2.2a) — loading | ready | error vía JS en 2.2c -->
+      <div class="natal-panel-status" id="natal-panel-status">
+        <span class="natal-panel-status-dot" aria-hidden="true"></span>
+        Tu carta aparecerá aquí cuando calcules el mapa.
+      </div>
+
+      <div class="natal-panel-body" id="natal-panel-root">
+        <!-- Cards Sol / Luna / ASC / MC (shell) — slots glifo: data-glyph-kind + data-glyph-id -->
+        <div class="natal-panel-cards" id="natal-panel-cards">
+          <div class="natal-panel-card natal-skeleton">
+            <div class="natal-panel-card-label natal-glyph-row">
+              <span class="natal-glyph-slot" data-glyph-kind="planet" data-glyph-id="sol">
+                <img class="natal-glyph-img" src="assets/kairos_symbols/planets/sun.svg" alt="">
+              </span>
+              <span class="natal-glyph-fallback-text">Sol</span>
+            </div>
+            <div class="natal-panel-card-sign natal-glyph-row">
+              <span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="gemini">
+                <img class="natal-glyph-img" src="assets/kairos_symbols/signs/gemini.svg" alt="">
+              </span>
+              <span class="natal-panel-card-sign-text">—</span>
+            </div>
+            <div class="natal-panel-card-detail">—° —′</div>
+          </div>
+          <div class="natal-panel-card natal-skeleton">
+            <div class="natal-panel-card-label natal-glyph-row">
+              <span class="natal-glyph-slot" data-glyph-kind="planet" data-glyph-id="luna">
+                <img class="natal-glyph-img" src="assets/kairos_symbols/planets/moon.svg" alt="">
+              </span>
+              <span class="natal-glyph-fallback-text">Luna</span>
+            </div>
+            <div class="natal-panel-card-sign natal-glyph-row">
+              <span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="aquarius">
+                <img class="natal-glyph-img" src="assets/kairos_symbols/signs/aquarius.svg" alt="">
+              </span>
+              <span class="natal-panel-card-sign-text">—</span>
+            </div>
+            <div class="natal-panel-card-detail">—° —′</div>
+          </div>
+          <div class="natal-panel-card natal-skeleton">
+            <div class="natal-panel-card-label">
+              <span class="natal-glyph-fallback-text">Ascendente</span>
+            </div>
+            <div class="natal-panel-card-sign natal-glyph-row">
+              <span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="libra">
+                <img class="natal-glyph-img" src="assets/kairos_symbols/signs/libra.svg" alt="">
+              </span>
+              <span class="natal-panel-card-sign-text">—</span>
+            </div>
+            <div class="natal-panel-card-detail">—° —′</div>
+          </div>
+          <div class="natal-panel-card natal-skeleton">
+            <div class="natal-panel-card-label">
+              <span class="natal-glyph-fallback-text">Medio Cielo</span>
+            </div>
+            <div class="natal-panel-card-sign natal-glyph-row">
+              <span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="cancer">
+                <img class="natal-glyph-img" src="assets/kairos_symbols/signs/cancer.svg" alt="">
+              </span>
+              <span class="natal-panel-card-sign-text">—</span>
+            </div>
+            <div class="natal-panel-card-detail">—° —′</div>
+          </div>
+        </div>
+
+        <!-- Tabla planetas principales (shell) -->
+        <div class="natal-panel-table-wrap" id="natal-panel-planets">
+          <table class="natal-panel-table">
+            <thead>
+              <tr>
+                <th>Planeta</th>
+                <th>Signo</th>
+                <th>Grado</th>
+                <th>R</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="natal-skeleton">
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot" data-glyph-kind="planet" data-glyph-id="sol"><img class="natal-glyph-img" src="assets/kairos_symbols/planets/sun.svg" alt=""></span><span class="natal-glyph-fallback-text">Sol</span></span></td>
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="gemini"><img class="natal-glyph-img" src="assets/kairos_symbols/signs/gemini.svg" alt=""></span><span>—</span></span></td>
+                <td>—° —′</td><td></td>
+              </tr>
+              <tr class="natal-skeleton">
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot" data-glyph-kind="planet" data-glyph-id="luna"><img class="natal-glyph-img" src="assets/kairos_symbols/planets/moon.svg" alt=""></span><span class="natal-glyph-fallback-text">Luna</span></span></td>
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="aquarius"><img class="natal-glyph-img" src="assets/kairos_symbols/signs/aquarius.svg" alt=""></span><span>—</span></span></td>
+                <td>—° —′</td><td></td>
+              </tr>
+              <tr class="natal-skeleton">
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot" data-glyph-kind="planet" data-glyph-id="mercurio"><img class="natal-glyph-img" src="assets/kairos_symbols/planets/mercury.svg" alt=""></span><span class="natal-glyph-fallback-text">Mercurio</span></span></td>
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="gemini"><img class="natal-glyph-img" src="assets/kairos_symbols/signs/gemini.svg" alt=""></span><span>—</span></span></td>
+                <td>—° —′</td><td></td>
+              </tr>
+              <tr class="natal-skeleton">
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot" data-glyph-kind="planet" data-glyph-id="venus"><img class="natal-glyph-img" src="assets/kairos_symbols/planets/venus.svg" alt=""></span><span class="natal-glyph-fallback-text">Venus</span></span></td>
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="taurus"><img class="natal-glyph-img" src="assets/kairos_symbols/signs/taurus.svg" alt=""></span><span>—</span></span></td>
+                <td>—° —′</td><td></td>
+              </tr>
+              <tr class="natal-skeleton">
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot" data-glyph-kind="planet" data-glyph-id="marte"><img class="natal-glyph-img" src="assets/kairos_symbols/planets/mars.svg" alt=""></span><span class="natal-glyph-fallback-text">Marte</span></span></td>
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="aries"><img class="natal-glyph-img" src="assets/kairos_symbols/signs/aries.svg" alt=""></span><span>—</span></span></td>
+                <td>—° —′</td><td></td>
+              </tr>
+              <tr class="natal-skeleton">
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot" data-glyph-kind="planet" data-glyph-id="jupiter"><img class="natal-glyph-img" src="assets/kairos_symbols/planets/jupiter.svg" alt=""></span><span class="natal-glyph-fallback-text">Júpiter</span></span></td>
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="cancer"><img class="natal-glyph-img" src="assets/kairos_symbols/signs/cancer.svg" alt=""></span><span>—</span></span></td>
+                <td>—° —′</td><td></td>
+              </tr>
+              <tr class="natal-skeleton">
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot" data-glyph-kind="planet" data-glyph-id="saturno"><img class="natal-glyph-img" src="assets/kairos_symbols/planets/saturn.svg" alt=""></span><span class="natal-glyph-fallback-text">Saturno</span></span></td>
+                <td><span class="natal-glyph-row"><span class="natal-glyph-slot natal-glyph-slot--sign" data-glyph-kind="sign" data-glyph-id="capricorn"><img class="natal-glyph-img" src="assets/kairos_symbols/signs/capricorn.svg" alt=""></span><span>—</span></span></td>
+                <td>—° —′</td><td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="natal-panel-footnote" id="natal-panel-footnote">
+          Vista esencial gratuita. Casas, aspectos y carta completa — Kairos Premium.
+        </p>
+      </div>
+
+      <!-- Teaser premium (shell estático; unlock en fase posterior) -->
+      <div class="natal-panel-teaser" id="natal-panel-teaser" data-tier="premium">
+        <div class="natal-panel-teaser-lock" aria-hidden="true">🔒</div>
+        <div class="natal-panel-teaser-text">
+          <strong>Carta natal completa</strong>
+          <span>Casas Placidus · aspectos · Urano–Plutón · informe PDF</span>
+        </div>
+        <span class="natal-panel-teaser-badge">Próximamente</span>
+      </div>
+    </section>
+    <!-- /Fase 2.2a Natal Panel Shell -->
+
     <!-- Legend -->
     <div class="section">
       <h3 class="section-title">Líneas Activas</h3>
