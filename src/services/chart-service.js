@@ -107,12 +107,39 @@
     }
   }
 
+  async function ensureNatalLoader() {
+    if (window.KairosNatalEngineLoader) return;
+
+    await new Promise(function (resolve, reject) {
+      var baseScript = document.querySelector('script[src*="chart-service.js"]');
+      var loaderUrl = baseScript
+        ? new URL('natal-engine-loader.js', baseScript.src).href
+        : 'services/natal-engine-loader.js';
+      var el = document.createElement('script');
+      el.src = loaderUrl;
+      el.onload = function () { resolve(); };
+      el.onerror = function () {
+        reject(new ChartServiceError('LOADER_MISSING', 'No se pudo cargar natal-engine-loader.js'));
+      };
+      document.head.appendChild(el);
+    });
+  }
+
   async function doInit() {
     const t0 = performance.now();
     _lastError = null;
 
     try {
       requireGlobal('luxon');
+
+      const tLoadStart = performance.now();
+      await ensureNatalLoader();
+      const Loader = window.KairosNatalEngineLoader;
+      if (Loader && typeof Loader.load === 'function') {
+        await Loader.load();
+      }
+      const loadMs = Math.round(performance.now() - tLoadStart);
+
       requireGlobal('generateFullChart');
       requireGlobal('initPlanetaryEngine');
 
@@ -141,6 +168,7 @@
 
       _ready = true;
       _lastTimings = {
+        loadMs: loadMs,
         wasmMs: Math.round(wasmMs),
         planetaryMs: Math.round(planetaryMs),
         totalMs: Math.round(performance.now() - t0),
@@ -228,6 +256,7 @@
   }
 
   function getStatus() {
+    const loader = window.KairosNatalEngineLoader;
     return {
       ready: _ready,
       initInFlight: !!_initPromise && !_ready,
@@ -236,7 +265,9 @@
       lastTimings: { ..._lastTimings },
       lastError: _lastError ? { ..._lastError } : null,
       hasSwisseph: !!window.swisseph_native,
-      swephPathReady: !!window.swisseph_native?._kairosReady
+      swephPathReady: !!window.swisseph_native?._kairosReady,
+      loaderReady: loader ? loader.isReady() : null,
+      loaderLoaded: loader ? loader.getStatus().loaded : null
     };
   }
 
