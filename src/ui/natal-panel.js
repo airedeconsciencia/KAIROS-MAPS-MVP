@@ -98,6 +98,15 @@
 
   var PANEL_SUB_IDLE = 'Carta esencial · Sol, Luna y ángulos principales';
 
+  function natalLiteDebugEnabled() {
+    try {
+      return localStorage.getItem('kairosDebug') === '1'
+        || new URLSearchParams(location.search).has('debug');
+    } catch (e) {
+      return false;
+    }
+  }
+
   var MONTHS_ES = [
     'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
@@ -144,6 +153,99 @@
 
     el.className = 'natal-panel-sub';
     el.textContent = PANEL_SUB_IDLE;
+  }
+
+  function composeLiteReading(chart) {
+    var C = window.KairosNatalComposition;
+    var debug = natalLiteDebugEnabled();
+    var sunSign = chart && chart.planets && chart.planets.SUN && chart.planets.SUN.sign;
+    var moonSign = chart && chart.planets && chart.planets.MOON && chart.planets.MOON.sign;
+    var ascSign = chart && chart.angles && chart.angles.ASC && chart.angles.ASC.sign;
+    var sun = signSlug(sunSign);
+    var moon = signSlug(moonSign);
+    var asc = signSlug(ascSign);
+
+    if (debug) {
+      console.info('[Natal Lite] signs', {
+        SUN: sunSign || null,
+        MOON: moonSign || null,
+        ASC: ascSign || null
+      });
+      console.info('[Natal Lite] slugs', { sun: sun, moon: moon, asc: asc });
+    }
+
+    if (!C || typeof C.composeNatalLiteReading !== 'function') {
+      if (debug) {
+        console.info('[Natal Lite] result', {
+          ok: false,
+          error: 'COMPOSITION_UNAVAILABLE',
+          KairosNatalComposition: typeof C
+        });
+      }
+      return null;
+    }
+
+    if (!sun || !moon || !asc) {
+      if (debug) {
+        console.info('[Natal Lite] result', {
+          ok: false,
+          error: 'SIGN_SLUG_MISSING',
+          missing: [
+            !sun ? 'SUN' : null,
+            !moon ? 'MOON' : null,
+            !asc ? 'ASC' : null
+          ].filter(Boolean)
+        });
+      }
+      return null;
+    }
+
+    try {
+      var result = C.composeNatalLiteReading({ sun: sun, moon: moon, asc: asc });
+      if (debug) {
+        console.info('[Natal Lite] result', result);
+      }
+      if (!result || result.ok !== true || !result.reading) return null;
+      return result;
+    } catch (err) {
+      if (debug) {
+        console.info('[Natal Lite] result', { ok: false, error: 'COMPOSE_THROW', message: err.message });
+      }
+      return null;
+    }
+  }
+
+  function renderLiteReadingHTML(chart) {
+    var result = composeLiteReading(chart);
+    if (!result || !result.reading) return '';
+
+    return (
+      '<div class="natal-lite-reading" aria-label="Lectura breve">' +
+        esc(result.reading) +
+      '</div>'
+    );
+  }
+
+  function syncLiteReading(chart, chartState) {
+    var root = document.getElementById('natal-lite-reading-root');
+    if (!root) return;
+
+    var status = chartState && chartState.status;
+    if (status !== 'ready' || !chart) {
+      root.hidden = true;
+      root.innerHTML = '';
+      return;
+    }
+
+    var html = renderLiteReadingHTML(chart);
+    if (!html) {
+      root.hidden = true;
+      root.innerHTML = '';
+      return;
+    }
+
+    root.innerHTML = html;
+    root.hidden = false;
   }
 
   function formatBirthDateTime(dateStr, timeStr) {
@@ -465,6 +567,7 @@
   function renderBodyHTML(chart, chartState) {
     var status = chartState && chartState.status;
     syncPanelSub(chart, chartState);
+    syncLiteReading(chart, chartState);
     if (status === 'ready' && chart) {
       return (
         '<div class="natal-panel-ready natal-panel-fade-in">' +
@@ -501,7 +604,10 @@
     renderLoadingHTML: renderLoadingHTML,
     buildHumanSummary: buildHumanSummary,
     buildHumanSummaryAuto: buildHumanSummaryAuto,
-    syncPanelSub: syncPanelSub
+    syncPanelSub: syncPanelSub,
+    composeLiteReading: composeLiteReading,
+    renderLiteReadingHTML: renderLiteReadingHTML,
+    syncLiteReading: syncLiteReading
   };
 
   preloadSignGlyphs();

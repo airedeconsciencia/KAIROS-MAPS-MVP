@@ -352,13 +352,31 @@
     letter-spacing: 0.02em;
   }
   .natal-panel-summary {
-    margin: -6px 0 16px;
+    margin: -6px 0 10px;
     font-family: 'Cormorant Garamond', serif;
     font-size: 15.5px;
     font-weight: 500;
     line-height: 1.45;
     letter-spacing: 0.03em;
     color: rgba(215, 193, 136, 0.92);
+  }
+  .natal-lite-reading-root {
+    margin: 0 0 14px;
+  }
+  .natal-lite-reading-root[hidden] {
+    display: none !important;
+  }
+  .natal-lite-reading {
+    padding: 12px 14px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.65;
+    letter-spacing: 0.02em;
+    color: rgba(232, 220, 196, 0.88);
+    background: rgba(215, 193, 136, 0.045);
+    border: 1px solid rgba(215, 193, 136, 0.12);
+    border-radius: 4px;
   }
   .natal-panel-status {
     display: flex;
