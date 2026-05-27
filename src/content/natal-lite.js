@@ -39,6 +39,18 @@
 
   var ANGLES = ['ASC', 'MC'];
 
+  /** Slugs zodiacales canónicos (12 signos) — alineados con natal-panel / compositor */
+  var ZODIAC_SLUGS = [
+    'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+    'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
+  ];
+
+  var LITE_READING_ROLES = [
+    { role: 'SUN', inputKey: 'sun' },
+    { role: 'MOON', inputKey: 'moon' },
+    { role: 'ASC', inputKey: 'asc' }
+  ];
+
   /**
    * Registro plano de fragmentos por id.
    * Forma objetivo (v0.1):
@@ -417,6 +429,139 @@
     return SCHEMA_VERSION;
   }
 
+  function normalizeInspectSlug(slug) {
+    if (slug == null || slug === '') return null;
+    return String(slug).toLowerCase().trim();
+  }
+
+  function fragmentIdForRoleSlug(role, slug) {
+    var normalized = normalizeInspectSlug(slug);
+    if (!normalized || !role) return null;
+    return String(role).toUpperCase() + '_' + normalized.toUpperCase();
+  }
+
+  function slugFromFragmentId(id) {
+    if (!id || id.indexOf('_') === -1) return null;
+    return id.split('_').slice(1).join('_').toLowerCase();
+  }
+
+  function roleFragmentIds(role) {
+    var prefix = String(role).toUpperCase() + '_';
+    return Object.keys(FRAGMENTS).filter(function (id) {
+      return id.indexOf(prefix) === 0;
+    }).sort();
+  }
+
+  function roleCoverage(role) {
+    var ids = roleFragmentIds(role);
+    var slugSet = {};
+    ids.forEach(function (id) {
+      var slug = slugFromFragmentId(id);
+      if (slug) slugSet[slug] = id;
+    });
+    var slugs = Object.keys(slugSet).sort();
+    var gaps = ZODIAC_SLUGS.filter(function (slug) {
+      return !slugSet[slug];
+    });
+    return {
+      role: role,
+      covered: slugs.length,
+      total: ZODIAC_SLUGS.length,
+      slugs: slugs,
+      gaps: gaps,
+      fragmentIds: slugs.map(function (slug) { return slugSet[slug]; })
+    };
+  }
+
+  function natalLiteDebugEnabled() {
+    try {
+      return localStorage.getItem('kairosDebug') === '1'
+        || new URLSearchParams(location.search).has('debug');
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function inspect(input) {
+    if (!input || typeof input !== 'object') {
+      throw new Error('inspect requiere un objeto { sun, moon, asc }');
+    }
+
+    var missing = [];
+    var available = [];
+    var slugs = {};
+    var invalidSlugs = [];
+
+    LITE_READING_ROLES.forEach(function (def) {
+      var slug = normalizeInspectSlug(input[def.inputKey]);
+      slugs[def.inputKey] = slug;
+
+      if (!slug) {
+        missing.push(def.role + ':<missing-slug>');
+        return;
+      }
+
+      if (ZODIAC_SLUGS.indexOf(slug) === -1) {
+        invalidSlugs.push(def.inputKey + ':' + slug);
+        missing.push(def.role + ':' + slug);
+        return;
+      }
+
+      var id = fragmentIdForRoleSlug(def.role, slug);
+      if (hasFragment(id)) {
+        available.push(id);
+      } else {
+        missing.push(id);
+      }
+    });
+
+    var coveragePercent = Math.round((available.length / LITE_READING_ROLES.length) * 100);
+
+    var result = {
+      ok: missing.length === 0,
+      missing: missing,
+      available: available,
+      coveragePercent: coveragePercent,
+      slugs: slugs,
+      meta: {
+        schemaVersion: SCHEMA_VERSION,
+        invalidSlugs: invalidSlugs
+      }
+    };
+
+    if (natalLiteDebugEnabled()) {
+      console.info('[Natal Lite Debug] inspect', result);
+    }
+
+    return result;
+  }
+
+  function stats() {
+    var byRole = {};
+    LITE_READING_ROLES.forEach(function (def) {
+      byRole[def.role] = roleCoverage(def.role);
+    });
+
+    var result = {
+      schemaVersion: SCHEMA_VERSION,
+      totalFragments: Object.keys(FRAGMENTS).length,
+      liteRoles: LITE_READING_ROLES.map(function (def) { return def.role; }),
+      zodiacSlugs: ZODIAC_SLUGS.slice(),
+      byRole: byRole,
+      gaps: {
+        SUN: byRole.SUN.gaps,
+        MOON: byRole.MOON.gaps,
+        ASC: byRole.ASC.gaps
+      }
+    };
+
+    if (natalLiteDebugEnabled()) {
+      console.info('[Natal Lite Debug] stats', result);
+    }
+
+    return result;
+  }
+
   window.KairosNatalLite = {
     SCHEMA_VERSION: SCHEMA_VERSION,
     SIGNS_ES: SIGNS_ES,
@@ -433,5 +578,14 @@
     lookupAngle: lookupAngle,
     lookupBySlug: lookupBySlug,
     getSchemaVersion: getSchemaVersion
+  };
+
+  window.KairosNatalLiteDebug = {
+    ZODIAC_SLUGS: ZODIAC_SLUGS,
+    LITE_READING_ROLES: LITE_READING_ROLES,
+    inspect: inspect,
+    stats: stats,
+    roleCoverage: roleCoverage,
+    fragmentIdForRoleSlug: fragmentIdForRoleSlug
   };
 })();
