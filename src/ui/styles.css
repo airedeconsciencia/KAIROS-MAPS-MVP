@@ -103,6 +103,66 @@
   .field input::placeholder { color: var(--text-faint); }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
+  /* ---------- Fase 3.2a5 — Coordenadas avanzadas ---------- */
+  .coords-advanced {
+    margin-top: 2px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-elev);
+  }
+  .coords-advanced-summary {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--text-dim);
+    cursor: pointer;
+    list-style: none;
+    transition: color 0.15s, background 0.15s;
+  }
+  .coords-advanced-summary::-webkit-details-marker {
+    display: none;
+  }
+  .coords-advanced-summary::before {
+    content: '▸';
+    flex-shrink: 0;
+    margin-right: 8px;
+    font-size: 10px;
+    color: var(--text-faint);
+    transition: transform 0.15s, color 0.15s;
+  }
+  .coords-advanced[open] .coords-advanced-summary::before {
+    transform: rotate(90deg);
+    color: var(--kairos-gold);
+  }
+  .coords-advanced-summary:hover {
+    color: var(--text);
+    background: rgba(215, 193, 136, 0.04);
+  }
+  .coords-advanced-summary:hover::before {
+    color: rgba(215, 193, 136, 0.75);
+  }
+  .coords-advanced-hint {
+    margin: 0;
+    padding: 0 12px 10px;
+    font-size: 10.5px;
+    line-height: 1.55;
+    color: var(--text-faint);
+  }
+  .coords-advanced-fields {
+    padding: 0 12px 12px;
+    margin: 0;
+  }
+  .coords-advanced-fields .field {
+    margin-bottom: 0;
+  }
+  .onboarding-form .coords-advanced {
+    margin-top: 4px;
+  }
+
   .calc-btn {
     width: 100%; margin-top: 6px;
     background: var(--kairos-gold);
