@@ -114,7 +114,7 @@
     font-size: 12px; font-weight: 600;
     letter-spacing: 0.12em; text-transform: uppercase;
     cursor: pointer;
-    transition: transform 0.1s, box-shadow 0.2s;
+    transition: transform 0.1s, box-shadow 0.2s, background 0.2s;
   }
   .calc-btn:hover {
     box-shadow: 0 0 24px rgba(215, 193, 136, 0.25);
@@ -122,6 +122,56 @@
   }
   .calc-btn:disabled {
     opacity: 0.5; cursor: wait; transform: none;
+  }
+  .calc-btn:focus-visible {
+    outline: 2px solid rgba(215, 193, 136, 0.55);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Fase 3.2a4 — CTA hero ---------- */
+  .natal-action {
+    padding: 18px 28px 20px;
+    border-top: 1px solid rgba(215, 193, 136, 0.22);
+    background: linear-gradient(180deg, rgba(215, 193, 136, 0.04) 0%, transparent 100%);
+  }
+  .natal-action .calc-btn {
+    margin-top: 0;
+  }
+  .natal-action-hint {
+    margin: 10px 0 0;
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-faint);
+    letter-spacing: 0.02em;
+  }
+  .calc-btn--hero {
+    min-height: 48px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    box-shadow:
+      0 0 22px rgba(215, 193, 136, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  }
+  .calc-btn--hero:hover:not(:disabled) {
+    box-shadow:
+      0 0 32px rgba(215, 193, 136, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+  .calc-btn--hero:disabled {
+    box-shadow: none;
+  }
+  .calc-btn-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+  }
+  .calc-btn-mark {
+    font-size: 9px;
+    line-height: 1;
+    opacity: 0.88;
   }
 
   /* ---------- Fase 3.2b — Workspace rail (desktop) ---------- */
@@ -1524,8 +1574,13 @@
     }
 
     .sidebar.sheet-open .calc-btn {
-      margin-top: 4px;
+      margin-top: 0;
       padding: 14px 12px;
+      min-height: 48px;
+    }
+
+    .sidebar.sheet-open .natal-action {
+      padding: 14px 16px 16px;
     }
 
     @keyframes mobile-sheet-in {

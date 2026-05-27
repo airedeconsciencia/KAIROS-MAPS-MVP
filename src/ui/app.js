@@ -955,7 +955,7 @@
     }
 
     calcBtn.disabled = true;
-    const orig = calcBtn.textContent;
+    const origBtnHtml = calcBtn.innerHTML;
     calcBtn.textContent = 'Calculando…';
 
     // Defer so the UI updates first
@@ -986,7 +986,7 @@
       );
     } finally {
       calcBtn.disabled = false;
-      calcBtn.textContent = orig;
+      calcBtn.innerHTML = origBtnHtml;
     }
   }
 
