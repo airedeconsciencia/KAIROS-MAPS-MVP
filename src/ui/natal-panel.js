@@ -96,7 +96,12 @@
     skipped: ''
   };
 
-  var PANEL_SUB_TECH = 'Swiss Ephemeris · Placidus · vista esencial';
+  var PANEL_SUB_IDLE = 'Carta esencial · Sol, Luna y ángulos principales';
+
+  var MONTHS_ES = [
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+  ];
 
   /** Máx. caracteres para incluir Luna en una línea del sidebar (~360px). */
   var SUMMARY_WITH_MOON_MAX_LEN = 54;
@@ -138,7 +143,33 @@
     }
 
     el.className = 'natal-panel-sub';
-    el.textContent = PANEL_SUB_TECH;
+    el.textContent = PANEL_SUB_IDLE;
+  }
+
+  function formatBirthDateTime(dateStr, timeStr) {
+    if (!dateStr) return '';
+    var parts = String(dateStr).split('-');
+    if (parts.length !== 3) {
+      return dateStr + (timeStr ? ' · ' + String(timeStr).slice(0, 5) : '');
+    }
+    var day = parseInt(parts[2], 10);
+    var monthIdx = parseInt(parts[1], 10) - 1;
+    var month = MONTHS_ES[monthIdx] || parts[1];
+    var year = parts[0];
+    var timePart = timeStr ? String(timeStr).slice(0, 5) : '';
+    return day + ' ' + month + ' ' + year + (timePart ? ' · ' + timePart : '');
+  }
+
+  function buildFootnotePrimary(chart) {
+    if (!chart || !chart.input) return '';
+    var inp = chart.input;
+    var line = formatBirthDateTime(inp.date, inp.time);
+    var placeEl = document.getElementById('natal-place');
+    var place = placeEl && placeEl.value ? placeEl.value.trim() : '';
+    if (line && place) return line + ' · ' + place;
+    if (place) return 'Carta calculada para ' + place;
+    if (line) return 'Carta calculada · ' + line;
+    return '';
   }
 
   function renderIdleHTML() {
@@ -398,10 +429,19 @@
 
   function renderFootnoteHTML(chart) {
     if (!chart || !chart.input) return '';
-    var utc = chart.input.utc || '—';
+    var primary = buildFootnotePrimary(chart);
+    var secondary = 'Vista esencial · profundidad completa en Kairos Premium.';
+    if (primary) {
+      return (
+        '<p class="natal-panel-footnote">' +
+          '<span class="natal-panel-footnote-primary">' + esc(primary) + '</span>' +
+          '<span class="natal-panel-footnote-secondary">' + esc(secondary) + '</span>' +
+        '</p>'
+      );
+    }
     return (
       '<p class="natal-panel-footnote">' +
-        'UTC ' + esc(utc) + ' · Vista esencial gratuita. Casas, aspectos y carta completa — Kairos Premium.' +
+        '<span class="natal-panel-footnote-secondary">' + esc(secondary) + '</span>' +
       '</p>'
     );
   }

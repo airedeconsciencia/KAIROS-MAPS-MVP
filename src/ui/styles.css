@@ -677,8 +677,18 @@
   }
   .natal-panel-footnote {
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     font-size: 10.5px;
     line-height: 1.55;
+    color: var(--text-faint);
+  }
+  .natal-panel-footnote-primary {
+    color: var(--text-dim);
+    letter-spacing: 0.01em;
+  }
+  .natal-panel-footnote-secondary {
     color: var(--text-faint);
   }
   .natal-panel-teaser {
@@ -691,11 +701,13 @@
     border: 1px dashed rgba(215, 193, 136, 0.28);
     border-radius: 4px;
   }
-  .natal-panel-teaser-lock {
+  .natal-panel-teaser-mark {
     flex-shrink: 0;
-    font-size: 14px;
+    font-size: 11px;
     line-height: 1;
-    opacity: 0.85;
+    color: var(--kairos-gold);
+    opacity: 0.82;
+    margin-top: 1px;
   }
   .natal-panel-teaser-text {
     flex: 1;
@@ -705,10 +717,11 @@
     gap: 3px;
   }
   .natal-panel-teaser-text strong {
-    font-size: 11px;
-    font-weight: 600;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 500;
     color: var(--text);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.03em;
   }
   .natal-panel-teaser-text span {
     font-size: 10.5px;
