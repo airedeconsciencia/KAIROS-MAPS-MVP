@@ -109,6 +109,19 @@
       bridgeTags: ['belonging', 'intimacy', 'emotional_safety'],
       source: 'voice_tone'
     },
+    SUN_TAURUS: {
+      id: 'SUN_TAURUS',
+      planet: 'SUN',
+      sign: 'Tauro',
+      tier: 'free',
+      version: '1.0.0-pilot',
+      headline: 'Vitalidad que busca continuidad, cuerpo y resultados que se sostienen.',
+      body: 'El impulso vital puede ir más despacio que en otros signos: preferir comprobar, estabilizar, tocar lo concreto antes de cambiar de rumbo. No siempre es terquedad; a veces es lealtad a lo que ya funciona. Cuando algo te importa, la energía tiende a acumularse con paciencia antes de mostrarse.',
+      bridge: 'En el mapa, entornos donde la vida cotidiana pide ritmo constante pueden confirmar — o tensionar — esa necesidad de solidez.',
+      semanticTags: ['belonging', 'regulation', 'protection'],
+      bridgeTags: ['belonging', 'regulation', 'emotional_safety'],
+      source: 'voice_tone'
+    },
     MOON_ARIES: {
       id: 'MOON_ARIES',
       planet: 'MOON',
@@ -228,6 +241,19 @@
       bridgeTags: ['reflection', 'movement', 'stimulation'],
       source: 'voice_tone'
     },
+    ASC_TAURUS: {
+      id: 'ASC_TAURUS',
+      planet: 'ASC',
+      sign: 'Tauro',
+      tier: 'free',
+      version: '1.0.0-pilot-placeholder',
+      headline: 'Presencia que entra despacio, con los pies en la tierra.',
+      body: 'La primera impresión suele ser serena: sentir el ritmo del lugar antes de comprometerte del todo. Los cambios bruscos o la prisa ajena pueden desorientarte. Cuando hay confianza sensorial — un entorno estable, predecible — la apertura crece sin prisa.',
+      bridge: 'Ciudades con ritmo pausado y rutinas claras pueden sentirse más habitables al revisar el mapa.',
+      semanticTags: ['belonging', 'regulation', 'protection'],
+      bridgeTags: ['belonging', 'regulation', 'emotional_safety'],
+      source: 'voice_tone'
+    },
     SUN_CAPRICORN: {
       id: 'SUN_CAPRICORN',
       planet: 'SUN',
@@ -312,6 +338,20 @@
       tensionTags: ['regulation', 'movement'],
       source: 'voice_tone'
     },
+    MOON_PISCES: {
+      id: 'MOON_PISCES',
+      planet: 'MOON',
+      sign: 'Piscis',
+      tier: 'free',
+      version: '1.0.0-pilot',
+      headline: 'Sensibilidad amplia que capta matices antes de nombrarlos.',
+      body: 'Lo que sientes puede llegar difuso, mezclado con el ambiente o con lo que otros transmiten. Separar qué es tuyo y qué viene de fuera no siempre es lo primero; a veces hace falta quietud para desenredarlo. El descanso y la pausa regulan más de lo que parece cuando hay saturación.',
+      bridge: 'Lugares con ritmo suave o atmósferas porosas en el mapa pueden amplificar esa sensibilidad — para descanso o para desborde.',
+      semanticTags: ['permeability', 'emotional_safety', 'reflection'],
+      bridgeTags: ['permeability', 'reflection', 'emotional_safety'],
+      tensionTags: ['permeability', 'regulation'],
+      source: 'voice_tone'
+    },
     ASC_PISCES: {
       id: 'ASC_PISCES',
       planet: 'ASC',
@@ -351,6 +391,7 @@
       aries: 'SUN_ARIES',
       gemini: 'SUN_GEMINI',
       cancer: 'SUN_CANCER',
+      taurus: 'SUN_TAURUS',
       capricorn: 'SUN_CAPRICORN',
       virgo: 'SUN_VIRGO',
       leo: 'SUN_LEO'
@@ -361,7 +402,8 @@
       cancer: 'MOON_CANCER',
       sagittarius: 'MOON_SAGITTARIUS',
       capricorn: 'MOON_CAPRICORN',
-      aquarius: 'MOON_AQUARIUS'
+      aquarius: 'MOON_AQUARIUS',
+      pisces: 'MOON_PISCES'
     },
     MERCURY: {},
     VENUS: {},
@@ -375,6 +417,7 @@
       aries: 'ASC_ARIES',
       leo: 'ASC_LEO',
       aquarius: 'ASC_AQUARIUS',
+      taurus: 'ASC_TAURUS',
       pisces: 'ASC_PISCES',
       scorpio: 'ASC_SCORPIO'
     },

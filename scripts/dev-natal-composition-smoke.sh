@@ -80,6 +80,12 @@ const cases = [
     label: "Golden G1 · Sol Géminis · Luna Acuario · Asc Libra",
     input: { sun: 'gemini', moon: 'aquarius', asc: 'libra' },
     expect: { tensionMode: false, bridgeFrom: 'ASC' }
+  },
+  {
+    id: 5,
+    label: "Gaps 3.3d3 · Sol Tauro · Luna Piscis · Asc Leo",
+    input: { sun: 'taurus', moon: 'pisces', asc: 'leo' },
+    expect: { tensionMode: false, bridgeFrom: 'ASC' }
   }
 ];
 

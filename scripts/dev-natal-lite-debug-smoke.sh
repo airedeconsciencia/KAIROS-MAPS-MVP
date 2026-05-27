@@ -63,25 +63,36 @@ const inspectCases = [
     expect: { ok: true, coveragePercent: 100, missing: [] }
   },
   {
-    id: 'MISSING-A',
-    label: 'Control missing · Sol Tauro · Luna Piscis · Asc Leo',
+    id: 'UNLOCKED-A',
+    label: 'Gaps 3.3d3 · Sol Tauro · Luna Piscis · Asc Leo',
     input: { sun: 'taurus', moon: 'pisces', asc: 'leo' },
     expect: {
-      ok: false,
-      coveragePercent: 33,
-      missing: ['SUN_TAURUS', 'MOON_PISCES'],
-      available: ['ASC_LEO']
+      ok: true,
+      coveragePercent: 100,
+      missing: [],
+      available: ['SUN_TAURUS', 'MOON_PISCES', 'ASC_LEO']
     }
   },
   {
-    id: 'MISSING-B',
-    label: 'Control missing · Sol Tauro · Luna Aries · Asc Tauro',
+    id: 'UNLOCKED-B',
+    label: 'Gaps 3.3d3 · Sol Tauro · Luna Aries · Asc Tauro',
     input: { sun: 'taurus', moon: 'aries', asc: 'taurus' },
     expect: {
+      ok: true,
+      coveragePercent: 100,
+      missing: [],
+      available: ['SUN_TAURUS', 'MOON_ARIES', 'ASC_TAURUS']
+    }
+  },
+  {
+    id: 'MISSING-C',
+    label: 'Control missing · Sol Libra · Luna Leo · Asc Virgo',
+    input: { sun: 'libra', moon: 'leo', asc: 'virgo' },
+    expect: {
       ok: false,
-      coveragePercent: 33,
-      missing: ['SUN_TAURUS', 'ASC_TAURUS'],
-      available: ['MOON_ARIES']
+      coveragePercent: 0,
+      missing: ['SUN_LIBRA', 'MOON_LEO', 'ASC_VIRGO'],
+      available: []
     }
   }
 ];
@@ -124,12 +135,13 @@ inspectCases.forEach(function (c) {
 console.log('');
 console.log('── stats() ──');
 const s = stats();
-const statsOk = s.totalFragments === 20
-  && s.byRole.SUN.covered === 6
-  && s.byRole.MOON.covered === 6
-  && s.byRole.ASC.covered === 8
-  && s.gaps.SUN.indexOf('taurus') !== -1
-  && s.gaps.MOON.indexOf('pisces') !== -1;
+const statsOk = s.totalFragments === 23
+  && s.byRole.SUN.covered === 7
+  && s.byRole.MOON.covered === 7
+  && s.byRole.ASC.covered === 9
+  && s.gaps.SUN.indexOf('taurus') === -1
+  && s.gaps.MOON.indexOf('pisces') === -1
+  && s.gaps.ASC.indexOf('taurus') === -1;
 
 if (!statsOk) allPass = false;
 
