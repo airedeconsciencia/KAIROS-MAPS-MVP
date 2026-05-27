@@ -90,7 +90,7 @@
 
   var STATE_MESSAGES = {
     idle: 'Pulsa Calcular mi mapa para ver tu carta.',
-    loading: 'Calculando Sol, Luna y ángulos…',
+    loading: '',
     ready: '',
     error: 'No pudimos calcular tu carta natal. El mapa sigue activo. Vuelve a pulsar Calcular mi mapa.',
     skipped: ''
@@ -147,6 +147,16 @@
         '<div class="natal-panel-empty-mark" aria-hidden="true">◆</div>' +
         '<p class="natal-panel-empty-title">Tu carta natal aparecerá aquí</p>' +
         '<p class="natal-panel-empty-sub">Sol, Luna, Ascendente y planetas esenciales — incluido en tu mapa.</p>' +
+      '</div>'
+    );
+  }
+
+  function renderLoadingHTML() {
+    return (
+      '<div class="natal-panel-loading">' +
+        '<div class="natal-panel-loading-mark" aria-hidden="true">◆</div>' +
+        '<p class="natal-panel-loading-title">Preparando tu carta natal…</p>' +
+        '<p class="natal-panel-loading-sub">Calculando posiciones planetarias y líneas personales.</p>' +
       '</div>'
     );
   }
@@ -417,11 +427,14 @@
     syncPanelSub(chart, chartState);
     if (status === 'ready' && chart) {
       return (
-        '<div class="natal-panel-cards">' + renderCardsHTML(chart) + '</div>' +
-        '<div class="natal-panel-table-wrap">' + renderPlanetsTableHTML(chart) + '</div>' +
-        renderFootnoteHTML(chart)
+        '<div class="natal-panel-ready natal-panel-fade-in">' +
+          '<div class="natal-panel-cards">' + renderCardsHTML(chart) + '</div>' +
+          '<div class="natal-panel-table-wrap">' + renderPlanetsTableHTML(chart) + '</div>' +
+          renderFootnoteHTML(chart) +
+        '</div>'
       );
     }
+    if (status === 'loading') return renderLoadingHTML();
     if (status === 'idle') return renderIdleHTML();
     return '';
   }
@@ -445,6 +458,7 @@
     renderStateHTML: renderStateHTML,
     renderBodyHTML: renderBodyHTML,
     renderIdleHTML: renderIdleHTML,
+    renderLoadingHTML: renderLoadingHTML,
     buildHumanSummary: buildHumanSummary,
     buildHumanSummaryAuto: buildHumanSummaryAuto,
     syncPanelSub: syncPanelSub

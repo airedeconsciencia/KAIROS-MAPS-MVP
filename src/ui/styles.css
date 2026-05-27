@@ -461,6 +461,61 @@
     color: var(--text-dim);
     max-width: 240px;
   }
+  .natal-panel-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 32px 20px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .natal-panel-loading-mark {
+    font-size: 20px;
+    line-height: 1;
+    color: var(--kairos-gold);
+    margin-bottom: 16px;
+    animation: natal-loading-mark 2.4s ease-in-out infinite;
+  }
+  @keyframes natal-loading-mark {
+    0%, 100% { opacity: 0.42; transform: scale(0.96); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+  .natal-panel-loading-title {
+    margin: 0 0 10px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: 0.03em;
+    color: var(--text);
+  }
+  .natal-panel-loading-sub {
+    margin: 0;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    max-width: 260px;
+  }
+  .natal-panel-fade-in {
+    animation: natal-panel-fade-in 0.22s ease-out;
+  }
+  @keyframes natal-panel-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .natal-panel-ready {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
   .natal-panel-table-wrap {
     overflow-x: auto;
     border: 1px solid var(--border);
