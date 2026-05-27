@@ -176,6 +176,46 @@
       bridgeTags: ['stimulation', 'communication', 'movement'],
       source: 'voice_tone'
     },
+    ASC_ARIES: {
+      id: 'ASC_ARIES',
+      planet: 'ASC',
+      sign: 'Aries',
+      tier: 'free',
+      version: '1.0.0-pilot-placeholder',
+      headline: 'Manera de entrar al mundo directa, rápida, sin rodeos.',
+      body: 'La primera impresión suele ser clara: apareces, te posicionas, respondes al momento. Esperar demasiado para mostrarte puede generar incomodidad. Cuando el entorno responde con la misma franqueza, la apertura llega sin filtros innecesarios.',
+      bridge: 'En el mapa, lugares donde el ritmo pide iniciativa pueden sentirse más naturales — o más exigentes — según el momento.',
+      semanticTags: ['initiative', 'movement', 'visibility'],
+      bridgeTags: ['initiative', 'movement', 'visibility'],
+      source: 'voice_tone'
+    },
+    ASC_LEO: {
+      id: 'ASC_LEO',
+      planet: 'ASC',
+      sign: 'Leo',
+      tier: 'free',
+      version: '1.0.0-pilot-placeholder',
+      headline: 'Presencia cálida que busca ser recibida con atención genuina.',
+      body: 'Entrar en un espacio puede implicar comprobar si hay reconocimiento, no solo cortesía. Sin calidez real, la reserva puede confundirse con orgullo. Cuando te sientes vista, la generosidad aparece con más facilidad.',
+      bridge: 'Ciudades visibles o creativas en el mapa pueden amplificar tu necesidad de brillo compartido — también de competir por espacio.',
+      semanticTags: ['visibility', 'initiative', 'intimacy'],
+      bridgeTags: ['visibility', 'initiative', 'intimacy'],
+      tensionTags: ['visibility', 'initiative'],
+      source: 'voice_tone'
+    },
+    ASC_AQUARIUS: {
+      id: 'ASC_AQUARIUS',
+      planet: 'ASC',
+      sign: 'Acuario',
+      tier: 'free',
+      version: '1.0.0-pilot-placeholder',
+      headline: 'Manera de entrar al mundo observando, a tu manera, un paso aparte.',
+      body: 'Antes de integrarte, sueles leer el grupo: qué se espera, qué conviene, qué no encaja contigo. La primera impresión puede ser cordial pero no complaciente. Preferir autenticidad a encaje inmediato no siempre se lee como frialdad.',
+      bridge: 'Entornos abiertos o poco convencionales en el mapa pueden resultarte más habitables que los que piden uniformidad.',
+      semanticTags: ['reflection', 'movement', 'regulation'],
+      bridgeTags: ['reflection', 'movement', 'stimulation'],
+      source: 'voice_tone'
+    },
     SUN_CAPRICORN: {
       id: 'SUN_CAPRICORN',
       planet: 'SUN',
@@ -246,6 +286,20 @@
       tensionTags: ['control', 'regulation'],
       source: 'voice_tone'
     },
+    MOON_AQUARIUS: {
+      id: 'MOON_AQUARIUS',
+      planet: 'MOON',
+      sign: 'Acuario',
+      tier: 'free',
+      version: '1.0.0-pilot',
+      headline: 'Necesidad emocional de aire, perspectiva y vínculos elegidos con libertad.',
+      body: 'Puede costarte quedarte en dinámicas afectivas muy cerradas o predecibles; buscas espacio para pensar lo que sientes antes de fusionarte. La amistad o la causa compartida a veces regulan más que la intimidad tradicional. No siempre es distancia: puede ser una forma de cuidar tu autonomía emocional.',
+      bridge: 'Al explorar ciudades en el mapa, observa dónde la vida social deja respirar sin exigirte encajar del todo.',
+      semanticTags: ['reflection', 'movement', 'regulation'],
+      bridgeTags: ['movement', 'reflection', 'stimulation'],
+      tensionTags: ['regulation', 'movement'],
+      source: 'voice_tone'
+    },
     ASC_PISCES: {
       id: 'ASC_PISCES',
       planet: 'ASC',
@@ -294,7 +348,8 @@
       gemini: 'MOON_GEMINI',
       cancer: 'MOON_CANCER',
       sagittarius: 'MOON_SAGITTARIUS',
-      capricorn: 'MOON_CAPRICORN'
+      capricorn: 'MOON_CAPRICORN',
+      aquarius: 'MOON_AQUARIUS'
     },
     MERCURY: {},
     VENUS: {},
@@ -305,6 +360,9 @@
       libra: 'ASC_LIBRA',
       cancer: 'ASC_CANCER',
       gemini: 'ASC_GEMINI',
+      aries: 'ASC_ARIES',
+      leo: 'ASC_LEO',
+      aquarius: 'ASC_AQUARIUS',
       pisces: 'ASC_PISCES',
       scorpio: 'ASC_SCORPIO'
     },

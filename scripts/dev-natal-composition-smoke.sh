@@ -74,6 +74,12 @@ const cases = [
     label: "Sol Leo · Luna Capricornio · Asc Géminis",
     input: { sun: 'leo', moon: 'capricorn', asc: 'gemini' },
     expect: { tensionMode: true, bridgeFrom: 'MOON' }
+  },
+  {
+    id: 4,
+    label: "Golden G1 · Sol Géminis · Luna Acuario · Asc Libra",
+    input: { sun: 'gemini', moon: 'aquarius', asc: 'libra' },
+    expect: { tensionMode: false, bridgeFrom: 'ASC' }
   }
 ];
 
