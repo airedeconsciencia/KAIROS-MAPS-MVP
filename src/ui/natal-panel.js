@@ -552,11 +552,23 @@
     var state = (chartState && chartState.status) || 'idle';
     if (state === 'skipped') return '';
 
-    var message = STATE_MESSAGES[state] || STATE_MESSAGES.idle;
+    var chart = chartState && chartState.natal;
+    var message;
+
+    if (state === 'ready' && chart) {
+      var lite = composeLiteReading(chart);
+      if (lite && lite.reading) return '';
+      message = STATE_MESSAGES.idle;
+    } else {
+      message = Object.prototype.hasOwnProperty.call(STATE_MESSAGES, state)
+        ? STATE_MESSAGES[state]
+        : STATE_MESSAGES.idle;
+    }
+
     if (state === 'error' && chartState && chartState.error && chartState.error.message) {
       message = chartState.error.message;
     }
-    if (state === 'ready' && !message) return '';
+    if (!message) return '';
 
     return (
       '<span class="natal-panel-status-dot" aria-hidden="true"></span>' +
