@@ -54,16 +54,41 @@
     activeAspect: activeAspect,
     currentCity: null,
     searchedMarker: null,
-    showMapGlyphs: false
+    showMapGlyphs: false,
+    chart: {
+      natal: null,
+      status: 'idle',
+      error: null,
+      lastComputedAt: null,
+      birthKey: null
+    },
+    workspace: 'map'
   };
+
+  const WORKSPACE_TEASERS = {
+    reloc: {
+      title: 'Relocación',
+      desc: 'Cómo cambia tu carta según la ciudad donde vives.'
+    },
+    relationship: {
+      title: 'Pareja',
+      desc: 'Sinastría, carta compuesta y vínculos geográficos.'
+    },
+    destiny: {
+      title: 'Destino',
+      desc: 'Las mejores ciudades para amor, trabajo y propósito.'
+    }
+  };
+
+  const LOCKED_WORKSPACES = new Set(['reloc', 'relationship', 'destiny']);
 
   // -------- Map setup --------
   const map = L.map('map', {
     worldCopyJump: true,
     zoomControl: true,
-    minZoom: 2, maxZoom: 8,
+    minZoom: 3, maxZoom: 8,
     attributionControl: true
-  }).setView([22, 8], 2.5);
+  }).setView([22, 8], 3);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap · © CARTO · Kairos Maps',
@@ -78,14 +103,42 @@
   const glyphsLayer = L.layerGroup().addTo(map);
   const lineGroups = {}; // id -> { group, line }
 
+  const MOBILE_CITY_TAP_PX = 36;
+
+  function cityMarkerIcon(searched) {
+    const mobile = window.matchMedia('(max-width: 768px)').matches;
+    const px = mobile ? 44 : 10;
+    const half = px / 2;
+    const cls = searched ? 'city-marker searched' : 'city-marker';
+    return L.divIcon({
+      className: '',
+      html: `<div class="${cls}"></div>`,
+      iconSize: [px, px],
+      iconAnchor: [half, half]
+    });
+  }
+
+  function cityNearMapPoint(latlng, maxPx) {
+    const clickPt = map.latLngToContainerPoint(latlng);
+    let best = null;
+    let bestDist = maxPx;
+    cityMarkers.forEach(m => {
+      const pt = map.latLngToContainerPoint(m.getLatLng());
+      const d = Math.hypot(pt.x - clickPt.x, pt.y - clickPt.y);
+      if (d <= bestDist) {
+        bestDist = d;
+        best = m.kairosCity;
+      }
+    });
+    return best;
+  }
+
   // -------- City markers --------
   const cityMarkers = [];
   CITIES.forEach(city => {
-    const icon = L.divIcon({
-      className: '', html: '<div class="city-marker"></div>',
-      iconSize: [10, 10], iconAnchor: [5, 5]
-    });
-    const m = L.marker([city.lat, city.lon], { icon }).addTo(map);
+    const icon = cityMarkerIcon(false);
+    const m = L.marker([city.lat, city.lon], { icon, zIndexOffset: 1000 }).addTo(map);
+    m.kairosCity = city;
     m.bindTooltip(city.name, {
       className: 'city-label',
       direction: 'bottom', offset: [0, 4],
@@ -93,6 +146,21 @@
     });
     m.on('click', () => openInterpretation(city));
     cityMarkers.push(m);
+  });
+
+  function raiseCityMarkers() {
+    cityMarkers.forEach((marker) => {
+      if (marker && typeof marker.bringToFront === 'function') marker.bringToFront();
+    });
+    if (state.searchedMarker && typeof state.searchedMarker.bringToFront === 'function') {
+      state.searchedMarker.bringToFront();
+    }
+  }
+
+  map.on('click', (e) => {
+    if (!isMobileLayout()) return;
+    const city = cityNearMapPoint(e.latlng, MOBILE_CITY_TAP_PX);
+    if (city) openInterpretation(city);
   });
 
   // -------- DOM refs --------
@@ -119,13 +187,82 @@
   const profileReset  = $('profile-reset');
   const sidebar       = $('sidebar');
   const sidebarBackdrop = $('sidebar-backdrop');
+  const natalPanelEl  = $('natal-panel');
+  const natalPanelStatusEl = $('natal-panel-status');
+  const natalPanelRootEl = $('natal-panel-root');
+  const workspaceRail   = $('workspace-rail');
+  const workspaceMapEl  = $('workspace-map');
+  const workspaceNatalEl = $('workspace-natal');
+  const workspaceTeaserEl = $('workspace-teaser');
+  const workspaceTeaserTitle = $('workspace-teaser-title');
+  const workspaceTeaserDesc = $('workspace-teaser-desc');
+  const mobileMapBtn    = $('mobile-map-btn');
   const mobileControlsBtn = $('mobile-controls-btn');
   const mobileGreeting  = $('mobile-greeting');
   const mobileLecturaBtn = $('mobile-lectura-btn');
   const MOBILE_MQ     = window.matchMedia('(max-width: 768px)');
+  let mobileMode = 'map';
 
   function isMobileLayout() {
     return MOBILE_MQ.matches;
+  }
+
+  function isLockedWorkspace(ws) {
+    return LOCKED_WORKSPACES.has(ws);
+  }
+
+  function setWorkspace(ws) {
+    if (ws !== 'map' && ws !== 'natal' && !isLockedWorkspace(ws)) return;
+    state.workspace = ws;
+    renderWorkspace();
+  }
+
+  function renderWorkspace() {
+    if (!workspaceMapEl) return;
+
+    if (isMobileLayout()) {
+      workspaceMapEl.hidden = false;
+      if (workspaceNatalEl) workspaceNatalEl.hidden = true;
+      if (workspaceTeaserEl) workspaceTeaserEl.hidden = true;
+      return;
+    }
+
+    const ws = state.workspace || 'map';
+    const showMap = ws === 'map';
+    const showNatal = ws === 'natal';
+    const showTeaser = isLockedWorkspace(ws);
+
+    workspaceMapEl.hidden = !showMap;
+    if (workspaceNatalEl) workspaceNatalEl.hidden = !showNatal;
+    if (workspaceTeaserEl) workspaceTeaserEl.hidden = !showTeaser;
+
+    if (workspaceRail) {
+      workspaceRail.querySelectorAll('[data-workspace]').forEach((btn) => {
+        const id = btn.getAttribute('data-workspace');
+        const active = id === ws;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    if (showTeaser && workspaceTeaserTitle && workspaceTeaserDesc) {
+      const teaser = WORKSPACE_TEASERS[ws];
+      if (teaser) {
+        workspaceTeaserTitle.textContent = teaser.title;
+        workspaceTeaserDesc.textContent = teaser.desc;
+      }
+    }
+  }
+
+  function initWorkspaceRail() {
+    if (!workspaceRail) return;
+    workspaceRail.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-workspace]');
+      if (!btn || !workspaceRail.contains(btn)) return;
+      setWorkspace(btn.getAttribute('data-workspace'));
+    });
+    MOBILE_MQ.addEventListener('change', renderWorkspace);
+    renderWorkspace();
   }
 
   function refreshMapSize(delayMs) {
@@ -140,34 +277,58 @@
     if (!sidebarBackdrop) return;
     if (!isMobileLayout()) {
       sidebarBackdrop.classList.remove('visible');
-      document.body.classList.remove('sidebar-sheet-open', 'interp-sheet-open');
+      document.body.classList.remove('mobile-sheet-open', 'sidebar-sheet-open', 'interp-sheet-open');
       return;
     }
-    const sidebarOpen = sidebar && sidebar.classList.contains('sheet-open');
-    const interpOpen = panel && panel.classList.contains('open');
-    sidebarBackdrop.classList.toggle('visible', sidebarOpen || interpOpen);
-    document.body.classList.toggle('sidebar-sheet-open', sidebarOpen);
-    document.body.classList.toggle('interp-sheet-open', interpOpen);
+    const sheetOpen = mobileMode === 'controls' || mobileMode === 'lectura';
+    sidebarBackdrop.classList.toggle('visible', sheetOpen);
+    document.body.classList.toggle('mobile-sheet-open', sheetOpen);
+    document.body.classList.remove('sidebar-sheet-open', 'interp-sheet-open');
   }
 
-  function setSidebarOpen(open) {
-    if (!sidebar) return;
-    if (open && panel.classList.contains('open')) closeInterpPanel();
-    sidebar.classList.toggle('sheet-open', open);
-    if (mobileControlsBtn) {
-      mobileControlsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  function syncMobileBarState() {
+    if (!isMobileLayout()) return;
+    [mobileMapBtn, mobileControlsBtn, mobileLecturaBtn].forEach((btn) => {
+      if (btn) btn.classList.remove('mobile-top-btn--active');
+    });
+    if (mobileMode === 'map' && mobileMapBtn) {
+      mobileMapBtn.classList.add('mobile-top-btn--active');
+      mobileMapBtn.setAttribute('aria-pressed', 'true');
+    } else if (mobileMapBtn) {
+      mobileMapBtn.setAttribute('aria-pressed', 'false');
     }
+    if (mobileControlsBtn) {
+      mobileControlsBtn.classList.toggle('mobile-top-btn--active', mobileMode === 'controls');
+      mobileControlsBtn.setAttribute('aria-expanded', mobileMode === 'controls' ? 'true' : 'false');
+    }
+    if (mobileLecturaBtn) {
+      mobileLecturaBtn.classList.toggle('mobile-top-btn--active', mobileMode === 'lectura');
+    }
+  }
+
+  function setMobileMode(mode) {
+    if (!isMobileLayout()) return;
+    if (mode === 'lectura' && !state.currentCity) mode = 'map';
+    mobileMode = mode;
+
+    if (sidebar) sidebar.classList.toggle('sheet-open', mode === 'controls');
+    if (panel) panel.classList.toggle('open', mode === 'lectura');
+
     syncMobileBackdrop();
+    syncMobileBarState();
     refreshMapSize(320);
   }
 
   function closeSidebarSheet() {
-    setSidebarOpen(false);
+    if (isMobileLayout()) setMobileMode('map');
   }
 
   function closeInterpPanel() {
+    if (isMobileLayout()) {
+      setMobileMode('map');
+      return;
+    }
     panel.classList.remove('open');
-    syncMobileBackdrop();
     refreshMapSize(320);
   }
 
@@ -183,59 +344,72 @@
 
   function updateMobileLecturaBtn() {
     if (!mobileLecturaBtn) return;
-    mobileLecturaBtn.disabled = !state.currentCity;
+    const show = !!state.currentCity;
+    mobileLecturaBtn.classList.toggle('mobile-top-btn--hidden', !show);
+    mobileLecturaBtn.setAttribute('aria-hidden', show ? 'false' : 'true');
+    mobileLecturaBtn.tabIndex = show ? 0 : -1;
+    if (!show && mobileMode === 'lectura') setMobileMode('map');
   }
 
   function updateEmptyHintText(displayName) {
-    if (!emptyHint || emptyHint.classList.contains('hidden')) return;
-    if (isMobileLayout()) {
-      if (displayName) {
-        emptyHint.innerHTML = displayName + ', abre <em>Controles</em> arriba<br>y pulsa <em>Calcular mi mapa</em>';
-      } else {
-        emptyHint.innerHTML = 'Abre <em>Controles</em> arriba<br>y calcula tu mapa';
-      }
-      return;
-    }
+    if (!emptyHint || emptyHint.classList.contains('hidden') || isMobileLayout()) return;
     if (displayName) {
       emptyHint.innerHTML = '<span class="arrow">←</span>' +
-        displayName + ', pulsa<br><em>Calcular mi mapa</em>';
+        'Hola, ' + displayName + '<br>preparando tu mapa';
     }
+  }
+
+  function syncDesktopDevHints() {
+    if (isMobileLayout()) return;
+    if (profile && profile.birthData) {
+      if (emptyHint) emptyHint.classList.add('hidden');
+      if (legendEmpty) legendEmpty.style.display = 'none';
+    }
+  }
+
+  if (mobileMapBtn) {
+    mobileMapBtn.addEventListener('click', () => setMobileMode('map'));
   }
 
   if (mobileControlsBtn) {
     mobileControlsBtn.addEventListener('click', () => {
-      setSidebarOpen(!sidebar.classList.contains('sheet-open'));
+      setMobileMode(mobileMode === 'controls' ? 'map' : 'controls');
     });
   }
 
   if (sidebarBackdrop) {
-    sidebarBackdrop.addEventListener('click', () => {
-      if (panel.classList.contains('open')) closeInterpPanel();
-      if (sidebar.classList.contains('sheet-open')) closeSidebarSheet();
-    });
+    sidebarBackdrop.addEventListener('click', () => setMobileMode('map'));
   }
 
   if (mobileLecturaBtn) {
     mobileLecturaBtn.addEventListener('click', () => {
-      if (!state.currentCity) {
-        toast('Toca una ciudad en el mapa para leerla', '');
-        return;
+      if (!state.currentCity) return;
+      if (mobileMode === 'lectura') setMobileMode('map');
+      else {
+        renderInterpretation(state.currentCity);
+        setMobileMode('lectura');
       }
-      closeSidebarSheet();
-      openInterpretation(state.currentCity);
     });
   }
 
   MOBILE_MQ.addEventListener('change', () => {
-    if (!isMobileLayout()) closeSidebarSheet();
-    syncMobileBackdrop();
-    syncMobileGreeting(profile && profile.displayName);
-    updateEmptyHintText(profile && profile.displayName);
+    if (!isMobileLayout()) {
+      if (sidebar) sidebar.classList.remove('sheet-open');
+      if (panel) panel.classList.remove('open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.remove('visible');
+      document.body.classList.remove('mobile-sheet-open', 'sidebar-sheet-open', 'interp-sheet-open');
+      mobileMode = 'map';
+    } else {
+      setMobileMode('map');
+      syncMobileGreeting(profile && profile.displayName);
+    }
     refreshMapSize(350);
   });
 
   window.addEventListener('resize', () => refreshMapSize(320));
   window.addEventListener('orientationchange', () => refreshMapSize(450));
+
+  if (isMobileLayout()) setMobileMode('map');
   refreshMapSize(150);
 
   function applyProfile(p) {
@@ -251,9 +425,10 @@
       if (b.lat != null) $('natal-lat').value = b.lat;
       if (b.lon != null) $('natal-lon').value = b.lon;
     }
-    if (emptyHint && p.displayName) {
+    if (emptyHint && p.displayName && isMobileLayout()) {
       updateEmptyHintText(p.displayName);
     }
+    syncDesktopDevHints();
     const aspect = window.KairosProfile.mapGoalToAspect(p.mainGoal || 'amor');
     state.activeAspect = aspect;
     interpTabs.querySelectorAll('.interp-tab').forEach((tab) => {
@@ -602,6 +777,7 @@
         L.marker(markerPt, { icon, interactive: false, keyboard: false }).addTo(glyphsLayer);
       });
     });
+    raiseCityMarkers();
   }
 
   function drawLine(line) {
@@ -614,7 +790,7 @@
       // soft middle
       L.polyline(pts, { color: line.color, weight: 3, opacity: 0.32, interactive: false }).addTo(group);
       // crisp core
-      L.polyline(pts, { color: line.color, weight: 1.4, opacity: 0.92, lineCap: 'round' }).addTo(group);
+      L.polyline(pts, { color: line.color, weight: 1.4, opacity: 0.92, lineCap: 'round', interactive: false }).addTo(group);
     });
     return group;
   }
@@ -629,6 +805,7 @@
     });
     updateStatus();
     refreshMapGlyphs();
+    raiseCityMarkers();
   }
 
   function updateStatus() {
@@ -637,10 +814,10 @@
     ).length;
     if (!state.lines.length) {
       statusDot.classList.remove('active');
-      statusText.textContent = 'Sin carta calculada';
+      statusText.textContent = 'Mapa pendiente';
     } else {
       statusDot.classList.add('active');
-      statusText.textContent = `${visibleCount} líneas · ${CITIES.length} ciudades`;
+      statusText.textContent = `Mapa activo · ${CITIES.length} lugares`;
     }
   }
 
@@ -662,32 +839,130 @@
     return { utc, lat, lon, tz, dateStr, timeStr, place };
   }
 
+  function kairosDebugEnabled() {
+    try {
+      return localStorage.getItem('kairosDebug') === '1'
+        || new URLSearchParams(location.search).has('debug');
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function kairosDebugLog(label, data) {
+    if (!kairosDebugEnabled()) return;
+    console.info('[KAIROS debug]', label, data);
+  }
+
+  function cfgToBirthData(cfg) {
+    return {
+      date: cfg.dateStr,
+      time: cfg.timeStr,
+      timezone: cfg.tz,
+      lat: cfg.lat,
+      lon: cfg.lon
+    };
+  }
+
+  function renderNatalPanel() {
+    const P = window.KairosNatalPanel;
+    if (!natalPanelEl || !natalPanelStatusEl || !natalPanelRootEl || !P) return;
+
+    const chartState = state.chart;
+    let status = chartState.status || 'idle';
+    if (isMobileLayout()) status = 'skipped';
+
+    natalPanelEl.setAttribute('data-state', status);
+
+    if (status === 'skipped') return;
+
+    const statusHtml = P.renderStateHTML(chartState);
+    natalPanelStatusEl.innerHTML = statusHtml;
+    natalPanelStatusEl.style.display = statusHtml ? '' : 'none';
+
+    natalPanelRootEl.innerHTML = P.renderBodyHTML(chartState.natal, chartState);
+  }
+
+  async function maybeCalculateNatalSilently(cfg) {
+    if (isMobileLayout()) {
+      state.chart.status = 'skipped';
+      renderNatalPanel();
+      return;
+    }
+    if (typeof window.KairosChartService === 'undefined') {
+      state.chart.status = 'skipped';
+      renderNatalPanel();
+      return;
+    }
+
+    const birthData = cfgToBirthData(cfg);
+    const key = [
+      birthData.date,
+      birthData.time,
+      birthData.timezone,
+      birthData.lat,
+      birthData.lon
+    ].join('|');
+
+    if (state.chart.status === 'ready' && state.chart.birthKey === key && state.chart.natal) {
+      renderNatalPanel();
+      return;
+    }
+
+    state.chart.status = 'loading';
+    state.chart.error = null;
+    renderNatalPanel();
+
+    try {
+      await window.KairosChartService.initNatalEngine();
+      const chart = await window.KairosChartService.generateNatalChart(birthData);
+      state.chart.natal = chart;
+      state.chart.status = 'ready';
+      state.chart.birthKey = key;
+      state.chart.lastComputedAt = new Date().toISOString();
+      kairosDebugLog('natal ready', {
+        utc: chart.input && chart.input.utc,
+        asc: chart.angles && chart.angles.ASC,
+        sun: chart.planets && chart.planets.SUN,
+        elapsedMs: chart.elapsedMs
+      });
+    } catch (err) {
+      state.chart.natal = null;
+      state.chart.status = 'error';
+      state.chart.error = {
+        code: err.code || 'NATAL_FAILED',
+        message: err.message || String(err)
+      };
+      kairosDebugLog('natal error', state.chart.error);
+    }
+
+    renderNatalPanel();
+  }
+
   // -------- Calculate map --------
+  function maybeAutoCalculateDesktop() {
+    if (isMobileLayout()) return;
+    if (state.lines.length) return;
+    if (!profile || !profile.birthData) return;
+    calculateMap();
+  }
+
   async function calculateMap() {
-    console.log('[KAIROS-DEBUG] calculateMap() llamado', {
-      Astronomy: typeof Astronomy,
-      luxon: typeof luxon
-    });
     let cfg;
     try { cfg = readForm(); }
-    catch (e) { toast(e.message, 'err'); return; }
+    catch (e) {
+      toast(isMobileLayout() ? e.message : 'Revisa tus datos de nacimiento.', 'err');
+      return;
+    }
 
     calcBtn.disabled = true;
-    const orig = calcBtn.textContent;
+    const origBtnHtml = calcBtn.innerHTML;
     calcBtn.textContent = 'Calculando…';
 
     // Defer so the UI updates first
     await new Promise(r => setTimeout(r, 30));
 
     try {
-      console.log('[KAIROS-DEBUG] computeAllLines inicio', cfg.utc);
-      const t0 = performance.now();
       const lines = computeAllLines(cfg.utc);
-      console.log('[KAIROS-DEBUG] computeAllLines fin', {
-        ms: Math.round(performance.now() - t0),
-        count: lines.length,
-        sample: lines[0] && { id: lines[0].id, segments: lines[0].segments.length }
-      });
       clearLines();
       state.lines = lines;
       lines.forEach(line => {
@@ -698,14 +973,20 @@
       emptyHint.classList.add('hidden');
       legendEmpty.style.display = 'none';
 
-      toast(`Carta calculada · ${lines.length} líneas trazadas`, 'ok');
-      if (isMobileLayout()) closeSidebarSheet();
+      toast(`Mapa listo · ${lines.length} líneas`, 'ok');
+      if (isMobileLayout()) setMobileMode('map');
+      void maybeCalculateNatalSilently(cfg);
     } catch (e) {
       console.error(e);
-      toast('Error en el cálculo: ' + e.message, 'err');
+      toast(
+        isMobileLayout()
+          ? 'Error en el cálculo: ' + e.message
+          : 'No pudimos calcular tu mapa. Revisa tus datos.',
+        'err'
+      );
     } finally {
       calcBtn.disabled = false;
-      calcBtn.textContent = orig;
+      calcBtn.innerHTML = origBtnHtml;
     }
   }
 
@@ -858,10 +1139,12 @@
   function openInterpretation(city) {
     state.currentCity = city;
     renderInterpretation(city);
-    if (isMobileLayout()) closeSidebarSheet();
-    panel.classList.add('open');
     updateMobileLecturaBtn();
-    syncMobileBackdrop();
+    if (isMobileLayout()) {
+      setMobileMode('lectura');
+      return;
+    }
+    panel.classList.add('open');
     refreshMapSize(350);
   }
 
@@ -918,16 +1201,15 @@
     }
     const isPredefined = CITIES.some(c => c.name === city.name && Math.abs(c.lat - city.lat) < 0.01);
     if (!isPredefined) {
-      const icon = L.divIcon({
-        className: '', html: '<div class="city-marker searched"></div>',
-        iconSize: [10, 10], iconAnchor: [5, 5]
-      });
-      const m = L.marker([city.lat, city.lon], { icon }).addTo(map);
+      const icon = cityMarkerIcon(true);
+      const m = L.marker([city.lat, city.lon], { icon, zIndexOffset: 1000 }).addTo(map);
+      m.kairosCity = city;
       m.bindTooltip(city.name, {
         className: 'city-label', direction: 'bottom',
         offset: [0, 4], permanent: false, opacity: 1
       });
       state.searchedMarker = m;
+      raiseCityMarkers();
     }
 
     map.flyTo([city.lat, city.lon], 5, { duration: 1.2 });
@@ -971,39 +1253,43 @@
 
   // -------- Init --------
   // Wait until astronomy-engine + luxon are present before allowing calc
-  let checkDepsCount = 0;
   function checkDeps() {
-    checkDepsCount++;
-    const deps = {
-      Astronomy: typeof Astronomy,
-      luxon: typeof luxon,
-      KairosAstro: typeof window.KairosAstro,
-      computeAllLines: typeof (window.KairosAstro && window.KairosAstro.computeAllLines)
-    };
-    console.log('[KAIROS-DEBUG] checkDeps #' + checkDepsCount, deps);
     if (typeof Astronomy === 'undefined') {
-      if (checkDepsCount === 1 || checkDepsCount % 10 === 0) {
-        console.warn('[KAIROS-DEBUG] Astronomy no definido — ¿script astronomy.browser.min.js cargado?');
-      }
-      toast('Cargando motor astronómico…');
+      toast(isMobileLayout() ? 'Cargando motor astronómico…' : 'Preparando tu mapa…');
       setTimeout(checkDeps, 400);
       return;
     }
     if (typeof luxon === 'undefined') {
-      toast('Cargando zonas horarias…');
+      toast(isMobileLayout() ? 'Cargando zonas horarias…' : 'Preparando tu mapa…');
       setTimeout(checkDeps, 400);
       return;
     }
-    console.log('[KAIROS-DEBUG] Dependencias OK — motor listo');
     updateStatus();
+    maybeAutoCalculateDesktop();
   }
 
   window.KairosPlanetGlyphs.whenReady(() => {
     if (state.lines.length) renderLegend();
     if (state.currentCity) renderInterpretation(state.currentCity);
     if (state.showMapGlyphs) refreshMapGlyphs();
+    if (state.chart.status === 'ready') renderNatalPanel();
   });
 
+  if (kairosDebugEnabled()) {
+    window.__kairosDebug = {
+      get chart() { return state.chart; },
+      get serviceStatus() {
+        return window.KairosChartService && window.KairosChartService.getStatus
+          ? window.KairosChartService.getStatus()
+          : null;
+      },
+      get lines() { return state.lines.length; },
+      get workspace() { return state.workspace; }
+    };
+  }
+
+  initWorkspaceRail();
+  renderNatalPanel();
   checkDeps();
   } // startApp
 

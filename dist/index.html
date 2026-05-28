@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Kairos Maps — Astrocartografía</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="ui/styles.css" />
 </head>
-<body style="background-color: rgb(255, 255, 255)">
+<body>
 
 <div id="onboarding" class="onboarding">
   <div class="onboarding-inner">
@@ -60,16 +60,20 @@
           <input type="text" id="ob-natal-place" placeholder="Ciudad, país" autocomplete="off">
           <div class="search-results" id="ob-place-results"></div>
         </div>
-        <div class="field-row">
-          <div class="field">
-            <label for="ob-natal-lat">Latitud (decimal)</label>
-            <input type="number" step="0.0001" id="ob-natal-lat">
+        <details class="coords-advanced">
+          <summary class="coords-advanced-summary">Ajustes avanzados de ubicación</summary>
+          <p class="coords-advanced-hint">Solo necesario si quieres corregir coordenadas manualmente.</p>
+          <div class="field-row coords-advanced-fields">
+            <div class="field">
+              <label for="ob-natal-lat">Latitud</label>
+              <input type="number" step="0.0001" id="ob-natal-lat">
+            </div>
+            <div class="field">
+              <label for="ob-natal-lon">Longitud</label>
+              <input type="number" step="0.0001" id="ob-natal-lon">
+            </div>
           </div>
-          <div class="field">
-            <label for="ob-natal-lon">Longitud (decimal)</label>
-            <input type="number" step="0.0001" id="ob-natal-lon">
-          </div>
-        </div>
+        </details>
       </div>
       <p class="onboarding-error" id="ob-birth-error" hidden></p>
       <button type="button" class="onboarding-btn" data-action="next" data-next="4">Continuar</button>
@@ -115,7 +119,7 @@
       </svg>
       <div>
         <div class="brand-name">KAIROS<span>·</span>MAPS</div>
-        <div class="brand-sub">Astrocartografía · v0.2</div>
+        <div class="brand-sub">Tu geografía personal</div>
         <div class="user-greeting" id="user-greeting"></div>
       </div>
     </div>
@@ -183,19 +187,38 @@
         <label for="natal-place">Lugar de nacimiento</label>
         <input type="text" id="natal-place" placeholder="Ciudad, país">
       </div>
-      <div class="field-row">
-        <div class="field">
-          <label for="natal-lat">Latitud (decimal)</label>
-          <input type="number" step="0.0001" id="natal-lat">
+      <details class="coords-advanced">
+        <summary class="coords-advanced-summary">Ajustes avanzados de ubicación</summary>
+        <p class="coords-advanced-hint">Solo necesario si quieres corregir coordenadas manualmente.</p>
+        <div class="field-row coords-advanced-fields">
+          <div class="field">
+            <label for="natal-lat">Latitud</label>
+            <input type="number" step="0.0001" id="natal-lat">
+          </div>
+          <div class="field">
+            <label for="natal-lon">Longitud</label>
+            <input type="number" step="0.0001" id="natal-lon">
+          </div>
         </div>
-        <div class="field">
-          <label for="natal-lon">Longitud (decimal)</label>
-          <input type="number" step="0.0001" id="natal-lon">
-        </div>
-      </div>
-      <button class="calc-btn" id="calc-btn">Calcular mi mapa</button>
+      </details>
     </div>
 
+    <div class="natal-action">
+      <button type="button" class="calc-btn calc-btn--hero" id="calc-btn">
+        <span class="calc-btn-label"><span class="calc-btn-mark" aria-hidden="true">◆</span> Calcular mi mapa</span>
+      </button>
+      <p class="natal-action-hint">Un paso: mapa + carta esencial</p>
+    </div>
+
+    <nav class="workspace-rail" id="workspace-rail" aria-label="Módulos Kairos">
+      <button type="button" class="workspace-rail-btn is-active" data-workspace="map" aria-pressed="true">Mapa</button>
+      <button type="button" class="workspace-rail-btn" data-workspace="natal" aria-pressed="false">Carta</button>
+      <button type="button" class="workspace-rail-btn workspace-rail-btn--locked" data-workspace="reloc" aria-pressed="false">Reloc <span class="workspace-rail-lock" aria-hidden="true">◆</span></button>
+      <button type="button" class="workspace-rail-btn workspace-rail-btn--locked" data-workspace="relationship" aria-pressed="false">Pareja <span class="workspace-rail-lock" aria-hidden="true">◆</span></button>
+      <button type="button" class="workspace-rail-btn workspace-rail-btn--locked" data-workspace="destiny" aria-pressed="false">Destino <span class="workspace-rail-lock" aria-hidden="true">◆</span></button>
+    </nav>
+
+    <div class="workspace-panel" id="workspace-map" data-workspace-panel="map">
     <!-- Legend -->
     <div class="section">
       <h3 class="section-title">Líneas Activas</h3>
@@ -211,12 +234,11 @@
       </label>
       <div class="planet-list" id="planet-list"></div>
       <div class="legend-empty" id="legend-empty">
-        Aún no hay líneas calculadas.<br>
-        Introduce tus datos natales y pulsa <em>Calcular mi mapa</em>.
+        Tu mapa aparecerá aquí en un momento.
       </div>
     </div>
 
-    <div class="section" style="border-bottom: none; flex: 1;">
+    <div class="section workspace-map-about" style="border-bottom: none; flex: 1;">
       <h3 class="section-title">Sobre Kairos</h3>
       <p style="font-size: 12px; line-height: 1.7; color: var(--text-dim); margin: 0 0 12px;">
         La astrocartografía relocaliza tu carta natal sobre la geografía.
@@ -225,16 +247,53 @@
       </p>
       <button type="button" class="profile-reset" id="profile-reset">Reiniciar perfil</button>
     </div>
+    </div>
+
+    <div class="workspace-panel" id="workspace-natal" data-workspace-panel="natal" hidden>
+    <section class="section natal-panel" id="natal-panel" data-state="idle" aria-label="Tu carta natal">
+      <h3 class="section-title">Tu carta natal</h3>
+      <p class="natal-panel-sub">Carta esencial · Sol, Luna y ángulos principales</p>
+      <div id="natal-lite-reading-root" class="natal-lite-reading-root" hidden aria-live="polite"></div>
+
+      <div class="natal-panel-status" id="natal-panel-status">
+        <span class="natal-panel-status-dot" aria-hidden="true"></span>
+        Pulsa Calcular mi mapa para ver tu carta.
+      </div>
+
+      <div class="natal-panel-body" id="natal-panel-root"></div>
+
+      <div class="natal-panel-teaser" id="natal-panel-teaser" data-tier="premium">
+        <div class="natal-panel-teaser-mark" aria-hidden="true">◆</div>
+        <div class="natal-panel-teaser-text">
+          <strong>Carta completa</strong>
+          <span>Casas · aspectos · vínculos y capas avanzadas</span>
+        </div>
+        <span class="natal-panel-teaser-badge">Próximamente</span>
+      </div>
+    </section>
+    </div>
+
+    <div class="workspace-panel workspace-module-teaser" id="workspace-teaser" data-workspace-panel="teaser" hidden>
+      <div class="workspace-module-teaser-inner">
+        <div class="workspace-module-teaser-mark" aria-hidden="true">◆</div>
+        <h3 class="workspace-module-teaser-title" id="workspace-teaser-title">Relocación</h3>
+        <p class="workspace-module-teaser-desc" id="workspace-teaser-desc">Cómo cambia tu carta según la ciudad donde vives.</p>
+        <span class="workspace-module-teaser-badge">Próximamente</span>
+      </div>
+    </div>
   </aside>
 
   <!-- ============ MAP AREA ============ -->
   <header class="mobile-top-bar" id="mobile-top-bar">
     <div class="mobile-top-greeting" id="mobile-greeting">Hola</div>
     <div class="mobile-top-actions">
+      <button type="button" class="mobile-top-btn mobile-top-btn--active" id="mobile-map-btn" aria-pressed="true">
+        Mapa
+      </button>
       <button type="button" class="mobile-top-btn" id="mobile-controls-btn" aria-controls="sidebar" aria-expanded="false">
         Controles
       </button>
-      <button type="button" class="mobile-top-btn mobile-top-btn--gold" id="mobile-lectura-btn" disabled>
+      <button type="button" class="mobile-top-btn mobile-top-btn--gold mobile-top-btn--hidden" id="mobile-lectura-btn" aria-hidden="true" tabindex="-1">
         Lectura
       </button>
     </div>
@@ -265,7 +324,7 @@
     <!-- Empty hint -->
     <div class="empty-hint" id="empty-hint">
       <span class="arrow">←</span>
-      Introduce tus datos<br>y calcula tu mapa
+      Preparando tu mapa
     </div>
 
     <!-- Compass -->
@@ -312,12 +371,18 @@
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+<!-- Fase 3.1c — motor natal lazy vía loader + chart-service (no cold start WASM) -->
+<script src="services/natal-engine-loader.js?v=3.1c"></script>
+<script src="services/chart-service.js?v=3.1c"></script>
 <script src="content/interpretations.js"></script>
+<script src="content/natal-lite.js"></script>
+<script src="services/natal-composition-service.js"></script>
 <script src="engines/astro.js"></script>
 <script src="ui/places.js"></script>
 <script src="ui/profile.js"></script>
 <script src="ui/onboarding.js"></script>
 <script src="ui/planet-glyphs.js"></script>
+<script src="ui/natal-panel.js"></script>
 <script src="ui/app.js"></script>
 </body>
 </html>
