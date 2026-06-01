@@ -186,19 +186,7 @@
       return lines;
     }
 
-    function extractTags(composition) {
-      if (!composition || composition.ok !== true) return [];
-      var tags = [];
-      (composition.sections || []).forEach(function (section) {
-        (section.semanticTags || []).forEach(function (tag) {
-          var t = String(tag).trim().toLowerCase();
-          if (t && tags.indexOf(t) === -1) tags.push(t);
-        });
-      });
-      return tags.sort();
-    }
-
-    function deriveThemes(tags, composition) {
+    function legacyDeriveThemes(tags, composition) {
       var themes = tags.filter(function (tag) {
         return THEME_KEYS.indexOf(tag) !== -1;
       });
@@ -210,6 +198,17 @@
         themes.push('belonging');
       }
       return themes.filter(function (t, i, arr) { return arr.indexOf(t) === i; }).sort();
+    }
+
+    function bridgeInputFromComposition(composition) {
+      var profile = composition.meta && composition.meta.bridgeProfile;
+      if (!profile) return null;
+      return {
+        tags: (profile.tags || []).slice(),
+        themes: (profile.themes || []).slice(),
+        tensionMode: !!profile.tensionMode,
+        mapLines: mockMapLines()
+      };
     }
 
     function scoreClass(score) {
@@ -228,16 +227,21 @@
     function runPipeline(preset) {
       var slugs = preset.slugs;
       var composition = window.KairosNatalComposition.composeNatalLiteReading(slugs);
-      var tags = extractTags(composition);
-      var themes = deriveThemes(tags, composition);
-      var tensionMode = !!(composition.meta && composition.meta.tensionMode);
+      var profile = composition.meta && composition.meta.bridgeProfile;
+      var bridgeInput = bridgeInputFromComposition(composition);
+      var legacyThemes = profile
+        ? legacyDeriveThemes(profile.tags, composition)
+        : [];
 
-      var bridgeInput = {
-        tags: tags,
-        themes: themes,
-        tensionMode: tensionMode,
-        mapLines: mockMapLines()
-      };
+      if (!bridgeInput) {
+        return {
+          preset: preset,
+          composition: { ok: false },
+          bridge: { ok: false, error: 'NO_BRIDGE_PROFILE' },
+          top5: [],
+          compare: null
+        };
+      }
 
       var bridge = window.KairosNatalMapBridge.buildBridge(bridgeInput);
       var top5 = (bridge.matches || []).slice(0, 5);
@@ -251,11 +255,14 @@
         },
         composition: {
           ok: composition.ok,
-          tensionMode: tensionMode,
-          tensionScore: composition.meta && composition.meta.tensionScore,
+          bridgeProfile: profile,
           bridgeFrom: composition.meta && composition.meta.bridgeFrom,
-          fragmentIds: composition.meta && composition.meta.fragmentIds,
-          tags: tags
+          tensionScore: composition.meta && composition.meta.tensionScore
+        },
+        compare: {
+          legacyThemes: legacyThemes,
+          profileThemes: profile.themes,
+          themesReduced: legacyThemes.length - profile.themes.length
         },
         bridgeInput: bridgeInput,
         bridge: bridge,
@@ -265,14 +272,21 @@
 
     function renderCase(result) {
       var b = result.bridge;
+      var profile = result.composition.bridgeProfile;
       var html = '';
 
       html += '<dl class="kv">';
       html += '<dt>Caso</dt><dd>' + esc(result.preset.label) + '</dd>';
       html += '<dt>Carta</dt><dd>' + esc(result.chart.title || JSON.stringify(result.chart.slugs)) + '</dd>';
-      html += '<dt>Tags</dt><dd>' + esc(result.composition.tags.join(', ') || '—') + '</dd>';
-      html += '<dt>Themes</dt><dd>' + esc(result.bridgeInput.themes.join(', ') || '—') + '</dd>';
-      html += '<dt>tensionMode</dt><dd>' + result.composition.tensionMode + ' (score ' + (result.composition.tensionScore != null ? result.composition.tensionScore : '—') + ')</dd>';
+      html += '<dt>Tags</dt><dd>' + esc((profile && profile.tags || []).join(', ') || '—') + '</dd>';
+      html += '<dt>Themes</dt><dd>' + esc((profile && profile.themes || []).join(', ') || '—') + '</dd>';
+      if (result.compare) {
+        html += '<dt>Legacy themes</dt><dd class="muted">' + esc(result.compare.legacyThemes.join(', ') || '—') + '</dd>';
+        html += '<dt>Δ themes</dt><dd>' + result.compare.themesReduced + ' menos que heurística DEV</dd>';
+      }
+      html += '<dt>dominantRoles</dt><dd>' + esc((profile && profile.dominantRoles || []).join(' → ') || '—') + '</dd>';
+      html += '<dt>sourceFragmentIds</dt><dd>' + esc((profile && profile.sourceFragmentIds || []).join(', ') || '—') + '</dd>';
+      html += '<dt>tensionMode</dt><dd>' + (profile ? profile.tensionMode : '—') + '</dd>';
       html += '<dt>confidence</dt><dd>' + (b.confidence != null ? b.confidence : '—') + '</dd>';
       html += '<dt>priorityLines</dt><dd>' + esc((b.priorityLines || []).join(', ') || '—') + '</dd>';
       html += '</dl>';
@@ -302,7 +316,8 @@
 
     function renderSmokeRow(result) {
       var b = result.bridge;
-      var pass = b.ok === true && result.top5.length >= 1 && b.confidence >= 0.35;
+      var profile = result.composition.bridgeProfile;
+      var pass = b.ok === true && result.top5.length >= 1 && b.confidence >= 0.35 && !!profile;
       var topLines = result.top5.map(function (m) {
         return m.lineId + ' (' + m.score + ')';
       }).join(', ');
@@ -311,6 +326,7 @@
         '<td>' + esc(result.preset.id) + '</td>' +
         '<td><span class="badge ' + (pass ? 'badge-pass' : 'badge-fail') + '">' + (pass ? 'PASS' : 'FAIL') + '</span></td>' +
         '<td>' + (b.confidence != null ? b.confidence : '—') + '</td>' +
+        '<td>' + esc((profile && profile.themes || []).join(', ')) + '</td>' +
         '<td>' + esc(topLines) + '</td>' +
         '</tr>';
     }
@@ -366,7 +382,7 @@
       }).join('');
 
       document.getElementById('smoke-out').innerHTML =
-        '<table><thead><tr><th>Caso</th><th>Status</th><th>Confidence</th><th>Top 5 líneas (score)</th></tr></thead><tbody>' +
+        '<table><thead><tr><th>Caso</th><th>Status</th><th>Confidence</th><th>Themes (profile)</th><th>Top 5 líneas (score)</th></tr></thead><tbody>' +
         rows + '</tbody></table>' +
         '<p style="margin-top:10px" class="' + (allPass ? 'score-high' : 'err') + '">OVERALL: ' + (allPass ? 'PASS' : 'FAIL') + '</p>';
 

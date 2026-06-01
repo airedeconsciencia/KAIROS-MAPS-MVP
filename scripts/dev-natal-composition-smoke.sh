@@ -100,14 +100,26 @@ function validateResult(result) {
   return null;
 }
 
+function validateBridgeProfile(result) {
+  var profile = result.meta && result.meta.bridgeProfile;
+  if (!profile || typeof profile !== 'object') return 'meta.bridgeProfile missing';
+  if (!Array.isArray(profile.tags)) return 'bridgeProfile.tags not array';
+  if (!Array.isArray(profile.themes)) return 'bridgeProfile.themes not array';
+  if (typeof profile.tensionMode !== 'boolean') return 'bridgeProfile.tensionMode not boolean';
+  if (!Array.isArray(profile.sourceFragmentIds)) return 'bridgeProfile.sourceFragmentIds not array';
+  if (!profile.sourceFragmentIds.length) return 'bridgeProfile.sourceFragmentIds empty';
+  return null;
+}
+
 let allPass = true;
 
 cases.forEach(function (c) {
   const result = compose(c.input);
   const validationError = validateResult(result);
+  const bridgeProfileError = validateBridgeProfile(result);
   const modeOk = result.meta && result.meta.tensionMode === c.expect.tensionMode;
   const bridgeOk = result.meta && result.meta.bridgeFrom === c.expect.bridgeFrom;
-  const casePass = !validationError && modeOk && bridgeOk;
+  const casePass = !validationError && !bridgeProfileError && modeOk && bridgeOk;
 
   if (!casePass) allPass = false;
 
@@ -115,6 +127,7 @@ cases.forEach(function (c) {
   console.log('CASE ' + c.id + ': ' + c.label);
   console.log('RESULT:', casePass ? 'PASS' : 'FAIL');
   if (validationError) console.log('  validation:', validationError);
+  if (bridgeProfileError) console.log('  bridgeProfile:', bridgeProfileError);
   if (!modeOk) {
     console.log('  tensionMode:', result.meta && result.meta.tensionMode,
       '(expected', c.expect.tensionMode + ')');
@@ -128,6 +141,8 @@ cases.forEach(function (c) {
     console.log('  tensionScore:', result.meta.tensionScore);
     console.log('  tensionMode:', result.meta.tensionMode);
     console.log('  bridgeFrom:', result.meta.bridgeFrom);
+    console.log('  bridgeProfile.tags:', JSON.stringify(result.meta.bridgeProfile.tags));
+    console.log('  bridgeProfile.themes:', JSON.stringify(result.meta.bridgeProfile.themes));
     console.log('  charCount:', result.meta.charCount);
     console.log('  styleWarnings:', JSON.stringify(result.meta.styleWarnings));
     console.log('  clichesDetected:', JSON.stringify(result.meta.clichesDetected));

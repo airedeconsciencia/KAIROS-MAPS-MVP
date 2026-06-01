@@ -79,6 +79,16 @@
     SUN: 0.18
   };
 
+  var BRIDGE_PROFILE_VERSION = '0.1.0';
+
+  var ROLE_BRIDGE_THEMES = {
+    SUN: ['communication', 'stimulation', 'reflection', 'visibility', 'initiative'],
+    MOON: ['emotional_safety', 'intimacy', 'regulation', 'movement'],
+    ASC: ['belonging', 'harmony', 'protection', 'emotional_safety']
+  };
+
+  var MAX_BRIDGE_THEMES = 6;
+
   var PILOT_COMPOSITIONS = [
     { id: 'pilot-1', sun: 'gemini', moon: 'cancer', asc: 'libra' },
     { id: 'pilot-2', sun: 'aries', moon: 'gemini', asc: 'cancer' },
@@ -441,6 +451,69 @@
       });
     });
     return merged;
+  }
+
+  function sortUniqueStrings(list) {
+    return list.slice().sort(function (a, b) {
+      return String(a).localeCompare(String(b));
+    });
+  }
+
+  function computeDominantRoles(bridgeRole, tensionScore) {
+    var weights = bridgeRoleWeights(tensionScore);
+    var ordered = ROLES.slice().sort(function (a, b) {
+      return (weights[b] || 0) - (weights[a] || 0);
+    });
+    if (bridgeRole && ordered.indexOf(bridgeRole) !== -1) {
+      ordered = [bridgeRole].concat(ordered.filter(function (role) {
+        return role !== bridgeRole;
+      }));
+    }
+    return ordered;
+  }
+
+  function buildBridgeProfile(fragments, sections, tensionMeta, tensionMode, bridge) {
+    var tags = sortUniqueStrings(mergeFragmentTags(fragments));
+    var bridgeRole = bridge ? bridge.role : null;
+    var dominantRoles = computeDominantRoles(bridgeRole, tensionMeta.tensionScore);
+    var themes = [];
+    var themeSeen = {};
+
+    function addTheme(theme) {
+      if (!theme || themeSeen[theme]) return;
+      themeSeen[theme] = true;
+      themes.push(theme);
+    }
+
+    if (bridgeRole && fragments[bridgeRole]) {
+      bridgeTagsOf(fragments[bridgeRole]).forEach(addTheme);
+    }
+
+    dominantRoles.forEach(function (role) {
+      var fragment = fragments[role];
+      if (!fragment) return;
+      var fragmentTags = tagsOf(fragment);
+      (ROLE_BRIDGE_THEMES[role] || []).forEach(function (theme) {
+        if (fragmentTags.indexOf(theme) !== -1) addTheme(theme);
+      });
+    });
+
+    var sourceFragmentIds = sections.map(function (section) {
+      return section.fragmentId;
+    });
+    if (bridge && bridge.fragmentId && sourceFragmentIds.indexOf(bridge.fragmentId) === -1) {
+      sourceFragmentIds.push(bridge.fragmentId);
+    }
+
+    return {
+      schemaVersion: BRIDGE_PROFILE_VERSION,
+      tags: tags,
+      themes: sortUniqueStrings(themes).slice(0, MAX_BRIDGE_THEMES),
+      tensionMode: tensionMode,
+      contradictionPairs: (tensionMeta.contradictionPairs || []).slice(),
+      dominantRoles: dominantRoles,
+      sourceFragmentIds: sourceFragmentIds
+    };
   }
 
   function bridgeProfile(fragment) {
@@ -846,6 +919,7 @@
 
     var reading = trimReadingToLimit(readingParts, MAX_READING_CHARS, fragments, styleState);
     var styleWarnings = analyzeStyleWarnings(reading, sections, bridge ? bridge.role : null);
+    var bridgeProfile = buildBridgeProfile(fragments, sections, tensionMeta, tensionMode, bridge);
 
     return {
       ok: true,
@@ -870,6 +944,7 @@
         tensionScore: tensionMeta.tensionScore,
         tensionMode: tensionMode,
         contradictionPairs: tensionMeta.contradictionPairs,
+        bridgeProfile: bridgeProfile,
         styleWarnings: styleWarnings,
         clichesDetected: detectCliches(reading),
         targetChars: TARGET_READING_CHARS,
@@ -913,6 +988,7 @@
     sharedTags: sharedTags,
     composeNatalLiteReading: composeNatalLiteReading,
     composePilotReadings: composePilotReadings,
-    composeTensionPilots: composeTensionPilots
+    composeTensionPilots: composeTensionPilots,
+    buildBridgeProfile: buildBridgeProfile
   };
 })();

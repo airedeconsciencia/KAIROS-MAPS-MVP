@@ -5,6 +5,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+NATAL_LITE="$ROOT/src/content/natal-lite.js"
+COMPOSITION="$ROOT/src/services/natal-composition-service.js"
 BRIDGE="$ROOT/src/services/natal-map-bridge-service.js"
 
 echo ""
@@ -15,29 +17,40 @@ echo ""
 echo "Raíz repo: $ROOT"
 echo ""
 
-if [[ ! -f "$BRIDGE" ]]; then
-  echo "ERROR: No se encuentra: $BRIDGE"
-  exit 1
-fi
+for f in "$NATAL_LITE" "$COMPOSITION" "$BRIDGE"; do
+  if [[ ! -f "$f" ]]; then
+    echo "ERROR: No se encuentra: $f"
+    exit 1
+  fi
+done
 
 echo "Archivos: OK"
+echo "  • src/content/natal-lite.js"
+echo "  • src/services/natal-composition-service.js"
 echo "  • src/services/natal-map-bridge-service.js"
 echo ""
 
-export BRIDGE
+export NATAL_LITE COMPOSITION BRIDGE
 
 node <<'NODE'
 const fs = require('fs');
 const vm = require('vm');
 
+const natalLitePath = process.env.NATAL_LITE;
+const compositionPath = process.env.COMPOSITION;
 const bridgePath = process.env.BRIDGE;
 const ctx = { window: {} };
 vm.createContext(ctx);
 
 try {
+  vm.runInContext(fs.readFileSync(natalLitePath, 'utf8'), ctx, { filename: natalLitePath });
+  vm.runInContext(fs.readFileSync(compositionPath, 'utf8'), ctx, { filename: compositionPath });
   vm.runInContext(fs.readFileSync(bridgePath, 'utf8'), ctx, { filename: bridgePath });
   if (typeof ctx.window.KairosNatalMapBridge === 'undefined') {
     throw new Error('KairosNatalMapBridge no definido');
+  }
+  if (typeof ctx.window.KairosNatalComposition === 'undefined') {
+    throw new Error('KairosNatalComposition no definido');
   }
 } catch (err) {
   console.error('LOAD FAIL:', err.message);
@@ -45,6 +58,7 @@ try {
 }
 
 const build = ctx.window.KairosNatalMapBridge.buildBridge;
+const compose = ctx.window.KairosNatalComposition.composeNatalLiteReading;
 
 const PLANETS = ['sol', 'luna', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno', 'urano', 'neptuno', 'pluton'];
 const ANGLES = ['MC', 'IC', 'AC', 'DC'];
@@ -204,6 +218,34 @@ if (!deterministic) {
   allPass = false;
   console.log('  JSON A != JSON B');
 }
+
+console.log('');
+console.log('── compositor → bridge (Roberto) ──');
+const robertoComposition = compose({ sun: 'gemini', moon: 'aries', asc: 'cancer' });
+const robertoProfile = robertoComposition.meta && robertoComposition.meta.bridgeProfile;
+const compositorBridgeInput = robertoProfile ? {
+  tags: robertoProfile.tags,
+  themes: robertoProfile.themes,
+  tensionMode: robertoProfile.tensionMode,
+  mapLines: mockMapLines()
+} : null;
+const compositorBridge = compositorBridgeInput ? build(compositorBridgeInput) : null;
+const compositorPass = !!(
+  robertoComposition.ok &&
+  robertoProfile &&
+  compositorBridge &&
+  compositorBridge.ok &&
+  compositorBridge.priorityLines.length >= 1
+);
+console.log('─'.repeat(60));
+console.log('CASE 6: compositor bridgeProfile → buildBridge (Roberto)');
+console.log('RESULT:', compositorPass ? 'PASS' : 'FAIL');
+if (robertoProfile) {
+  console.log('  themes:', JSON.stringify(robertoProfile.themes));
+  console.log('  priorityLines:', JSON.stringify(compositorBridge && compositorBridge.priorityLines));
+  console.log('  confidence:', compositorBridge && compositorBridge.confidence);
+}
+if (!compositorPass) allPass = false;
 
 console.log('');
 console.log('═'.repeat(60));

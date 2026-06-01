@@ -113,19 +113,52 @@ Casos: payload válido · incompleto · vacío · sin señal · determinismo.
 
 ---
 
-## Integración futura (3.6c+)
+## Integración futura (3.7a)
 
 ```javascript
 var composition = KairosNatalComposition.composeNatalLiteReading({ sun, moon, asc });
-var tags = composition.meta.sharedTags /* o merge sections */;
+var profile = composition.meta.bridgeProfile;
 var bridge = KairosNatalMapBridge.buildBridge({
-  tags: tags,
-  themes: deriveThemes(composition),
-  tensionMode: composition.meta.tensionMode,
+  tags: profile.tags,
+  themes: profile.themes,
+  tensionMode: profile.tensionMode,
   mapLines: state.lines
 });
 // bridge.priorityLines → highlight en mapa (3.7a)
 ```
+
+---
+
+## Contrato compositor → bridge (Fase 3.6d)
+
+Tras `composeNatalLiteReading()` con `ok: true`, el compositor expone:
+
+```javascript
+meta.bridgeProfile = {
+  schemaVersion: '0.1.0',
+  tags: string[],              // unión semanticTags Sol/Luna/Asc
+  themes: string[],            // bridgeTags + ROLE_BRIDGE_THEMES (máx. 6)
+  tensionMode: boolean,
+  contradictionPairs: object[],
+  dominantRoles: string[],     // bridge role first, luego por peso
+  sourceFragmentIds: string[]  // secciones + bridge si distinto
+}
+```
+
+### Reglas de themes (sin heurística DEV)
+
+1. `bridgeTags` del fragmento del rol bridge seleccionado (`bridgeFrom`)
+2. Intersección `ROLE_BRIDGE_THEMES[role]` ∩ tags del fragmento, por `dominantRoles`
+3. Máximo 6 themes — **no** copiar todos los tags
+
+### Fail-soft compositor
+
+Si `ok: false` (fragmento missing) → **no** hay `bridgeProfile`.
+
+### Lab DEV
+
+`src/dev/bridge-preview.html` consume `meta.bridgeProfile` como fuente principal.  
+Muestra comparación con heurística legacy solo para auditoría (`compare.themesReduced`).
 
 ---
 
