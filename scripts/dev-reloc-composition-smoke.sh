@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke Reloc composition (Fase 3.7b.3)
+# Kairos Maps — Smoke Reloc composition (Fase 3.7b.4)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -85,7 +85,22 @@ function validateComposed(result) {
   if (typeof result.meta.charCount !== 'number') return 'meta.charCount missing';
   if (!Array.isArray(result.meta.styleWarnings)) return 'meta.styleWarnings not array';
   if (!Array.isArray(result.meta.clichesDetected)) return 'meta.clichesDetected not array';
+  if (!Array.isArray(result.meta.includedRoles)) return 'meta.includedRoles not array';
+  if (!Array.isArray(result.meta.omittedRoles)) return 'meta.omittedRoles not array';
+  if (typeof result.meta.roleCoveragePercent !== 'number') return 'meta.roleCoveragePercent missing';
   return null;
+}
+
+function hasFourRoles(result) {
+  var expected = ['ASC', 'MC', 'IC', 'DC'];
+  var included = result.meta.includedRoles || [];
+  return expected.every(function (role) { return included.indexOf(role) !== -1; });
+}
+
+function roleCoverageOk(result, fragmentCount) {
+  if ((result.meta.omittedRoles || []).length !== 0) return false;
+  if (fragmentCount === 4 && result.meta.roleCoveragePercent !== 100) return false;
+  return hasFourRoles(result);
 }
 
 function inCharRange(result) {
@@ -120,11 +135,13 @@ const composedResults = [];
 
 cases.forEach(function (c) {
   const profile = build(baseInput(c.goal));
-  const result = compose({ relocationProfile: profile, goalContext: profile.meta && profile.meta.goalContext });
+  const goalContext = GS.buildContext({ mainGoal: c.goal });
+  const result = compose({ relocationProfile: profile, goalContext: goalContext });
   const validationError = validateComposed(result);
   const rangeOk = result.ok && inCharRange(result);
   const warnOk = result.ok && noCriticalWarnings(result);
-  const casePass = !validationError && rangeOk && warnOk;
+  const rolesOk = result.ok && roleCoverageOk(result, (profile.sourceIds && profile.sourceIds.fragmentIds || []).length);
+  const casePass = !validationError && rangeOk && warnOk && rolesOk;
 
   composedResults.push(result);
 
@@ -134,7 +151,9 @@ cases.forEach(function (c) {
     validationError
       ? validationError
       : 'charCount=' + (result.meta && result.meta.charCount) +
-        ' · fragmentIds=' + JSON.stringify(result.fragmentIds) +
+        ' · includedRoles=' + JSON.stringify(result.meta && result.meta.includedRoles) +
+        ' · omittedRoles=' + JSON.stringify(result.meta && result.meta.omittedRoles) +
+        ' · roleCoveragePercent=' + (result.meta && result.meta.roleCoveragePercent) +
         ' · styleWarnings=' + JSON.stringify(result.meta && result.meta.styleWarnings)
   );
 });
@@ -150,15 +169,27 @@ assert(
 );
 
 const detProfile = build(baseInput('amor'));
-const det1 = compose({ relocationProfile: detProfile, goalContext: detProfile.meta && detProfile.meta.goalContext });
-const det2 = compose({ relocationProfile: detProfile, goalContext: detProfile.meta && detProfile.meta.goalContext });
+const detGoal = GS.buildContext({ mainGoal: 'amor' });
+const det1 = compose({ relocationProfile: detProfile, goalContext: detGoal });
+const det2 = compose({ relocationProfile: detProfile, goalContext: detGoal });
 assert(
   'CASE 5: determinismo estable',
   det1.ok && det2.ok &&
     JSON.stringify(det1.reading) === JSON.stringify(det2.reading) &&
-    JSON.stringify(det1.fragmentIds) === JSON.stringify(det2.fragmentIds),
-  'fragmentIds=' + JSON.stringify(det1.fragmentIds)
+    JSON.stringify(det1.fragmentIds) === JSON.stringify(det2.fragmentIds) &&
+    JSON.stringify(det1.meta.includedRoles) === JSON.stringify(det2.meta.includedRoles),
+  'includedRoles=' + JSON.stringify(det1.meta.includedRoles)
 );
+
+try {
+  execSync(process.env.ROOT + '/scripts/dev-reloc-lite-smoke.sh', {
+    stdio: 'pipe',
+    encoding: 'utf8'
+  });
+  assert('dev-reloc-lite-smoke.sh', true, 'OVERALL: PASS');
+} catch (e) {
+  assert('dev-reloc-lite-smoke.sh', false, (e.stdout || e.message || '').split('\n').slice(-3).join(' '));
+}
 
 try {
   execSync(process.env.ROOT + '/scripts/dev-relocation-profile-smoke.sh', {
@@ -177,6 +208,9 @@ if (composedResults[0] && composedResults[0].ok) {
   console.log('title:', composedResults[0].title);
   console.log('reading:', composedResults[0].reading);
   console.log('charCount:', composedResults[0].meta.charCount);
+  console.log('includedRoles:', JSON.stringify(composedResults[0].meta.includedRoles));
+  console.log('omittedRoles:', JSON.stringify(composedResults[0].meta.omittedRoles));
+  console.log('roleCoveragePercent:', composedResults[0].meta.roleCoveragePercent);
   console.log('fragmentIds:', JSON.stringify(composedResults[0].fragmentIds));
 }
 console.log('═'.repeat(60));

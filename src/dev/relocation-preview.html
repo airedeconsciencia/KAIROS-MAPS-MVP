@@ -285,6 +285,9 @@
         '<p style="margin:10px 0;color:#d1d5db;line-height:1.55">' + composed.reading + '</p>' +
         '<dl class="kv">' +
         '<dt>charCount</dt><dd>' + composed.meta.charCount + ' / ' + composed.meta.minChars + '–' + composed.meta.maxChars + '</dd>' +
+        '<dt>includedRoles</dt><dd>' + JSON.stringify(composed.meta.includedRoles || []) + '</dd>' +
+        '<dt>omittedRoles</dt><dd>' + JSON.stringify(composed.meta.omittedRoles || []) + '</dd>' +
+        '<dt>roleCoveragePercent</dt><dd>' + (composed.meta.roleCoveragePercent != null ? composed.meta.roleCoveragePercent + '%' : '—') + '</dd>' +
         '<dt>fragmentIds</dt><dd>' + JSON.stringify(composed.fragmentIds) + '</dd>' +
         '<dt>styleWarnings</dt><dd>' + JSON.stringify(composed.meta.styleWarnings) + '</dd>' +
         '<dt>clichesDetected</dt><dd>' + JSON.stringify(composed.meta.clichesDetected) + '</dd>' +
