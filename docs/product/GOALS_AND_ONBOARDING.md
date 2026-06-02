@@ -1,0 +1,471 @@
+---
+title: "Onboarding y Objetivos Vitales (DOC-09 v2)"
+source_master: "docs/Master/09 REVISADO v2 — Flujo Completo de Onboarding — Kairos Maps.docx"
+converted_phase: "3.6h4"
+status: canonical-md
+governs: "Onboarding · Goals Layer · Profile"
+priority: "CRÍTICA"
+---
+
+# Onboarding y Objetivos Vitales (DOC-09 v2)
+
+> **Origen canónico:** [`docs/Master/09 REVISADO v2 — Flujo Completo de Onboarding — Kairos Maps.docx`](../Master/09 REVISADO v2 — Flujo Completo de Onboarding — Kairos Maps.docx)  
+> **Conversión:** Fase 3.6h4 · Contenido extraído del Master — preservar alineación con fuente Word  
+> **Regla:** Este Markdown gobierna editorialmente su capa. No sustituye contratos técnicos en `docs/architecture/`.
+
+---
+
+## KAIROS MAPS — DOC-09 REVISADO v2
+
+## Flujo Completo De Onboarding
+
+Mayo 2026 — Versión mejorada con especificaciones técnicas y criterios de decisión
+
+════════════════════════════════════════════════════════
+
+## Filosofía Central
+
+════════════════════════════════════════════════════════
+
+El onboarding de Kairos Maps no es un formulario de registro.
+
+Es el momento donde la app debe crear VÍNCULO.
+
+### En menos de 3 minutos el usuario debe sentir:
+
+— La app me entiende
+
+— Esto no es un horóscopo
+
+— Hay algo importante aquí para mí
+
+— Quiero explorar más
+
+El objetivo NO es enseñar astrología.
+
+El objetivo es: conectar emocionalmente → recoger datos → WOW.
+
+════════════════════════════════════════════════════════
+
+## Flujo Completo — 9 Pantallas
+
+════════════════════════════════════════════════════════
+
+──────────────────────────────────────────────────────
+
+## Pantalla 1 — Bienvenida
+
+──────────────────────────────────────────────────────
+
+Objetivo: Crear atmósfera y curiosidad sin explicar nada todavía.
+
+### Visual:
+
+— Fondo oscuro #0F1115
+
+— Mapamundi minimalista con líneas suaves animadas
+
+— Líneas en dorado #C9A96E muy tenues, moviéndose lentamente
+
+— Sin saturación visual
+
+### Texto principal (grande, centrado):
+
+"Cada lugar despierta una parte diferente de ti."
+
+### Subtexto (pequeño, #AAB2BF):
+
+"Kairos Maps analiza cómo distintas zonas del mundo
+
+pueden influir en tu vida, tus relaciones y tu camino."
+
+### Botón: "Comenzar" (#C9A96E, pill, centrado)
+
+## Qué No Debe Aparecer:
+
+— Nada de "casas", "aspectos", "líneas planetarias"
+
+— No mencionar astrología en esta pantalla
+
+— No pedir datos todavía
+
+Datos recogidos: ninguno.
+
+──────────────────────────────────────────────────────
+
+## Pantalla 2 — Crear Cuenta
+
+──────────────────────────────────────────────────────
+
+Objetivo: Registrar con mínima fricción.
+
+Título: "Antes de empezar, creemos tu espacio personal."
+
+### Campos:
+
+— Nombre (¿Cómo quieres que te llamemos?)
+
+— Email
+
+— Contraseña
+
+### Opciones rápidas:
+
+— Continuar con Google
+
+— Continuar con Apple
+
+### Texto privacidad (muy pequeño):
+
+"Tu información se guarda de forma privada y segura.
+
+Solo se usa para construir tu mapa personalizado."
+
+## Criterio Técnico:
+
+— Si el usuario elige Google/Apple: saltar a pantalla 3 directamente
+
+— El nombre se usa desde pantalla 3 en adelante (personalización inmediata)
+
+— Si no introduce nombre: usar "Tú" como fallback
+
+### Datos guardados en Firestore:
+
+users/{userId}: { displayName, email, authProvider, createdAt }
+
+──────────────────────────────────────────────────────
+
+## Pantalla 3 — Intención Humana
+
+──────────────────────────────────────────────────────
+
+Objetivo: Descubrir qué busca la persona AHORA.
+
+Este dato es el más importante del onboarding.
+
+Determina qué líneas se priorizan en el mapa.
+
+Título dinámico: "{nombre}, ¿qué te gustaría encontrar o mejorar ahora mismo?"
+
+### Opciones (selección múltiple, máximo 3):
+
+💛 Amor y relaciones → mainGoal: "amor"
+
+🎯 Trabajo y propósito → mainGoal: "trabajo"
+
+🌿 Descanso y bienestar → mainGoal: "descanso"
+
+✈️ Viajes y exploración → mainGoal: "viajes"
+
+🔄 Cambio de vida → mainGoal: "cambio"
+
+🏠 Sentirme en casa → mainGoal: "raices"
+
+💡 Creatividad e inspiración → mainGoal: "creatividad"
+
+🌱 Crecer personalmente → mainGoal: "crecimiento"
+
+### Subtexto: "Esto ayudará a Kairos Maps a mostrarte
+
+los lugares más relevantes para ti ahora."
+
+## Criterio Técnico:
+
+— Mínimo 1 opción requerida
+
+— Máximo 3 selecciones
+
+— Si el usuario elige "amor" → priorizar líneas DC/Venus en el mapa
+
+— Si elige "trabajo" → priorizar líneas MC/Júpiter/Mercurio
+
+— Si elige "descanso" → priorizar líneas IC/Luna/Sol
+
+### Datos guardados: users/{userId}/profile/preferences: { mainGoals }
+
+──────────────────────────────────────────────────────
+
+## Pantalla 4 — Datos Natales
+
+──────────────────────────────────────────────────────
+
+Objetivo: Construir la base astrológica del mapa.
+
+Título: "Perfecto, {nombre}. Ahora vamos a construir tu mapa."
+
+### Subtexto: "Tu fecha y lugar de nacimiento permiten calcular
+
+cómo distintas zonas del mundo interactúan contigo."
+
+### Campos:
+
+### 1. Fecha de nacimiento — selector visual (día/mes/año)
+
+### 2. Hora de nacimiento — con opciones:
+
+○ Exacta → mostrar selector HH:mm
+
+○ Aproximada → mostrar selector con franjas de 2h
+
+○ No la sé → timeAccuracy: "unknown", usar mediodía como fallback
+
+### 3. Lugar de nacimiento — autocompletado con búsqueda de ciudad
+
+## Criterio Técnico:
+
+— Si timeAccuracy: "unknown": usar 12:00 como hora y avisar
+
+que el mapa es menos preciso (los ángulos AC/DC varían más)
+
+— Las líneas MC/IC no se ven afectadas por la hora
+
+— Validar que la fecha es real (no futura, no antes de 1900)
+
+— El lugar de nacimiento resuelve las coordenadas y timezone
+
+### Datos guardados: users/{userId}/birthData/main
+
+──────────────────────────────────────────────────────
+
+## Pantalla 5 — Estado Vital Actual
+
+──────────────────────────────────────────────────────
+
+Objetivo: Entender el momento emocional del usuario.
+
+Modula el TONO de las interpretaciones.
+
+Pregunta 1: "¿Cómo describirías tu momento actual, {nombre}?"
+
+### Opciones (selección única):
+
+— Necesito un cambio → lifeStage: "transition"
+
+— Estoy reconstruyéndome → lifeStage: "rebuilding"
+
+— Busco estabilidad → lifeStage: "stability"
+
+— Quiero expandirme → lifeStage: "expansion"
+
+— Necesito descanso → lifeStage: "burnout"
+
+— Siento bloqueo → lifeStage: "blocked"
+
+— Quiero empezar de nuevo → lifeStage: "restart"
+
+Pregunta 2: "¿Cómo prefieres que Kairos Maps te acompañe?"
+
+### Opciones:
+
+— Directo y práctico → tone: "direct"
+
+— Humano y reflexivo → tone: "therapeutic"
+
+— Claro y racional → tone: "rational"
+
+## Criterio Técnico:
+
+— Si lifeStage: "burnout" → reducir intensidad de las interpretaciones
+
+y priorizar líneas de descanso aunque el usuario haya elegido trabajo
+
+— El tono afecta directamente el prompt que se pasa a la IA
+
+Datos guardados: users/{userId}/profile/preferences: { currentLifeStage, preferredTone }
+
+──────────────────────────────────────────────────────
+
+## Pantalla 6 — Permiso De Ubicación
+
+──────────────────────────────────────────────────────
+
+Objetivo: Activar análisis del lugar actual.
+
+Título: "{nombre}, ¿estás de acuerdo en compartir tu ubicación actual?"
+
+### Texto: "Kairos Maps puede analizar las energías activas en el lugar
+
+donde estás ahora y compararlas con otros destinos del mundo."
+
+### Botones:
+
+— "Permitir ubicación" (principal, #C9A96E)
+
+— "Ahora no" (secundario, texto simple)
+
+IMPORTANTE: NUNCA obligar. El mapa funciona sin ubicación.
+
+Si el usuario rechaza → el mapa abre centrado en su lugar de nacimiento.
+
+### Datos guardados: users/{userId}/location/current (solo si acepta)
+
+──────────────────────────────────────────────────────
+
+## Pantalla 7 — Generación Del Mapa
+
+──────────────────────────────────────────────────────
+
+Objetivo: Crear tensión emocional positiva mientras se calculan las líneas.
+
+### Visual:
+
+— Globo terráqueo girando suavemente
+
+— Líneas apareciendo progresivamente en el mapa
+
+— En los colores oficiales del planeta (PLANET_DEFS)
+
+— Animación de cálculo elegante, no agresiva
+
+### Textos rotativos (aparecen secuencialmente):
+
+— "Analizando tus líneas principales…"
+
+— "Detectando zonas de resonancia personal…"
+
+— "Construyendo tu geografía emocional…"
+
+— "Calculando activaciones por objetivo…"
+
+## Qué Calcula El Cliente En Este Momento:
+
+### 1. Posiciones planetarias → planetary_engine.js
+
+### 2. Ascendente y ángulos natales → ascendant_engine.js
+
+### 3. Líneas astrocartográficas → astrocarto_engine.js
+
+### 4. Priorización según objetivo → lógica de scores
+
+## Qué Guarda En Firestore:
+
+— Carta natal calculada (users/{userId}/charts/natal)
+
+— Resumen de líneas (users/{userId}/astroMaps/main)
+
+──────────────────────────────────────────────────────
+
+## Pantalla 8 — Primer Wow
+
+──────────────────────────────────────────────────────
+
+Objetivo: Impacto emocional inmediato. Esta es la pantalla más importante.
+
+## Criterio De Selección Del Wow:
+
+El sistema elige la línea más cercana al objetivo principal del usuario:
+
+— Si objetivo es "amor": línea Venus DC más cercana a su lugar de nacimiento
+
+— Si objetivo es "trabajo": línea Júpiter MC más cercana
+
+— Si objetivo es "descanso": línea Luna IC más cercana
+
+### Estructura visual:
+
+— Mapa pequeño mostrando esa línea específica
+
+— Nombre de la ciudad más cercana a esa línea (ej: "Lisboa")
+
+— Línea resaltada en el color oficial del planeta
+
+### Texto (personalizado):
+
+"{nombre}, hay lugares del mundo especialmente
+
+relevantes para lo que buscas ahora."
+
+### Ejemplo de insight (generado según objetivo y línea):
+
+"Tu línea de Venus pasa cerca de Lisboa.
+
+### Lugares en esta zona pueden favorecer vínculos,
+
+bienestar emocional y sensación de armonía."
+
+NOTA: Esta interpretación NO usa IA todavía.
+
+Usa los templates base del DOC-17 para velocidad.
+
+La IA completa se activa cuando el usuario explora una ciudad concreta.
+
+### Botón: "Explorar mi mapa" (botón principal dorado)
+
+──────────────────────────────────────────────────────
+
+## Pantalla 9 — Mapa Interactivo (Entrada)
+
+──────────────────────────────────────────────────────
+
+Objetivo: Dar sensación de exploración y control desde el primer segundo.
+
+### Elementos visibles:
+
+— Mapa mundial oscuro con líneas activas
+
+— Solo las 3-4 líneas más relevantes para el objetivo del usuario
+
+— Buscador de ciudades visible
+
+— Botón de filtro de objetivo (Amor / Trabajo / Descanso / Viajes)
+
+### Mensaje inicial (card en la parte inferior):
+
+"¿Quieres descubrir cómo te afecta el lugar donde
+
+estás ahora, {nombre}?"
+
+### Menú inferior (navegación):
+
+🗺️ Mapa 👤 Mi perfil 🔖 Guardados ⚙️ Ajustes
+
+════════════════════════════════════════════════════════
+
+## Resumen Técnico — Datos Por Pantalla
+
+════════════════════════════════════════════════════════
+
+### P1 → ninguno
+
+### P2 → displayName, email, authProvider
+
+### P3 → mainGoals[]
+
+### P4 → birthDate, birthTime, timeAccuracy, birthPlace (lat/lng/timezone)
+
+### P5 → currentLifeStage, preferredTone
+
+### P6 → locationPermission, lat/lng actual (si acepta)
+
+### P7 → [cálculo] carta natal + líneas → guardado en Firestore
+
+### P8 → [presentación del WOW — sin input]
+
+### P9 → [entrada al mapa — sesión activa]
+
+════════════════════════════════════════════════════════
+
+## Errores Críticos A Evitar
+
+════════════════════════════════════════════════════════
+
+### 1. Mostrar la carta natal técnica al principio — NO
+
+### 2. Mostrar las 48 líneas simultáneamente — NO
+
+### 3. Usar jerga astrológica en las primeras pantallas — NO
+
+### 4. Pedir hora exacta de nacimiento como obligatoria — NO (permitir "no sé")
+
+### 5. Paywalls antes del WOW — NUNCA (el usuario debe ver el valor primero)
+
+### 6. Onboarding de más de 4 minutos — REDUCIR si supera ese tiempo
+
+════════════════════════════════════════════════════════
+
+### FIN DEL DOCUMENTO — DOC-09 v2 REVISADO
+
+### Kairos Maps | Mayo 2026
+
+════════════════════════════════════════════════════════
+
