@@ -40,6 +40,10 @@
   }
 
   function mapGoalToAspect(mainGoal) {
+    if (window.KairosGoalSignal && typeof window.KairosGoalSignal.resolveAspectKey === 'function') {
+      const aspect = window.KairosGoalSignal.resolveAspectKey(mainGoal);
+      if (aspect) return aspect;
+    }
     return GOAL_TO_ASPECT[mainGoal] || 'amor';
   }
 

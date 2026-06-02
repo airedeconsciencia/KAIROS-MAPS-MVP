@@ -67,6 +67,7 @@
       result: null,
       priorityLineIds: []
     },
+    goalContext: null,
     workspace: 'map'
   };
 
@@ -469,6 +470,7 @@
     state.bridge.status = 'idle';
     state.bridge.result = null;
     state.bridge.priorityLineIds = [];
+    state.goalContext = null;
     const mapEl = document.getElementById('map');
     if (mapEl) mapEl.classList.remove('kairos-bridge-active');
   }
@@ -502,16 +504,27 @@
     if (Panel && typeof Panel.composeLiteReading === 'function') {
       composition = Panel.composeLiteReading(state.chart.natal);
     }
-    const profile = composition && composition.meta && composition.meta.bridgeProfile;
-    if (!profile) return false;
+    const signalProfile = composition && composition.meta && composition.meta.bridgeProfile;
+    if (!signalProfile) return false;
+
+    let goalContext = null;
+    const GS = window.KairosGoalSignal;
+    if (GS && typeof GS.buildContext === 'function') {
+      goalContext = GS.buildContext(profile);
+      state.goalContext = goalContext;
+      if (kairosDebugEnabled()) {
+        console.info('[Kairos GoalSignal] context', goalContext);
+      }
+    }
 
     let result;
     try {
       result = Bridge.buildBridge({
-        tags: profile.tags,
-        themes: profile.themes,
-        tensionMode: profile.tensionMode === true,
-        mapLines: mapLinesForBridge()
+        tags: signalProfile.tags,
+        themes: signalProfile.themes,
+        tensionMode: signalProfile.tensionMode === true,
+        mapLines: mapLinesForBridge(),
+        goalContext: goalContext
       });
     } catch (e) {
       kairosDebugLog('bridge error', e.message || String(e));
@@ -1407,6 +1420,7 @@
     window.__kairosDebug = {
       get chart() { return state.chart; },
       get bridge() { return state.bridge; },
+      get goalContext() { return state.goalContext; },
       get serviceStatus() {
         return window.KairosChartService && window.KairosChartService.getStatus
           ? window.KairosChartService.getStatus()

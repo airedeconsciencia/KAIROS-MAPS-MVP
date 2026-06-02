@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '0.1.0-bridge';
+  var SCHEMA_VERSION = '0.1.1-bridge-goal';
 
   var PRIORITY_HIGH = 0.55;
   var PRIORITY_MEDIUM = 0.35;
@@ -198,13 +198,59 @@
     return { delta: delta, reasons: reasons };
   }
 
-  function scoreLine(line, tags, themes, tensionMode) {
+  function goalLineScore(line, effectiveScoring) {
+    if (!effectiveScoring) return { score: 0, reasons: [] };
+
+    var planetBoosts = effectiveScoring.planetBoosts || {};
+    var angleBoosts = effectiveScoring.angleBoosts || {};
+    var parts = [];
+    var reasons = [];
+
+    if (planetBoosts[line.planet] != null) {
+      parts.push(planetBoosts[line.planet]);
+      reasons.push({
+        type: 'goal_planet',
+        key: line.planet,
+        weight: round4(planetBoosts[line.planet])
+      });
+    }
+    if (angleBoosts[line.angle] != null) {
+      parts.push(angleBoosts[line.angle]);
+      reasons.push({
+        type: 'goal_angle',
+        key: line.angle,
+        weight: round4(angleBoosts[line.angle])
+      });
+    }
+    if (!parts.length) return { score: 0, reasons: reasons };
+
+    var total = 0;
+    parts.forEach(function (p) { total += p; });
+    return { score: clamp(total / parts.length, 0, 1), reasons: reasons };
+  }
+
+  function scoreLine(line, tags, themes, tensionMode, goalContext) {
     var tagPart = tagPlanetScore(tags, line.planet);
     var themePart = themeAngleScore(themes, line.angle);
     var tensionPart = tensionAdjustments(tensionMode, line.planet, line.angle);
 
-    var hasSignal = tagPart.score > 0 || themePart.score > 0;
-    if (!hasSignal) {
+    var hasNatalSignal = tagPart.score > 0 || themePart.score > 0;
+    var natalScore = 0;
+    var reasons = [];
+
+    if (hasNatalSignal) {
+      var blended = (tagPart.score * 0.65) + (themePart.score * 0.35) + tensionPart.delta;
+      natalScore = round4(clamp(blended, 0, 1));
+      reasons = tagPart.reasons.concat(themePart.reasons).concat(tensionPart.reasons);
+    }
+
+    var effectiveScoring = goalContext && goalContext.effectiveScoring
+      ? goalContext.effectiveScoring
+      : null;
+    var goalPart = goalLineScore(line, effectiveScoring);
+    var hasGoalSignal = goalPart.score > 0;
+
+    if (!hasNatalSignal && !hasGoalSignal) {
       return {
         lineId: line.lineId,
         planet: line.planet,
@@ -215,9 +261,14 @@
       };
     }
 
-    var blended = (tagPart.score * 0.65) + (themePart.score * 0.35) + tensionPart.delta;
-    var score = round4(clamp(blended, 0, 1));
-    var reasons = tagPart.reasons.concat(themePart.reasons).concat(tensionPart.reasons);
+    var score = natalScore;
+    if (effectiveScoring && hasGoalSignal) {
+      var blend = effectiveScoring.bridgeBlend != null ? effectiveScoring.bridgeBlend : 0.3;
+      var natalWeight = 1 - blend;
+      score = round4(clamp((natalScore * natalWeight) + (goalPart.score * blend), 0, 1));
+      reasons = reasons.concat(goalPart.reasons);
+      reasons.push({ type: 'goal_blend', key: 'natal_goal', weight: round4(blend) });
+    }
 
     return {
       lineId: line.lineId,
@@ -265,6 +316,9 @@
     var themes = normalizeStringList(payload.themes);
     var tensionMode = payload.tensionMode === true;
     var mapLines = normalizeMapLines(payload.mapLines);
+    var goalContext = payload.goalContext && typeof payload.goalContext === 'object'
+      ? payload.goalContext
+      : null;
 
     if (!mapLines.length) {
       return {
@@ -310,7 +364,7 @@
     }
 
     var matches = mapLines
-      .map(function (line) { return scoreLine(line, tags, themes, tensionMode); })
+      .map(function (line) { return scoreLine(line, tags, themes, tensionMode, goalContext); })
       .sort(function (a, b) {
         if (b.score !== a.score) return b.score - a.score;
         return a.lineId.localeCompare(b.lineId);
@@ -318,6 +372,9 @@
 
     var priorityLines = selectPriorityLines(matches);
     var confidence = computeConfidence(tags, themes, mapLines, matches);
+    var goalId = goalContext && goalContext.primary && goalContext.primary.id
+      ? goalContext.primary.id
+      : null;
 
     return {
       ok: true,
@@ -332,7 +389,9 @@
         lineCount: mapLines.length,
         highCount: matches.filter(function (m) { return m.priority === 'high'; }).length,
         mediumCount: matches.filter(function (m) { return m.priority === 'medium'; }).length,
-        lowCount: matches.filter(function (m) { return m.priority === 'low'; }).length
+        lowCount: matches.filter(function (m) { return m.priority === 'low'; }).length,
+        goalApplied: !!goalContext,
+        goalId: goalId
       }
     };
   }
