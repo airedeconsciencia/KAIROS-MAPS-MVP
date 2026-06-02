@@ -229,6 +229,9 @@ Si falla ≥2 respuestas → **rechazar o reordenar**, no implementar.
 | Natal Lite + compositor + bridgeProfile | ✅ Operativo |
 | Bridge service + smokes 6/6 | ✅ Operativo |
 | Highlight mapa sutil 3.7a | ✅ Operativo DEV |
+| **3.7c.1 GoalSignal + Bridge goal-aware** | ✅ Commit `a561a1f` |
+| **3.7c.2 Goals Layer visible** | ✅ Commit `7aeb27c` — chip, status, ranking popup |
+| **3.8b Cities Layer Lite suggestions** | ✅ Commit `d738235` — top 3 sidebar, scorer compartido |
 | Arquitectura 3.6 (multi-perfil, experience, bridge) | ✅ Documentada |
 | Corpus Master 20 docs en `docs/Master/` | ✅ Importado |
 | Conversión 9 docs → `docs/product/` | ✅ 3.6h4 |
@@ -238,29 +241,24 @@ Si falla ≥2 respuestas → **rechazar o reordenar**, no implementar.
 
 | Área | Notas |
 |------|-------|
-| Documentación sin commit | Master + product + architecture docs pendientes commit |
-| `dist/` vs `src/` | Posible desincronización producción |
-| Percepción Bridge | Highlight demasiado sutil — pendiente 3.7a+ |
-| Goals en UI | mainGoal guardado; no gobierna experiencia visible |
+| `dist/` vs `src/` | Posible desincronización producción — sync solo con golden gate + aprobación |
+| UX móvil ≤768px | Beta; desktop-first |
 
-### PRÓXIMO (orden aprobado 3.6h5)
+### PRÓXIMO
 
-1. **3.7a+** — Bridge perceptible + copy humano  
-2. **3.7c** — Goals Layer  
-3. **3.8** — Cities Layer lite  
-4. **3.7b** — Relocation scaffold DEV *(paralelo, baja visibilidad)*  
-5. Commit corpus + constitución  
+1. **Relocation scaffold DEV** — adapter + reloc-lite lab, baja visibilidad, sin motor nuevo
 
-### CONGELADO
+### CONGELADO *(hasta cerrar Relocation DEV)*
 
 | Decisión | Motivo |
 |----------|--------|
 | Motores kairos-core / astro.js | Golden + producción |
 | UX móvil ≤768px | Beta; desktop-first |
-| Couple UI / sinastría operativa | Después Cities + Goals |
-| IA generativa conectada | Después biblioteca + pipeline IDs |
-| Alertas / Wearables / PDF | Fase 5.x |
-| Premium Stripe / paywall | Después loop FREE cerrado |
+| **Couple** UI / sinastría operativa | Después Relocation DEV |
+| **IA** generativa conectada | Después Relocation DEV |
+| **Reports** | Después Relocation DEV |
+| **Alertas** / Wearables / PDF | Después Relocation DEV |
+| **Premium visible** (Stripe / paywall / teasers activos) | Después Relocation DEV |
 | Sidebar → 4 módulos UI | Fase 4.0; EXPERIENCE ya define |
 | OneDrive como fuente | Sustituido por `docs/Master/` interno |
 
@@ -330,11 +328,11 @@ Doc 8 · Doc 9 · Doc 13 · Doc 16 — sustituidos por v2 / MD
 
 ---
 
-## ¿Listo para 3.7b Relocation scaffold DEV?
+## ¿Listo para Relocation scaffold DEV?
 
 **Documental:** SÍ — ver `RELOCATION_EDITORIAL_BRIEF.md` + `KAIROS_MULTI_PROFILE_ARCHITECTURE.md`.
 
-**Producto visible:** NO como siguiente hito — prioridad **3.7c Goals** y **3.8 Cities** (§ VI, § ESTADO PRÓXIMO).
+**Producto visible:** SÍ como **próximo hito** — Goals (3.7c) y Cities Lite (3.8b) cerrados (§ ESTADO ACTUAL).
 
 ---
 
@@ -352,4 +350,4 @@ Doc 8 · Doc 9 · Doc 13 · Doc 16 — sustituidos por v2 / MD
 
 ---
 
-*Constitución Viva KAIROS · Fase 3.6h6 · Una puerta · Un orden · Valor percibido primero*
+*Constitución Viva KAIROS · Actualizado post-3.8b · Una puerta · Un orden · Valor percibido primero*
