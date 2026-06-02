@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Relocation Preview Lab (3.7b DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: #0f1115;
+      color: #e5e7eb;
+      line-height: 1.45;
+      font-size: 13px;
+    }
+    .dev-banner {
+      background: rgba(167, 139, 250, 0.12);
+      border-bottom: 1px solid rgba(167, 139, 250, 0.35);
+      color: #c4b5fd;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 960px; margin: 0 auto; padding: 20px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 18px; color: #c4b5fd; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 12px; margin: 0 0 16px; max-width: 720px; }
+    .question {
+      background: #1a1d24;
+      border: 1px solid #374151;
+      border-left: 3px solid #a78bfa;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      color: #d1d5db;
+    }
+    .question strong {
+      color: #c4b5fd;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+    button {
+      font: inherit;
+      cursor: pointer;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    button:hover { border-color: #a78bfa; color: #c4b5fd; }
+    button.primary { background: rgba(167, 139, 250, 0.15); border-color: #a78bfa; color: #ddd6fe; }
+    select {
+      font: inherit;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .panel {
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6b7280;
+    }
+    .flow { color: #6b7280; font-size: 11px; margin-bottom: 12px; }
+    .flow span { color: #9ca3af; }
+    .kv { display: grid; grid-template-columns: 140px 1fr; gap: 4px 12px; margin: 0; }
+    .kv dt { color: #6b7280; margin: 0; }
+    .kv dd { margin: 0; color: #e5e7eb; word-break: break-word; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #2a2f3a; }
+    th { color: #6b7280; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+    pre {
+      background: #0f1115;
+      border: 1px solid #2a2f3a;
+      border-radius: 6px;
+      padding: 12px;
+      overflow: auto;
+      font-size: 11px;
+      color: #9ca3af;
+      max-height: 420px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-pass { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+    .badge-fail { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+    .err { color: #f87171; }
+    .muted { color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV ONLY · Relocation Preview Lab · No producto · No mapa · No deploy</div>
+  <div class="page">
+    <h1>Relocation Preview Lab — Fase 3.7b</h1>
+    <p class="sub">Scaffold DEV: natal mock + ciudad destino + ángulos relocados mock → RelocationProfile → Bridge opcional. Sin cálculo matemático.</p>
+
+    <div class="question">
+      <strong>Pregunta futura (producto)</strong>
+      ¿Qué cambia si vivo en otro lugar?
+    </div>
+
+    <div class="toolbar">
+      <button type="button" class="primary" data-preset="roberto-lisboa">Roberto → Lisboa</button>
+      <button type="button" class="primary" data-preset="roberto-toronto">Roberto → Toronto</button>
+      <button type="button" data-case="invalid-target">Fail: sin ciudad</button>
+      <button type="button" data-case="invalid-angles">Fail: sin ángulos</button>
+      <button type="button" data-case="smoke">Smoke (6 casos)</button>
+      <label class="muted">Goal:
+        <select id="goal-select">
+          <option value="amor">amor</option>
+          <option value="trabajo">trabajo</option>
+          <option value="descanso">descanso</option>
+        </select>
+      </label>
+    </div>
+
+    <p class="flow">Flujo: <span>Natal mock</span> → <span>Target city mock</span> → <span>Relocated angles mock</span> → <span>GoalContext</span> → <span>buildRelocationProfile()</span> → <span>Bridge</span></p>
+
+    <div class="panel" id="summary-panel">
+      <div class="panel-title">Resumen</div>
+      <div id="summary-out" class="muted">Selecciona un preset o ejecuta smoke.</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Bridge (mock lines)</div>
+      <div id="bridge-out" class="muted">—</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">JSON — RelocationProfile</div>
+      <pre id="json-out">{}</pre>
+    </div>
+  </div>
+
+  <script src="../content/goal-signal.js"></script>
+  <script src="../services/relocation-profile-service.js"></script>
+  <script src="../services/natal-map-bridge-service.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    var PLANETS = ['sol', 'luna', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno', 'urano', 'neptuno', 'pluton'];
+    var ANGLES = ['MC', 'IC', 'AC', 'DC'];
+
+    var PRESETS = {
+      'roberto-lisboa': {
+        label: 'Roberto → Lisboa',
+        natalChart: { sun: 'gemini', moon: 'aries', asc: 'cancer' },
+        targetLocation: { name: 'Lisboa', country: 'Portugal', lat: 38.7223, lon: -9.1393 },
+        relocatedAngles: {
+          AC: { sign: 'libra', slug: 'libra', degree: 12.4 },
+          MC: { sign: 'capricorn', slug: 'capricorn', degree: 8.1 },
+          IC: { sign: 'cancer', slug: 'cancer', degree: 8.1 },
+          DC: { sign: 'aries', slug: 'aries', degree: 12.4 }
+        }
+      },
+      'roberto-toronto': {
+        label: 'Roberto → Toronto',
+        natalChart: { sun: 'gemini', moon: 'aries', asc: 'cancer' },
+        targetLocation: { name: 'Toronto', country: 'Canadá', lat: 43.6532, lon: -79.3832 },
+        relocatedAngles: {
+          AC: { sign: 'leo', slug: 'leo', degree: 3.2 },
+          MC: { sign: 'taurus', slug: 'taurus', degree: 18.7 },
+          IC: { sign: 'scorpio', slug: 'scorpio', degree: 18.7 },
+          DC: { sign: 'aquarius', slug: 'aquarius', degree: 3.2 }
+        }
+      }
+    };
+
+    var summaryOut = document.getElementById('summary-out');
+    var bridgeOut = document.getElementById('bridge-out');
+    var jsonOut = document.getElementById('json-out');
+    var goalSelect = document.getElementById('goal-select');
+
+    function mockMapLines() {
+      var lines = [];
+      ['sol', 'luna', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno'].forEach(function (planet) {
+        ANGLES.forEach(function (angle) {
+          lines.push({ id: planet + '-' + angle.toLowerCase(), planet: planet, angle: angle });
+        });
+      });
+      return lines;
+    }
+
+    function goalContext() {
+      var GS = window.KairosGoalSignal;
+      if (!GS) return null;
+      return GS.buildContext({ mainGoal: goalSelect.value });
+    }
+
+    function renderBridge(reloc, ctx) {
+      if (!reloc.ok || !reloc.bridgeProfile) {
+        bridgeOut.innerHTML = '<span class="muted">Bridge omitido — profile fail-soft</span>';
+        return;
+      }
+      var Bridge = window.KairosNatalMapBridge;
+      var result = Bridge.buildBridge({
+        tags: reloc.bridgeProfile.tags,
+        themes: reloc.bridgeProfile.themes,
+        tensionMode: reloc.bridgeProfile.tensionMode,
+        mapLines: mockMapLines(),
+        goalContext: ctx
+      });
+      if (!result.ok) {
+        bridgeOut.innerHTML = '<span class="err">Bridge ok:false</span>';
+        return;
+      }
+      var rows = result.priorityLines.slice(0, 5).map(function (lineId) {
+        var match = result.matches.find(function (m) { return m.lineId === lineId; });
+        return '<tr><td>' + lineId + '</td><td>' + (match ? match.score.toFixed(4) : '—') + '</td></tr>';
+      }).join('');
+      bridgeOut.innerHTML =
+        '<dl class="kv">' +
+        '<dt>confidence</dt><dd>' + result.confidence.toFixed(4) + '</dd>' +
+        '<dt>priorityLines</dt><dd>' + JSON.stringify(result.priorityLines.slice(0, 5)) + '</dd>' +
+        '</dl>' +
+        '<table><thead><tr><th>Line</th><th>Score</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    }
+
+    function renderResult(label, result, ctx) {
+      jsonOut.textContent = JSON.stringify(result, null, 2);
+      if (!result.ok) {
+        summaryOut.innerHTML =
+          '<span class="badge badge-fail">FAIL</span> ' +
+          (label ? label + ' · ' : '') +
+          '<span class="err">' + (result.reason || 'unknown') + '</span>';
+        bridgeOut.innerHTML = '<span class="muted">—</span>';
+        return;
+      }
+      summaryOut.innerHTML =
+        '<span class="badge badge-pass">OK</span> ' + (label || '') +
+        '<dl class="kv" style="margin-top:10px">' +
+        '<dt>profileType</dt><dd>' + result.profileType + '</dd>' +
+        '<dt>profileKey</dt><dd>' + result.profileKey + '</dd>' +
+        '<dt>tags</dt><dd>' + JSON.stringify(result.tags) + '</dd>' +
+        '<dt>themes</dt><dd>' + JSON.stringify(result.themes) + '</dd>' +
+        '<dt>tensionMode</dt><dd>' + result.tensionMode + '</dd>' +
+        '<dt>relocDelta</dt><dd>' + JSON.stringify(result.dominantPatterns.relocDelta) + '</dd>' +
+        '<dt>goal</dt><dd>' + (result.meta.goal || '—') + '</dd>' +
+        '</dl>';
+      renderBridge(result, ctx);
+    }
+
+    function runPreset(key) {
+      var preset = PRESETS[key];
+      if (!preset) return;
+      var ctx = goalContext();
+      var input = {
+        natalChart: preset.natalChart,
+        targetLocation: preset.targetLocation,
+        relocatedAngles: preset.relocatedAngles,
+        goalContext: ctx
+      };
+      var result = window.KairosRelocationProfile.buildRelocationProfile(input);
+      renderResult(preset.label, result, ctx);
+    }
+
+    function runSmoke() {
+      var GS = window.KairosGoalSignal;
+      var build = window.KairosRelocationProfile.buildRelocationProfile;
+      var base = PRESETS['roberto-lisboa'];
+      var lines = [];
+      function check(label, ok) {
+        lines.push((ok ? 'PASS' : 'FAIL') + ' · ' + label);
+        return ok;
+      }
+
+      var valid = build(Object.assign({}, base, { goalContext: GS.buildContext({ mainGoal: 'amor' }) }));
+      var all = true;
+      all = check('valid ok + RELOCATION', valid.ok && valid.profileType === 'RELOCATION') && all;
+      all = check('missing target', !build(Object.assign({}, base, { targetLocation: null })).ok) && all;
+      all = check('missing angles', !build(Object.assign({}, base, { relocatedAngles: null })).ok) && all;
+      var t = build(Object.assign({}, base, { goalContext: GS.buildContext({ mainGoal: 'trabajo' }) }));
+      var d = build(Object.assign({}, base, { goalContext: GS.buildContext({ mainGoal: 'descanso' }) }));
+      all = check('trabajo themes', t.themes.length > 0) && all;
+      all = check('trabajo ≠ descanso', JSON.stringify(t.themes) !== JSON.stringify(d.themes)) && all;
+      all = check('determinism', JSON.stringify(build(Object.assign({}, base, { goalContext: GS.buildContext({ mainGoal: 'amor' }) })).tags) === JSON.stringify(valid.tags)) && all;
+
+      summaryOut.innerHTML = '<strong>Smoke inline</strong><pre style="margin:8px 0 0;padding:8px;background:#0f1115;border:0">' + lines.join('\n') + '\nOVERALL: ' + (all ? 'PASS' : 'FAIL') + '</pre>';
+      renderResult('Roberto → Lisboa (amor)', valid, GS.buildContext({ mainGoal: 'amor' }));
+    }
+
+    document.querySelectorAll('[data-preset]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        runPreset(btn.getAttribute('data-preset'));
+      });
+    });
+
+    document.querySelectorAll('[data-case]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var kind = btn.getAttribute('data-case');
+        if (kind === 'smoke') { runSmoke(); return; }
+        var base = PRESETS['roberto-lisboa'];
+        var input;
+        if (kind === 'invalid-target') {
+          input = { natalChart: base.natalChart, targetLocation: null, relocatedAngles: base.relocatedAngles };
+        } else {
+          input = { natalChart: base.natalChart, targetLocation: base.targetLocation, relocatedAngles: null };
+        }
+        renderResult(kind, window.KairosRelocationProfile.buildRelocationProfile(input), null);
+      });
+    });
+
+    if (new URLSearchParams(location.search).has('smoke')) runSmoke();
+    else runPreset('roberto-lisboa');
+  })();
+  </script>
+</body>
+</html>

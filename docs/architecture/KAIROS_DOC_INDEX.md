@@ -241,6 +241,7 @@ Si falla ≥2 respuestas → **rechazar o reordenar**, no implementar.
 
 | Área | Notas |
 |------|-------|
+| **3.7b Relocation scaffold DEV** | Adapter `relocation-profile-service.js` + lab `relocation-preview.html` + smoke — sin UI producto |
 | `dist/` vs `src/` | Posible desincronización producción — sync solo con golden gate + aprobación |
 | UX móvil ≤768px | Beta; desktop-first |
 
