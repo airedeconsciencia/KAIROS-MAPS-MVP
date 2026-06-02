@@ -10,7 +10,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '0.1.0-pilot';
+  var SCHEMA_VERSION = '0.2.0-matrix';
 
   var ELEMENTS = ['fire', 'earth', 'air', 'water'];
   var ROLES = ['ASC', 'MC', 'IC', 'DC'];
@@ -95,6 +95,30 @@
       cautionTags: ['expansion', 'permeability'],
       sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
     },
+    RELOC_MC_TO_AIR: {
+      id: 'RELOC_MC_TO_AIR',
+      role: 'MC',
+      condition: { angle: 'MC', element: 'air' },
+      headline: 'Aquí tu vocación pública puede orientarse hacia el intercambio y la visibilidad intelectual.',
+      body: 'Un Medio Cielo relocado en aire tiende a abrir metas mediante contacto, red y comunicación: puede activarse más necesidad de ser leído, escuchado o reconocido por ideas. Conviene observar si el lugar premia la versatilidad sobre la continuidad.',
+      bridge: 'Líneas de MC o comunicación en el mapa pueden resonar con esta dirección más móvil.',
+      semanticTags: ['communication', 'visibility', 'recognition', 'stimulation'],
+      bridgeTags: ['communication', 'visibility', 'recognition'],
+      cautionTags: ['regulation', 'protection'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_MC_TO_WATER: {
+      id: 'RELOC_MC_TO_WATER',
+      role: 'MC',
+      condition: { angle: 'MC', element: 'water' },
+      headline: 'Aquí la dirección vital puede volverse más intuitiva y sensible al clima emocional del entorno.',
+      body: 'El Medio Cielo relocado en agua suele acercar metas a lo que se siente útil o significativo, no solo a lo que se impone. Puede activarse más empatía profesional o una imagen pública más receptiva.',
+      bridge: 'Temas de intimidad o seguridad emocional en el mapa pueden dialogar con esta vocación más permeable.',
+      semanticTags: ['emotional_safety', 'intimacy', 'recognition', 'permeability'],
+      bridgeTags: ['emotional_safety', 'intimacy', 'recognition'],
+      cautionTags: ['visibility', 'initiative'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
     RELOC_IC_TO_WATER: {
       id: 'RELOC_IC_TO_WATER',
       role: 'IC',
@@ -105,6 +129,42 @@
       semanticTags: ['emotional_safety', 'belonging', 'protection', 'intimacy'],
       bridgeTags: ['emotional_safety', 'belonging', 'protection'],
       cautionTags: ['visibility', 'initiative'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_IC_TO_FIRE: {
+      id: 'RELOC_IC_TO_FIRE',
+      role: 'IC',
+      condition: { angle: 'IC', element: 'fire' },
+      headline: 'Aquí la vida privada puede volverse más activa y menos contenida.',
+      body: 'Un Fondo del Cielo relocado en fuego tiende a calentar el espacio íntimo: puede haber más movimiento en casa, más necesidad de acción incluso en la esfera personal. Conviene observar si el lugar te permite descansar o te mantiene en alerta.',
+      bridge: 'Temas de iniciativa o movimiento en el mapa pueden cruzarse con esta capa doméstica más dinámica.',
+      semanticTags: ['initiative', 'movement', 'protection', 'stimulation'],
+      bridgeTags: ['initiative', 'movement', 'protection'],
+      cautionTags: ['emotional_safety', 'regulation'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_IC_TO_AIR: {
+      id: 'RELOC_IC_TO_AIR',
+      role: 'IC',
+      condition: { angle: 'IC', element: 'air' },
+      headline: 'Aquí el hogar interior puede volverse más abierto, social y mentalmente activo.',
+      body: 'El Fondo del Cielo relocado en aire suele ligar la intimidad al intercambio: visitas, conversación en casa, necesidad de aire fresco en la rutina. Puede favorecer un refugio menos cerrado que en otros lugares.',
+      bridge: 'Líneas IC o de comunicación en el mapa pueden amplificar esta sensación de vida privada más permeable.',
+      semanticTags: ['communication', 'belonging', 'movement', 'stimulation'],
+      bridgeTags: ['communication', 'belonging', 'movement'],
+      cautionTags: ['protection', 'reserve'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_IC_TO_EARTH: {
+      id: 'RELOC_IC_TO_EARTH',
+      role: 'IC',
+      condition: { angle: 'IC', element: 'earth' },
+      headline: 'Aquí la base íntima puede orientarse hacia estabilidad, rutina y arraigo concreto.',
+      body: 'Un Fondo del Cielo relocado en tierra tiende a pedir estructura doméstica: orden, continuidad, sensación de suelo bajo los pies. Puede activarse más necesidad de construir hogar paso a paso.',
+      bridge: 'Temas de pertenencia o regulación en el mapa pueden reforzar esta búsqueda de estabilidad interna.',
+      semanticTags: ['belonging', 'regulation', 'protection', 'precision'],
+      bridgeTags: ['belonging', 'regulation', 'protection'],
+      cautionTags: ['movement', 'stimulation'],
       sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
     },
     RELOC_DC_TO_AIR: {
@@ -118,6 +178,42 @@
       bridgeTags: ['communication', 'harmony', 'intimacy'],
       cautionTags: ['control', 'intensity'],
       sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_DC_TO_FIRE: {
+      id: 'RELOC_DC_TO_FIRE',
+      role: 'DC',
+      condition: { angle: 'DC', element: 'fire' },
+      headline: 'Aquí las relaciones pueden volverse más directas, intensas y orientadas a la acción.',
+      body: 'Un Descendente relocado en fuego tiende a acelerar el encuentro: puede activarse más franqueza, más chispa, más impulso por definir vínculos con claridad. Conviene observar si el ritmo relacional del lugar te conviene.',
+      bridge: 'Líneas DC o de iniciativa en el mapa pueden intensificar esta forma de vincular.',
+      semanticTags: ['initiative', 'intimacy', 'movement', 'intensity'],
+      bridgeTags: ['initiative', 'intimacy', 'movement'],
+      cautionTags: ['harmony', 'regulation'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_DC_TO_WATER: {
+      id: 'RELOC_DC_TO_WATER',
+      role: 'DC',
+      condition: { angle: 'DC', element: 'water' },
+      headline: 'Aquí los vínculos pueden volverse más profundos, emocionales y permeables.',
+      body: 'El Descendente relocado en agua suele abrir relaciones desde la empatía: puede activarse más necesidad de sentir al otro, de cuidar o ser cuidado. Conviene observar qué límites necesitas para no fusionarte.',
+      bridge: 'Temas de intimidad o seguridad emocional en el mapa pueden resonar con esta capa relacional.',
+      semanticTags: ['intimacy', 'emotional_safety', 'harmony', 'permeability'],
+      bridgeTags: ['intimacy', 'emotional_safety', 'harmony'],
+      cautionTags: ['control', 'visibility'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_DC_TO_EARTH: {
+      id: 'RELOC_DC_TO_EARTH',
+      role: 'DC',
+      condition: { angle: 'DC', element: 'earth' },
+      headline: 'Aquí las relaciones pueden orientarse hacia la lealtad, la concreción y la continuidad.',
+      body: 'Un Descendente relocado en tierra tiende a favorecer vínculos estables: acuerdos claros, presencia constante, construcción paciente. Puede activarse más necesidad de demostrar con hechos en la pareja o en alianzas.',
+      bridge: 'Líneas DC o de pertenencia en el mapa pueden alinearse con esta búsqueda de solidez relacional.',
+      semanticTags: ['belonging', 'harmony', 'protection', 'regulation'],
+      bridgeTags: ['belonging', 'harmony', 'protection'],
+      cautionTags: ['movement', 'stimulation'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
     }
   };
 
@@ -130,26 +226,30 @@
     },
     MC: {
       fire: 'RELOC_MC_TO_FIRE',
+      air: 'RELOC_MC_TO_AIR',
+      water: 'RELOC_MC_TO_WATER',
       earth: 'RELOC_MC_TO_EARTH'
     },
     IC: {
-      water: 'RELOC_IC_TO_WATER'
+      fire: 'RELOC_IC_TO_FIRE',
+      air: 'RELOC_IC_TO_AIR',
+      water: 'RELOC_IC_TO_WATER',
+      earth: 'RELOC_IC_TO_EARTH'
     },
     DC: {
-      air: 'RELOC_DC_TO_AIR'
+      fire: 'RELOC_DC_TO_FIRE',
+      air: 'RELOC_DC_TO_AIR',
+      water: 'RELOC_DC_TO_WATER',
+      earth: 'RELOC_DC_TO_EARTH'
     }
   };
 
-  var PILOT_IDS = [
-    'RELOC_ASC_TO_FIRE',
-    'RELOC_ASC_TO_AIR',
-    'RELOC_ASC_TO_WATER',
-    'RELOC_ASC_TO_EARTH',
-    'RELOC_MC_TO_FIRE',
-    'RELOC_MC_TO_EARTH',
-    'RELOC_IC_TO_WATER',
-    'RELOC_DC_TO_AIR'
-  ];
+  var MATRIX_IDS = [];
+  ROLES.forEach(function (role) {
+    ELEMENTS.forEach(function (element) {
+      MATRIX_IDS.push('RELOC_' + role + '_TO_' + element.toUpperCase());
+    });
+  });
 
   function normalizeAngle(raw) {
     if (raw == null) return null;
@@ -197,7 +297,7 @@
   }
 
   function inspectCoverage() {
-    var missingPilot = PILOT_IDS.filter(function (id) {
+    var missingMatrix = MATRIX_IDS.filter(function (id) {
       return !FRAGMENTS[id];
     });
     var byRole = {};
@@ -209,13 +309,17 @@
       };
     });
 
+    var matrixPresent = MATRIX_IDS.length - missingMatrix.length;
+    var matrixPercent = Math.round((matrixPresent / MATRIX_IDS.length) * 100);
+
     return {
-      ok: missingPilot.length === 0 && Object.keys(FRAGMENTS).length >= 8,
+      ok: missingMatrix.length === 0 && Object.keys(FRAGMENTS).length === 16,
       totalFragments: Object.keys(FRAGMENTS).length,
-      pilotExpected: PILOT_IDS.length,
-      pilotPresent: PILOT_IDS.length - missingPilot.length,
-      missingPilot: missingPilot,
-      pilotIds: PILOT_IDS.slice(),
+      matrixExpected: MATRIX_IDS.length,
+      matrixPresent: matrixPresent,
+      matrixPercent: matrixPercent,
+      missingMatrix: missingMatrix,
+      matrixIds: MATRIX_IDS.slice(),
       byRole: byRole,
       meta: {
         schemaVersion: SCHEMA_VERSION,
@@ -231,6 +335,7 @@
     ROLES: ROLES,
     FRAGMENTS: FRAGMENTS,
     INDEX: INDEX,
+    MATRIX_IDS: MATRIX_IDS,
     getFragment: getFragment,
     findFragment: findFragment,
     listFragments: listFragments,

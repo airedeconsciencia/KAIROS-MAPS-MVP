@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Kairos Maps — Relocation Preview Lab (3.7b DEV)</title>
+  <title>Kairos Maps — Relocation Preview Lab (3.7b.3 DEV)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -117,8 +117,8 @@
 <body>
   <div class="dev-banner">DEV ONLY · Relocation Preview Lab · No producto · No mapa · No deploy</div>
   <div class="page">
-    <h1>Relocation Preview Lab — Fase 3.7b</h1>
-    <p class="sub">Scaffold DEV: natal mock + ciudad destino + ángulos relocados mock → RelocationProfile → Bridge opcional. Sin cálculo matemático.</p>
+    <h1>Relocation Preview Lab — Fase 3.7b.3</h1>
+    <p class="sub">Scaffold DEV: natal mock + ciudad destino + ángulos relocados mock → RelocationProfile → RelocLite → composeRelocationReading(). Sin cálculo matemático.</p>
 
     <div class="question">
       <strong>Pregunta futura (producto)</strong>
@@ -140,7 +140,7 @@
       </label>
     </div>
 
-    <p class="flow">Flujo: <span>Natal mock</span> → <span>Target city mock</span> → <span>Relocated angles mock</span> → <span>GoalContext</span> → <span>buildRelocationProfile()</span> → <span>Bridge</span></p>
+    <p class="flow">Flujo: <span>Natal mock</span> → <span>Target city mock</span> → <span>Relocated angles mock</span> → <span>GoalContext</span> → <span>buildRelocationProfile()</span> → <span>composeRelocationReading()</span> → <span>Bridge</span></p>
 
     <div class="panel" id="summary-panel">
       <div class="panel-title">Resumen</div>
@@ -153,12 +153,17 @@
     </div>
 
     <div class="panel">
+      <div class="panel-title">Lectura compuesta (500–800 chars)</div>
+      <div id="composition-out" class="muted">—</div>
+    </div>
+
+    <div class="panel">
       <div class="panel-title">Bridge (mock lines)</div>
       <div id="bridge-out" class="muted">—</div>
     </div>
 
     <div class="panel">
-      <div class="panel-title">JSON — RelocationProfile</div>
+      <div class="panel-title">JSON — RelocationProfile + Composition</div>
       <pre id="json-out">{}</pre>
     </div>
   </div>
@@ -166,6 +171,7 @@
   <script src="../content/goal-signal.js"></script>
   <script src="../content/reloc-lite.js"></script>
   <script src="../services/relocation-profile-service.js"></script>
+  <script src="../services/reloc-composition-service.js"></script>
   <script src="../services/natal-map-bridge-service.js"></script>
   <script>
   (function () {
@@ -201,6 +207,7 @@
 
     var summaryOut = document.getElementById('summary-out');
     var fragmentsOut = document.getElementById('fragments-out');
+    var compositionOut = document.getElementById('composition-out');
     var bridgeOut = document.getElementById('bridge-out');
     var jsonOut = document.getElementById('json-out');
     var goalSelect = document.getElementById('goal-select');
@@ -252,6 +259,39 @@
         rows + '</tbody></table>';
     }
 
+    function renderComposition(reloc, ctx) {
+      if (!compositionOut) return null;
+      var Comp = window.KairosRelocComposition;
+      if (!Comp || !reloc.ok) {
+        compositionOut.innerHTML = '<span class="muted">—</span>';
+        return null;
+      }
+      var composed = Comp.composeRelocationReading({
+        relocationProfile: reloc,
+        goalContext: ctx
+      });
+      if (!composed.ok) {
+        compositionOut.innerHTML =
+          '<span class="badge badge-fail">FAIL</span> ' +
+          '<span class="err">' + (composed.reason || 'composition failed') + '</span>';
+        return composed;
+      }
+      var warnBadge = composed.meta.criticalWarnings
+        ? '<span class="badge badge-fail">WARN</span> '
+        : '<span class="badge badge-pass">OK</span> ';
+      compositionOut.innerHTML =
+        warnBadge +
+        '<strong>' + composed.title + '</strong>' +
+        '<p style="margin:10px 0;color:#d1d5db;line-height:1.55">' + composed.reading + '</p>' +
+        '<dl class="kv">' +
+        '<dt>charCount</dt><dd>' + composed.meta.charCount + ' / ' + composed.meta.minChars + '–' + composed.meta.maxChars + '</dd>' +
+        '<dt>fragmentIds</dt><dd>' + JSON.stringify(composed.fragmentIds) + '</dd>' +
+        '<dt>styleWarnings</dt><dd>' + JSON.stringify(composed.meta.styleWarnings) + '</dd>' +
+        '<dt>clichesDetected</dt><dd>' + JSON.stringify(composed.meta.clichesDetected) + '</dd>' +
+        '</dl>';
+      return composed;
+    }
+
     function renderBridge(reloc, ctx) {
       if (!reloc.ok || !reloc.bridgeProfile) {
         bridgeOut.innerHTML = '<span class="muted">Bridge omitido — profile fail-soft</span>';
@@ -282,16 +322,22 @@
     }
 
     function renderResult(label, result, ctx) {
-      jsonOut.textContent = JSON.stringify(result, null, 2);
       if (!result.ok) {
+        jsonOut.textContent = JSON.stringify({ relocationProfile: result }, null, 2);
         summaryOut.innerHTML =
           '<span class="badge badge-fail">FAIL</span> ' +
           (label ? label + ' · ' : '') +
           '<span class="err">' + (result.reason || 'unknown') + '</span>';
         bridgeOut.innerHTML = '<span class="muted">—</span>';
         if (fragmentsOut) fragmentsOut.innerHTML = '<span class="muted">—</span>';
+        if (compositionOut) compositionOut.innerHTML = '<span class="muted">—</span>';
         return;
       }
+      var composed = renderComposition(result, ctx);
+      jsonOut.textContent = JSON.stringify({
+        relocationProfile: result,
+        composition: composed
+      }, null, 2);
       summaryOut.innerHTML =
         '<span class="badge badge-pass">OK</span> ' + (label || '') +
         '<dl class="kv" style="margin-top:10px">' +

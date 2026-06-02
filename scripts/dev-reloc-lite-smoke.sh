@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke Reloc Lite content (Fase 3.7b.2)
+# Kairos Maps — Smoke Reloc Lite content (Fase 3.7b.3)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -54,8 +54,8 @@ function assert(label, ok, detail) {
 
 const list = RelocLite.listFragments();
 assert(
-  'listFragments() ≥ 8',
-  Array.isArray(list) && list.length >= 8,
+  'listFragments() = 16 (matriz 4×4)',
+  Array.isArray(list) && list.length === 16,
   'count=' + list.length
 );
 
@@ -66,11 +66,38 @@ assert(
   'headline=' + (airFrag && airFrag.headline.slice(0, 48)) + '…'
 );
 
+const mcAir = RelocLite.getFragment('RELOC_MC_TO_AIR');
+assert(
+  "getFragment('RELOC_MC_TO_AIR') ok",
+  mcAir && mcAir.role === 'MC' && mcAir.condition.element === 'air',
+  'headline=' + (mcAir && mcAir.headline.slice(0, 48)) + '…'
+);
+
+const icFire = RelocLite.getFragment('RELOC_IC_TO_FIRE');
+assert(
+  "getFragment('RELOC_IC_TO_FIRE') ok",
+  icFire && icFire.role === 'IC' && icFire.condition.element === 'fire',
+  'headline=' + (icFire && icFire.headline.slice(0, 48)) + '…'
+);
+
+const dcEarth = RelocLite.getFragment('RELOC_DC_TO_EARTH');
+assert(
+  "getFragment('RELOC_DC_TO_EARTH') ok",
+  dcEarth && dcEarth.role === 'DC' && dcEarth.condition.element === 'earth',
+  'headline=' + (dcEarth && dcEarth.headline.slice(0, 48)) + '…'
+);
+
 const coverage = RelocLite.inspectCoverage();
 assert(
-  'inspectCoverage() ok',
-  coverage.ok === true && coverage.totalFragments >= 8,
-  'total=' + coverage.totalFragments + ' · pilot=' + coverage.pilotPresent + '/' + coverage.pilotExpected
+  'inspectCoverage() 16/16 matrix 100%',
+  coverage.ok === true &&
+    coverage.totalFragments === 16 &&
+    coverage.matrixExpected === 16 &&
+    coverage.matrixPresent === 16 &&
+    coverage.matrixPercent === 100 &&
+    coverage.missingMatrix.length === 0,
+  'matrix=' + coverage.matrixPresent + '/' + coverage.matrixExpected +
+    ' · percent=' + coverage.matrixPercent + '%'
 );
 
 const forbidden = ['destino', 'perfecto', 'alma gemela', 'garantizado', 'debes mudarte'];
@@ -105,11 +132,13 @@ assert(
 );
 
 assert(
-  'sourceIds.fragmentIds incluye reloc-lite',
+  'sourceIds.fragmentIds incluye reloc-lite (4 ángulos Lisboa)',
   Array.isArray(profile.sourceIds.fragmentIds) &&
     profile.sourceIds.fragmentIds.indexOf('RELOC_ASC_TO_AIR') !== -1 &&
     profile.sourceIds.fragmentIds.indexOf('RELOC_MC_TO_EARTH') !== -1 &&
-    profile.sourceIds.fragmentIds.indexOf('RELOC_IC_TO_WATER') !== -1,
+    profile.sourceIds.fragmentIds.indexOf('RELOC_IC_TO_WATER') !== -1 &&
+    profile.sourceIds.fragmentIds.indexOf('RELOC_DC_TO_FIRE') !== -1 &&
+    profile.sourceIds.fragmentIds.length === 4,
   'fragmentIds=' + JSON.stringify(profile.sourceIds.fragmentIds)
 );
 

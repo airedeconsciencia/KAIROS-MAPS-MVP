@@ -107,7 +107,7 @@ Sustituye numeración dispersa en `roadmap.txt` para **ejecución activa**. Visi
 | **3.7a+** | Bridge perceptible + copy humano mínimo | Valor usuario |
 | **3.7c** | **Goals Layer** — mainGoal → Bridge → UI coherente | Valor usuario |
 | **3.8** | **Cities Layer lite** — preguntas + top lugares determinista | Valor usuario |
-| **3.7b** | Relocation scaffold DEV (adapter + reloc-lite lab) | Paralelo bajo visibilidad |
+| **3.7b** | Relocation scaffold DEV (adapter + reloc-lite + composition lab) | ✅ DEV cerrado |
 | **3.9** | Relocation premium teaser UI | Premium |
 | **4.0** | Navegación 4 módulos (EXPERIENCE) | UX |
 | **4.x** | Couple Layer | Premium |
@@ -142,7 +142,7 @@ Si falla ≥2 respuestas → **rechazar o reordenar**, no implementar.
 4. **Cerrar loop FREE** — onboarding → mapa → ciudad → lectura coherente  
 5. **Sync dist + deploy piloto** — producción = valor real  
 6. **Fragmentos curados city-goal** — pocos, buenos, voice_tone  
-7. **Relocation scaffold DEV** — adapter sin UI prod (3.7b paralelo)  
+7. **Relocation premium UI (3.9)** — teaser visible solo tras DEV cerrado  
 8. **Commit corpus 3.6h** — Master + product + constitución  
 9. **Congelar scope** Couple / IA / Alertas hasta loop individual cerrado  
 10. **Alinear legacy txt** — `visual_identity.txt` / `astro_engine.txt` vs MD v2  
@@ -186,6 +186,7 @@ Si falla ≥2 respuestas → **rechazar o reordenar**, no implementar.
 | Mapa popup | `src/content/interpretations.js` |
 | Natal lite | `src/content/natal-lite.js` |
 | Compositor | `src/services/natal-composition-service.js` |
+| Reloc lite DEV | `src/content/reloc-lite.js` · `src/services/relocation-profile-service.js` · `src/services/reloc-composition-service.js` |
 | Bridge | `src/services/natal-map-bridge-service.js` |
 
 ---
@@ -232,6 +233,9 @@ Si falla ≥2 respuestas → **rechazar o reordenar**, no implementar.
 | **3.7c.1 GoalSignal + Bridge goal-aware** | ✅ Commit `a561a1f` |
 | **3.7c.2 Goals Layer visible** | ✅ Commit `7aeb27c` — chip, status, ranking popup |
 | **3.8b Cities Layer Lite suggestions** | ✅ Commit `d738235` — top 3 sidebar, scorer compartido |
+| **3.7b Relocation scaffold DEV** | ✅ Adapter + lab + smokes — sin UI producto |
+| **3.7b.2 reloc-lite content scaffold** | ✅ Matriz 16/16 ángulo×elemento · `reloc-lite.js` |
+| **3.7b.3 reloc composition DEV** | ✅ `reloc-composition-service.js` + lab + smokes |
 | Arquitectura 3.6 (multi-perfil, experience, bridge) | ✅ Documentada |
 | Corpus Master 20 docs en `docs/Master/` | ✅ Importado |
 | Conversión 9 docs → `docs/product/` | ✅ 3.6h4 |
@@ -241,25 +245,24 @@ Si falla ≥2 respuestas → **rechazar o reordenar**, no implementar.
 
 | Área | Notas |
 |------|-------|
-| **3.7b Relocation scaffold DEV** | Adapter `relocation-profile-service.js` + lab `relocation-preview.html` + smoke — sin UI producto |
 | `dist/` vs `src/` | Posible desincronización producción — sync solo con golden gate + aprobación |
 | UX móvil ≤768px | Beta; desktop-first |
 
 ### PRÓXIMO
 
-1. **Relocation scaffold DEV** — adapter + reloc-lite lab, baja visibilidad, sin motor nuevo
+1. **Relocation premium UI (3.9)** — teaser visible; sin motor nuevo ni UI producto hasta aprobación
 
-### CONGELADO *(hasta cerrar Relocation DEV)*
+### CONGELADO
 
 | Decisión | Motivo |
 |----------|--------|
 | Motores kairos-core / astro.js | Golden + producción |
 | UX móvil ≤768px | Beta; desktop-first |
-| **Couple** UI / sinastría operativa | Después Relocation DEV |
-| **IA** generativa conectada | Después Relocation DEV |
-| **Reports** | Después Relocation DEV |
-| **Alertas** / Wearables / PDF | Después Relocation DEV |
-| **Premium visible** (Stripe / paywall / teasers activos) | Después Relocation DEV |
+| **Couple** UI / sinastría operativa | Congelado — Fase 4.x |
+| **IA** generativa conectada | Congelado — Fase 5.x |
+| **Reports** | Congelado — Fase 5.x |
+| **Alertas** / Wearables / PDF | Congelado — Fase 5.x+ |
+| **Premium visible** (Stripe / paywall / teasers activos) | Congelado hasta 3.9 aprobado |
 | Sidebar → 4 módulos UI | Fase 4.0; EXPERIENCE ya define |
 | OneDrive como fuente | Sustituido por `docs/Master/` interno |
 
@@ -321,7 +324,7 @@ Doc 8 · Doc 9 · Doc 13 · Doc 16 — sustituidos por v2 / MD
 | Goals | `GOALS_AND_ONBOARDING.md` | 🟡 parcial | **3.7c** |
 | Bridge | `NATAL_MAP_BRIDGE_SERVICE.md` + Doc 6 | ✅ 3.7a | operativo |
 | Cities | `ASTROCARTOGRAPHY_MASTER_BRIEF.md` | 🟡 popup | **3.8** |
-| Relocation | `RELOCATION_EDITORIAL_BRIEF.md` | ❌ | 3.7b DEV |
+| Relocation | `RELOCATION_EDITORIAL_BRIEF.md` | 🟡 DEV lab | 3.9 premium UI |
 | Couple | `KAIROS_MULTI_PROFILE` | ❌ | 4.x |
 | IA | Doc 6 + Doc 17 | ❌ | 5.x |
 | Premium | `BUSINESS_MODEL.md` | ❌ | 5.x |
@@ -331,9 +334,11 @@ Doc 8 · Doc 9 · Doc 13 · Doc 16 — sustituidos por v2 / MD
 
 ## ¿Listo para Relocation scaffold DEV?
 
-**Documental:** SÍ — ver `RELOCATION_EDITORIAL_BRIEF.md` + `KAIROS_MULTI_PROFILE_ARCHITECTURE.md`.
+**Documental:** SÍ — ver `RELOCATION_EDITORIAL_BRIEF.md` + `RELOCATION_SCAFFOLD_ARCHITECTURE.md`.
 
-**Producto visible:** SÍ como **próximo hito** — Goals (3.7c) y Cities Lite (3.8b) cerrados (§ ESTADO ACTUAL).
+**DEV scaffold:** ✅ CERRADO (3.7b → 3.7b.3) — adapter, matriz 16/16, compositor, lab, smokes PASS.
+
+**Producto visible:** NO — siguiente hito **3.9 premium teaser UI** (congelado hasta aprobación).
 
 ---
 
