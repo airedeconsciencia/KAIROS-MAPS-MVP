@@ -1762,3 +1762,6 @@
       overflow: hidden;
     }
   }
+
+  /* ---------- Bridge map highlight (Fase 3.7a) ----------
+     Stroke/glow vive en app.js drawLine(); #map.kairos-bridge-active = estado debug. */

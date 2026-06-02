@@ -62,8 +62,15 @@
       lastComputedAt: null,
       birthKey: null
     },
+    bridge: {
+      status: 'idle',
+      result: null,
+      priorityLineIds: []
+    },
     workspace: 'map'
   };
+
+  const BRIDGE_HIGHLIGHT_MAX = 3;
 
   const WORKSPACE_TEASERS = {
     reloc: {
@@ -458,11 +465,107 @@
   }
 
   // -------- Compute & draw lines --------
+  function resetBridgeHighlight() {
+    state.bridge.status = 'idle';
+    state.bridge.result = null;
+    state.bridge.priorityLineIds = [];
+    const mapEl = document.getElementById('map');
+    if (mapEl) mapEl.classList.remove('kairos-bridge-active');
+  }
+
+  function isBridgePriorityLine(lineId) {
+    return state.bridge.status === 'ready' &&
+      state.bridge.priorityLineIds.indexOf(lineId) !== -1;
+  }
+
+  function mapLinesForBridge() {
+    return state.lines.map((l) => ({
+      id: l.id,
+      planet: l.planet,
+      angle: l.angle
+    }));
+  }
+
+  function computeBridgeHighlight() {
+    resetBridgeHighlight();
+    if (!state.lines.length) return false;
+    if (state.chart.status !== 'ready' || !state.chart.natal) return false;
+
+    const Bridge = window.KairosNatalMapBridge;
+    if (!Bridge || typeof Bridge.buildBridge !== 'function') {
+      state.bridge.status = 'skipped';
+      return false;
+    }
+
+    const Panel = window.KairosNatalPanel;
+    let composition = null;
+    if (Panel && typeof Panel.composeLiteReading === 'function') {
+      composition = Panel.composeLiteReading(state.chart.natal);
+    }
+    const profile = composition && composition.meta && composition.meta.bridgeProfile;
+    if (!profile) return false;
+
+    let result;
+    try {
+      result = Bridge.buildBridge({
+        tags: profile.tags,
+        themes: profile.themes,
+        tensionMode: profile.tensionMode === true,
+        mapLines: mapLinesForBridge()
+      });
+    } catch (e) {
+      kairosDebugLog('bridge error', e.message || String(e));
+      state.bridge.status = 'skipped';
+      return false;
+    }
+
+    if (!result || !result.ok || !result.priorityLines || !result.priorityLines.length) {
+      state.bridge.status = 'skipped';
+      state.bridge.result = result || null;
+      if (kairosDebugEnabled()) {
+        console.info('[Kairos Bridge] result', result);
+        console.info('[Kairos Bridge] priorityLineIds', []);
+      }
+      return false;
+    }
+
+    state.bridge.status = 'ready';
+    state.bridge.result = result;
+    state.bridge.priorityLineIds = result.priorityLines.slice(0, BRIDGE_HIGHLIGHT_MAX);
+
+    const mapEl = document.getElementById('map');
+    if (mapEl && state.bridge.priorityLineIds.length) {
+      mapEl.classList.add('kairos-bridge-active');
+    }
+
+    if (kairosDebugEnabled()) {
+      console.info('[Kairos Bridge] result', result);
+      console.info('[Kairos Bridge] priorityLineIds', state.bridge.priorityLineIds);
+    }
+    return true;
+  }
+
+  function rebuildLineGroups() {
+    for (const id in lineGroups) {
+      if (!Object.prototype.hasOwnProperty.call(lineGroups, id)) continue;
+      const entry = lineGroups[id];
+      entry.group = drawLine(entry.line);
+    }
+    refreshLineVisibility();
+  }
+
+  function maybeApplyBridgeHighlight() {
+    if (!state.lines.length) return;
+    computeBridgeHighlight();
+    rebuildLineGroups();
+  }
+
   function clearLines() {
     linesLayer.clearLayers();
     glyphsLayer.clearLayers();
     for (const k in lineGroups) delete lineGroups[k];
     state.lines = [];
+    resetBridgeHighlight();
   }
 
   const PRIORITY_PLANETS = ['sol', 'luna', 'venus', 'marte', 'jupiter', 'saturno'];
@@ -753,6 +856,7 @@
 
         const markerPt = offsetPointPerpendicular(pt[0], pt[1], visSeg, t, offsetPx, 1);
         const glyphInner = Math.round(medallionSize * 0.5);
+        const bridgeLine = isBridgePriorityLine(line.id);
         const medallionStyle = [
           'width:100%',
           'height:100%',
@@ -761,9 +865,11 @@
           'display:flex',
           'align-items:center',
           'justify-content:center',
-          'background:rgba(244,241,234,0.76)',
+          'background:rgba(244,241,234,' + (bridgeLine ? '0.84' : '0.76') + ')',
           'border:2px solid #d7c188',
-          'box-shadow:0 2px 8px rgba(0,0,0,0.45),0 0 0 1px rgba(215,193,136,0.4)'
+          'box-shadow:' + (bridgeLine
+            ? '0 2px 10px rgba(215,193,136,0.35),0 0 0 1px rgba(215,193,136,0.55)'
+            : '0 2px 8px rgba(0,0,0,0.45),0 0 0 1px rgba(215,193,136,0.4)')
         ].join(';');
         const html = `<div class="line-glyph-marker" style="width:100%;height:100%;"><div class="line-glyph-medallion" style="${medallionStyle}"><span class="map-line-glyph-wrap" style="width:${glyphInner}px;height:${glyphInner}px;display:flex;align-items:center;justify-content:center;">${
           window.KairosPlanetGlyphs.html(line.planet, { color: line.color, className: 'map-line-glyph' })
@@ -782,15 +888,34 @@
 
   function drawLine(line) {
     const group = L.layerGroup();
+    const highlighted = isBridgePriorityLine(line.id);
     const densify = line.angle === 'AC' || line.angle === 'DC';
     line.segments.forEach(seg => {
       const pts = densify ? densifySegment(seg, VISUAL_DENSIFY_MAX_STEP_KM) : seg;
-      // glow underlay
-      L.polyline(pts, { color: line.color, weight: 7, opacity: 0.13, interactive: false }).addTo(group);
-      // soft middle
-      L.polyline(pts, { color: line.color, weight: 3, opacity: 0.32, interactive: false }).addTo(group);
-      // crisp core
-      L.polyline(pts, { color: line.color, weight: 1.4, opacity: 0.92, lineCap: 'round', interactive: false }).addTo(group);
+      if (highlighted) {
+        L.polyline(pts, {
+          color: '#d7c188', weight: 10, opacity: 0.07, interactive: false
+        }).addTo(group);
+      }
+      L.polyline(pts, {
+        color: line.color,
+        weight: highlighted ? 8 : 7,
+        opacity: highlighted ? 0.17 : 0.13,
+        interactive: false
+      }).addTo(group);
+      L.polyline(pts, {
+        color: line.color,
+        weight: highlighted ? 3.5 : 3,
+        opacity: highlighted ? 0.4 : 0.32,
+        interactive: false
+      }).addTo(group);
+      L.polyline(pts, {
+        color: line.color,
+        weight: highlighted ? 1.7 : 1.4,
+        opacity: highlighted ? 0.97 : 0.92,
+        lineCap: 'round',
+        interactive: false
+      }).addTo(group);
     });
     return group;
   }
@@ -905,6 +1030,7 @@
 
     if (state.chart.status === 'ready' && state.chart.birthKey === key && state.chart.natal) {
       renderNatalPanel();
+      maybeApplyBridgeHighlight();
       return;
     }
 
@@ -936,6 +1062,7 @@
     }
 
     renderNatalPanel();
+    maybeApplyBridgeHighlight();
   }
 
   // -------- Calculate map --------
@@ -975,7 +1102,8 @@
 
       toast(`Mapa listo · ${lines.length} líneas`, 'ok');
       if (isMobileLayout()) setMobileMode('map');
-      void maybeCalculateNatalSilently(cfg);
+      await maybeCalculateNatalSilently(cfg);
+      maybeApplyBridgeHighlight();
     } catch (e) {
       console.error(e);
       toast(
@@ -1278,6 +1406,7 @@
   if (kairosDebugEnabled()) {
     window.__kairosDebug = {
       get chart() { return state.chart; },
+      get bridge() { return state.bridge; },
       get serviceStatus() {
         return window.KairosChartService && window.KairosChartService.getStatus
           ? window.KairosChartService.getStatus()
