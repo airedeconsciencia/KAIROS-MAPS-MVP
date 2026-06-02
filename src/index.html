@@ -285,7 +285,10 @@
 
   <!-- ============ MAP AREA ============ -->
   <header class="mobile-top-bar" id="mobile-top-bar">
-    <div class="mobile-top-greeting" id="mobile-greeting">Hola</div>
+    <div class="mobile-top-greeting-wrap">
+      <div class="mobile-top-greeting" id="mobile-greeting">Hola</div>
+      <p class="mobile-goal-line" id="mobile-goal-line" hidden></p>
+    </div>
     <div class="mobile-top-actions">
       <button type="button" class="mobile-top-btn mobile-top-btn--active" id="mobile-map-btn" aria-pressed="true">
         Mapa
@@ -313,6 +316,9 @@
         <div class="search-spinner" id="search-spinner"></div>
         <div class="search-results" id="search-results"></div>
       </div>
+      <p class="goal-orientation-chip" id="goal-orientation-chip" hidden>
+        <span id="goal-orientation-text"></span>
+      </p>
     </div>
 
     <!-- Status -->

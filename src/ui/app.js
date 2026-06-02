@@ -68,6 +68,7 @@
       priorityLineIds: []
     },
     goalContext: null,
+    cityInfluenceRanking: [],
     workspace: 'map'
   };
 
@@ -207,6 +208,9 @@
   const mobileMapBtn    = $('mobile-map-btn');
   const mobileControlsBtn = $('mobile-controls-btn');
   const mobileGreeting  = $('mobile-greeting');
+  const mobileGoalLine  = $('mobile-goal-line');
+  const goalChip        = $('goal-orientation-chip');
+  const goalChipText    = $('goal-orientation-text');
   const mobileLecturaBtn = $('mobile-lectura-btn');
   const MOBILE_MQ     = window.matchMedia('(max-width: 768px)');
   let mobileMode = 'map';
@@ -420,6 +424,46 @@
   if (isMobileLayout()) setMobileMode('map');
   refreshMapSize(150);
 
+  function syncGoalContextFromProfile() {
+    const GS = window.KairosGoalSignal;
+    state.goalContext = (GS && typeof GS.buildContext === 'function' && profile)
+      ? GS.buildContext(profile)
+      : null;
+    syncGoalUI();
+    if (kairosDebugEnabled()) {
+      console.info('[Kairos Goals UI] goal', state.goalContext);
+    }
+  }
+
+  function goalHumanLabel() {
+    return state.goalContext && state.goalContext.primary
+      ? state.goalContext.primary.humanLabel
+      : null;
+  }
+
+  function syncGoalUI() {
+    const label = goalHumanLabel();
+    if (goalChip && goalChipText) {
+      if (label) {
+        goalChipText.textContent = 'Mapa orientado a ' + label;
+        goalChip.hidden = false;
+      } else {
+        goalChip.hidden = true;
+        goalChipText.textContent = '';
+      }
+    }
+    if (mobileGoalLine) {
+      if (label) {
+        mobileGoalLine.textContent = 'Explorando lugares para ' + label;
+        mobileGoalLine.hidden = false;
+      } else {
+        mobileGoalLine.hidden = true;
+        mobileGoalLine.textContent = '';
+      }
+    }
+    updateStatus();
+  }
+
   function applyProfile(p) {
     if (!p) return;
     syncMobileGreeting(p.displayName);
@@ -442,6 +486,7 @@
     interpTabs.querySelectorAll('.interp-tab').forEach((tab) => {
       tab.classList.toggle('on', tab.dataset.aspect === aspect);
     });
+    syncGoalContextFromProfile();
   }
 
   applyProfile(profile);
@@ -470,7 +515,6 @@
     state.bridge.status = 'idle';
     state.bridge.result = null;
     state.bridge.priorityLineIds = [];
-    state.goalContext = null;
     const mapEl = document.getElementById('map');
     if (mapEl) mapEl.classList.remove('kairos-bridge-active');
   }
@@ -512,8 +556,10 @@
     if (GS && typeof GS.buildContext === 'function') {
       goalContext = GS.buildContext(profile);
       state.goalContext = goalContext;
+      syncGoalUI();
       if (kairosDebugEnabled()) {
         console.info('[Kairos GoalSignal] context', goalContext);
+        console.info('[Kairos Goals UI] goal', goalContext);
       }
     }
 
@@ -947,15 +993,17 @@
   }
 
   function updateStatus() {
-    const visibleCount = state.lines.filter(l =>
-      state.enabledPlanets.has(l.planet) && state.enabledAngles.has(l.angle)
-    ).length;
+    const label = goalHumanLabel();
     if (!state.lines.length) {
       statusDot.classList.remove('active');
       statusText.textContent = 'Mapa pendiente';
     } else {
       statusDot.classList.add('active');
-      statusText.textContent = `Mapa activo · ${CITIES.length} lugares`;
+      if (label) {
+        statusText.textContent = 'Explorando lugares para ' + label;
+      } else {
+        statusText.textContent = `Mapa activo · ${CITIES.length} lugares`;
+      }
     }
   }
 
@@ -1199,13 +1247,77 @@
 
   const PROX_KM = 500;
 
+  function bridgeMatchScore(lineId) {
+    if (state.bridge.status !== 'ready' || !state.bridge.result) return 0;
+    const matches = state.bridge.result.matches || [];
+    for (let i = 0; i < matches.length; i++) {
+      if (matches[i].lineId === lineId) return matches[i].score;
+    }
+    return 0;
+  }
+
+  function goalBoostForLine(line) {
+    const es = state.goalContext && state.goalContext.effectiveScoring;
+    if (!es) return 0;
+    const planetBoosts = es.planetBoosts || {};
+    const angleBoosts = es.angleBoosts || {};
+    const parts = [];
+    if (planetBoosts[line.planet] != null) parts.push(planetBoosts[line.planet]);
+    if (angleBoosts[line.angle] != null) parts.push(angleBoosts[line.angle]);
+    if (!parts.length) return 0;
+    let total = 0;
+    parts.forEach(function (p) { total += p; });
+    return total / parts.length;
+  }
+
+  function influenceRankMeta(item) {
+    const bridgeScore = bridgeMatchScore(item.line.id);
+    const goalBoost = goalBoostForLine(item.line);
+    const distNorm = 1 - Math.min(item.dist / PROX_KM, 1);
+
+    if (!state.goalContext) {
+      return {
+        lineId: item.line.id,
+        dist: item.dist,
+        bridgeScore: bridgeScore,
+        goalBoost: goalBoost,
+        composite: distNorm
+      };
+    }
+
+    let composite;
+    if (state.bridge.status === 'ready') {
+      composite = (bridgeScore * 0.40) + (goalBoost * 0.35) + (distNorm * 0.25);
+    } else {
+      composite = (goalBoost * 0.55) + (distNorm * 0.45);
+    }
+
+    return {
+      lineId: item.line.id,
+      dist: item.dist,
+      bridgeScore: bridgeScore,
+      goalBoost: goalBoost,
+      composite: composite
+    };
+  }
+
   function relevantInfluences(city) {
     if (!state.lines.length) return [];
-    return state.lines
+    const items = state.lines
       .filter(l => state.enabledPlanets.has(l.planet) && state.enabledAngles.has(l.angle))
       .map(l => ({ line: l, dist: distanceKmToLine(city.lat, city.lon, l.segments) }))
-      .filter(x => x.dist < PROX_KM)
-      .sort((a, b) => a.dist - b.dist);
+      .filter(x => x.dist < PROX_KM);
+
+    if (!state.goalContext) {
+      return items.sort((a, b) => a.dist - b.dist);
+    }
+
+    return items.sort((a, b) => {
+      const ra = influenceRankMeta(a);
+      const rb = influenceRankMeta(b);
+      if (rb.composite !== ra.composite) return rb.composite - ra.composite;
+      return a.dist - b.dist;
+    });
   }
 
   function strengthFromDist(distKm) {
@@ -1231,6 +1343,18 @@
     }
 
     const influences = relevantInfluences(city);
+    state.cityInfluenceRanking = influences.map(function (item) {
+      return influenceRankMeta(item);
+    });
+    if (kairosDebugEnabled()) {
+      console.info('[Kairos Goals UI] city ranking', {
+        city: city.name,
+        goal: state.goalContext && state.goalContext.primary
+          ? state.goalContext.primary.id
+          : null,
+        ranking: state.cityInfluenceRanking.slice(0, 6)
+      });
+    }
     if (!influences.length) {
       interpBody.innerHTML = `
         <div class="no-influences">
@@ -1421,6 +1545,7 @@
       get chart() { return state.chart; },
       get bridge() { return state.bridge; },
       get goalContext() { return state.goalContext; },
+      get cityInfluenceRanking() { return state.cityInfluenceRanking; },
       get serviceStatus() {
         return window.KairosChartService && window.KairosChartService.getStatus
           ? window.KairosChartService.getStatus()
