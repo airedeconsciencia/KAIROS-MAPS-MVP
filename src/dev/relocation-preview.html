@@ -148,6 +148,11 @@
     </div>
 
     <div class="panel">
+      <div class="panel-title">Reloc Lite — fragmentos</div>
+      <div id="fragments-out" class="muted">—</div>
+    </div>
+
+    <div class="panel">
       <div class="panel-title">Bridge (mock lines)</div>
       <div id="bridge-out" class="muted">—</div>
     </div>
@@ -159,6 +164,7 @@
   </div>
 
   <script src="../content/goal-signal.js"></script>
+  <script src="../content/reloc-lite.js"></script>
   <script src="../services/relocation-profile-service.js"></script>
   <script src="../services/natal-map-bridge-service.js"></script>
   <script>
@@ -194,6 +200,7 @@
     };
 
     var summaryOut = document.getElementById('summary-out');
+    var fragmentsOut = document.getElementById('fragments-out');
     var bridgeOut = document.getElementById('bridge-out');
     var jsonOut = document.getElementById('json-out');
     var goalSelect = document.getElementById('goal-select');
@@ -212,6 +219,37 @@
       var GS = window.KairosGoalSignal;
       if (!GS) return null;
       return GS.buildContext({ mainGoal: goalSelect.value });
+    }
+
+    function renderFragments(result) {
+      if (!fragmentsOut) return;
+      var RelocLite = window.KairosRelocLite;
+      if (!result.ok || !RelocLite) {
+        fragmentsOut.innerHTML = '<span class="muted">—</span>';
+        return;
+      }
+      var ids = (result.sourceIds && result.sourceIds.fragmentIds) || [];
+      if (!ids.length) {
+        fragmentsOut.innerHTML = '<span class="muted">Sin fragmentos reloc-lite para este mock</span>';
+        return;
+      }
+      var rows = ids.map(function (id) {
+        var frag = RelocLite.getFragment(id);
+        if (!frag) {
+          return '<tr><td>' + id + '</td><td colspan="3" class="err">no encontrado</td></tr>';
+        }
+        return '<tr>' +
+          '<td>' + frag.id + '</td>' +
+          '<td>' + frag.role + ' · ' + (frag.condition && frag.condition.element) + '</td>' +
+          '<td>' + frag.headline + '</td>' +
+          '<td>' + JSON.stringify(frag.bridgeTags) + '</td>' +
+          '</tr>';
+      }).join('');
+      fragmentsOut.innerHTML =
+        '<p class="muted" style="margin:0 0 8px">sourceIds.fragmentIds · chartRefs: ' +
+        JSON.stringify(result.sourceIds.chartRefs || []) + '</p>' +
+        '<table><thead><tr><th>ID</th><th>Rol · elemento</th><th>Headline</th><th>bridgeTags</th></tr></thead><tbody>' +
+        rows + '</tbody></table>';
     }
 
     function renderBridge(reloc, ctx) {
@@ -251,6 +289,7 @@
           (label ? label + ' · ' : '') +
           '<span class="err">' + (result.reason || 'unknown') + '</span>';
         bridgeOut.innerHTML = '<span class="muted">—</span>';
+        if (fragmentsOut) fragmentsOut.innerHTML = '<span class="muted">—</span>';
         return;
       }
       summaryOut.innerHTML =
@@ -263,7 +302,9 @@
         '<dt>tensionMode</dt><dd>' + result.tensionMode + '</dd>' +
         '<dt>relocDelta</dt><dd>' + JSON.stringify(result.dominantPatterns.relocDelta) + '</dd>' +
         '<dt>goal</dt><dd>' + (result.meta.goal || '—') + '</dd>' +
+        '<dt>fragmentIds</dt><dd>' + JSON.stringify((result.sourceIds && result.sourceIds.fragmentIds) || []) + '</dd>' +
         '</dl>';
+      renderFragments(result);
       renderBridge(result, ctx);
     }
 

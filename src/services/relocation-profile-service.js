@@ -56,6 +56,15 @@
     crecimiento: ['expansion', 'initiative', 'movement']
   };
 
+  var ANGLE_TO_ROLE = { AC: 'ASC', MC: 'MC', IC: 'IC', DC: 'DC' };
+
+  function getRelocLite() {
+    if (typeof window !== 'undefined' && window.KairosRelocLite) {
+      return window.KairosRelocLite;
+    }
+    return null;
+  }
+
   function fail(reason) {
     return {
       ok: false,
@@ -244,7 +253,12 @@
     }).filter(Boolean).sort();
   }
 
-  function buildBridgeProfile(tags, themes, tensionMode, roles, chartRefs, pairs) {
+  function buildBridgeProfile(tags, themes, tensionMode, roles, chartRefs, pairs, fragmentIds) {
+    var sourceIds = chartRefs.slice();
+    (fragmentIds || []).forEach(function (id) {
+      if (sourceIds.indexOf(id) === -1) sourceIds.push(id);
+    });
+    sourceIds.sort();
     return {
       schemaVersion: BRIDGE_PROFILE_VERSION,
       tags: tags.slice(),
@@ -252,8 +266,34 @@
       tensionMode: tensionMode === true,
       contradictionPairs: pairs.slice(),
       dominantRoles: roles.slice(),
-      sourceFragmentIds: chartRefs.slice()
+      sourceFragmentIds: sourceIds
     };
+  }
+
+  function resolveRelocFragmentIds(relocatedAngles, relocDelta, input) {
+    var ids = [];
+    if (input && Array.isArray(input.fragmentRefs)) {
+      input.fragmentRefs.forEach(function (id) {
+        if (id && ids.indexOf(id) === -1) ids.push(id);
+      });
+    }
+
+    var RelocLite = getRelocLite();
+    if (!RelocLite || typeof RelocLite.findFragment !== 'function') {
+      return ids.sort();
+    }
+
+    Object.keys(relocDelta || {}).forEach(function (angleKey) {
+      var toRef = relocatedAngles[angleKey];
+      if (!toRef || !toRef.slug) return;
+      var element = ELEMENT_BY_SLUG[toRef.slug];
+      if (!element) return;
+      var role = ANGLE_TO_ROLE[angleKey] || angleKey;
+      var frag = RelocLite.findFragment({ angle: role, element: element });
+      if (frag && frag.id && ids.indexOf(frag.id) === -1) ids.push(frag.id);
+    });
+
+    return ids.sort();
   }
 
   function buildRelocationProfile(input) {
@@ -298,6 +338,7 @@
       var tensionMode = relocMeta.pairs.length > 0;
       var chartRefs = chartRefsFromRelocated(relocatedAngles, roles);
       var houses = Array.isArray(input.relocatedHouses) ? input.relocatedHouses : [];
+      var fragmentIds = resolveRelocFragmentIds(relocatedAngles, relocMeta.delta, input);
 
       var bridgeProfile = buildBridgeProfile(
         tags,
@@ -305,7 +346,8 @@
         tensionMode,
         roles,
         chartRefs,
-        relocMeta.pairs
+        relocMeta.pairs,
+        fragmentIds
       );
 
       var goalId = input.goalContext && input.goalContext.primary
@@ -325,7 +367,7 @@
           relocDelta: relocMeta.delta
         },
         sourceIds: {
-          fragmentIds: [],
+          fragmentIds: fragmentIds,
           chartRefs: chartRefs,
           documentRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'RELOCATION_SCAFFOLD_ARCHITECTURE.md']
         },
