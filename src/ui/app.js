@@ -3,7 +3,7 @@
 
   function startApp(profile) {
   const { DateTime } = luxon;
-  const { PLANETS, ANGLES, computeAllLines, distanceKmToLine } = window.KairosAstro;
+  const { PLANETS, ANGLES, computeAllLines } = window.KairosAstro;
   const INTERPRETATIONS = window.INTERPRETATIONS;
 
   const activeAspect = profile && profile.mainGoal
@@ -69,6 +69,7 @@
     },
     goalContext: null,
     cityInfluenceRanking: [],
+    citySuggestions: null,
     workspace: 'map'
   };
 
@@ -180,6 +181,8 @@
   const emptyHint     = $('empty-hint');
   const legendEmpty   = $('legend-empty');
   const planetListEl  = $('planet-list');
+  const citySuggestionsEl = $('city-suggestions');
+  const citySuggestionsList = $('city-suggestions-list');
   const angleFilterEl = $('angle-filter');
   const mapGlyphsToggle = $('map-glyphs-toggle');
   const panel         = $('interp-panel');
@@ -462,6 +465,96 @@
       }
     }
     updateStatus();
+    syncCitySuggestions();
+  }
+
+  function buildCityScorerInput() {
+    return {
+      lines: state.lines,
+      cities: CITIES,
+      goalContext: state.goalContext,
+      bridgeResult: state.bridge.result,
+      options: {
+        proxKm: window.KairosCityScorer ? window.KairosCityScorer.PROX_KM : 500,
+        maxSuggestions: 3,
+        minScore: 0.28,
+        enabledPlanets: state.enabledPlanets,
+        enabledAngles: state.enabledAngles
+      }
+    };
+  }
+
+  function cityRefFromSuggestion(suggestion) {
+    return CITIES.find(function (c) {
+      return c.name === suggestion.cityName &&
+        c.country === suggestion.country &&
+        Math.abs(c.lat - suggestion.lat) < 0.01 &&
+        Math.abs(c.lon - suggestion.lon) < 0.01;
+    }) || {
+      name: suggestion.cityName,
+      country: suggestion.country,
+      lat: suggestion.lat,
+      lon: suggestion.lon
+    };
+  }
+
+  function syncCitySuggestions() {
+    if (!citySuggestionsEl || !citySuggestionsList) return;
+
+    const Scorer = window.KairosCityScorer;
+    if (!Scorer || !state.goalContext || state.bridge.status !== 'ready' ||
+        !state.bridge.result || !state.bridge.result.ok || !state.lines.length) {
+      citySuggestionsEl.hidden = true;
+      citySuggestionsList.innerHTML = '';
+      state.citySuggestions = null;
+      return;
+    }
+
+    let result;
+    try {
+      result = Scorer.scoreCities(buildCityScorerInput());
+    } catch (e) {
+      citySuggestionsEl.hidden = true;
+      citySuggestionsList.innerHTML = '';
+      state.citySuggestions = null;
+      if (kairosDebugEnabled()) console.warn('[Kairos Cities] scorer error', e);
+      return;
+    }
+
+    if (!result.ok || !result.suggestions || !result.suggestions.length) {
+      citySuggestionsEl.hidden = true;
+      citySuggestionsList.innerHTML = '';
+      state.citySuggestions = null;
+      return;
+    }
+
+    state.citySuggestions = result;
+    citySuggestionsEl.hidden = false;
+    citySuggestionsList.innerHTML = result.suggestions.map(function (s) {
+      return `
+        <button type="button" class="city-suggestion-item" data-city-id="${s.cityId}">
+          <span class="city-suggestion-head">
+            <span class="city-suggestion-name">${s.cityName}</span>
+            <span class="city-suggestion-country">${s.country}</span>
+          </span>
+          <p class="city-suggestion-summary">${s.humanSummary}</p>
+        </button>`;
+    }).join('');
+
+    citySuggestionsList.querySelectorAll('.city-suggestion-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const cityId = btn.getAttribute('data-city-id');
+        const suggestion = result.suggestions.find(function (s) { return s.cityId === cityId; });
+        if (!suggestion) return;
+        const city = cityRefFromSuggestion(suggestion);
+        map.flyTo([city.lat, city.lon], 5, { duration: 1.2 });
+        openInterpretation(city);
+      });
+    });
+
+    if (kairosDebugEnabled()) {
+      console.info('[Kairos Cities] suggestions', result);
+    }
   }
 
   function applyProfile(p) {
@@ -534,12 +627,14 @@
 
   function computeBridgeHighlight() {
     resetBridgeHighlight();
+    syncCitySuggestions();
     if (!state.lines.length) return false;
     if (state.chart.status !== 'ready' || !state.chart.natal) return false;
 
     const Bridge = window.KairosNatalMapBridge;
     if (!Bridge || typeof Bridge.buildBridge !== 'function') {
       state.bridge.status = 'skipped';
+      syncCitySuggestions();
       return false;
     }
 
@@ -549,7 +644,10 @@
       composition = Panel.composeLiteReading(state.chart.natal);
     }
     const signalProfile = composition && composition.meta && composition.meta.bridgeProfile;
-    if (!signalProfile) return false;
+    if (!signalProfile) {
+      syncCitySuggestions();
+      return false;
+    }
 
     let goalContext = null;
     const GS = window.KairosGoalSignal;
@@ -575,6 +673,7 @@
     } catch (e) {
       kairosDebugLog('bridge error', e.message || String(e));
       state.bridge.status = 'skipped';
+      syncCitySuggestions();
       return false;
     }
 
@@ -585,6 +684,7 @@
         console.info('[Kairos Bridge] result', result);
         console.info('[Kairos Bridge] priorityLineIds', []);
       }
+      syncCitySuggestions();
       return false;
     }
 
@@ -601,6 +701,7 @@
       console.info('[Kairos Bridge] result', result);
       console.info('[Kairos Bridge] priorityLineIds', state.bridge.priorityLineIds);
     }
+    syncCitySuggestions();
     return true;
   }
 
@@ -625,6 +726,7 @@
     for (const k in lineGroups) delete lineGroups[k];
     state.lines = [];
     resetBridgeHighlight();
+    syncCitySuggestions();
   }
 
   const PRIORITY_PLANETS = ['sol', 'luna', 'venus', 'marte', 'jupiter', 'saturno'];
@@ -990,6 +1092,7 @@
     updateStatus();
     refreshMapGlyphs();
     raiseCityMarkers();
+    syncCitySuggestions();
   }
 
   function updateStatus() {
@@ -1245,82 +1348,22 @@
     });
   });
 
-  const PROX_KM = 500;
-
-  function bridgeMatchScore(lineId) {
-    if (state.bridge.status !== 'ready' || !state.bridge.result) return 0;
-    const matches = state.bridge.result.matches || [];
-    for (let i = 0; i < matches.length; i++) {
-      if (matches[i].lineId === lineId) return matches[i].score;
-    }
-    return 0;
-  }
-
-  function goalBoostForLine(line) {
-    const es = state.goalContext && state.goalContext.effectiveScoring;
-    if (!es) return 0;
-    const planetBoosts = es.planetBoosts || {};
-    const angleBoosts = es.angleBoosts || {};
-    const parts = [];
-    if (planetBoosts[line.planet] != null) parts.push(planetBoosts[line.planet]);
-    if (angleBoosts[line.angle] != null) parts.push(angleBoosts[line.angle]);
-    if (!parts.length) return 0;
-    let total = 0;
-    parts.forEach(function (p) { total += p; });
-    return total / parts.length;
-  }
-
-  function influenceRankMeta(item) {
-    const bridgeScore = bridgeMatchScore(item.line.id);
-    const goalBoost = goalBoostForLine(item.line);
-    const distNorm = 1 - Math.min(item.dist / PROX_KM, 1);
-
-    if (!state.goalContext) {
-      return {
-        lineId: item.line.id,
-        dist: item.dist,
-        bridgeScore: bridgeScore,
-        goalBoost: goalBoost,
-        composite: distNorm
-      };
-    }
-
-    let composite;
-    if (state.bridge.status === 'ready') {
-      composite = (bridgeScore * 0.40) + (goalBoost * 0.35) + (distNorm * 0.25);
-    } else {
-      composite = (goalBoost * 0.55) + (distNorm * 0.45);
-    }
-
-    return {
-      lineId: item.line.id,
-      dist: item.dist,
-      bridgeScore: bridgeScore,
-      goalBoost: goalBoost,
-      composite: composite
-    };
-  }
+  const PROX_KM = window.KairosCityScorer ? window.KairosCityScorer.PROX_KM : 500;
 
   function relevantInfluences(city) {
     if (!state.lines.length) return [];
-    const items = state.lines
-      .filter(l => state.enabledPlanets.has(l.planet) && state.enabledAngles.has(l.angle))
-      .map(l => ({ line: l, dist: distanceKmToLine(city.lat, city.lon, l.segments) }))
-      .filter(x => x.dist < PROX_KM);
-
-    if (!state.goalContext) {
-      return items.sort((a, b) => a.dist - b.dist);
-    }
-
-    return items.sort((a, b) => {
-      const ra = influenceRankMeta(a);
-      const rb = influenceRankMeta(b);
-      if (rb.composite !== ra.composite) return rb.composite - ra.composite;
-      return a.dist - b.dist;
+    const Scorer = window.KairosCityScorer;
+    if (!Scorer) return [];
+    return Scorer.rankInfluences(city, buildCityScorerInput()).map(function (item) {
+      return { line: item.line, dist: item.distKm };
     });
   }
 
   function strengthFromDist(distKm) {
+    const Scorer = window.KairosCityScorer;
+    if (Scorer && typeof Scorer.strengthFromDist === 'function') {
+      return Scorer.strengthFromDist(distKm, PROX_KM);
+    }
     return Math.max(1, Math.min(5, Math.round(5 - (distKm / PROX_KM) * 5)));
   }
 
@@ -1343,8 +1386,16 @@
     }
 
     const influences = relevantInfluences(city);
-    state.cityInfluenceRanking = influences.map(function (item) {
-      return influenceRankMeta(item);
+    const Scorer = window.KairosCityScorer;
+    const ranked = Scorer ? Scorer.rankInfluences(city, buildCityScorerInput()) : [];
+    state.cityInfluenceRanking = ranked.map(function (item) {
+      return {
+        lineId: item.lineId,
+        dist: item.distKm,
+        bridgeScore: item.bridgeScore,
+        goalBoost: item.goalBoost,
+        composite: item.composite
+      };
     });
     if (kairosDebugEnabled()) {
       console.info('[Kairos Goals UI] city ranking', {
@@ -1546,6 +1597,7 @@
       get bridge() { return state.bridge; },
       get goalContext() { return state.goalContext; },
       get cityInfluenceRanking() { return state.cityInfluenceRanking; },
+      get citySuggestions() { return state.citySuggestions; },
       get serviceStatus() {
         return window.KairosChartService && window.KairosChartService.getStatus
           ? window.KairosChartService.getStatus()
