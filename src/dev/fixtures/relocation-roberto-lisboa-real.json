@@ -1,9 +1,9 @@
 {
-  "capturedAt": "2026-05-26T12:00:00.000Z",
+  "capturedAt": "2026-06-03T20:56:34.093Z",
   "source": "dev/relocation-preview.html?dataSource=real&capture=1",
   "engine": "KairosChartService / generateFullChart / swe.houses Placidus",
   "case": "roberto-lisboa-real",
-  "phase": "3.7b.7",
+  "phase": "3.7b.8",
   "birthData": {
     "date": "1973-05-29",
     "time": "07:30",
@@ -12,23 +12,23 @@
     "lon": 4.2658,
     "birthPlace": "Maó, Menorca"
   },
+  "natalChart": {
+    "sun": "gemini",
+    "moon": "aries",
+    "asc": "cancer",
+    "angles": {
+      "AC": { "sign": "Cáncer", "slug": "cancer", "degree": 8.604444444444445 },
+      "MC": { "sign": "Piscis", "slug": "pisces", "degree": 17.4025 },
+      "IC": { "sign": "Virgo", "slug": "virgo", "degree": 17.4025 },
+      "DC": { "sign": "Capricornio", "slug": "capricorn", "degree": 8.604444444444445 }
+    }
+  },
   "targetLocation": {
     "name": "Lisboa",
     "country": "Portugal",
     "lat": 38.7223,
     "lon": -9.1393,
     "cityId": "lisboa-pt"
-  },
-  "natalChart": {
-    "sun": "gemini",
-    "moon": "aries",
-    "asc": "cancer",
-    "angles": {
-      "AC": { "slug": "cancer", "sign": "Cáncer" },
-      "MC": { "slug": "pisces", "sign": "Piscis" },
-      "IC": { "slug": "virgo", "sign": "Virgo" },
-      "DC": { "slug": "capricorn", "sign": "Capricornio" }
-    }
   },
   "relocatedAngles": {
     "AC": {
@@ -102,13 +102,6 @@
   ],
   "composition": {
     "ok": true,
-    "title": "Si vivieras en Lisboa · explorando amor y relaciones",
-    "fragmentIds": [
-      "RELOC_ASC_TO_AIR",
-      "RELOC_DC_TO_FIRE",
-      "RELOC_IC_PRESENT_EARTH",
-      "RELOC_MC_PRESENT_WATER"
-    ],
     "meta": {
       "charCount": 796,
       "includedRoles": ["ASC", "MC", "IC", "DC"],
@@ -118,8 +111,7 @@
     }
   },
   "notes": {
-    "mockLisboaWas": "AC libra, MC capricorn, IC cancer, DC aries — editorial mock only",
-    "timezonePolicy": "birth_timezone",
-    "fragmentPolicy": "3.7b.7 — delta si cambia signo vs natal Maó; presence si ángulo relocado sin cambio de signo (MC Piscis, IC Virgo)"
+    "e2e": "3.7b.8 browser capture — scripts ?v=3.7b8 required",
+    "timezonePolicy": "birth_timezone"
   }
 }

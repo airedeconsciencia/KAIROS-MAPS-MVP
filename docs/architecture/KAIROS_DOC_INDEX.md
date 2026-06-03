@@ -108,6 +108,7 @@ Sustituye numeración dispersa en `roadmap.txt` para **ejecución activa**. Visi
 | **3.7c** | **Goals Layer** — mainGoal → Bridge → UI coherente | Valor usuario |
 | **3.8** | **Cities Layer lite** — preguntas + top lugares determinista | Valor usuario |
 | **3.7b** | Relocation scaffold DEV (adapter + reloc-lite + composition lab) | ✅ DEV cerrado |
+| **3.7b.6–3.7b.8** | Reloc real adapter + delta/presence + E2E browser lab | ✅ DEV cerrado |
 | **3.9** | Relocation premium teaser UI | Premium |
 | **4.0** | Navegación 4 módulos (EXPERIENCE) | UX |
 | **4.x** | Couple Layer | Premium |
@@ -236,6 +237,9 @@ Si falla ≥2 respuestas → **rechazar o reordenar**, no implementar.
 | **3.7b Relocation scaffold DEV** | ✅ Adapter + lab + smokes — sin UI producto |
 | **3.7b.2 reloc-lite content scaffold** | ✅ Matriz 16/16 ángulo×elemento · `reloc-lite.js` |
 | **3.7b.3 reloc composition DEV** | ✅ `reloc-composition-service.js` + lab + smokes |
+| **3.7b.6 reloc chart adapter real data** | ✅ `reloc-chart-adapter.js` + fixture Roberto→Lisboa |
+| **3.7b.7 reloc delta/presence completion** | ✅ 32 fragmentos · `fragmentMeta` · roleCoverage 100% |
+| **3.7b.8 reloc E2E DEV validation** | ✅ Browser WASM + Lisboa/Toronto real · cache-bust lab |
 | Arquitectura 3.6 (multi-perfil, experience, bridge) | ✅ Documentada |
 | Corpus Master 20 docs en `docs/Master/` | ✅ Importado |
 | Conversión 9 docs → `docs/product/` | ✅ 3.6h4 |
@@ -336,7 +340,7 @@ Doc 8 · Doc 9 · Doc 13 · Doc 16 — sustituidos por v2 / MD
 
 **Documental:** SÍ — ver `RELOCATION_EDITORIAL_BRIEF.md` + `RELOCATION_SCAFFOLD_ARCHITECTURE.md`.
 
-**DEV scaffold:** ✅ CERRADO (3.7b → 3.7b.3) — adapter, matriz 16/16, compositor, lab, smokes PASS.
+**DEV scaffold:** ✅ CERRADO (3.7b → 3.7b.8) — adapter real, delta/presence, compositor, lab E2E browser, smokes PASS.
 
 **Producto visible:** NO — siguiente hito **3.9 premium teaser UI** (congelado hasta aprobación).
 

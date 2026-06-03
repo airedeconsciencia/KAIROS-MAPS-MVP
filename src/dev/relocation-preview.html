@@ -120,7 +120,7 @@
 <body>
   <div class="dev-banner">DEV ONLY · Relocation Preview Lab · chart-service real · No producto · No mapa</div>
   <div class="page">
-    <h1>Relocation Preview Lab — Fase 3.7b.7</h1>
+    <h1>Relocation Preview Lab — Fase 3.7b.8 E2E</h1>
     <p class="sub">Mock o chart-service real (misma fecha/hora/tz natal + lat/lon ciudad) → RelocChartAdapter → RelocationProfile → RelocLite → Composition → Bridge.</p>
 
     <div class="question">
@@ -187,12 +187,12 @@
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
   <script src="../services/natal-engine-loader.js?v=3.7b6"></script>
   <script src="../services/chart-service.js?v=3.7b6"></script>
-  <script src="../content/goal-signal.js"></script>
-  <script src="../content/reloc-lite.js"></script>
-  <script src="../services/reloc-chart-adapter.js"></script>
-  <script src="../services/relocation-profile-service.js"></script>
-  <script src="../services/reloc-composition-service.js"></script>
-  <script src="../services/natal-map-bridge-service.js"></script>
+  <script src="../content/goal-signal.js?v=3.7b8"></script>
+  <script src="../content/reloc-lite.js?v=3.7b8"></script>
+  <script src="../services/reloc-chart-adapter.js?v=3.7b8"></script>
+  <script src="../services/relocation-profile-service.js?v=3.7b8"></script>
+  <script src="../services/reloc-composition-service.js?v=3.7b8"></script>
+  <script src="../services/natal-map-bridge-service.js?v=3.7b8"></script>
   <script>
   (function () {
     'use strict';
@@ -545,14 +545,19 @@
         renderPipeline(built.label, payload);
 
         if (new URLSearchParams(location.search).has('capture') && built.adapter && built.adapter.ok) {
+          var captureCase = key === 'roberto-toronto' ? 'roberto-toronto-real' : 'roberto-lisboa-real';
           var capture = {
             capturedAt: new Date().toISOString(),
-            case: 'roberto-lisboa-real',
+            source: 'dev/relocation-preview.html?dataSource=real&capture=1',
+            phase: '3.7b.8',
+            case: captureCase,
             birthData: ROBERTO_BIRTH,
+            natalChart: built.profileInput && built.profileInput.natalChart,
             targetLocation: built.adapter.targetLocation,
             relocatedAngles: built.adapter.relocatedAngles,
             oppositions: window.KairosRelocChartAdapter.verifyAngleOppositions(built.adapter.relocatedAngles),
             fragmentIds: profile.sourceIds && profile.sourceIds.fragmentIds,
+            fragmentMeta: profile.sourceIds && profile.sourceIds.fragmentMeta,
             composition: composed
           };
           captureOut.textContent = JSON.stringify(capture, null, 2);

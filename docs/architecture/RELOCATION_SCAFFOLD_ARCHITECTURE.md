@@ -130,7 +130,8 @@ El Bridge **no conoce** relocación. Solo consume `tags`, `themes`, `tensionMode
   },
 
   sourceIds: {
-    fragmentIds: string[],      // vacío en scaffold — futuro reloc-lite.js
+    fragmentIds: string[],      // IDs reloc-lite resueltos (delta + presence)
+    fragmentMeta?: object[],    // trazabilidad por ángulo (3.7b.7+)
     chartRefs: string[],        // RELOC_AC_LIBRA, …
     documentRefs: string[]
   },
@@ -155,6 +156,28 @@ El Bridge **no conoce** relocación. Solo consume `tags`, `themes`, `tensionMode
   }
 }
 ```
+
+### Fragmentos `fragmentMeta` (3.7b.7+)
+
+Cada entrada en `sourceIds.fragmentMeta` describe cómo se eligió el fragmento editorial:
+
+| Campo | Significado |
+|-------|-------------|
+| `id` | ID reloc-lite (`RELOC_*`) |
+| `role` | `ASC` \| `MC` \| `IC` \| `DC` |
+| `angleKey` | `AC` \| `MC` \| `IC` \| `DC` |
+| `fragmentType` | `delta` \| `presence` |
+| `element` | `fire` \| `earth` \| `air` \| `water` |
+
+**Reglas:**
+
+- **`delta`** — el signo del ángulo relocado **cambia** respecto al natal (`relocatedAngles` vs `natalChart.angles`). ID patrón: `RELOC_{ROLE}_TO_{ELEMENT}`.
+- **`presence`** — el ángulo relocado **existe** pero el signo **no cambia**; se usa el fragmento del elemento presente en el lugar. ID patrón: `RELOC_{ROLE}_PRESENT_{ELEMENT}`.
+- Prioridad: delta primero; si no hay cambio de signo → presence. Nunca inventar IDs.
+
+Lab E2E (3.7b.8): `relocation-preview.html?dataSource=real` — scripts con `?v=3.7b8` para evitar caché de `reloc-lite` en browser.
+
+---
 
 ### Fail-soft
 
