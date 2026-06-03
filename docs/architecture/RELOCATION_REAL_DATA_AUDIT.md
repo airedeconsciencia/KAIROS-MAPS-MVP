@@ -263,7 +263,65 @@ No crear ni modificar smokes en 3.7b.5. Cuando existan datos reales:
 | ¿Reutilizar o inventar? | **Reutilizar** chart-service + adapter |
 | ¿`getRelocatedAngles` del spec? | **No portar**; duplicaría lógica inferior a Swiss Ephemeris |
 | ¿Bridge reescritura? | **No** |
-| ¿Siguiente paso? | Fase **3.7b.6** (propuesta): `reloc-chart-adapter` + lab con toggle mock/real + golden reloc 1 ciudad |
+| ¿Siguiente paso? | ~~3.7b.6~~ → **implementado** (ver §10) |
+
+---
+
+## 10. Implementación 3.7b.6 — Reloc Chart Adapter
+
+**Estado:** implementado DEV · sin UI producto · sin cambios en motores
+
+### Qué reutiliza
+
+| Pieza | Ruta |
+|-------|------|
+| WASM + Swiss Ephemeris | `natal-engine-loader` → `kairos-core` |
+| Fachada | `src/services/chart-service.js` → `generateNatalChart` |
+| Orquestador | `generateFullChart` → `getHousesAndAngles` / `swe.houses` |
+| Adapter | `src/services/reloc-chart-adapter.js` |
+| Pipeline editorial | `relocation-profile-service` → `reloc-lite` → `reloc-composition` → Bridge |
+
+### Qué NO toca
+
+- `planetary_engine.js`, `chart_engine.js`, `astro.js`, WASM blobs  
+- `src/index.html`, `src/ui/*`, `dist/`  
+- Premium, Couple, IA, Reports, Firebase  
+
+### Política de timezone
+
+- **Siempre** `birthData.timezone` (IANA lugar de nacimiento, p. ej. `Europe/Madrid`).  
+- La ciudad destino aporta **solo** `lat` / `lon`.  
+- **No** sustituir timezone por la de la ciudad (evita desplazar el instante UTC natal).  
+- Meta: `timezonePolicy: "birth_timezone"`.
+
+### Ruta real de datos
+
+```
+birthData (1973-05-29 07:30 Europe/Madrid, lat/lon Maó)
++ targetLocation (Lisboa lat/lon)
+    → generateNatalChart(reloc payload)  // misma date/time/tz, coords ciudad
+    → generateNatalChart(natal payload)  // coords nacimiento (delta + slugs)
+    → KairosRelocChartAdapter.buildRelocationInputFromChart()
+    → buildRelocationProfile() → RelocLite → RelocComposition → Bridge
+```
+
+Lab: `src/dev/relocation-preview.html` — toggle **Mock** / **Real chart-service**.
+
+### Limitaciones
+
+| Limitación | Nota |
+|------------|------|
+| Smokes Node sin WASM | Casos 1–5 en Node; datos reales vía fixture JSON capturada en browser |
+| Fixture no auto-generada en CI | `src/dev/fixtures/relocation-roberto-lisboa-real.json` — generar con `?capture=1` |
+| Toronto real | Preset real solo Roberto + birth constant en lab |
+| Signos motor en español | Adapter mapea a slug EN antes del profile |
+| Claves ASC→AC | Solo en capa adapter; motor sigue usando `ASC` |
+
+### Smokes 3.7b.6
+
+- `scripts/dev-reloc-chart-adapter-smoke.sh` — estructura + fixture opcional  
+- Browser: `dev/relocation-preview.html?dataSource=real&capture=1`  
+- Encadenados: profile / composition / reloc-lite smokes sin cambio de contrato  
 
 ---
 
@@ -292,4 +350,4 @@ No crear ni modificar smokes en 3.7b.5. Cuando existan datos reales:
 
 ---
 
-*Relocation Real Data Audit · Fase 3.7b.5 · Solo documentación · Implementación pendiente decisión explícita*
+*Relocation Real Data Audit · 3.7b.5 auditoría · 3.7b.6 adapter DEV*

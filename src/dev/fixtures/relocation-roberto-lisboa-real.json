@@ -1,0 +1,76 @@
+{
+  "capturedAt": "2026-05-26T12:00:00.000Z",
+  "source": "dev/relocation-preview.html?dataSource=real&capture=1",
+  "engine": "KairosChartService / generateFullChart / swe.houses Placidus",
+  "case": "roberto-lisboa-real",
+  "phase": "3.7b.6",
+  "birthData": {
+    "date": "1973-05-29",
+    "time": "07:30",
+    "timezone": "Europe/Madrid",
+    "lat": 39.8885,
+    "lon": 4.2658,
+    "birthPlace": "Maó, Menorca"
+  },
+  "targetLocation": {
+    "name": "Lisboa",
+    "country": "Portugal",
+    "lat": 38.7223,
+    "lon": -9.1393,
+    "cityId": "lisboa-pt"
+  },
+  "natalChart": {
+    "sun": "gemini",
+    "moon": "aries",
+    "asc": "cancer",
+    "angles": {
+      "AC": { "slug": "cancer", "sign": "Cáncer" },
+      "MC": { "slug": "pisces", "sign": "Piscis" },
+      "IC": { "slug": "virgo", "sign": "Virgo" },
+      "DC": { "slug": "capricorn", "sign": "Capricornio" }
+    }
+  },
+  "relocatedAngles": {
+    "AC": {
+      "sign": "Géminis",
+      "signSlug": "gemini",
+      "slug": "gemini",
+      "degree": 25.669444444444444,
+      "longitude": 85.66961466518207
+    },
+    "MC": {
+      "sign": "Piscis",
+      "signSlug": "pisces",
+      "slug": "pisces",
+      "degree": 3.065833333333333,
+      "longitude": 333.06604784844893
+    },
+    "DC": {
+      "sign": "Sagitario",
+      "signSlug": "sagittarius",
+      "slug": "sagittarius",
+      "degree": 25.669444444444444,
+      "longitude": 265.66961466518205
+    },
+    "IC": {
+      "sign": "Virgo",
+      "signSlug": "virgo",
+      "slug": "virgo",
+      "degree": 3.065833333333333,
+      "longitude": 153.066047848449
+    }
+  },
+  "oppositions": {
+    "acDc": true,
+    "mcIc": true
+  },
+  "fragmentIds": [
+    "RELOC_ASC_TO_AIR",
+    "RELOC_DC_TO_FIRE"
+  ],
+  "notes": {
+    "mockLisboaWas": "AC libra, MC capricorn, IC cancer, DC aries — editorial mock only",
+    "timezonePolicy": "birth_timezone",
+    "fragmentCount": "Solo ángulos con delta signo vs natal Maó (MC/IC sin cambio → sin fragmento; ver 3.7b.7)"
+  }
+}
