@@ -125,25 +125,71 @@ function assert(label, ok, detail) {
   if (!ok) allPass = false;
 }
 
+const ROBERTO_REAL_ANGLES = {
+  AC: { slug: 'gemini' },
+  MC: { slug: 'pisces' },
+  IC: { slug: 'virgo' },
+  DC: { slug: 'sagittarius' }
+};
+const ROBERTO_NATAL_ANGLES = {
+  sun: 'gemini',
+  moon: 'aries',
+  asc: 'cancer',
+  angles: {
+    AC: { slug: 'cancer' },
+    MC: { slug: 'pisces' },
+    IC: { slug: 'virgo' },
+    DC: { slug: 'capricorn' }
+  }
+};
+
 const cases = [
   { id: 1, label: 'Roberto → Lisboa mock (amor)', goal: 'amor' },
   { id: 2, label: 'goal trabajo', goal: 'trabajo' },
-  { id: 3, label: 'goal descanso', goal: 'descanso' }
+  { id: 3, label: 'goal descanso', goal: 'descanso' },
+  {
+    id: 6,
+    label: 'Roberto → Lisboa real (delta + presence)',
+    goal: 'amor',
+    natalChart: ROBERTO_NATAL_ANGLES,
+    relocatedAngles: ROBERTO_REAL_ANGLES,
+    expectFragmentIds: [
+      'RELOC_ASC_TO_AIR',
+      'RELOC_DC_TO_FIRE',
+      'RELOC_IC_PRESENT_EARTH',
+      'RELOC_MC_PRESENT_WATER'
+    ]
+  }
 ];
 
 const composedResults = [];
 
 cases.forEach(function (c) {
-  const profile = build(baseInput(c.goal));
+  var input = c.natalChart
+    ? {
+        natalChart: c.natalChart,
+        targetLocation: LISBOA,
+        relocatedAngles: c.relocatedAngles,
+        goalContext: GS.buildContext({ mainGoal: c.goal })
+      }
+    : baseInput(c.goal);
+  const profile = build(input);
   const goalContext = GS.buildContext({ mainGoal: c.goal });
   const result = compose({ relocationProfile: profile, goalContext: goalContext });
   const validationError = validateComposed(result);
   const rangeOk = result.ok && inCharRange(result);
   const warnOk = result.ok && noCriticalWarnings(result);
   const rolesOk = result.ok && roleCoverageOk(result, (profile.sourceIds && profile.sourceIds.fragmentIds || []).length);
-  const casePass = !validationError && rangeOk && warnOk && rolesOk;
+  var fragmentsOk = true;
+  if (c.expectFragmentIds) {
+    fragmentsOk = c.expectFragmentIds.every(function (id) {
+      return profile.sourceIds.fragmentIds.indexOf(id) !== -1;
+    }) && profile.sourceIds.fragmentIds.length === 4;
+  }
+  const casePass = !validationError && rangeOk && warnOk && rolesOk && fragmentsOk;
 
-  composedResults.push(result);
+  if (c.id === 6) composedResults.unshift(result);
+  else composedResults.push(result);
 
   assert(
     'CASE ' + c.id + ': ' + c.label,

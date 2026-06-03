@@ -174,9 +174,15 @@
     return false;
   }
 
+  function allRelocatedRoles(relocatedAngles) {
+    return ['AC', 'MC', 'IC', 'DC'].filter(function (angle) {
+      return relocatedAngles[angle] && relocatedAngles[angle].slug;
+    });
+  }
+
   function buildRelocDelta(natalAngles, relocatedAngles) {
     var delta = {};
-    var roles = [];
+    var deltaRoles = [];
     var pairs = [];
     ['AC', 'MC', 'IC', 'DC'].forEach(function (angle) {
       var from = natalAngles[angle];
@@ -185,7 +191,7 @@
       var fromSlug = from ? from.slug : null;
       var toSlug = to.slug;
       if (!fromSlug || fromSlug !== toSlug) {
-        roles.push(angle);
+        deltaRoles.push(angle);
         delta[angle] = {
           from: fromSlug,
           to: toSlug,
@@ -196,8 +202,15 @@
         }
       }
     });
-    if (!roles.length) roles.push('MC');
-    return { delta: delta, roles: roles, pairs: pairs };
+    var allRoles = allRelocatedRoles(relocatedAngles);
+    if (!allRoles.length) allRoles = ['MC'];
+    return {
+      delta: delta,
+      deltaRoles: deltaRoles,
+      allRoles: allRoles,
+      roles: allRoles,
+      pairs: pairs
+    };
   }
 
   function tagsFromRelocated(relocatedAngles, roles) {
@@ -272,6 +285,7 @@
 
   function resolveRelocFragmentIds(relocatedAngles, relocDelta, input) {
     var ids = [];
+    var fragmentMeta = [];
     if (input && Array.isArray(input.fragmentRefs)) {
       input.fragmentRefs.forEach(function (id) {
         if (id && ids.indexOf(id) === -1) ids.push(id);
@@ -279,21 +293,71 @@
     }
 
     var RelocLite = getRelocLite();
-    if (!RelocLite || typeof RelocLite.findFragment !== 'function') {
-      return ids.sort();
+    if (!RelocLite) {
+      return { fragmentIds: ids.sort(), fragmentMeta: fragmentMeta };
     }
 
-    Object.keys(relocDelta || {}).forEach(function (angleKey) {
+    var deltaKeys = {};
+    Object.keys(relocDelta || {}).forEach(function (key) {
+      deltaKeys[key] = true;
+    });
+
+    ['AC', 'MC', 'IC', 'DC'].forEach(function (angleKey) {
       var toRef = relocatedAngles[angleKey];
       if (!toRef || !toRef.slug) return;
       var element = ELEMENT_BY_SLUG[toRef.slug];
       if (!element) return;
       var role = ANGLE_TO_ROLE[angleKey] || angleKey;
-      var frag = RelocLite.findFragment({ angle: role, element: element });
-      if (frag && frag.id && ids.indexOf(frag.id) === -1) ids.push(frag.id);
+      var resolved = null;
+
+      if (deltaKeys[angleKey] && typeof RelocLite.findFragment === 'function') {
+        var deltaFrag = RelocLite.findFragment({ angle: role, element: element });
+        if (deltaFrag && deltaFrag.id) {
+          resolved = { fragment: deltaFrag, fragmentType: 'delta', role: role, angleKey: angleKey };
+        }
+      }
+
+      if (!resolved && typeof RelocLite.findPresenceFragment === 'function') {
+        var presenceFrag = RelocLite.findPresenceFragment({ angle: role, element: element });
+        if (presenceFrag && presenceFrag.id) {
+          resolved = { fragment: presenceFrag, fragmentType: 'presence', role: role, angleKey: angleKey };
+        }
+      }
+
+      if (!resolved && typeof RelocLite.resolveFragmentForRole === 'function') {
+        var fallback = RelocLite.resolveFragmentForRole({
+          angle: role,
+          element: element,
+          usePresence: !deltaKeys[angleKey]
+        });
+        if (fallback && fallback.fragment && fallback.fragment.id) {
+          resolved = {
+            fragment: fallback.fragment,
+            fragmentType: fallback.fragmentType,
+            role: role,
+            angleKey: angleKey
+          };
+        }
+      }
+
+      if (resolved && resolved.fragment.id && ids.indexOf(resolved.fragment.id) === -1) {
+        ids.push(resolved.fragment.id);
+        fragmentMeta.push({
+          id: resolved.fragment.id,
+          role: resolved.role,
+          angleKey: resolved.angleKey,
+          fragmentType: resolved.fragmentType,
+          element: element
+        });
+      }
     });
 
-    return ids.sort();
+    fragmentMeta.sort(function (a, b) {
+      var order = ['AC', 'MC', 'IC', 'DC'];
+      return order.indexOf(a.angleKey) - order.indexOf(b.angleKey);
+    });
+
+    return { fragmentIds: ids.sort(), fragmentMeta: fragmentMeta };
   }
 
   function buildRelocationProfile(input) {
@@ -338,7 +402,9 @@
       var tensionMode = relocMeta.pairs.length > 0;
       var chartRefs = chartRefsFromRelocated(relocatedAngles, roles);
       var houses = Array.isArray(input.relocatedHouses) ? input.relocatedHouses : [];
-      var fragmentIds = resolveRelocFragmentIds(relocatedAngles, relocMeta.delta, input);
+      var fragmentResolution = resolveRelocFragmentIds(relocatedAngles, relocMeta.delta, input);
+      var fragmentIds = fragmentResolution.fragmentIds;
+      var fragmentMeta = fragmentResolution.fragmentMeta;
 
       var bridgeProfile = buildBridgeProfile(
         tags,
@@ -368,6 +434,7 @@
         },
         sourceIds: {
           fragmentIds: fragmentIds,
+          fragmentMeta: fragmentMeta,
           chartRefs: chartRefs,
           documentRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'RELOCATION_SCAFFOLD_ARCHITECTURE.md']
         },

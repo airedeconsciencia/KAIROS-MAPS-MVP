@@ -54,8 +54,8 @@ function assert(label, ok, detail) {
 
 const list = RelocLite.listFragments();
 assert(
-  'listFragments() = 16 (matriz 4×4)',
-  Array.isArray(list) && list.length === 16,
+  'listFragments() = 32 (delta 16 + presence 16)',
+  Array.isArray(list) && list.length === 32,
   'count=' + list.length
 );
 
@@ -87,17 +87,35 @@ assert(
   'headline=' + (dcEarth && dcEarth.headline.slice(0, 48)) + '…'
 );
 
+const mcPresentWater = RelocLite.getFragment('RELOC_MC_PRESENT_WATER');
+assert(
+  "getFragment('RELOC_MC_PRESENT_WATER') presence ok",
+  mcPresentWater && mcPresentWater.role === 'MC' && mcPresentWater.condition.element === 'water',
+  'headline=' + (mcPresentWater && mcPresentWater.headline.slice(0, 48)) + '…'
+);
+
+const icPresentEarth = RelocLite.getFragment('RELOC_IC_PRESENT_EARTH');
+assert(
+  "getFragment('RELOC_IC_PRESENT_EARTH') presence ok",
+  icPresentEarth && icPresentEarth.role === 'IC' && icPresentEarth.condition.element === 'earth',
+  'headline=' + (icPresentEarth && icPresentEarth.headline.slice(0, 48)) + '…'
+);
+
 const coverage = RelocLite.inspectCoverage();
 assert(
-  'inspectCoverage() 16/16 matrix 100%',
+  'inspectCoverage() delta 16/16 + presence 16/16',
   coverage.ok === true &&
-    coverage.totalFragments === 16 &&
-    coverage.matrixExpected === 16 &&
-    coverage.matrixPresent === 16 &&
-    coverage.matrixPercent === 100 &&
-    coverage.missingMatrix.length === 0,
-  'matrix=' + coverage.matrixPresent + '/' + coverage.matrixExpected +
-    ' · percent=' + coverage.matrixPercent + '%'
+    coverage.totalFragments === 32 &&
+    coverage.deltaExpected === 16 &&
+    coverage.deltaPresent === 16 &&
+    coverage.deltaPercent === 100 &&
+    coverage.presenceExpected === 16 &&
+    coverage.presencePresent === 16 &&
+    coverage.presencePercent === 100 &&
+    coverage.missingDelta.length === 0 &&
+    coverage.missingPresence.length === 0,
+  'delta=' + coverage.deltaPresent + '/' + coverage.deltaExpected +
+    ' · presence=' + coverage.presencePresent + '/' + coverage.presenceExpected
 );
 
 const forbidden = ['destino', 'perfecto', 'alma gemela', 'garantizado', 'debes mudarte'];
@@ -132,7 +150,7 @@ assert(
 );
 
 assert(
-  'sourceIds.fragmentIds incluye reloc-lite (4 ángulos Lisboa)',
+  'sourceIds.fragmentIds incluye reloc-lite (4 ángulos Lisboa mock, todos delta)',
   Array.isArray(profile.sourceIds.fragmentIds) &&
     profile.sourceIds.fragmentIds.indexOf('RELOC_ASC_TO_AIR') !== -1 &&
     profile.sourceIds.fragmentIds.indexOf('RELOC_MC_TO_EARTH') !== -1 &&
@@ -140,6 +158,45 @@ assert(
     profile.sourceIds.fragmentIds.indexOf('RELOC_DC_TO_FIRE') !== -1 &&
     profile.sourceIds.fragmentIds.length === 4,
   'fragmentIds=' + JSON.stringify(profile.sourceIds.fragmentIds)
+);
+
+var robertoRealInput = {
+  natalChart: {
+    sun: 'gemini',
+    moon: 'aries',
+    asc: 'cancer',
+    angles: {
+      AC: { slug: 'cancer' },
+      MC: { slug: 'pisces' },
+      IC: { slug: 'virgo' },
+      DC: { slug: 'capricorn' }
+    }
+  },
+  targetLocation: validInput.targetLocation,
+  relocatedAngles: {
+    AC: { slug: 'gemini' },
+    MC: { slug: 'pisces' },
+    IC: { slug: 'virgo' },
+    DC: { slug: 'sagittarius' }
+  },
+  goalContext: validInput.goalContext
+};
+var robertoReal = RelocProfile.buildRelocationProfile(robertoRealInput);
+var realMeta = robertoReal.sourceIds.fragmentMeta || [];
+var metaTypes = {};
+realMeta.forEach(function (m) { metaTypes[m.angleKey] = m.fragmentType; });
+assert(
+  'Roberto → Lisboa real: 4 fragmentIds (AC/DC delta, MC/IC presence)',
+  robertoReal.ok === true &&
+    robertoReal.sourceIds.fragmentIds.length === 4 &&
+    robertoReal.sourceIds.fragmentIds.indexOf('RELOC_ASC_TO_AIR') !== -1 &&
+    robertoReal.sourceIds.fragmentIds.indexOf('RELOC_DC_TO_FIRE') !== -1 &&
+    robertoReal.sourceIds.fragmentIds.indexOf('RELOC_MC_PRESENT_WATER') !== -1 &&
+    robertoReal.sourceIds.fragmentIds.indexOf('RELOC_IC_PRESENT_EARTH') !== -1 &&
+    metaTypes.AC === 'delta' && metaTypes.DC === 'delta' &&
+    metaTypes.MC === 'presence' && metaTypes.IC === 'presence',
+  'fragmentIds=' + JSON.stringify(robertoReal.sourceIds.fragmentIds) +
+    ' · metaTypes=' + JSON.stringify(metaTypes)
 );
 
 try {

@@ -325,6 +325,42 @@ Lab: `src/dev/relocation-preview.html` — toggle **Mock** / **Real chart-servic
 
 ---
 
+## 11. 3.7b.7 — Delta vs Presence fragments
+
+**Problema (post 3.7b.6):** `resolveRelocFragmentIds` solo emitía fragmentos cuando el signo relocado **difería** del natal. En Roberto → Lisboa real, MC sigue en Piscis e IC en Virgo → solo ASC/DC generaban delta → `roleCoveragePercent` &lt; 100 y lectura `too_short`.
+
+**Solución:** dos familias de fragmentos en `reloc-lite.js` (`SCHEMA_VERSION` `0.3.0-delta-presence`):
+
+| Tipo | ID ejemplo | Cuándo |
+|------|------------|--------|
+| **Delta** | `RELOC_ASC_TO_AIR` | El ángulo **cambia de signo** respecto a natal → elemento del signo relocado |
+| **Presence** | `RELOC_MC_PRESENT_WATER` | El ángulo relocado **existe** pero el signo **no cambia** → elemento del signo presente en el lugar |
+
+**Regla de resolución** (`relocation-profile-service.js`):
+
+1. Si hay delta de signo → fragmento **delta** (prioridad).
+2. Si no hay delta → fragmento **presence** del mismo rol y elemento.
+3. Nunca inventar IDs; `sourceIds.fragmentMeta` traza `{ id, role, angleKey, fragmentType, element }`.
+
+**Por qué elemento y no signo:** 16 fragmentos delta + 16 presence (4 roles × 4 elementos) en lugar de 48+ por signo; cobertura amplia y copy estable.
+
+**Caso real Roberto → Lisboa (motor):**
+
+| Ángulo | Natal (Maó) | Reloc (Lisboa) | Fragmento | Tipo |
+|--------|-------------|----------------|-----------|------|
+| AC | Cáncer | Géminis | `RELOC_ASC_TO_AIR` | delta |
+| MC | Piscis | Piscis | `RELOC_MC_PRESENT_WATER` | presence |
+| IC | Virgo | Virgo | `RELOC_IC_PRESENT_EARTH` | presence |
+| DC | Capricornio | Sagitario | `RELOC_DC_TO_FIRE` | delta |
+
+**Meta compositor:** `includedRoles: ["ASC","MC","IC","DC"]`, `omittedRoles: []`, `roleCoveragePercent: 100`, `charCount` ~500–850 (p. ej. 796 en smoke).
+
+**Lab DEV:** `relocation-preview.html` muestra columna **Tipo** (`delta` / `presence`) en tabla de fragmentos.
+
+**Smokes:** `dev-reloc-lite-smoke.sh`, `dev-reloc-composition-smoke.sh`, `dev-reloc-chart-adapter-smoke.sh` — caso fixture + perfil con `natalChart.angles`.
+
+---
+
 ## 8. Referencias cruzadas
 
 | Documento | Uso en auditoría |

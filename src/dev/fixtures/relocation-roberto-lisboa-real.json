@@ -3,7 +3,7 @@
   "source": "dev/relocation-preview.html?dataSource=real&capture=1",
   "engine": "KairosChartService / generateFullChart / swe.houses Placidus",
   "case": "roberto-lisboa-real",
-  "phase": "3.7b.6",
+  "phase": "3.7b.7",
   "birthData": {
     "date": "1973-05-29",
     "time": "07:30",
@@ -66,11 +66,60 @@
   },
   "fragmentIds": [
     "RELOC_ASC_TO_AIR",
-    "RELOC_DC_TO_FIRE"
+    "RELOC_DC_TO_FIRE",
+    "RELOC_IC_PRESENT_EARTH",
+    "RELOC_MC_PRESENT_WATER"
   ],
+  "fragmentMeta": [
+    {
+      "id": "RELOC_ASC_TO_AIR",
+      "role": "ASC",
+      "angleKey": "AC",
+      "fragmentType": "delta",
+      "element": "air"
+    },
+    {
+      "id": "RELOC_MC_PRESENT_WATER",
+      "role": "MC",
+      "angleKey": "MC",
+      "fragmentType": "presence",
+      "element": "water"
+    },
+    {
+      "id": "RELOC_IC_PRESENT_EARTH",
+      "role": "IC",
+      "angleKey": "IC",
+      "fragmentType": "presence",
+      "element": "earth"
+    },
+    {
+      "id": "RELOC_DC_TO_FIRE",
+      "role": "DC",
+      "angleKey": "DC",
+      "fragmentType": "delta",
+      "element": "fire"
+    }
+  ],
+  "composition": {
+    "ok": true,
+    "title": "Si vivieras en Lisboa · explorando amor y relaciones",
+    "fragmentIds": [
+      "RELOC_ASC_TO_AIR",
+      "RELOC_DC_TO_FIRE",
+      "RELOC_IC_PRESENT_EARTH",
+      "RELOC_MC_PRESENT_WATER"
+    ],
+    "meta": {
+      "charCount": 796,
+      "includedRoles": ["ASC", "MC", "IC", "DC"],
+      "omittedRoles": [],
+      "roleCoveragePercent": 100,
+      "styleWarnings": []
+    }
+  },
   "notes": {
     "mockLisboaWas": "AC libra, MC capricorn, IC cancer, DC aries — editorial mock only",
     "timezonePolicy": "birth_timezone",
-    "fragmentCount": "Solo ángulos con delta signo vs natal Maó (MC/IC sin cambio → sin fragmento; ver 3.7b.7)"
+    "fragmentPolicy": "3.7b.7 — delta si cambia signo vs natal Maó; presence si ángulo relocado sin cambio de signo (MC Piscis, IC Virgo)"
   }
 }

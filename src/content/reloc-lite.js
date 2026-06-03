@@ -10,7 +10,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '0.2.0-matrix';
+  var SCHEMA_VERSION = '0.3.0-delta-presence';
 
   var ELEMENTS = ['fire', 'earth', 'air', 'water'];
   var ROLES = ['ASC', 'MC', 'IC', 'DC'];
@@ -214,6 +214,214 @@
       bridgeTags: ['belonging', 'harmony', 'protection'],
       cautionTags: ['movement', 'stimulation'],
       sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_ASC_PRESENT_FIRE: {
+      id: 'RELOC_ASC_PRESENT_FIRE',
+      role: 'ASC',
+      fragmentType: 'presence',
+      condition: { angle: 'ASC', element: 'fire', mode: 'presence' },
+      headline: 'Aquí tu forma de entrar al mundo en este lugar se expresa desde el fuego.',
+      body: 'El Ascendente relocado en fuego sigue activando iniciativa y visibilidad aunque no cambie de signo respecto a tu carta natal. Puede notarse más impulso por mostrarte con franqueza en el entorno.',
+      bridge: 'Líneas de iniciativa o movimiento en el mapa pueden resonar con esta entrada al lugar.',
+      semanticTags: ['initiative', 'movement', 'visibility', 'stimulation'],
+      bridgeTags: ['initiative', 'movement', 'visibility'],
+      cautionTags: ['reserve', 'regulation'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_ASC_PRESENT_AIR: {
+      id: 'RELOC_ASC_PRESENT_AIR',
+      role: 'ASC',
+      fragmentType: 'presence',
+      condition: { angle: 'ASC', element: 'air', mode: 'presence' },
+      headline: 'Aquí tu forma de entrar al mundo en este lugar se expresa desde el aire.',
+      body: 'El Ascendente relocado en aire sigue favoreciendo circulación social y mental aunque el signo no varíe respecto al natal. Puede activarse más necesidad de dialogar para ubicarte.',
+      bridge: 'Temas de comunicación o movimiento en el mapa pueden amplificar esta apertura relacional.',
+      semanticTags: ['communication', 'harmony', 'movement', 'stimulation'],
+      bridgeTags: ['communication', 'harmony', 'movement'],
+      cautionTags: ['control', 'reserve'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_ASC_PRESENT_WATER: {
+      id: 'RELOC_ASC_PRESENT_WATER',
+      role: 'ASC',
+      fragmentType: 'presence',
+      condition: { angle: 'ASC', element: 'water', mode: 'presence' },
+      headline: 'Aquí tu forma de entrar al mundo en este lugar se expresa desde el agua.',
+      body: 'El Ascendente relocado en agua mantiene una presencia receptiva y emocionalmente permeable en este territorio. Puede activarse más lectura del clima afectivo del entorno.',
+      bridge: 'Líneas de intimidad o seguridad emocional en el mapa pueden dialogar con esta entrada.',
+      semanticTags: ['emotional_safety', 'intimacy', 'permeability', 'belonging'],
+      bridgeTags: ['emotional_safety', 'intimacy', 'belonging'],
+      cautionTags: ['visibility', 'initiative'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_ASC_PRESENT_EARTH: {
+      id: 'RELOC_ASC_PRESENT_EARTH',
+      role: 'ASC',
+      fragmentType: 'presence',
+      condition: { angle: 'ASC', element: 'earth', mode: 'presence' },
+      headline: 'Aquí tu forma de entrar al mundo en este lugar se expresa desde la tierra.',
+      body: 'El Ascendente relocado en tierra sigue pidiendo ritmo pausado y presencia concreta aunque el signo se mantenga. Puede favorecer anclaje y continuidad en la forma de habitar el lugar.',
+      bridge: 'Temas de pertenencia o regulación en el mapa pueden alinearse con esta entrada estable.',
+      semanticTags: ['belonging', 'regulation', 'protection', 'precision'],
+      bridgeTags: ['belonging', 'regulation', 'protection'],
+      cautionTags: ['movement', 'stimulation'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_MC_PRESENT_FIRE: {
+      id: 'RELOC_MC_PRESENT_FIRE',
+      role: 'MC',
+      fragmentType: 'presence',
+      condition: { angle: 'MC', element: 'fire', mode: 'presence' },
+      headline: 'Aquí la dirección vital en este lugar se articula desde el fuego.',
+      body: 'El Medio Cielo relocado en fuego sigue orientando metas hacia visibilidad e impulso aunque no haya cambio de signo frente al natal. Puede activarse más iniciativa en lo público.',
+      bridge: 'Líneas de MC o iniciativa en el mapa pueden intensificar esta vocación.',
+      semanticTags: ['visibility', 'initiative', 'recognition', 'movement'],
+      bridgeTags: ['visibility', 'initiative', 'recognition'],
+      cautionTags: ['regulation', 'reserve'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_MC_PRESENT_AIR: {
+      id: 'RELOC_MC_PRESENT_AIR',
+      role: 'MC',
+      fragmentType: 'presence',
+      condition: { angle: 'MC', element: 'air', mode: 'presence' },
+      headline: 'Aquí la dirección vital en este lugar se articula desde el aire.',
+      body: 'El Medio Cielo relocado en aire mantiene metas ligadas al intercambio y la visibilidad intelectual en este territorio. Puede activarse más necesidad de ser leído o escuchado.',
+      bridge: 'Líneas de comunicación o MC en el mapa pueden resonar con esta dirección móvil.',
+      semanticTags: ['communication', 'visibility', 'recognition', 'stimulation'],
+      bridgeTags: ['communication', 'visibility', 'recognition'],
+      cautionTags: ['regulation', 'protection'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_MC_PRESENT_WATER: {
+      id: 'RELOC_MC_PRESENT_WATER',
+      role: 'MC',
+      fragmentType: 'presence',
+      condition: { angle: 'MC', element: 'water', mode: 'presence' },
+      headline: 'Aquí la dirección vital en este lugar se articula desde el agua.',
+      body: 'El Medio Cielo relocado en agua sigue acercando metas a lo significativo y emocionalmente útil, aunque el signo no cambie respecto a tu origen. Puede activarse más empatía profesional o imagen receptiva.',
+      bridge: 'Temas de intimidad o seguridad emocional en el mapa pueden dialogar con esta vocación permeable.',
+      semanticTags: ['emotional_safety', 'intimacy', 'recognition', 'permeability'],
+      bridgeTags: ['emotional_safety', 'intimacy', 'recognition'],
+      cautionTags: ['visibility', 'initiative'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_MC_PRESENT_EARTH: {
+      id: 'RELOC_MC_PRESENT_EARTH',
+      role: 'MC',
+      fragmentType: 'presence',
+      condition: { angle: 'MC', element: 'earth', mode: 'presence' },
+      headline: 'Aquí la dirección vital en este lugar se articula desde la tierra.',
+      body: 'El Medio Cielo relocado en tierra mantiene metas orientadas a resultados concretos y continuidad en este lugar. Puede favorecer ambición paciente y reputación sólida.',
+      bridge: 'Temas de reconocimiento o regulación en el mapa pueden alinearse con esta búsqueda de solidez.',
+      semanticTags: ['visibility', 'regulation', 'recognition', 'precision'],
+      bridgeTags: ['visibility', 'regulation', 'recognition'],
+      cautionTags: ['expansion', 'permeability'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_IC_PRESENT_FIRE: {
+      id: 'RELOC_IC_PRESENT_FIRE',
+      role: 'IC',
+      fragmentType: 'presence',
+      condition: { angle: 'IC', element: 'fire', mode: 'presence' },
+      headline: 'Aquí la vida privada en este lugar se sostiene desde el fuego.',
+      body: 'El Fondo del Cielo relocado en fuego sigue calentando la esfera íntima aunque el signo permanezca igual que en el natal. Puede haber más movimiento o alerta en lo doméstico.',
+      bridge: 'Temas de iniciativa o movimiento en el mapa pueden cruzarse con esta capa personal.',
+      semanticTags: ['initiative', 'movement', 'protection', 'stimulation'],
+      bridgeTags: ['initiative', 'movement', 'protection'],
+      cautionTags: ['emotional_safety', 'regulation'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_IC_PRESENT_AIR: {
+      id: 'RELOC_IC_PRESENT_AIR',
+      role: 'IC',
+      fragmentType: 'presence',
+      condition: { angle: 'IC', element: 'air', mode: 'presence' },
+      headline: 'Aquí la vida privada en este lugar se sostiene desde el aire.',
+      body: 'El Fondo del Cielo relocado en aire mantiene la intimidad ligada al intercambio y la circulación en casa. Puede favorecer un refugio menos cerrado en este territorio.',
+      bridge: 'Líneas IC o de comunicación en el mapa pueden amplificar esta vida privada permeable.',
+      semanticTags: ['communication', 'belonging', 'movement', 'stimulation'],
+      bridgeTags: ['communication', 'belonging', 'movement'],
+      cautionTags: ['protection', 'reserve'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_IC_PRESENT_WATER: {
+      id: 'RELOC_IC_PRESENT_WATER',
+      role: 'IC',
+      fragmentType: 'presence',
+      condition: { angle: 'IC', element: 'water', mode: 'presence' },
+      headline: 'Aquí la vida privada en este lugar se sostiene desde el agua.',
+      body: 'El Fondo del Cielo relocado en agua sigue intensificando hogar, memoria y refugio emocional aunque no cambie el signo natal. Puede activarse más sensibilidad al clima doméstico.',
+      bridge: 'Líneas IC o temas de raíz en el mapa pueden resonar con esta capa íntima.',
+      semanticTags: ['emotional_safety', 'belonging', 'protection', 'intimacy'],
+      bridgeTags: ['emotional_safety', 'belonging', 'protection'],
+      cautionTags: ['visibility', 'initiative'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_IC_PRESENT_EARTH: {
+      id: 'RELOC_IC_PRESENT_EARTH',
+      role: 'IC',
+      fragmentType: 'presence',
+      condition: { angle: 'IC', element: 'earth', mode: 'presence' },
+      headline: 'Aquí la vida privada en este lugar se sostiene desde la tierra.',
+      body: 'El Fondo del Cielo relocado en tierra mantiene la base íntima orientada a estabilidad, rutina y arraigo concreto en este lugar. Puede activarse más necesidad de construir hogar paso a paso.',
+      bridge: 'Temas de pertenencia o regulación en el mapa pueden reforzar esta estabilidad interna.',
+      semanticTags: ['belonging', 'regulation', 'protection', 'precision'],
+      bridgeTags: ['belonging', 'regulation', 'protection'],
+      cautionTags: ['movement', 'stimulation'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_DC_PRESENT_FIRE: {
+      id: 'RELOC_DC_PRESENT_FIRE',
+      role: 'DC',
+      fragmentType: 'presence',
+      condition: { angle: 'DC', element: 'fire', mode: 'presence' },
+      headline: 'Aquí los vínculos en este lugar se mueven desde el fuego.',
+      body: 'El Descendente relocado en fuego sigue acelerando el encuentro con franqueza e intensidad aunque el signo no varíe. Puede activarse más impulso por definir vínculos con claridad.',
+      bridge: 'Líneas DC o de iniciativa en el mapa pueden intensificar esta forma relacional.',
+      semanticTags: ['initiative', 'intimacy', 'movement', 'intensity'],
+      bridgeTags: ['initiative', 'intimacy', 'movement'],
+      cautionTags: ['harmony', 'regulation'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_DC_PRESENT_AIR: {
+      id: 'RELOC_DC_PRESENT_AIR',
+      role: 'DC',
+      fragmentType: 'presence',
+      condition: { angle: 'DC', element: 'air', mode: 'presence' },
+      headline: 'Aquí los vínculos en este lugar se mueven desde el aire.',
+      body: 'El Descendente relocado en aire mantiene relaciones abiertas al diálogo y la movilidad social en este territorio. Puede favorecer vínculos estimulantes sin perder profundidad.',
+      bridge: 'Líneas DC o de comunicación en el mapa pueden amplificar esta forma de encontrar al otro.',
+      semanticTags: ['communication', 'harmony', 'intimacy', 'movement'],
+      bridgeTags: ['communication', 'harmony', 'intimacy'],
+      cautionTags: ['control', 'intensity'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_DC_PRESENT_WATER: {
+      id: 'RELOC_DC_PRESENT_WATER',
+      role: 'DC',
+      fragmentType: 'presence',
+      condition: { angle: 'DC', element: 'water', mode: 'presence' },
+      headline: 'Aquí los vínculos en este lugar se mueven desde el agua.',
+      body: 'El Descendente relocado en agua sigue abriendo relaciones desde la empatía y la permeabilidad aunque el signo se mantenga. Puede activarse más necesidad de cuidar límites.',
+      bridge: 'Temas de intimidad o seguridad emocional en el mapa pueden resonar con esta capa relacional.',
+      semanticTags: ['intimacy', 'emotional_safety', 'harmony', 'permeability'],
+      bridgeTags: ['intimacy', 'emotional_safety', 'harmony'],
+      cautionTags: ['control', 'visibility'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
+    },
+    RELOC_DC_PRESENT_EARTH: {
+      id: 'RELOC_DC_PRESENT_EARTH',
+      role: 'DC',
+      fragmentType: 'presence',
+      condition: { angle: 'DC', element: 'earth', mode: 'presence' },
+      headline: 'Aquí los vínculos en este lugar se mueven desde la tierra.',
+      body: 'El Descendente relocado en tierra mantiene vínculos orientados a lealtad, acuerdos claros y continuidad en este lugar. Puede activarse más necesidad de demostrar con hechos.',
+      bridge: 'Líneas DC o de pertenencia en el mapa pueden alinearse con esta solidez relacional.',
+      semanticTags: ['belonging', 'harmony', 'protection', 'regulation'],
+      bridgeTags: ['belonging', 'harmony', 'protection'],
+      cautionTags: ['movement', 'stimulation'],
+      sourceRefs: ['RELOCATION_EDITORIAL_BRIEF.md', 'voice_tone.txt']
     }
   };
 
@@ -244,12 +452,48 @@
     }
   };
 
+  var PRESENCE_INDEX = {
+    ASC: {
+      fire: 'RELOC_ASC_PRESENT_FIRE',
+      air: 'RELOC_ASC_PRESENT_AIR',
+      water: 'RELOC_ASC_PRESENT_WATER',
+      earth: 'RELOC_ASC_PRESENT_EARTH'
+    },
+    MC: {
+      fire: 'RELOC_MC_PRESENT_FIRE',
+      air: 'RELOC_MC_PRESENT_AIR',
+      water: 'RELOC_MC_PRESENT_WATER',
+      earth: 'RELOC_MC_PRESENT_EARTH'
+    },
+    IC: {
+      fire: 'RELOC_IC_PRESENT_FIRE',
+      air: 'RELOC_IC_PRESENT_AIR',
+      water: 'RELOC_IC_PRESENT_WATER',
+      earth: 'RELOC_IC_PRESENT_EARTH'
+    },
+    DC: {
+      fire: 'RELOC_DC_PRESENT_FIRE',
+      air: 'RELOC_DC_PRESENT_AIR',
+      water: 'RELOC_DC_PRESENT_WATER',
+      earth: 'RELOC_DC_PRESENT_EARTH'
+    }
+  };
+
   var MATRIX_IDS = [];
+  var PRESENCE_MATRIX_IDS = [];
   ROLES.forEach(function (role) {
     ELEMENTS.forEach(function (element) {
       MATRIX_IDS.push('RELOC_' + role + '_TO_' + element.toUpperCase());
+      PRESENCE_MATRIX_IDS.push('RELOC_' + role + '_PRESENT_' + element.toUpperCase());
     });
   });
+
+  function fragmentTypeOf(frag) {
+    if (!frag) return null;
+    if (frag.fragmentType) return frag.fragmentType;
+    if (frag.id && frag.id.indexOf('_PRESENT_') !== -1) return 'presence';
+    return 'delta';
+  }
 
   function normalizeAngle(raw) {
     if (raw == null) return null;
@@ -270,7 +514,12 @@
 
   function findFragment(query) {
     if (!query || typeof query !== 'object') return null;
-    if (query.id) return getFragment(query.id);
+    if (query.id) {
+      var byId = getFragment(query.id);
+      if (byId && fragmentTypeOf(byId) === 'delta') return byId;
+      if (query.id.indexOf('_PRESENT_') === -1) return byId;
+      return null;
+    }
 
     var angle = normalizeAngle(query.angle || query.role);
     var element = normalizeElement(query.element);
@@ -282,12 +531,50 @@
     return id ? getFragment(id) : null;
   }
 
+  function findPresenceFragment(query) {
+    if (!query || typeof query !== 'object') return null;
+    if (query.id) {
+      var byId = getFragment(query.id);
+      if (byId && fragmentTypeOf(byId) === 'presence') return byId;
+      return null;
+    }
+
+    var angle = normalizeAngle(query.angle || query.role);
+    var element = normalizeElement(query.element);
+    if (!angle || !element) return null;
+
+    var id = PRESENCE_INDEX[angle] && PRESENCE_INDEX[angle][element];
+    return id ? getFragment(id) : null;
+  }
+
+  function resolveFragmentForRole(opts) {
+    if (!opts || typeof opts !== 'object') return null;
+    var angle = normalizeAngle(opts.angle || opts.role);
+    var element = normalizeElement(opts.element);
+    var usePresence = opts.usePresence === true;
+
+    if (!usePresence) {
+      var deltaFrag = findFragment({ angle: angle, element: element });
+      if (deltaFrag) {
+        return { fragment: deltaFrag, fragmentType: 'delta', role: deltaFrag.role };
+      }
+    }
+
+    var presenceFrag = findPresenceFragment({ angle: angle, element: element });
+    if (presenceFrag) {
+      return { fragment: presenceFrag, fragmentType: 'presence', role: presenceFrag.role };
+    }
+
+    return null;
+  }
+
   function listFragments() {
     return Object.keys(FRAGMENTS).map(function (id) {
       var f = FRAGMENTS[id];
       return {
         id: f.id,
         role: f.role,
+        fragmentType: fragmentTypeOf(f),
         element: f.condition && f.condition.element,
         headline: f.headline
       };
@@ -297,29 +584,38 @@
   }
 
   function inspectCoverage() {
-    var missingMatrix = MATRIX_IDS.filter(function (id) {
+    var missingDelta = MATRIX_IDS.filter(function (id) {
+      return !FRAGMENTS[id];
+    });
+    var missingPresence = PRESENCE_MATRIX_IDS.filter(function (id) {
       return !FRAGMENTS[id];
     });
     var byRole = {};
     ROLES.forEach(function (role) {
-      var entries = INDEX[role] || {};
       byRole[role] = {
-        elements: Object.keys(entries).sort(),
-        fragmentIds: Object.keys(entries).map(function (el) { return entries[el]; }).sort()
+        delta: Object.keys(INDEX[role] || {}).map(function (el) { return INDEX[role][el]; }).sort(),
+        presence: Object.keys(PRESENCE_INDEX[role] || {}).map(function (el) {
+          return PRESENCE_INDEX[role][el];
+        }).sort()
       };
     });
 
-    var matrixPresent = MATRIX_IDS.length - missingMatrix.length;
-    var matrixPercent = Math.round((matrixPresent / MATRIX_IDS.length) * 100);
+    var deltaPresent = MATRIX_IDS.length - missingDelta.length;
+    var presencePresent = PRESENCE_MATRIX_IDS.length - missingPresence.length;
 
     return {
-      ok: missingMatrix.length === 0 && Object.keys(FRAGMENTS).length === 16,
+      ok: missingDelta.length === 0 && missingPresence.length === 0,
       totalFragments: Object.keys(FRAGMENTS).length,
-      matrixExpected: MATRIX_IDS.length,
-      matrixPresent: matrixPresent,
-      matrixPercent: matrixPercent,
-      missingMatrix: missingMatrix,
+      deltaExpected: MATRIX_IDS.length,
+      deltaPresent: deltaPresent,
+      deltaPercent: Math.round((deltaPresent / MATRIX_IDS.length) * 100),
+      presenceExpected: PRESENCE_MATRIX_IDS.length,
+      presencePresent: presencePresent,
+      presencePercent: Math.round((presencePresent / PRESENCE_MATRIX_IDS.length) * 100),
+      missingDelta: missingDelta,
+      missingPresence: missingPresence,
       matrixIds: MATRIX_IDS.slice(),
+      presenceMatrixIds: PRESENCE_MATRIX_IDS.slice(),
       byRole: byRole,
       meta: {
         schemaVersion: SCHEMA_VERSION,
@@ -335,9 +631,14 @@
     ROLES: ROLES,
     FRAGMENTS: FRAGMENTS,
     INDEX: INDEX,
+    PRESENCE_INDEX: PRESENCE_INDEX,
     MATRIX_IDS: MATRIX_IDS,
+    PRESENCE_MATRIX_IDS: PRESENCE_MATRIX_IDS,
     getFragment: getFragment,
     findFragment: findFragment,
+    findPresenceFragment: findPresenceFragment,
+    resolveFragmentForRole: resolveFragmentForRole,
+    fragmentTypeOf: fragmentTypeOf,
     listFragments: listFragments,
     inspectCoverage: inspectCoverage,
     normalizeAngle: normalizeAngle,

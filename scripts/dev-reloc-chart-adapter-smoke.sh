@@ -137,28 +137,55 @@ Adapter.buildRelocationInputFromChart({
       goalContext: GS.buildContext({ mainGoal: 'amor' })
     });
 
+    var natalWithAngles = fixture.natalChart || {};
+    if (!natalWithAngles.angles) {
+      natalWithAngles = Object.assign({}, natalWithAngles, {
+        angles: {
+          AC: { slug: 'cancer' },
+          MC: { slug: 'pisces' },
+          IC: { slug: 'virgo' },
+          DC: { slug: 'capricorn' }
+        }
+      });
+    }
+    profileInput.natalChart = natalWithAngles;
+
     var profile = ctx.window.KairosRelocationProfile.buildRelocationProfile(profileInput);
     var fids = profile.sourceIds.fragmentIds || [];
+    var fmeta = profile.sourceIds.fragmentMeta || [];
+    var typeByAngle = {};
+    fmeta.forEach(function (m) { typeByAngle[m.angleKey] = m.fragmentType; });
+
     assert(
-      '7. buildRelocationProfile() acepta fixture real',
-      profile.ok === true && profile.profileType === 'RELOCATION' && fids.length >= 2,
+      '7. buildRelocationProfile() Roberto real → 4 fragmentIds',
+      profile.ok === true && profile.profileType === 'RELOCATION' && fids.length === 4,
       'fragmentIds=' + JSON.stringify(fids)
     );
     assert(
-      '7b. fixture Roberto real: AC/DC delta (MC/IC sin fragmento pre-3.7b.7)',
-      fids.indexOf('RELOC_ASC_TO_AIR') !== -1 && fids.indexOf('RELOC_DC_TO_FIRE') !== -1,
-      'count=' + fids.length
+      '7b. AC/DC delta · MC/IC presence',
+      fids.indexOf('RELOC_ASC_TO_AIR') !== -1 &&
+        fids.indexOf('RELOC_DC_TO_FIRE') !== -1 &&
+        fids.indexOf('RELOC_MC_PRESENT_WATER') !== -1 &&
+        fids.indexOf('RELOC_IC_PRESENT_EARTH') !== -1 &&
+        typeByAngle.AC === 'delta' && typeByAngle.DC === 'delta' &&
+        typeByAngle.MC === 'presence' && typeByAngle.IC === 'presence',
+      'types=' + JSON.stringify(typeByAngle)
     );
 
     var composed = ctx.window.KairosRelocComposition.composeRelocationReading({
       relocationProfile: profile,
       goalContext: profileInput.goalContext
     });
+    var minC = ctx.window.KairosRelocComposition.MIN_CHARS;
+    var maxC = ctx.window.KairosRelocComposition.MAX_CHARS;
+    var cc = composed.meta && composed.meta.charCount;
     assert(
-      '8. composeRelocationReading() ok con fixture (puede ser corta pre-3.7b.7)',
-      composed.ok === true,
-      'charCount=' + (composed.meta && composed.meta.charCount) +
-        ' · includedRoles=' + JSON.stringify(composed.meta && composed.meta.includedRoles)
+      '8. composeRelocationReading() ok · charCount 500–850 · roleCoverage 100%',
+      composed.ok === true &&
+        cc >= minC && cc <= maxC &&
+        composed.meta.roleCoveragePercent === 100 &&
+        (composed.meta.omittedRoles || []).length === 0,
+      'charCount=' + cc + ' · includedRoles=' + JSON.stringify(composed.meta.includedRoles)
     );
   }
 

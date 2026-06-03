@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Kairos Maps — Relocation Preview Lab (3.7b.3 DEV)</title>
+  <title>Kairos Maps — Relocation Preview Lab (3.7b.6 DEV)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -57,6 +57,7 @@
     }
     button:hover { border-color: #a78bfa; color: #c4b5fd; }
     button.primary { background: rgba(167, 139, 250, 0.15); border-color: #a78bfa; color: #ddd6fe; }
+    button:disabled { opacity: 0.5; cursor: wait; }
     select {
       font: inherit;
       background: #1f2937;
@@ -110,15 +111,17 @@
     }
     .badge-pass { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
     .badge-fail { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+    .badge-warn { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
     .err { color: #f87171; }
     .muted { color: #6b7280; }
+    #capture-out { display: none; }
   </style>
 </head>
 <body>
-  <div class="dev-banner">DEV ONLY · Relocation Preview Lab · No producto · No mapa · No deploy</div>
+  <div class="dev-banner">DEV ONLY · Relocation Preview Lab · chart-service real · No producto · No mapa</div>
   <div class="page">
-    <h1>Relocation Preview Lab — Fase 3.7b.3</h1>
-    <p class="sub">Scaffold DEV: natal mock + ciudad destino + ángulos relocados mock → RelocationProfile → RelocLite → composeRelocationReading(). Sin cálculo matemático.</p>
+    <h1>Relocation Preview Lab — Fase 3.7b.7</h1>
+    <p class="sub">Mock o chart-service real (misma fecha/hora/tz natal + lat/lon ciudad) → RelocChartAdapter → RelocationProfile → RelocLite → Composition → Bridge.</p>
 
     <div class="question">
       <strong>Pregunta futura (producto)</strong>
@@ -126,11 +129,17 @@
     </div>
 
     <div class="toolbar">
-      <button type="button" class="primary" data-preset="roberto-lisboa">Roberto → Lisboa</button>
-      <button type="button" class="primary" data-preset="roberto-toronto">Roberto → Toronto</button>
+      <label class="muted">Datos:
+        <select id="data-source-select">
+          <option value="mock">Mock</option>
+          <option value="real">Real chart-service</option>
+        </select>
+      </label>
+      <button type="button" class="primary" data-preset="roberto-lisboa" id="btn-roberto-lisboa">Roberto → Lisboa</button>
+      <button type="button" data-preset="roberto-toronto" id="btn-roberto-toronto">Roberto → Toronto</button>
       <button type="button" data-case="invalid-target">Fail: sin ciudad</button>
       <button type="button" data-case="invalid-angles">Fail: sin ángulos</button>
-      <button type="button" data-case="smoke">Smoke (6 casos)</button>
+      <button type="button" data-case="smoke">Smoke mock</button>
       <label class="muted">Goal:
         <select id="goal-select">
           <option value="amor">amor</option>
@@ -140,11 +149,16 @@
       </label>
     </div>
 
-    <p class="flow">Flujo: <span>Natal mock</span> → <span>Target city mock</span> → <span>Relocated angles mock</span> → <span>GoalContext</span> → <span>buildRelocationProfile()</span> → <span>composeRelocationReading()</span> → <span>Bridge</span></p>
+    <p class="flow" id="flow-line">Flujo: <span id="flow-steps">—</span></p>
 
     <div class="panel" id="summary-panel">
       <div class="panel-title">Resumen</div>
-      <div id="summary-out" class="muted">Selecciona un preset o ejecuta smoke.</div>
+      <div id="summary-out" class="muted">Selecciona preset. Modo real requiere WASM (unos segundos).</div>
+    </div>
+
+    <div class="panel" id="angles-panel">
+      <div class="panel-title">Ángulos relocados</div>
+      <div id="angles-out" class="muted">—</div>
     </div>
 
     <div class="panel">
@@ -153,7 +167,7 @@
     </div>
 
     <div class="panel">
-      <div class="panel-title">Lectura compuesta (500–800 chars)</div>
+      <div class="panel-title">Lectura compuesta (500–850 chars)</div>
       <div id="composition-out" class="muted">—</div>
     </div>
 
@@ -163,13 +177,19 @@
     </div>
 
     <div class="panel">
-      <div class="panel-title">JSON — RelocationProfile + Composition</div>
+      <div class="panel-title">JSON — Adapter + Profile + Composition</div>
       <pre id="json-out">{}</pre>
     </div>
   </div>
 
+  <pre id="capture-out"></pre>
+
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+  <script src="../services/natal-engine-loader.js?v=3.7b6"></script>
+  <script src="../services/chart-service.js?v=3.7b6"></script>
   <script src="../content/goal-signal.js"></script>
   <script src="../content/reloc-lite.js"></script>
+  <script src="../services/reloc-chart-adapter.js"></script>
   <script src="../services/relocation-profile-service.js"></script>
   <script src="../services/reloc-composition-service.js"></script>
   <script src="../services/natal-map-bridge-service.js"></script>
@@ -177,55 +197,118 @@
   (function () {
     'use strict';
 
-    var PLANETS = ['sol', 'luna', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno', 'urano', 'neptuno', 'pluton'];
-    var ANGLES = ['MC', 'IC', 'AC', 'DC'];
+    var PLANETS = ['sol', 'luna', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno'];
+    var MAP_ANGLES = ['MC', 'IC', 'AC', 'DC'];
+
+    var ROBERTO_BIRTH = {
+      date: '1973-05-29',
+      time: '07:30',
+      timezone: 'Europe/Madrid',
+      lat: 39.8885,
+      lon: 4.2658,
+      birthPlace: 'Maó, Menorca'
+    };
 
     var PRESETS = {
       'roberto-lisboa': {
         label: 'Roberto → Lisboa',
-        natalChart: { sun: 'gemini', moon: 'aries', asc: 'cancer' },
-        targetLocation: { name: 'Lisboa', country: 'Portugal', lat: 38.7223, lon: -9.1393 },
-        relocatedAngles: {
-          AC: { sign: 'libra', slug: 'libra', degree: 12.4 },
-          MC: { sign: 'capricorn', slug: 'capricorn', degree: 8.1 },
-          IC: { sign: 'cancer', slug: 'cancer', degree: 8.1 },
-          DC: { sign: 'aries', slug: 'aries', degree: 12.4 }
+        targetLocation: { name: 'Lisboa', country: 'Portugal', lat: 38.7223, lon: -9.1393, cityId: 'lisboa-pt' },
+        mock: {
+          natalChart: { sun: 'gemini', moon: 'aries', asc: 'cancer' },
+          relocatedAngles: {
+            AC: { sign: 'libra', slug: 'libra', degree: 12.4 },
+            MC: { sign: 'capricorn', slug: 'capricorn', degree: 8.1 },
+            IC: { sign: 'cancer', slug: 'cancer', degree: 8.1 },
+            DC: { sign: 'aries', slug: 'aries', degree: 12.4 }
+          }
         }
       },
       'roberto-toronto': {
         label: 'Roberto → Toronto',
-        natalChart: { sun: 'gemini', moon: 'aries', asc: 'cancer' },
-        targetLocation: { name: 'Toronto', country: 'Canadá', lat: 43.6532, lon: -79.3832 },
-        relocatedAngles: {
-          AC: { sign: 'leo', slug: 'leo', degree: 3.2 },
-          MC: { sign: 'taurus', slug: 'taurus', degree: 18.7 },
-          IC: { sign: 'scorpio', slug: 'scorpio', degree: 18.7 },
-          DC: { sign: 'aquarius', slug: 'aquarius', degree: 3.2 }
+        targetLocation: { name: 'Toronto', country: 'Canadá', lat: 43.6532, lon: -79.3832, cityId: 'toronto-ca' },
+        mock: {
+          natalChart: { sun: 'gemini', moon: 'aries', asc: 'cancer' },
+          relocatedAngles: {
+            AC: { sign: 'leo', slug: 'leo', degree: 3.2 },
+            MC: { sign: 'taurus', slug: 'taurus', degree: 18.7 },
+            IC: { sign: 'scorpio', slug: 'scorpio', degree: 18.7 },
+            DC: { sign: 'aquarius', slug: 'aquarius', degree: 3.2 }
+          }
         }
       }
     };
 
     var summaryOut = document.getElementById('summary-out');
+    var anglesOut = document.getElementById('angles-out');
     var fragmentsOut = document.getElementById('fragments-out');
     var compositionOut = document.getElementById('composition-out');
     var bridgeOut = document.getElementById('bridge-out');
     var jsonOut = document.getElementById('json-out');
     var goalSelect = document.getElementById('goal-select');
+    var dataSourceSelect = document.getElementById('data-source-select');
+    var flowSteps = document.getElementById('flow-steps');
+    var captureOut = document.getElementById('capture-out');
 
-    function mockMapLines() {
-      var lines = [];
-      ['sol', 'luna', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno'].forEach(function (planet) {
-        ANGLES.forEach(function (angle) {
-          lines.push({ id: planet + '-' + angle.toLowerCase(), planet: planet, angle: angle });
-        });
-      });
-      return lines;
+    function isRealMode() {
+      return dataSourceSelect && dataSourceSelect.value === 'real';
+    }
+
+    function updateFlowLine() {
+      if (!flowSteps) return;
+      if (isRealMode()) {
+        flowSteps.textContent = 'birthData → chart-service (ciudad) → RelocChartAdapter → Profile → RelocLite → Composition → Bridge';
+      } else {
+        flowSteps.textContent = 'mock angles → buildRelocationProfile → RelocLite → Composition → Bridge';
+      }
     }
 
     function goalContext() {
       var GS = window.KairosGoalSignal;
       if (!GS) return null;
       return GS.buildContext({ mainGoal: goalSelect.value });
+    }
+
+    function mockMapLines() {
+      var lines = [];
+      PLANETS.forEach(function (planet) {
+        MAP_ANGLES.forEach(function (angle) {
+          lines.push({ id: planet + '-' + angle.toLowerCase(), planet: planet, angle: angle });
+        });
+      });
+      return lines;
+    }
+
+    function renderAngles(adapterResult, profileInput) {
+      if (!anglesOut) return;
+      var angles = adapterResult && adapterResult.relocatedAngles
+        ? adapterResult.relocatedAngles
+        : (profileInput && profileInput.relocatedAngles);
+      if (!angles) {
+        anglesOut.innerHTML = '<span class="muted">—</span>';
+        return;
+      }
+      var Adapter = window.KairosRelocChartAdapter;
+      var opp = Adapter && angles.AC && angles.AC.longitude != null
+        ? Adapter.verifyAngleOppositions(angles)
+        : null;
+      var rows = ['AC', 'MC', 'IC', 'DC'].map(function (key) {
+        var a = angles[key];
+        if (!a) return '<tr><td>' + key + '</td><td colspan="4" class="err">—</td></tr>';
+        return '<tr>' +
+          '<td>' + key + '</td>' +
+          '<td>' + (a.sign || '—') + '</td>' +
+          '<td>' + (a.signSlug || a.slug || '—') + '</td>' +
+          '<td>' + (a.longitude != null ? a.longitude.toFixed(4) + '°' : (a.degree != null ? a.degree.toFixed(2) + '°' : '—')) + '</td>' +
+          '<td>' + (a.degree != null ? a.degree.toFixed(2) : '—') + '</td>' +
+          '</tr>';
+      }).join('');
+      var oppHtml = opp
+        ? '<p class="muted" style="margin:0 0 8px">Oppositions · AC↔DC: ' + (opp.acDc ? 'OK' : 'FAIL') +
+          ' · MC↔IC: ' + (opp.mcIc ? 'OK' : 'FAIL') + '</p>'
+        : '';
+      anglesOut.innerHTML = oppHtml +
+        '<table><thead><tr><th>Rol</th><th>Signo</th><th>Slug</th><th>Longitud</th><th>Grado signo</th></tr></thead><tbody>' +
+        rows + '</tbody></table>';
     }
 
     function renderFragments(result) {
@@ -235,27 +318,34 @@
         fragmentsOut.innerHTML = '<span class="muted">—</span>';
         return;
       }
+      var metaList = (result.sourceIds && result.sourceIds.fragmentMeta) || [];
       var ids = (result.sourceIds && result.sourceIds.fragmentIds) || [];
       if (!ids.length) {
-        fragmentsOut.innerHTML = '<span class="muted">Sin fragmentos reloc-lite para este mock</span>';
+        fragmentsOut.innerHTML = '<span class="muted">Sin fragmentos reloc-lite</span>';
         return;
       }
+      var metaById = {};
+      metaList.forEach(function (m) { metaById[m.id] = m; });
+
       var rows = ids.map(function (id) {
         var frag = RelocLite.getFragment(id);
+        var meta = metaById[id] || {};
+        var fType = meta.fragmentType || (RelocLite.fragmentTypeOf && RelocLite.fragmentTypeOf(frag)) || '—';
         if (!frag) {
-          return '<tr><td>' + id + '</td><td colspan="3" class="err">no encontrado</td></tr>';
+          return '<tr><td>' + id + '</td><td colspan="4" class="err">no encontrado</td></tr>';
         }
         return '<tr>' +
+          '<td>' + fType + '</td>' +
+          '<td>' + frag.role + '</td>' +
           '<td>' + frag.id + '</td>' +
-          '<td>' + frag.role + ' · ' + (frag.condition && frag.condition.element) + '</td>' +
           '<td>' + frag.headline + '</td>' +
-          '<td>' + JSON.stringify(frag.bridgeTags) + '</td>' +
+          '<td>' + (frag.condition && frag.condition.element) + '</td>' +
           '</tr>';
       }).join('');
       fragmentsOut.innerHTML =
-        '<p class="muted" style="margin:0 0 8px">sourceIds.fragmentIds · chartRefs: ' +
+        '<p class="muted" style="margin:0 0 8px">fragmentIds (' + ids.length + ') · chartRefs: ' +
         JSON.stringify(result.sourceIds.chartRefs || []) + '</p>' +
-        '<table><thead><tr><th>ID</th><th>Rol · elemento</th><th>Headline</th><th>bridgeTags</th></tr></thead><tbody>' +
+        '<table><thead><tr><th>Tipo</th><th>Rol</th><th>ID</th><th>Headline</th><th>Elemento</th></tr></thead><tbody>' +
         rows + '</tbody></table>';
     }
 
@@ -284,20 +374,16 @@
         '<strong>' + composed.title + '</strong>' +
         '<p style="margin:10px 0;color:#d1d5db;line-height:1.55">' + composed.reading + '</p>' +
         '<dl class="kv">' +
-        '<dt>charCount</dt><dd>' + composed.meta.charCount + ' / ' + composed.meta.minChars + '–' + composed.meta.maxChars + '</dd>' +
+        '<dt>charCount</dt><dd>' + composed.meta.charCount + '</dd>' +
         '<dt>includedRoles</dt><dd>' + JSON.stringify(composed.meta.includedRoles || []) + '</dd>' +
-        '<dt>omittedRoles</dt><dd>' + JSON.stringify(composed.meta.omittedRoles || []) + '</dd>' +
-        '<dt>roleCoveragePercent</dt><dd>' + (composed.meta.roleCoveragePercent != null ? composed.meta.roleCoveragePercent + '%' : '—') + '</dd>' +
         '<dt>fragmentIds</dt><dd>' + JSON.stringify(composed.fragmentIds) + '</dd>' +
-        '<dt>styleWarnings</dt><dd>' + JSON.stringify(composed.meta.styleWarnings) + '</dd>' +
-        '<dt>clichesDetected</dt><dd>' + JSON.stringify(composed.meta.clichesDetected) + '</dd>' +
         '</dl>';
       return composed;
     }
 
     function renderBridge(reloc, ctx) {
       if (!reloc.ok || !reloc.bridgeProfile) {
-        bridgeOut.innerHTML = '<span class="muted">Bridge omitido — profile fail-soft</span>';
+        bridgeOut.innerHTML = '<span class="muted">Bridge omitido</span>';
         return;
       }
       var Bridge = window.KairosNatalMapBridge;
@@ -312,66 +398,177 @@
         bridgeOut.innerHTML = '<span class="err">Bridge ok:false</span>';
         return;
       }
-      var rows = result.priorityLines.slice(0, 5).map(function (lineId) {
-        var match = result.matches.find(function (m) { return m.lineId === lineId; });
-        return '<tr><td>' + lineId + '</td><td>' + (match ? match.score.toFixed(4) : '—') + '</td></tr>';
-      }).join('');
       bridgeOut.innerHTML =
         '<dl class="kv">' +
         '<dt>confidence</dt><dd>' + result.confidence.toFixed(4) + '</dd>' +
         '<dt>priorityLines</dt><dd>' + JSON.stringify(result.priorityLines.slice(0, 5)) + '</dd>' +
-        '</dl>' +
-        '<table><thead><tr><th>Line</th><th>Score</th></tr></thead><tbody>' + rows + '</tbody></table>';
+        '</dl>';
     }
 
-    function renderResult(label, result, ctx) {
-      if (!result.ok) {
-        jsonOut.textContent = JSON.stringify({ relocationProfile: result }, null, 2);
+    function renderPipeline(label, payload) {
+      var adapterResult = payload.adapter;
+      var profile = payload.profile;
+      var composed = payload.composition;
+      var ctx = payload.goalContext;
+
+      if (!profile || !profile.ok) {
+        jsonOut.textContent = JSON.stringify(payload, null, 2);
         summaryOut.innerHTML =
-          '<span class="badge badge-fail">FAIL</span> ' +
-          (label ? label + ' · ' : '') +
-          '<span class="err">' + (result.reason || 'unknown') + '</span>';
+          '<span class="badge badge-fail">FAIL</span> ' + label +
+          ' · <span class="err">' + ((adapterResult && adapterResult.reason) || (profile && profile.reason) || 'unknown') + '</span>';
+        anglesOut.innerHTML = '<span class="muted">—</span>';
+        fragmentsOut.innerHTML = '<span class="muted">—</span>';
+        compositionOut.innerHTML = '<span class="muted">—</span>';
         bridgeOut.innerHTML = '<span class="muted">—</span>';
-        if (fragmentsOut) fragmentsOut.innerHTML = '<span class="muted">—</span>';
-        if (compositionOut) compositionOut.innerHTML = '<span class="muted">—</span>';
-        return;
+        return payload;
       }
-      var composed = renderComposition(result, ctx);
+
+      renderAngles(adapterResult, payload.profileInput);
+      composed = renderComposition(profile, ctx) || composed;
       jsonOut.textContent = JSON.stringify({
-        relocationProfile: result,
+        adapter: adapterResult,
+        profileInput: payload.profileInput,
+        relocationProfile: profile,
         composition: composed
       }, null, 2);
+
+      var sourceBadge = adapterResult && adapterResult.meta && adapterResult.meta.source === 'real'
+        ? '<span class="badge badge-pass">REAL</span> '
+        : '<span class="badge badge-warn">MOCK</span> ';
+
       summaryOut.innerHTML =
-        '<span class="badge badge-pass">OK</span> ' + (label || '') +
+        sourceBadge + '<span class="badge badge-pass">OK</span> ' + label +
         '<dl class="kv" style="margin-top:10px">' +
-        '<dt>profileType</dt><dd>' + result.profileType + '</dd>' +
-        '<dt>profileKey</dt><dd>' + result.profileKey + '</dd>' +
-        '<dt>tags</dt><dd>' + JSON.stringify(result.tags) + '</dd>' +
-        '<dt>themes</dt><dd>' + JSON.stringify(result.themes) + '</dd>' +
-        '<dt>tensionMode</dt><dd>' + result.tensionMode + '</dd>' +
-        '<dt>relocDelta</dt><dd>' + JSON.stringify(result.dominantPatterns.relocDelta) + '</dd>' +
-        '<dt>goal</dt><dd>' + (result.meta.goal || '—') + '</dd>' +
-        '<dt>fragmentIds</dt><dd>' + JSON.stringify((result.sourceIds && result.sourceIds.fragmentIds) || []) + '</dd>' +
+        '<dt>timezonePolicy</dt><dd>' + ((adapterResult && adapterResult.meta && adapterResult.meta.timezonePolicy) || '—') + '</dd>' +
+        '<dt>profileKey</dt><dd>' + profile.profileKey + '</dd>' +
+        '<dt>fragmentIds</dt><dd>' + JSON.stringify((profile.sourceIds && profile.sourceIds.fragmentIds) || []) + '</dd>' +
+        '<dt>fragmentMeta</dt><dd>' + JSON.stringify((profile.sourceIds && profile.sourceIds.fragmentMeta) || []) + '</dd>' +
+        '<dt>tags</dt><dd>' + JSON.stringify(profile.tags.slice(0, 6)) + '…</dd>' +
         '</dl>';
-      renderFragments(result);
-      renderBridge(result, ctx);
+
+      renderFragments(profile);
+      renderBridge(profile, ctx);
+      return payload;
     }
 
-    function runPreset(key) {
-      var preset = PRESETS[key];
-      if (!preset) return;
-      var ctx = goalContext();
-      var input = {
-        natalChart: preset.natalChart,
+    function buildMockPayload(preset, ctx) {
+      return {
+        ok: true,
+        natalChart: preset.mock.natalChart,
         targetLocation: preset.targetLocation,
-        relocatedAngles: preset.relocatedAngles,
+        relocatedAngles: preset.mock.relocatedAngles,
+        relocatedHouses: [],
+        goalContext: ctx,
+        meta: { schemaVersion: 'mock', source: 'mock', timezonePolicy: 'n/a' }
+      };
+    }
+
+    async function buildInputForPreset(presetKey) {
+      var preset = PRESETS[presetKey];
+      if (!preset) return null;
+      var ctx = goalContext();
+
+      if (!isRealMode()) {
+        var mockAdapter = buildMockPayload(preset, ctx);
+        var mockProfileInput = {
+          natalChart: mockAdapter.natalChart,
+          targetLocation: mockAdapter.targetLocation,
+          relocatedAngles: mockAdapter.relocatedAngles,
+          goalContext: ctx
+        };
+        return {
+          label: preset.label + ' (mock)',
+          adapter: mockAdapter,
+          profileInput: mockProfileInput,
+          goalContext: ctx
+        };
+      }
+
+      if (presetKey !== 'roberto-lisboa' && presetKey !== 'roberto-toronto') {
+        return { error: 'Solo Roberto presets en modo real por ahora' };
+      }
+
+      var Adapter = window.KairosRelocChartAdapter;
+      if (!Adapter) {
+        return { error: 'KairosRelocChartAdapter no cargado' };
+      }
+
+      summaryOut.innerHTML = '<span class="badge badge-warn">CALC</span> Iniciando WASM + chart-service…';
+
+      var adapterResult = await Adapter.buildRelocationInputFromChart({
+        birthData: ROBERTO_BIRTH,
+        targetLocation: preset.targetLocation,
+        goalContext: ctx
+      });
+
+      if (!adapterResult.ok) {
+        return { label: preset.label, adapter: adapterResult, profile: null, goalContext: ctx };
+      }
+
+      var profileInput = Adapter.buildProfileInputFromAdapter(adapterResult);
+      return {
+        label: preset.label + ' (real)',
+        adapter: adapterResult,
+        profileInput: profileInput,
         goalContext: ctx
       };
-      var result = window.KairosRelocationProfile.buildRelocationProfile(input);
-      renderResult(preset.label, result, ctx);
+    }
+
+    async function runPreset(key) {
+      var buttons = document.querySelectorAll('[data-preset]');
+      buttons.forEach(function (b) { b.disabled = true; });
+      try {
+        var built = await buildInputForPreset(key);
+        if (!built) return;
+        if (built.error) {
+          summaryOut.innerHTML = '<span class="err">' + built.error + '</span>';
+          return;
+        }
+
+        var profile = window.KairosRelocationProfile.buildRelocationProfile(built.profileInput);
+        var composed = profile.ok && window.KairosRelocComposition
+          ? window.KairosRelocComposition.composeRelocationReading({
+              relocationProfile: profile,
+              goalContext: built.goalContext
+            })
+          : null;
+
+        var payload = {
+          label: built.label,
+          adapter: built.adapter,
+          profileInput: built.profileInput,
+          profile: profile,
+          composition: composed,
+          goalContext: built.goalContext
+        };
+
+        renderPipeline(built.label, payload);
+
+        if (new URLSearchParams(location.search).has('capture') && built.adapter && built.adapter.ok) {
+          var capture = {
+            capturedAt: new Date().toISOString(),
+            case: 'roberto-lisboa-real',
+            birthData: ROBERTO_BIRTH,
+            targetLocation: built.adapter.targetLocation,
+            relocatedAngles: built.adapter.relocatedAngles,
+            oppositions: window.KairosRelocChartAdapter.verifyAngleOppositions(built.adapter.relocatedAngles),
+            fragmentIds: profile.sourceIds && profile.sourceIds.fragmentIds,
+            composition: composed
+          };
+          captureOut.textContent = JSON.stringify(capture, null, 2);
+          captureOut.style.display = 'block';
+          console.log('[capture]', capture);
+        }
+
+        return payload;
+      } finally {
+        buttons.forEach(function (b) { b.disabled = false; });
+      }
     }
 
     function runSmoke() {
+      dataSourceSelect.value = 'mock';
+      updateFlowLine();
       var GS = window.KairosGoalSignal;
       var build = window.KairosRelocationProfile.buildRelocationProfile;
       var base = PRESETS['roberto-lisboa'];
@@ -380,20 +577,24 @@
         lines.push((ok ? 'PASS' : 'FAIL') + ' · ' + label);
         return ok;
       }
-
-      var valid = build(Object.assign({}, base, { goalContext: GS.buildContext({ mainGoal: 'amor' }) }));
+      var mock = buildMockPayload(base, GS.buildContext({ mainGoal: 'amor' }));
+      var valid = build({
+        natalChart: mock.natalChart,
+        targetLocation: mock.targetLocation,
+        relocatedAngles: mock.relocatedAngles,
+        goalContext: mock.goalContext
+      });
       var all = true;
-      all = check('valid ok + RELOCATION', valid.ok && valid.profileType === 'RELOCATION') && all;
-      all = check('missing target', !build(Object.assign({}, base, { targetLocation: null })).ok) && all;
-      all = check('missing angles', !build(Object.assign({}, base, { relocatedAngles: null })).ok) && all;
-      var t = build(Object.assign({}, base, { goalContext: GS.buildContext({ mainGoal: 'trabajo' }) }));
-      var d = build(Object.assign({}, base, { goalContext: GS.buildContext({ mainGoal: 'descanso' }) }));
-      all = check('trabajo themes', t.themes.length > 0) && all;
-      all = check('trabajo ≠ descanso', JSON.stringify(t.themes) !== JSON.stringify(d.themes)) && all;
-      all = check('determinism', JSON.stringify(build(Object.assign({}, base, { goalContext: GS.buildContext({ mainGoal: 'amor' }) })).tags) === JSON.stringify(valid.tags)) && all;
-
-      summaryOut.innerHTML = '<strong>Smoke inline</strong><pre style="margin:8px 0 0;padding:8px;background:#0f1115;border:0">' + lines.join('\n') + '\nOVERALL: ' + (all ? 'PASS' : 'FAIL') + '</pre>';
-      renderResult('Roberto → Lisboa (amor)', valid, GS.buildContext({ mainGoal: 'amor' }));
+      all = check('valid ok', valid.ok) && all;
+      all = check('missing target', !build({ natalChart: mock.natalChart, targetLocation: null, relocatedAngles: mock.relocatedAngles }).ok) && all;
+      summaryOut.innerHTML = '<pre style="margin:0;padding:8px;background:#0f1115;border:0">' + lines.join('\n') + '\nOVERALL: ' + (all ? 'PASS' : 'FAIL') + '</pre>';
+      renderPipeline('Smoke mock', {
+        adapter: mock,
+        profileInput: { natalChart: mock.natalChart, targetLocation: mock.targetLocation, relocatedAngles: mock.relocatedAngles },
+        profile: valid,
+        composition: null,
+        goalContext: mock.goalContext
+      });
     }
 
     document.querySelectorAll('[data-preset]').forEach(function (btn) {
@@ -406,19 +607,40 @@
       btn.addEventListener('click', function () {
         var kind = btn.getAttribute('data-case');
         if (kind === 'smoke') { runSmoke(); return; }
+        dataSourceSelect.value = 'mock';
+        updateFlowLine();
         var base = PRESETS['roberto-lisboa'];
         var input;
         if (kind === 'invalid-target') {
-          input = { natalChart: base.natalChart, targetLocation: null, relocatedAngles: base.relocatedAngles };
+          input = { natalChart: base.mock.natalChart, targetLocation: null, relocatedAngles: base.mock.relocatedAngles };
         } else {
-          input = { natalChart: base.natalChart, targetLocation: base.targetLocation, relocatedAngles: null };
+          input = { natalChart: base.mock.natalChart, targetLocation: base.targetLocation, relocatedAngles: null };
         }
-        renderResult(kind, window.KairosRelocationProfile.buildRelocationProfile(input), null);
+        renderPipeline(kind, {
+          adapter: { ok: false, source: 'mock' },
+          profileInput: input,
+          profile: window.KairosRelocationProfile.buildRelocationProfile(input),
+          composition: null,
+          goalContext: null
+        });
       });
     });
 
-    if (new URLSearchParams(location.search).has('smoke')) runSmoke();
-    else runPreset('roberto-lisboa');
+    dataSourceSelect.addEventListener('change', updateFlowLine);
+
+    var params = new URLSearchParams(location.search);
+    if (params.get('dataSource') === 'real') dataSourceSelect.value = 'real';
+    updateFlowLine();
+
+    if (params.has('smoke')) {
+      runSmoke();
+    } else if (params.has('capture')) {
+      dataSourceSelect.value = 'real';
+      updateFlowLine();
+      runPreset('roberto-lisboa');
+    } else {
+      runPreset('roberto-lisboa');
+    }
   })();
   </script>
 </body>
