@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — City Premium Reading Lab (3.8e DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: #0f1115;
+      color: #e5e7eb;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .dev-banner {
+      background: rgba(251, 191, 36, 0.1);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.35);
+      color: #fcd34d;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 980px; margin: 0 auto; padding: 20px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 18px; color: #fcd34d; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 12px; margin: 0 0 16px; max-width: 760px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+    button, select {
+      font: inherit;
+      cursor: pointer;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    button:hover, select:hover { border-color: #fcd34d; color: #fde68a; }
+    button.primary { background: rgba(251, 191, 36, 0.12); border-color: #fbbf24; }
+    button:disabled { opacity: 0.5; cursor: wait; }
+    .panel {
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+    .meta-item { font-size: 12px; color: #d1d5db; }
+    .meta-item strong { color: #fcd34d; display: block; font-size: 10px; letter-spacing: 0.06em; }
+    .influence-row {
+      padding: 6px 0;
+      border-bottom: 1px solid #2a2f3a;
+      font-size: 12px;
+    }
+    .reading-title { font-size: 16px; color: #fde68a; margin: 0 0 12px; }
+    .section { margin-bottom: 16px; }
+    .section h3 { margin: 0 0 6px; font-size: 13px; color: #fcd34d; font-weight: 600; }
+    .section p { margin: 0; color: #d1d5db; white-space: pre-wrap; }
+    .err { color: #fca5a5; }
+    .ok-tag { color: #86efac; }
+    .fail-tag { color: #fca5a5; }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV ONLY · 3.8e Premium Reading Prototype · Sin mapa · Sin paywall</div>
+  <div class="page">
+    <h1>City Premium Reading Lab</h1>
+    <p class="sub">
+      Roberto (29 may 1973, Maó) · Lectura integrada por ciudad y objetivo.
+      Compositor determinista: <code>city-premium-composition-service.js</code>.
+    </p>
+
+    <div class="toolbar">
+      <select id="city-select" aria-label="Ciudad">
+        <option value="lisboa">Lisboa</option>
+        <option value="toronto">Toronto</option>
+        <option value="cabo">Ciudad del Cabo</option>
+      </select>
+      <select id="goal-select" aria-label="Objetivo">
+        <option value="amor">amor</option>
+        <option value="trabajo">trabajo</option>
+        <option value="descanso">descanso</option>
+      </select>
+      <button type="button" class="primary" id="btn-run">Generar lectura</button>
+      <button type="button" id="btn-all">Generar las 9 combinaciones</button>
+    </div>
+
+    <div id="status" class="panel" style="display:none"></div>
+    <div id="meta-panel" class="panel" style="display:none"></div>
+    <div id="influences-panel" class="panel" style="display:none"></div>
+    <div id="reading-panel" class="panel" style="display:none"></div>
+    <div id="batch-panel" class="panel" style="display:none"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+  <script src="../engines/astro.js"></script>
+  <script src="../content/goal-signal.js"></script>
+  <script src="../content/natal-lite.js"></script>
+  <script src="../services/natal-composition-service.js"></script>
+  <script src="../services/natal-map-bridge-service.js"></script>
+  <script src="../content/interpretations.js"></script>
+  <script src="../content/city-scorer.js"></script>
+  <script src="../services/city-premium-composition-service.js"></script>
+
+  <script>
+(function () {
+  'use strict';
+
+  var CITIES = {
+    lisboa: { name: 'Lisboa', country: 'Portugal', lat: 38.7223, lon: -9.1393 },
+    toronto: { name: 'Toronto', country: 'Canadá', lat: 43.6532, lon: -79.3832 },
+    cabo: { name: 'Ciudad del Cabo', country: 'Sudáfrica', lat: -33.9249, lon: 18.4241 }
+  };
+
+  var GOALS = ['amor', 'trabajo', 'descanso'];
+  var birthUtc = new Date('1973-05-29T05:30:00.000Z');
+  var lines = null;
+  var bridgeProfile = null;
+  var scorerInputs = {};
+
+  function init() {
+    lines = KairosAstro.computeAllLines(birthUtc);
+    var comp = KairosNatalComposition.composeNatalLiteReading({ sun: 'gemini', moon: 'aries', asc: 'cancer' });
+    bridgeProfile = comp.meta && comp.meta.bridgeProfile;
+    GOALS.forEach(function (g) {
+      scorerInputs[g] = buildScorerInput(g);
+    });
+  }
+
+  function buildScorerInput(goalId) {
+    var goalContext = KairosGoalSignal.buildContext({ mainGoal: goalId });
+    var bridgeResult = KairosNatalMapBridge.buildBridge({
+      tags: bridgeProfile.tags,
+      themes: bridgeProfile.themes,
+      tensionMode: bridgeProfile.tensionMode === true,
+      mapLines: lines.map(function (l) {
+        return { id: l.id, planet: l.planet, angle: l.angle };
+      }),
+      goalContext: goalContext
+    });
+    return {
+      lines: lines,
+      goalContext: goalContext,
+      bridgeResult: bridgeResult,
+      options: {
+        proxKm: KairosCityScorer.PROX_KM,
+        maxSuggestions: 3,
+        minScore: 0.28,
+        enabledPlanets: new Set(KairosAstro.PLANETS.map(function (p) { return p.id; })),
+        enabledAngles: new Set(KairosAstro.ANGLES)
+      }
+    };
+  }
+
+  function runOne(cityKey, goalId) {
+    var city = CITIES[cityKey];
+    var input = scorerInputs[goalId];
+    var ranked = KairosCityScorer.rankInfluences(city, input);
+    var scored = KairosCityScorer.scoreCity(city, input);
+    return KairosCityPremiumComposition.composeCityReading({
+      city: city,
+      goal: goalId,
+      relevantInfluences: ranked.slice(0, 5),
+      bridgeProfile: bridgeProfile,
+      profile: { firstName: 'Roberto' },
+      score: scored ? scored.score : null
+    });
+  }
+
+  function renderMeta(reading, scored) {
+    var m = reading.meta;
+    var html = '<p class="panel-title">Metadatos</p><div class="meta-grid">';
+    html += metaItem('ok', reading.ok ? '<span class="ok-tag">true</span>' : '<span class="fail-tag">false</span>');
+    html += metaItem('Palabras', m.wordCount + ' (rango ' + KairosCityPremiumComposition.MIN_WORDS + '–' + KairosCityPremiumComposition.MAX_WORDS + ')');
+    html += metaItem('Score ciudad', scored != null ? scored.toFixed(4) : '—');
+    html += metaItem('Objetivo', m.goalId + ' / ' + m.aspect);
+    html += metaItem('Seed', String(m.deterministicSeed));
+    if (m.patterns) {
+      html += metaItem('Patrones', JSON.stringify(m.patterns));
+    }
+    html += '</div>';
+    document.getElementById('meta-panel').innerHTML = html;
+    document.getElementById('meta-panel').style.display = 'block';
+  }
+
+  function metaItem(label, val) {
+    return '<div class="meta-item"><strong>' + label + '</strong>' + val + '</div>';
+  }
+
+  function renderInfluences(reading) {
+    var rows = (reading.meta.influencesUsed || []).map(function (inf) {
+      return '<div class="influence-row">#' + inf.rank + ' · ' + inf.interpKey +
+        ' · dist ' + inf.distKm + ' km · composite ' + inf.composite + '</div>';
+    }).join('');
+    document.getElementById('influences-panel').innerHTML =
+      '<p class="panel-title">Influencias usadas (top 5)</p>' + (rows || '<span class="err">ninguna</span>');
+    document.getElementById('influences-panel').style.display = 'block';
+  }
+
+  function renderReading(reading) {
+    var html = '<h2 class="reading-title">' + escapeHtml(reading.title) + '</h2>';
+    reading.sections.forEach(function (sec) {
+      html += '<div class="section"><h3>' + escapeHtml(sec.title) + '</h3><p>' +
+        escapeHtml(sec.body) + '</p></div>';
+    });
+    document.getElementById('reading-panel').innerHTML = html;
+    document.getElementById('reading-panel').style.display = 'block';
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function setStatus(msg, isErr) {
+    var el = document.getElementById('status');
+    el.style.display = 'block';
+    el.innerHTML = '<p class="panel-title">Estado</p><p class="' + (isErr ? 'err' : 'ok-tag') + '">' + escapeHtml(msg) + '</p>';
+  }
+
+  document.getElementById('btn-run').addEventListener('click', function () {
+    try {
+      if (!lines) init();
+      var cityKey = document.getElementById('city-select').value;
+      var goalId = document.getElementById('goal-select').value;
+      var city = CITIES[cityKey];
+      var scored = KairosCityScorer.scoreCity(city, scorerInputs[goalId]);
+      var reading = runOne(cityKey, goalId);
+      document.getElementById('batch-panel').style.display = 'none';
+      renderMeta(reading, reading.meta.score);
+      renderInfluences(reading);
+      renderReading(reading);
+      setStatus('Lectura generada: ' + reading.meta.wordCount + ' palabras · ok=' + reading.ok);
+    } catch (e) {
+      setStatus('Error: ' + e.message, true);
+    }
+  });
+
+  document.getElementById('btn-all').addEventListener('click', function () {
+    try {
+      if (!lines) init();
+      var out = '<p class="panel-title">Batch Roberto × 3 ciudades × 3 objetivos</p>';
+      Object.keys(CITIES).forEach(function (ck) {
+        GOALS.forEach(function (g) {
+          var r = runOne(ck, g);
+          out += '<div class="influence-row"><strong>' + CITIES[ck].name + ' / ' + g +
+            '</strong> · ' + r.meta.wordCount + ' palabras · ok=' + r.ok +
+            ' · influencias=' + (r.meta.influencesUsed || []).length + '</div>';
+        });
+      });
+      document.getElementById('batch-panel').innerHTML = out;
+      document.getElementById('batch-panel').style.display = 'block';
+      setStatus('Batch completado (9 lecturas)');
+    } catch (e) {
+      setStatus('Error batch: ' + e.message, true);
+    }
+  });
+
+  init();
+})();
+  </script>
+</body>
+</html>
