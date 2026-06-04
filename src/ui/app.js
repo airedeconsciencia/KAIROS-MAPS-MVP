@@ -1367,6 +1367,28 @@
     return Math.max(1, Math.min(5, Math.round(5 - (distKm / PROX_KM) * 5)));
   }
 
+  function formatCityReadingHtml(raw, cityName) {
+    if (!raw) return '<div class="influence-text"></div>';
+    const replaceCity = function (text) {
+      return String(text).replace(/\{ciudad\}/g, cityName);
+    };
+    if (typeof raw === 'string') {
+      return `<div class="influence-text">${replaceCity(raw)}</div>`;
+    }
+    if (raw.expanded && Array.isArray(raw.sections)) {
+      return raw.sections.map(function (section) {
+        const title = section.title
+          ? `<h4 class="reading-section-title">${section.title}</h4>`
+          : '';
+        const cls = section.title
+          ? 'reading-section'
+          : 'reading-section reading-section-close';
+        return `<div class="${cls}">${title}<p class="reading-section-body">${replaceCity(section.body)}</p></div>`;
+      }).join('');
+    }
+    return '<div class="influence-text"></div>';
+  }
+
   function renderInterpretation(city) {
     interpCity.textContent = city.name;
     const latStr = `${Math.abs(city.lat).toFixed(4)}° ${city.lat >= 0 ? 'N' : 'S'}`;
@@ -1427,8 +1449,7 @@
         `<span class="strength-dot ${i < strength ? 'on' : ''}"></span>`
       ).join('');
 
-      const rawText = interp[state.activeAspect] || '';
-      const text = rawText.replace(/\{ciudad\}/g, city.name);
+      const readingHtml = formatCityReadingHtml(interp[state.activeAspect], city.name);
       const angleName = { AC: 'Ascendente', MC: 'Medio Cielo', IC: 'Fondo Cielo', DC: 'Descendente' }[line.angle];
 
       const el = document.createElement('div');
@@ -1444,7 +1465,7 @@
           <span class="influence-type">${line.angle} · ${Math.round(dist)} km</span>
         </div>
         <div class="influence-strength">${dots}</div>
-        <div class="influence-text">${text}</div>
+        ${readingHtml}
       `;
       interpBody.appendChild(el);
     });

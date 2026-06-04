@@ -36,9 +36,33 @@ window.INTERPRETATIONS = {
   /* ─────────────── LUNA ─────────────── */
   LUNA_AC: {
     planeta: 'Luna', angulo: 'AC', color: '#7C3AED',
-    amor:     "{ciudad} baja tus defensas. Te sentirás más permeable, más sensible. El amor aquí es vulnerable y real.",
-    trabajo:  "Tu trabajo tiene dimensión emocional. Conectas con las personas a un nivel más íntimo que técnico.",
-    descanso: "Permite que la ciudad te afecte. No racionalices demasiado lo que sientes aquí."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'En {ciudad} puede abrirse una sensibilidad que en otros lugares mantienes más contenida. El vínculo tiende a construirse por cercanía real: gestos pequeños, presencia, escucha. Si buscas amor, aquí es más fácil sentir que importas sin tener que demostrarlo todo de golpe — la intimidad llega por capas, no por escenario.' },
+        { title: 'Qué puede desafiar', body: 'Esa permeabilidad también puede dejarte más expuesto: reaccionar antes de pensar, confundir cariño con urgencia, o herirte con detalles que antes pasaban desapercibidos. Puede costarte poner límites si temes perder la conexión. No es debilidad; es señal de que algo emocional pide atención.' },
+        { title: 'Cómo aprovecharlo', body: 'Elige calidad sobre intensidad: conversaciones largas, silencios compartidos, decir con calma lo que necesitas. Si hay interés mutuo, deja que la confianza crezca sin forzar definiciones inmediatas. Un cuaderno breve por las noches ayuda a ordenar lo que sientes sin apagarlo.' },
+        { title: null, body: 'El amor en {ciudad}, si aparece, suele sentirse menos performativo y más habitacional. No promete cuentos de hadas; ofrece espacio para ser visto con más honestidad emocional.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Tu trabajo en {ciudad} puede ganar dimensión humana: la gente recuerda cómo les hiciste sentir, no solo el entregable. Conectas en reuniones, equipos y clientes con empatía práctica — útil si tu oficio depende de confianza, cuidado o lectura fina del contexto.' },
+        { title: 'Qué puede desafiar', body: 'La línea entre profesional y personal se afloja: puedes absorber tensiones ajenas, tomarte críticas muy a pecho o postergar decisiones por no querer incomodar. Si necesitas distancia fría para decidir, tendrás que construirla a propósito.' },
+        { title: 'Cómo aprovecharlo', body: 'Usa la sensibilidad como dato, no como veredicto: nombra lo que observas, pide claridad por escrito cuando haga falta, protege bloques sin reuniones. Los proyectos que cuidan personas — equipos, usuarios, pacientes — suelen rendir mejor aquí.' },
+        { title: null, body: '{ciudad} no te vuelve más blando en lo laboral; te vuelve más legible. Si alineas tarea y cuidado, tu reputación puede crecer por fiabilidad emocional, no solo por velocidad.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Este lugar puede permitirte bajar el ritmo interior: dormir mejor, comer con más presencia, dejarte llevar por rutinas sencillas que restauran. {ciudad} a veces se siente como un entorno que te acoge sin exigirte explicación constante — útil si llegas cansado de sostenerlo todo.' },
+        { title: 'Qué puede desafiar', body: 'También puede remecer lo no digerido: nostalgia, llanto fácil, cambios de humor según el barrio o la hora. Si sueles controlar lo que sientes, el descanso aquí no siempre es sueño profundo al primer día; puede ser proceso.' },
+        { title: 'Cómo aprovecharlo', body: 'Planifica poco y siente mucho: paseos lentos, agua, comida reconfortante sin culpa, siesta corta sin teléfono. Escribe tres líneas al atardecer. Si algo duele, no lo conviertas en tarea; dale un nombre y un límite de tiempo.' },
+        { title: null, body: 'Descansar en {ciudad} no es desconectar del todo — es permitir que el cuerpo y el ánimo se reencuentren. A veces eso es la forma más honesta de recuperarte.' }
+      ]
+    }
   },
   LUNA_MC: {
     planeta: 'Luna', angulo: 'MC', color: '#7C3AED',
@@ -62,9 +86,33 @@ window.INTERPRETATIONS = {
   /* ─────────────── MERCURIO ─────────────── */
   MERCURIO_AC: {
     planeta: 'Mercurio', angulo: 'AC', color: '#0369A1',
-    amor:     "En {ciudad} la conversación es la puerta. Te enamoran las ideas tanto como los cuerpos; aquí encuentras a quien sepa hablarte.",
-    trabajo:  "La mente se acelera. Excelente lugar para escribir, vender, enseñar, conectar. Tu palabra circula con facilidad.",
-    descanso: "Descansar aquí no es callar — es dejar que las ideas pasen sin agarrarlas."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Este lugar favorece el intercambio, la conversación y la curiosidad. Puede resultarte más fácil conocer personas, abrir conversaciones o sentir que tu mente se activa cuando algo te interesa de verdad. En vínculo, {ciudad} suele poner el diálogo antes que el drama: te atraen quienes piensan, preguntan y escuchan.' },
+        { title: 'Qué puede desafiar', body: 'No todo será liviano. La misma agilidad puede volverse dispersión si buscas certezas demasiado rápido. También puede aparecer mucha charla y poca profundidad, o nerviosismo social si esperas que una sola conversación lo resuelva todo. La mente acelerada no siempre descansa en el otro.' },
+        { title: 'Cómo aprovecharlo', body: 'Practica presencia sin agenda: una charla al día sin objetivo oculto, un mensaje honesto, escribir lo que piensas aunque no lo publiques. Si hay interés mutuo, deja que la conexión crezca por capas. Pregunta más de lo que declaras; escucha antes de concluir.' },
+        { title: null, body: 'No significa que todo vaya a ser fácil. Pero sí que ciertas capacidades tuyas — curiosidad, humor, claridad — encuentran en {ciudad} más espacio para expresarse. Ahí el amor, si llega, suele empezar hablando.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'En {ciudad} tu mente puede funcionar con más velocidad y conexión: saltar entre ideas sin perder el hilo, explicar con claridad, vender un concepto, enseñar, escribir, aprender un idioma. La palabra circula; las reuniones avanzan si traes estructura ligera.' },
+        { title: 'Qué puede desafiar', body: 'El exceso de estímulo puede fragmentarte: demasiados hilos abiertos, correos que nunca cierran, prometer más de lo que entregas. También puede aparecer la sensación de tener que demostrar inteligencia todo el tiempo. Si no canalizas la energía mental, se parece a ansiedad de fondo.' },
+        { title: 'Cómo aprovecharlo', body: 'Elige un proyecto ancla y dos canales máximo (escrito + voz, por ejemplo). Bloques cortos de foco, resúmenes al cierre del día. Ideal para redactar, negociar, formar, hacer networking con sustancia — no solo tarjetas de visita.' },
+        { title: null, body: '{ciudad} amplifica tu voz cuando tienes algo real que decir. No inventa talento; te da corriente para que el que ya traes se note antes.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Descansar aquí no siempre es callar la cabeza — a veces es dejar que las ideas pasen sin atraparlas todas. Puede favorecer paseos con estímulo suave: librerías, cafés tranquilos, museos pequeños, rutas donde la mente divaga sin exigencia.' },
+        { title: 'Qué puede desafiar', body: 'Si no pones límites, el lugar te mantiene en modo consumo: podcasts, notificaciones, planes encadenados. El cansancio puede ser mental más que físico. Dormir mal por darle vueltas a lo que leíste o escuchaste es habitual si no sueltas el día.' },
+        { title: 'Cómo aprovecharlo', body: 'Alterna estímulo y silencio: una hora de curiosidad, luego pantalla en gris. Camina sin podcast. Escribe tres líneas y cierra el cuaderno. El descanso mercurial es ritmo, no vacío absoluto.' },
+        { title: null, body: 'En {ciudad} puedes recuperarte si tratas la mente como invitada, no como jefe. Cuando dejas de perseguir cada pensamiento, el lugar se vuelve más liviano.' }
+      ]
+    }
   },
   MERCURIO_MC: {
     planeta: 'Mercurio', angulo: 'MC', color: '#0369A1',
@@ -88,9 +136,33 @@ window.INTERPRETATIONS = {
   /* ─────────────── VENUS ─────────────── */
   VENUS_AC: {
     planeta: 'Venus', angulo: 'AC', color: '#BE185D',
-    amor:     "Aquí es más fácil disfrutar sin culpa. Si buscas amor, el lugar pone las condiciones — pero solo si ya te tratas bien a ti mismo.",
-    trabajo:  "Tu trabajo tiene componente estético. Lo que haces es atractivo para los demás.",
-    descanso: "{ciudad} tiene una estética que te entra bien. Haz algo puramente placentero sin propósito productivo."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: '{ciudad} puede activar disfrute, presencia y un cierto magnetismo tranquilo. La estética del lugar — luz, ritmo, detalle — a veces te resulta familiar, no forzada. En amor, favorece encuentros donde hay química sin teatro: conversación pausada, placer compartido, cuidado mutuo visible.' },
+        { title: 'Qué puede desafiar', body: 'También puede activar comparación: parejas felices en la calle mientras tú sientes distancia, o confundir atracción con validación. Si buscas amor desde el vacío, el lugar no lo rellena; amplifica lo que ya traes contigo. El exceso de comodidad puede volverse evasión.' },
+        { title: 'Cómo aprovecharlo', body: 'Invierte primero en trato propio: tres gestos pequeños que te darías con cariño real. Luego abre espacio social sin urgencia — una cena bien hecha, un museo, un paseo sin meta. Inicia tú la conversación si hay interés; el entorno suele respaldar más de lo que crees.' },
+        { title: null, body: 'El amor en {ciudad} no es premio por estar perfecto. Es más probable cuando disfrutas tu vida y dejas que el otro se acerque a algo que ya tiene coherencia.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Tu trabajo aquí puede verse más claro y más atractivo: cómo presentas, cómo negocias, cómo cuidas la experiencia del otro. {ciudad} favorece oficios donde la forma importa — diseño, imagen, hospitalidad, cultura, venta consultiva — siempre que el fondo sea sólido.' },
+        { title: 'Qué puede desafiar', body: 'Puede tentarte el empaquetado sin sustancia o la complacencia: decir que sí para mantener armonía, postergar conversaciones difíciles, medir tu valor solo por aplausos. También aparece el gasto invisible en apariencia sin retorno.' },
+        { title: 'Cómo aprovecharlo', body: 'Refina presentación y precio con honestidad: un portfolio cuidado, un servicio que se siente humano, alianzas donde hay respeto mutuo. Pide feedback concreto, no solo halagos. Invierte en detalle visible solo donde multiplica confianza.' },
+        { title: null, body: 'En {ciudad} el reconocimiento puede llegar con más fluidez si lo que ofreces ya tiene valor real. La belleza del entorno te empuja a subir el listón, no a esconderte detrás de él.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Este lugar puede invitarte a disfrutar sin culpa: comida lenta, cuerpo cuidado, paisaje que calma la vista. {ciudad} a veces se siente generosa con el bienestar sensorial — un escenario donde recuperar ritmo y gusto por lo simple.' },
+        { title: 'Qué puede desafiar', body: 'El placer fácil puede convertirse en anestesia: compras, exceso dulce, evitar lo que duele maquillándolo de autocuidado. También puede aparecer la sensación de no merecer pausa si tu narrativa interna es muy exigente.' },
+        { title: 'Cómo aprovecharlo', body: 'Elige un placer deliberado al día sin rendimiento: paseo estético, baño largo, música en vivo, cocina con tiempo. Alterna con silencio para que el cuerpo registre el alivio. El descanso venusino es sensación, no solo fotos.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser reentrenarte en recibir. No es lujo vacío; es mantenimiento de quien eres cuando vuelves a la vida diaria.' }
+      ]
+    }
   },
   VENUS_MC: {
     planeta: 'Venus', angulo: 'MC', color: '#BE185D',
@@ -166,9 +238,33 @@ window.INTERPRETATIONS = {
   /* ─────────────── SATURNO ─────────────── */
   SATURNO_AC: {
     planeta: 'Saturno', angulo: 'AC', color: '#4B5563',
-    amor:     "En {ciudad} aparece la versión seria de ti. El amor aquí es menos espontáneo pero más duradero — si llega.",
-    trabajo:  "Disciplina, oficio, paciencia. Lo que construyes aquí pesa. Lo que improvises se cae.",
-    descanso: "No es lugar de descanso fácil. Te pide estructura, rutina, asumir tu edad. A veces eso es lo que descansa de verdad."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'En {ciudad} el vínculo tiende a pedir honestidad y tiempo. Puede favorecer relaciones sobrias, con compromiso explícito, menos fuegos artificiales y más construcción compartida. Si buscas amor maduro, aquí aparece la versión seria de ti — la que no negocia lo esencial.' },
+        { title: 'Qué puede desafiar', body: 'También puede sentirse frío al inicio: lentitud, pruebas de constancia, sensación de que todo cuesta un poco más. Puede activar miedo al rechazo o rigidez — “si no está claro, no sirve”. No confundas prudencia con desinterés.' },
+        { title: 'Cómo aprovecharlo', body: 'Define qué valores no negocias y comunica expectativas sin dramatizar. Pequeños gestos sostenidos valen más que grandes gestos únicos. Si hay interés mutuo, construye acuerdos simples: tiempo, límites, ritmo. La paciencia aquí es herramienta, no castigo.' },
+        { title: null, body: 'El amor en {ciudad} no promete chispa instantánea. Ofrece algo más raro: vínculo que aguanta cuando deja de hacer gracia el escenario.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Este lugar puede favorecer oficio, disciplina y reputación ganada a golpe de constancia. Lo que construyes en {ciudad} suele pesar: contratos largos, maestría técnica, proyectos que requieren años. Ideal si tu objetivo tolera demora a cambio de solidez.' },
+        { title: 'Qué puede desafiar', body: 'La improvisación se resiente: retrasos, burocracia, sensación de reglas invisibles. Puede activar dureza contigo o con otros, o la narrativa de “aún no soy suficiente”. Si esperas resultados inmediatos, la fricción te desgasta.' },
+        { title: 'Cómo aprovecharlo', body: 'Llega con un plan mínimo viable: hitos trimestrales, mentor si existe, métricas claras. Cumple plazos aunque nadie los celebre. Saturno recompensa lo que sostienes; castiga lo que anuncias sin sostén.' },
+        { title: null, body: 'En {ciudad} el trabajo puede sentirse más lento y más real. Si aceptas el ritmo, lo que dejas hecho tiende a quedarse.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'No es descanso ligero, pero puede ser reparador: rutina que calma, sueño regular, sensación de orden después del caos. {ciudad} a veces pide estructura — horarios, límites, cuerpo cuidado con método — y eso, para ciertas etapas, descansa más que el ocio disperso.' },
+        { title: 'Qué puede desafiar', body: 'Puede sentirse opresivo si llegas exhausto y esperas milagro de fin de semana. También activa culpa por no producir o por sentirte mayor de lo que quisieras. El descanso aquí no siempre es placer inmediato; es asumir límites.' },
+        { title: 'Cómo aprovecharlo', body: 'Planifica menos y sostén lo básico: dormir, caminar, comida simple, un solo placer permitido. Negocia expectativas con quien viaja contigo. El descanso saturnino es recuperar autoridad sobre tu ritmo, no desaparecer del mundo.' },
+        { title: null, body: 'En {ciudad} a veces descansas cuando dejas de luchar contra el reloj. No es el lugar más blando; puede ser el más honesto con lo que tu cuerpo ya venía pidiendo.' }
+      ]
+    }
   },
   SATURNO_MC: {
     planeta: 'Saturno', angulo: 'MC', color: '#4B5563',
@@ -267,3 +363,71 @@ window.INTERPRETATIONS = {
     descanso: "Compañía intensa. Una conversación de tres horas en {ciudad} puede valer un año de terapia."
   }
 };
+
+/* Fase 3.8d — lecturas expandidas (piloto AC: Mercurio, Venus, Luna, Saturno) */
+window.KairosCityReading = (function () {
+  var PILOT_KEYS = ['MERCURIO_AC', 'VENUS_AC', 'LUNA_AC', 'SATURNO_AC'];
+  var ASPECTS = ['amor', 'trabajo', 'descanso'];
+  var MIN_WORDS = 120;
+  var MAX_WORDS = 250;
+  var FORBIDDEN = [
+    'universo quiere', 'destino está escrito', 'energías cósmicas',
+    'todo ocurre por una razón', 'vibra alto', 'alma gemela',
+    'universo conspira', 'manifestar', 'frecuencia vibracional',
+    'portal energético', 'llama gemela', 'abundancia infinita',
+    'misión cósmica', 'garantizado', 'debes mudarte'
+  ];
+  var CLICHE = [
+    'vibra', 'energía cósmica', 'el universo', 'tu destino',
+    'signo perfecto', '100% seguro'
+  ];
+
+  function wordCount(text) {
+    return String(text).trim().split(/\s+/).filter(Boolean).length;
+  }
+
+  function readingText(entry) {
+    if (!entry) return '';
+    if (typeof entry === 'string') return entry;
+    if (entry.expanded && entry.sections) {
+      return entry.sections.map(function (s) { return s.body; }).join(' ');
+    }
+    return '';
+  }
+
+  function inspectAspect(key, aspect, entry) {
+    var text = readingText(entry);
+    var words = wordCount(text);
+    var issues = [];
+    if (words < MIN_WORDS) issues.push('short');
+    if (words > MAX_WORDS) issues.push('long');
+    var lower = text.toLowerCase();
+    FORBIDDEN.forEach(function (p) {
+      if (lower.indexOf(p) !== -1) issues.push('forbidden:' + p);
+    });
+    CLICHE.forEach(function (p) {
+      if (lower.indexOf(p) !== -1) issues.push('cliche:' + p);
+    });
+    return { key: key, aspect: aspect, words: words, issues: issues, text: text };
+  }
+
+  return {
+    PILOT_KEYS: PILOT_KEYS,
+    MIN_WORDS: MIN_WORDS,
+    MAX_WORDS: MAX_WORDS,
+    wordCount: wordCount,
+    readingText: readingText,
+    inspectAspect: inspectAspect,
+    inspectAll: function (interpretations) {
+      var rows = [];
+      PILOT_KEYS.forEach(function (key) {
+        var combo = interpretations[key];
+        if (!combo) return;
+        ASPECTS.forEach(function (aspect) {
+          rows.push(inspectAspect(key, aspect, combo[aspect]));
+        });
+      });
+      return rows;
+    }
+  };
+})();

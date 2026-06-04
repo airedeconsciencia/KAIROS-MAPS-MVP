@@ -1312,6 +1312,32 @@
     text-wrap: pretty;
   }
 
+  .reading-section {
+    margin-top: 10px;
+  }
+  .reading-section:first-of-type {
+    margin-top: 4px;
+  }
+  .reading-section-title {
+    margin: 0 0 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .reading-section-body {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    text-wrap: pretty;
+  }
+  .reading-section-close .reading-section-body {
+    color: var(--text);
+    font-style: italic;
+  }
+
   .no-influences {
     text-align: center; color: var(--text-faint);
     font-size: 12.5px;
