@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Kairos Maps — Smoke lecturas ciudad (Fase 3.8d editorial)
-# Piloto: MERCURIO_AC, VENUS_AC, LUNA_AC, SATURNO_AC × amor/trabajo/descanso
+# Piloto 3.8d + 3.8d.2: 19 combos × amor/trabajo/descanso (KairosCityReading.PILOT_KEYS)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -30,7 +30,7 @@ const rows = R.inspectAll(I);
 let fail = 0;
 const bodies = [];
 
-console.log('Piloto 3.8d — palabras por lectura (objetivo 120–250):\n');
+console.log('Piloto editorial (' + R.PILOT_KEYS.length + ' combos) — palabras por lectura (120–250):\n');
 rows.forEach(function (row) {
   const ok = row.issues.length === 0;
   const tag = ok ? 'OK' : 'FAIL';
@@ -63,7 +63,10 @@ Object.keys(I).forEach(function (k) {
   });
 });
 legacy.sort((a, b) => a - b);
-console.log('\nLegacy (36 combos × 3 aspectos, string):');
+const expandedCount = R.PILOT_KEYS.length * aspects.length;
+const legacyCount = Object.keys(I).length * aspects.length - expandedCount;
+console.log('\nCobertura: ' + expandedCount + '/' + (Object.keys(I).length * aspects.length) + ' lecturas expandidas');
+console.log('\nLegacy (' + legacyCount + ' lecturas string):');
 console.log(`  min=${legacy[0]} med=${legacy[Math.floor(legacy.length / 2)]} max=${legacy[legacy.length - 1]}`);
 console.log(`  bajo 35 palabras: ${legacy.filter((w) => w < 35).length}/${legacy.length}`);
 
