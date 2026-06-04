@@ -63,22 +63,70 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'El descanso puede venir cuando sueltas la necesidad de demostrar: un día sin agenda pública, sensación de haber hecho suficiente. {ciudad} a veces permite pausa después de un hito — celebrar sin convertir todo en contenido.' },
         { title: 'Qué puede desafiar', body: 'Cuesta no hacer: el lugar empuja a producir algo que importe. Puede aparecer culpa si no avanzas, o sueño corto por mente en modo logro. No es el escenario más fácil para vacío total.' },
-        { title: 'Cómo aprovecharlo', body: 'Reserva descanso como cita: sin reuniones, sin publicar. Camina sin objetivo profesional. Si descansas mejor tras entregar, planifica un cierre pequeño antes de parar. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Reserva descanso como cita: sin reuniones, sin publicar. Camina sin objetivo profesional. Si descansas mejor tras entregar, planifica un cierre pequeño antes de parar. Cierra el día sin métricas de productividad; el alivio llega cuando sueltas el papel de referente.' },
         { title: null, body: 'Descansar en {ciudad} puede ser aprender que tu valor no desaparece cuando no estás en escena. Eso, para muchos, es el verdadero descanso.' }
       ]
     }
   },
   SOL_IC: {
     planeta: 'Sol', angulo: 'IC', color: '#B45309',
-    amor:     "El amor aquí es privado, profundo, lejos del escaparate. Conexiones que se construyen en lo íntimo.",
-    trabajo:  "No es el mejor lugar para lograr grandes cosas visibles, pero sí para saber por qué quieres lograrlas.",
-    descanso: "{ciudad} da permiso de no hacer nada y que eso esté completamente bien. Tu sistema nervioso lo siente de inmediato."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'El amor puede ser privado, profundo, lejos del escaparate — conexiones que se construyen en lo íntimo, sin necesidad de audiencia. En {ciudad} la presencia importa más que la pose.' },
+        { title: 'Qué puede desafiar', body: 'Esconderse demasiado, o esperar que el otro adivine. También aparece orgullo herido en lo doméstico. Si confundes intimidad con invisibilidad, el vínculo puede quedarse sin luz. Si hay duda, nómbrala con calma antes de que crezca. Observa si te sientes más entero o más expuesto; ambas respuestas informan. Si hay duda, nómbrala con calma antes de que crezca.' },
+        { title: 'Cómo aprovecharlo', body: 'Di algo claro en privado que normalmente evitarías. Crea ritual de presencia sin pantalla. Si hay interés, construye hogar temporal con gestos simples y repetidos.' },
+        { title: null, body: 'El amor en {ciudad} puede brillar sin público. Ahí a veces se ve si es real.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'No es el mejor escenario para fama visible, pero sí para saber por qué quieres lograr — claridad de propósito, trabajo de fondo, investigación privada. {ciudad} favorece alinear motivación antes de volver a escena.' },
+        { title: 'Qué puede desafiar', body: 'Frustración si buscas aplauso aquí, o postergar salida al mundo. También puede activar trabajo sin fin en modo preparación. Ajusta el siguiente paso con datos, no solo con intuición. Observa si te sientes más entero o más expuesto; ambas respuestas informan.' },
+        { title: 'Cómo aprovecharlo', body: 'Escribe tu porqué en una página. Un proyecto íntimo terminado. Revisa si lo que haces en privado te acerca o solo te esconde. Cierra el día sin métricas de productividad pública.' },
+        { title: null, body: 'En {ciudad} el trabajo puede ser semilla en la sombra. Lo que aclaras aquí orienta lo que plantes después.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: '{ciudad} puede dar permiso de no hacer nada y que eso esté bien — tu sistema nervioso lo siente pronto. Descanso solar en privado: siesta, sol en la piel, sensación de estar sin deber de rendir.' },
+        { title: 'Qué puede desafiar', body: 'Culpa por no producir, o tristeza si la pausa te confronta con quién eres sin rol. También puede aparecer aislamiento que no elegiste. El silencio breve después del día ayuda a integrar. Observa si te sientes más entero o más expuesto; ambas respuestas informan. El silencio breve después del día ayuda a integrar.' },
+        { title: 'Cómo aprovecharlo', body: 'Desactiva notificaciones un día. Permanece en un espacio cómodo sin justificarlo. Camina lento. El descanso aquí es presencia sin escenario.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser ocupar tu vida privada sin disculparte. Eso también es vitalidad.' }
+      ]
+    }
   },
   SOL_DC: {
     planeta: 'Sol', angulo: 'DC', color: '#B45309',
-    amor:     "El otro te ve de verdad. Hay algo en el entorno que hace que tus vínculos tengan más definición, más presencia mutua.",
-    trabajo:  "Las colaboraciones aquí son potentes. El trabajo en equipo florece más que el individual.",
-    descanso: "Descansas mejor acompañado que solo en {ciudad}."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'El otro puede verte de verdad: vínculos con más definición, presencia mutua, menos máscara. En {ciudad} la relación gana claridad cuando ambos se atreven a mostrarse.' },
+        { title: 'Qué puede desafiar', body: 'Competir por protagonismo, o sentir que el brillo del otro eclipsa el tuyo. También aparece orgullo en conflicto. Si evitas vulnerabilidad, la pareja se vuelve espejo incómodo. Si hay duda, nómbrala con calma antes de que crezca. Observa si te sientes más entero o más expuesto; ambas respuestas informan.' },
+        { title: 'Cómo aprovecharlo', body: 'Practica escuchar sin preparar respuesta. Nombra aprecio concreto. Si hay interés, construye acuerdos de tiempo y espacio para que ninguno desaparezca. El vínculo mejora cuando los dos ocupan sitio.' },
+        { title: null, body: 'El amor en {ciudad} puede ser espejo luminoso. La pregunta es si te ayuda a verte o solo a compararte.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Colaboraciones potentes: trabajo en equipo, socios visibles, proyectos donde tu luz y la del otro se suman. {ciudad} favorece alianzas con identidad clara — menos trabajo solitario, más construcción compartida.' },
+        { title: 'Qué puede desafiar', body: 'Choques de ego, disputas por crédito, o socios que prometen brillo y no entregan. También puede costar trabajar solo si el entorno empuja a pareja constante. Ajusta el siguiente paso con datos, no solo con intuición. Observa si te sientes más entero o más expuesto; ambas respuestas informan.' },
+        { title: 'Cómo aprovecharlo', body: 'Define roles y reconocimiento desde el inicio. Reuniones cortas con decisión. Celebra hitos del otro sin sentir que resta. La colaboración aquí florece con reglas de luz compartida.' },
+        { title: null, body: 'En {ciudad} el trabajo puede crecer en dupla si el ego tiene carril, no choque frontal.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Descanso acompañado: recuperas mejor con presencia elegida que en aislamiento forzado. {ciudad} favorece mesa compartida, paseo a dos, conversación que baja el ritmo sin exigir rendimiento.' },
+        { title: 'Qué puede desafiar', body: 'Agotamiento social si no pones límites, o compararte con la vida ajena. También puede costar estar solo si temes no brillar. El silencio breve después del día ayuda a integrar. Observa si te sientes más entero o más expuesto; ambas respuestas informan. El silencio breve después del día ayuda a integrar. Observa si te sientes más entero o más expuesto; ambas respuestas informan.' },
+        { title: 'Cómo aprovecharlo', body: 'Elige compañía que te deje tranquilo, no solo impresionado. Un día social, medio día solo. Duerme sin convertir la cena en presentación.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser brillar poco y sentirte bien. A veces eso es la forma más madura de soltar.' }
+      ]
+    }
   },
 
   /* ─────────────── LUNA ─────────────── */
@@ -114,9 +162,33 @@ window.INTERPRETATIONS = {
   },
   LUNA_MC: {
     planeta: 'Luna', angulo: 'MC', color: '#7C3AED',
-    amor:     "Tu sensibilidad emocional es visible profesionalmente. Puede sentirse expuesto o poderoso, según tu integración.",
-    trabajo:  "Profesiones de cuidado, educación, psicología — todas florecen aquí. El trabajo viene desde un lugar genuino.",
-    descanso: "El trabajo aquí nutre en lugar de agotar, si lo eliges bien."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Tu sensibilidad puede ser visible y conmover — la gente percibe autenticidad. En {ciudad} el amor puede llegar por círculos donde importa el cuidado, la escucha, la presencia emocional honesta.' },
+        { title: 'Qué puede desafiar', body: 'Sentirte expuesto profesionalmente en lo íntimo, o llorar en público sin querer. También aparece confundir necesidad con obligación del otro. Si no pones límites, te drenan. Si hay duda, nómbrala con calma antes de que crezca. Una línea escrita al anochecer basta para ordenar lo que el día removió.' },
+        { title: 'Cómo aprovecharlo', body: 'Protege tiempo privado aunque brillen invitaciones. Nombra emoción con precisión, no con drama. Si hay interés, construye vínculo fuera del escenario laboral.' },
+        { title: null, body: 'El amor en {ciudad} puede ser público y tierno a la vez si eliges con quién compartes la piel emocional.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Profesiones de cuidado, educación, psicología, hospitalidad emocional — florecen cuando el trabajo viene desde lo genuino. {ciudad} favorece reputación de quien conecta, no solo de quien entrega.' },
+        { title: 'Qué puede desafiar', body: 'Absorber dolor ajeno, tomarte todo a pecho, o confundir empatía con falta de límites. También puede aparecer cansancio por hiperdisponibilidad. Ajusta el siguiente paso con datos, no solo con intuición. Una línea escrita al anochecer basta para ordenar lo que el día removió. Ajusta el siguiente paso con datos, no solo con intuición.' },
+        { title: 'Cómo aprovecharlo', body: 'Bloques de recuperación entre sesiones. Supervisión o apoyo si tu oficio es cuidado. Documenta acuerdos para no cargar con memoria emocional sola.' },
+        { title: null, body: 'En {ciudad} el trabajo puede nutrir si también te nutres a ti. Sin eso, se convierte en drenaje con buena intención.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'El trabajo elegido bien puede nutrir en lugar de agotar — sensación de propósito que calma. {ciudad} favorece descanso cuando alineas oficio con ritmo corporal.' },
+        { title: 'Qué puede desafiar', body: 'Culpa por parar si tu identidad es cuidar, o insomnio por empatía activada. El descanso puede sentirse egoísta si no lo practicas. El silencio breve después del día ayuda a integrar. Una línea escrita al anochecer basta para ordenar lo que el día removió. El silencio breve después del día ayuda a integrar. Una línea escrita al anochecer basta para ordenar lo que el día removió.' },
+        { title: 'Cómo aprovecharlo', body: 'Un día con menos citas. Agua, comida simple, siesta. Pide ayuda si sostienes a muchos. El descanso lunar en carrera es vaciar la copa a propósito.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser permitirte no sostener a todos. Eso también es profesionalismo emocional.' }
+      ]
+    }
   },
   LUNA_IC: {
     planeta: 'Luna', angulo: 'IC', color: '#7C3AED',
@@ -125,7 +197,7 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'El amor puede tender a raíces: vínculos que se construyen lento, con costumbres compartidas, sensación de hogar emocional. En {ciudad} puede aparecer intimidad que no necesita escenario — cuidado cotidiano, presencia, pertenencia.' },
         { title: 'Qué puede desafiar', body: 'También puede activar dependencia, nostalgia o mezclar familia de origen con pareja. Puede costar salir de la burbuja doméstica. Si evitas la vulnerabilidad, el lugar la saca por otros medios.' },
-        { title: 'Cómo aprovecharlo', body: 'Cocina junto, comparte ritual simple, habla de lo doméstico con honestidad. Si hay interés, construye acuerdos sobre tiempo en casa y tiempo fuera. La profundidad lunar pide ritmo, no prisa. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Cocina junto, comparte ritual simple, habla de lo doméstico con honestidad. Si hay interés, construye acuerdos sobre tiempo en casa y tiempo fuera. La profundidad lunar pide ritmo, no prisa. Escribe una línea nocturna sobre cómo te sentiste en casa a dos; la claridad llega despacio.' },
         { title: null, body: 'El amor en {ciudad} puede sentirse habitacional. No siempre es espectacular; a veces es la forma más honesta de quedarse.' }
       ]
     },
@@ -134,7 +206,7 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'Trabajar desde casa o en entornos íntimos puede fluir: terapia, cuidado, educación en pequeño, oficios desde el hogar. {ciudad} favorece lo que se hace con puerta cerrada y atención sostenida — menos exposición, más sustancia privada.' },
         { title: 'Qué puede desafiar', body: 'Puede costar separar vida laboral y personal si todo ocurre en el mismo espacio. También aparece procrastinación emocional o reuniones que se sienten invasivas. La productividad pública puede resentirse.' },
-        { title: 'Cómo aprovecharlo', body: 'Define horario y lugar de trabajo aunque sea pequeño. Sal a caminar entre bloques. Si tu oficio es cuidado, protege tu propio descanso con la misma diligencia que das a otros. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Define horario y lugar de trabajo aunque sea pequeño. Sal a caminar entre bloques. Si tu oficio es cuidado, protege tu propio descanso con la misma diligencia que das a otros. Separa un rincón solo trabajo y respétalo; la mezcla todo-en-casa agota sin que lo notes.' },
         { title: null, body: 'En {ciudad} el trabajo puede nutrirse en privado si respetas límites. La intimidad es recurso, no excusa para mezclarlo todo.' }
       ]
     },
@@ -143,16 +215,40 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'De muchos lugares, {ciudad} puede sentirse como hogar sin serlo: calidez, comida local, sueño más profundo, sensación de ser cuidado por el entorno. Ideal para reponer energía y recordar quién eres debajo del rendimiento.' },
         { title: 'Qué puede desafiar', body: 'Puede remecer memoria familiar o soledad que no esperabas. También aparece quedarte demasiado dentro si evitas el mundo. El descanso lunar a veces trae lágrimas antes que alivio.' },
-        { title: 'Cómo aprovecharlo', body: 'Come local, duerme sin despertador un día, camina sin destino. Escribe tres líneas nocturnas. Si algo duele, nómbralo con suavidad — no lo conviertas en tarea infinita. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Come local, duerme sin despertador un día, camina sin destino. Escribe tres líneas nocturnas. Si algo duele, nómbralo con suavidad — no lo conviertas en tarea infinita. Duerme una noche sin despertador si puedes; el hogar temporal también puede sostenerte.' },
         { title: null, body: 'Descansar en {ciudad} puede ser dejarte cuidar un tiempo. Cuando el cuerpo baja la guardia, lo demás se ordena mejor.' }
       ]
     }
   },
   LUNA_DC: {
     planeta: 'Luna', angulo: 'DC', color: '#7C3AED',
-    amor:     "Atraes a personas que necesitan ser cuidadas — o que pueden cuidarte. La dinámica emocional aquí es profunda.",
-    trabajo:  "Las relaciones profesionales son más emocionales que estratégicas en {ciudad}.",
-    descanso: "Come comida local, duerme bien, camina sin destino. Deja que la ciudad te cuide."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Puedes atraer quien necesita cuidado — o quien puede cuidarte. En {ciudad} la dinámica emocional es profunda: pertenencia, ritual, sensibilidad compartida, vínculos que no se explican solo con lógica.' },
+        { title: 'Qué puede desafiar', body: 'Confundir rol de cuidador con pareja, o dependencia mutua. También aparece herirte fácil por detalles. Si buscas madre o hijo en el otro, el vínculo se desequilibra. Si hay duda, nómbrala con calma antes de que crezca. Una línea escrita al anochecer basta para ordenar lo que el día removió.' },
+        { title: 'Cómo aprovecharlo', body: 'Observa reciprocidad en gestos pequeños. Di qué necesitas sin disculpa. Si hay interés, construye ritual compartido y tiempo solo. Come comida local y duerme bien; el cuerpo ordena lo que la cabeza enreda.' },
+        { title: null, body: 'El amor en {ciudad} puede ser marea. Aprende a nadar juntos, no a ahogaros cuidando.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Relaciones profesionales más emocionales que frías: confianza, lealtad, equipos que funcionan como red. {ciudad} favorece alianzas donde el trato humano es parte del contrato.' },
+        { title: 'Qué puede desafiar', body: 'Mezclar amistad y negocio sin límites, o tomarte conflictos como rechazo personal. También aparece agotamiento por disponibilidad constante. Ajusta el siguiente paso con datos, no solo con intuición. Una línea escrita al anochecer basta para ordenar lo que el día removió. Ajusta el siguiente paso con datos, no solo con intuición. Una línea escrita al anochecer basta para ordenar lo que el día removió.' },
+        { title: 'Cómo aprovecharlo', body: 'Acuerda horarios y canales de comunicación. Revisa si la relación profesional nutre o drena. Pon por escrito lo que es favor y lo que es trabajo.' },
+        { title: null, body: 'En {ciudad} el trabajo en red puede fluir si el cuidado tiene bordes claros.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Descanso si dejas que la ciudad te cuide: comida local, sueño, paseo sin destino, compañía suave. {ciudad} favorece recuperación cuando aceptas recibir.' },
+        { title: 'Qué puede desafiar', body: 'Sobreproteger o ser sobreprotegido. También aparece nostalgia o humor cambiante según el entorno. El silencio breve después del día ayuda a integrar. Una línea escrita al anochecer basta para ordenar lo que el día removió. El silencio breve después del día ayuda a integrar. Una línea escrita al anochecer basta para ordenar lo que el día removió.' },
+        { title: 'Cómo aprovecharlo', body: 'Camina sin mapa una hora. Duerme una noche larga. Deja que alguien de confianza cocine o organice un plan simple. Anota una sensación al atardecer; no hace falta entenderla toda.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser permiso para ser sostenido un tiempo. Eso no te hace débil; te hace honesto.' }
+      ]
+    }
   },
 
   /* ─────────────── MERCURIO ─────────────── */
@@ -188,21 +284,93 @@ window.INTERPRETATIONS = {
   },
   MERCURIO_MC: {
     planeta: 'Mercurio', angulo: 'MC', color: '#0369A1',
-    amor:     "El amor llega por vías profesionales: una colaboración, un mensaje, una idea compartida. Aquí lo que dices te define.",
-    trabajo:  "Comunicación, medios, escritura, comercio. {ciudad} reconoce y paga a quien sabe articular.",
-    descanso: "El descanso aquí pasa por leer, aprender, perder horas en una conversación."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'El amor puede llegar por vías profesionales: colaboración, mensaje bien escrito, idea compartida que abre confianza. En {ciudad} lo que dices te define — también en lo íntimo, si te atreves a nombrar con claridad lo que quieres.' },
+        { title: 'Qué puede desafiar', body: 'Confundir admiración intelectual con cercanía, o vivir en modo presentación incluso en pareja. También aparece dispersión: muchos hilos, poca profundidad. Si evitas vulnerabilidad, el vínculo puede quedarse en intercambio brillante pero frío.' },
+        { title: 'Cómo aprovecharlo', body: 'Separa bloques sin agenda laboral. Escribe antes de hablar en temas sensibles. Si hay interés, construye conversación privada aparte del proyecto compartido. La palabra aquí abre puertas si también cierra bien los silencios.' },
+        { title: null, body: 'El amor en {ciudad} puede nacer entre líneas y reuniones. La prueba es si el diálogo sigue cuando no hay público.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Comunicación visible: medios, escritura, comercio, docencia, consultoría. {ciudad} puede reconocer y pagar a quien articula con claridad — tu voz profesional gana alcance si traes mensaje concreto.' },
+        { title: 'Qué puede desafiar', body: 'Exceso de reuniones, promesas verbales sin seguimiento, ansiedad por estar siempre disponible. También puede activar síndrome del impostor si te comparas con oradores brillantes. Ajusta el siguiente paso con datos, no solo con intuición. Prioriza una idea cerrada antes de abrir otra conversación.' },
+        { title: 'Cómo aprovecharlo', body: 'Publica o presenta una pieza terminada. Un canal, un cliente, un texto cerrado. Resume acuerdos por escrito el mismo día. El mercurio en carrera premia la claridad que otros pueden citar.' },
+        { title: null, body: 'En {ciudad} tu trabajo puede circular más lejos si dejas de perseguir cada conversación y terminas lo que empiezas.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Descanso mental con estímulo elegido: leer, aprender, charla larga sin reloj. {ciudad} favorece recuperar la cabeza cuando el cuerpo está tranquilo — bibliotecas, cafés, paseos con audio o silencio.' },
+        { title: 'Qué puede desafiar', body: 'Dormir mal por dar vueltas a ideas, o llenar el silencio con pantallas. El descanso puede convertirse en consumo de información sin asimilación. El silencio breve después del día ayuda a integrar. Prioriza una idea cerrada antes de abrir otra conversación.' },
+        { title: 'Cómo aprovecharlo', body: 'Alterna una hora de lectura con una hora sin input. Camina sin podcast. Cierra el día escribiendo tres líneas y no reabrir el cuaderno. El descanso mercurial es ritmo, no vacío.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser dejar que la mente divague sin obligación de producir. Ahí suele volver la energía útil.' }
+      ]
+    }
   },
   MERCURIO_IC: {
     planeta: 'Mercurio', angulo: 'IC', color: '#0369A1',
-    amor:     "El amor aquí se construye con cartas, mensajes largos, complicidad mental. Vínculos que conversan hasta tarde.",
-    trabajo:  "Lugar ideal para estudiar, traducir, ordenar archivos, pensar en silencio. El trabajo invisible que sostiene todo lo demás.",
-    descanso: "Lee mucho. Escribe un diario. {ciudad} te devuelve la voz interior."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'El amor puede construirse con mensajes largos, complicidad mental, conversación hasta tarde en un espacio íntimo. En {ciudad} los vínculos ganan profundidad cuando hay tiempo para pensar antes de responder.' },
+        { title: 'Qué puede desafiar', body: 'Quedarse en la cabeza sin pasar al cuerpo, o analizar hasta enfriar el deseo. También aparece malentendido por mensaje escrito sin tono. Si evitas conflicto, la casa se llena de palabras no dichas.' },
+        { title: 'Cómo aprovecharlo', body: 'Mezcla texto y presencia: una carta o nota, luego mirada y silencio. Habla de lo doméstico con honestidad. Si hay interés, crea ritual de conversación sin distracciones. Escribe una línea nocturna sobre cómo te sentiste en casa a dos; la claridad llega despacio.' },
+        { title: null, body: 'El amor en {ciudad} puede ser hábito y palabra. Cuando ambos existen, el hogar temporal también sostiene.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Trabajo invisible que sostiene: estudiar, traducir, archivar, escribir en silencio. {ciudad} favorece lo que se hace con puerta cerrada — investigación, redacción, ordenar caos en algo legible.' },
+        { title: 'Qué puede desafiar', body: 'Aislamiento excesivo, procrastinación dulce, o mezclar hogar y oficina sin límites. Puede costar visibilidad si tu oficio necesita escenario público. Ajusta el siguiente paso con datos, no solo con intuición. Prioriza una idea cerrada antes de abrir otra conversación.' },
+        { title: 'Cómo aprovecharlo', body: 'Define horario y rincón de trabajo. Un entregable pequeño al día. Sal a caminar entre bloques para que la cabeza no se ate al techo. Separa un rincón solo trabajo y respétalo; la mezcla todo-en-casa agota sin que lo notes.' },
+        { title: null, body: 'En {ciudad} el trabajo puede fluir en privado si proteges el espacio como quien protege el texto.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Descanso con voz interior: leer, diario, silencio que devuelve narrativa propia. {ciudad} puede calmar la necesidad de explicarte al mundo y dejarte escuchar por dentro.' },
+        { title: 'Qué puede desafiar', body: 'Pensar en bucle, revisar conversaciones pasadas, o llenar la soledad con ruido. El descanso puede sentirse como aislamiento si no lo eliges. El silencio breve después del día ayuda a integrar. Prioriza una idea cerrada antes de abrir otra conversación. El silencio breve después del día ayuda a integrar. Prioriza una idea cerrada antes de abrir otra conversación.' },
+        { title: 'Cómo aprovecharlo', body: 'Escribe sin publicar. Lee algo que no sea de tu sector. Una caminata sin teléfono. El descanso mercurial en casa es orden mental, no más estímulo.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser recuperar tu propio lenguaje. Cuando lo tienes, vuelves más claro con los demás.' }
+      ]
+    }
   },
   MERCURIO_DC: {
     planeta: 'Mercurio', angulo: 'DC', color: '#0369A1',
-    amor:     "Atraes a comunicadores, a personas curiosas. La relación funciona mientras la conversación esté viva.",
-    trabajo:  "Negociaciones, acuerdos, contratos: todo lo que se firma o se intercambia fluye en {ciudad}.",
-    descanso: "Descansa hablando. Una cena larga aquí vale más que un fin de semana solo."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Puedes atraer comunicadores, personas curiosas, quien sostiene la conversación viva. En {ciudad} la relación funciona mientras hay intercambio honesto — preguntas, humor, escucha activa, interés mutuo visible.' },
+        { title: 'Qué puede desafiar', body: 'Mucha charla y poco acuerdo, o relaciones que se quedan en intercambio sin compromiso. También aparece ansiedad por silencio del otro. Si confundes compatibilidad con velocidad de diálogo, puedes equivocarte. Si hay duda, nómbrala con calma antes de que crezca. Prioriza una idea cerrada antes de abrir otra conversación.' },
+        { title: 'Cómo aprovecharlo', body: 'Inicia tú una conversación sin agenda. Alterna hablar y resumir lo escuchado. Si hay interés, define expectativas simples por escrito — tiempo, ritmo, límites. La palabra aquí es puente, no sustituto de presencia.' },
+        { title: null, body: 'El amor en {ciudad} puede ser conversación que se vuelve confianza. Cuando calla del todo, conviene preguntar por qué.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Negociaciones, acuerdos, contratos, alianzas donde la claridad importa. {ciudad} favorece lo que se firma, se intercambia, se explica — comercio, consultoría, mediación, venta consultiva.' },
+        { title: 'Qué puede desafiar', body: 'Malentendidos por prisa, contratos mal leídos, o decir sí para mantener buen clima. También puede aparecer socios elocuentes que no ejecutan. Ajusta el siguiente paso con datos, no solo con intuición. Prioriza una idea cerrada antes de abrir otra conversación. Ajusta el siguiente paso con datos, no solo con intuición. Prioriza una idea cerrada antes de abrir otra conversación.' },
+        { title: 'Cómo aprovecharlo', body: 'Resume cada reunión en cinco líneas y envíalas. Relee términos al día siguiente. Negocia con preguntas antes de defender posición. La claridad escrita te ahorra fricción después.' },
+        { title: null, body: 'En {ciudad} el trabajo en acuerdo puede fluir si la palabra tiene seguimiento, no solo brillo.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Descanso hablando: cena larga, paseo con charla, compañía que no exige rendimiento. {ciudad} puede recuperarte en intercambio humano de calidad — mejor una conversación profunda que un fin de semana aislado.' },
+        { title: 'Qué puede desafiar', body: 'Agotamiento social, o llenar el silencio por miedo al vacío. También aparece comparación con la vida verbal de otros. El silencio breve después del día ayuda a integrar. Prioriza una idea cerrada antes de abrir otra conversación. El silencio breve después del día ayuda a integrar.' },
+        { title: 'Cómo aprovecharlo', body: 'Elige una o dos personas, no toda la agenda. Alterna noche social con mañana sin planes. Deja el móvil en otra habitación durante la mesa.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser dejarte nutrir por la palabra justa. No hace falta mucha; hace falta verdadera.' }
+      ]
+    }
   },
 
   /* ─────────────── VENUS ─────────────── */
@@ -250,9 +418,9 @@ window.INTERPRETATIONS = {
     trabajo: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Tu trabajo puede ganar atractivo y valor percibido: diseño, imagen, hospitalidad, cultura, venta consultiva, gastronomía. {ciudad} favorece cuando la forma y el fondo van juntos — persuadir, conectar, embellecer lo que ya es bueno. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Tu trabajo puede ganar atractivo y valor percibido: diseño, imagen, hospitalidad, cultura, venta consultiva, gastronomía. {ciudad} favorece cuando la forma y el fondo van juntos — persuadir, conectar, embellecer lo que ya es bueno.' },
         { title: 'Qué puede desafiar', body: 'Riesgo de empaquetar sin sustancia, gastar en apariencia, o postergar conversaciones difíciles por mantener armonía. También puede activar dependencia de aplausos para sentir que vales.' },
-        { title: 'Cómo aprovecharlo', body: 'Invierte en presentación con criterio: portfolio, servicio, detalle que multiplique confianza. Pide feedback concreto. Negocia precio con elegancia — no con disculpa. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Invierte en presentación con criterio: portfolio, servicio, detalle que multiplique confianza. Pide feedback concreto. Negocia precio con elegancia — no con disculpa. Pide una opinión honesta sobre sustancia, no solo sobre forma; ajusta el siguiente entregable. Compara si el cansancio es de crear o de sostener una imagen.' },
         { title: null, body: 'En {ciudad} el trabajo puede fluir cuando te tratas con el mismo cuidado que ofreces al cliente. Eso se nota antes que cualquier logo.' }
       ]
     },
@@ -261,7 +429,7 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'El descanso puede ser placer bien hecho: buena mesa, cuerpo cuidado, espacios bellos que bajan el ritmo. {ciudad} a veces permite disfrutar el oficio sin culpa — un día de belleza sin productividad.' },
         { title: 'Qué puede desafiar', body: 'Puede convertirse en consumo estético vacío o en trabajar incluso en vacaciones porque el placer y el rendimiento se mezclan. También aparece la sensación de no merecer pausa si no te ves bien.' },
-        { title: 'Cómo aprovecharlo', body: 'Un placer al día sin foto obligatoria. Silencio después del estímulo. Si tu descanso es creativo, pon límite de horas. El cuerpo necesita registrar alivio, no solo estímulo. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Un placer al día sin foto obligatoria. Silencio después del estímulo. Si tu descanso es creativo, pon límite de horas. El cuerpo necesita registrar alivio, no solo estímulo. Alterna estímulo bonito con silencio; el cuerpo registra alivio cuando no hay foto de por medio.' },
         { title: null, body: 'Descansar en {ciudad} puede ser recordar que el gusto también es mantenimiento. Cuando lo permites, vuelves con más mesura.' }
       ]
     }
@@ -273,7 +441,7 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'El amor puede ser privado, estético, íntimo: belleza en lo pequeño, cocina, detalle, cuerpo en calma. En {ciudad} favorece vínculos que se construyen en la vida diaria — menos escaparate, más habitación compartida.' },
         { title: 'Qué puede desafiar', body: 'Puede activar idealización del hogar, celos del espacio, o evitar conversaciones difíciles maquillándolas de armonía. También aparece quedarte en lo cómodo cuando hace falta un paso valiente afuera.' },
-        { title: 'Cómo aprovecharlo', body: 'Cuida el espacio y el tiempo a dos. Un ritual placentero sin rendimiento. Si hay tensión, nómbrala con voz baja antes de que crezca. La intimidad venusina necesita verdad suave. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Cuida el espacio y el tiempo a dos. Un ritual placentero sin rendimiento. Si hay tensión, nómbrala con voz baja antes de que crezca. La intimidad venusina necesita verdad suave. Un gesto estético compartido sin prisa; la intimidad crece cuando no hay público.' },
         { title: null, body: 'El amor en {ciudad} puede florecer en lo cotidiano. No siempre brilla en la calle; a veces brilla en la mesa.' }
       ]
     },
@@ -282,16 +450,16 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'Trabajar en algo que amas puede fluir mejor aquí: oficios desde casa, artesanía, diseño íntimo, cocina, cuidado estético del entorno. {ciudad} favorece cuando el trabajo se siente habitacional, no solo rentable.' },
         { title: 'Qué puede desafiar', body: 'El lugar tolera mal lo que aborreces — puede aparecer hastío rápido o procrastinación dulce. También mezclar placer y obligación sin límites. Si tu oficio es solo supervivencia, puede resentirse.' },
-        { title: 'Cómo aprovecharlo', body: 'Alinea tarea y gusto donde puedas; donde no, pon límites claros de horario. Embellece tu espacio de trabajo mínimo. Un proyecto pequeño terminado vale más que un sueño decorado. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Alinea tarea y gusto donde puedas; donde no, pon límites claros de horario. Embellece tu espacio de trabajo mínimo. Un proyecto pequeño terminado vale más que un sueño decorado. Termina un proyecto pequeño en tu espacio; la satisfacción doméstica calma la prisa.' },
         { title: null, body: 'En {ciudad} el trabajo puede sanar si lo vinculas con cuidado. Si lo fuerzas sin respeto, el cuerpo protesta antes que la cabeza.' }
       ]
     },
     descanso: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'El placer y el hogar pueden fundirse: baño largo, ropa cómoda, comida bella, silencio en un rincón. {ciudad} favorece descanso sensorial — cuerpo mimado sin necesidad de explicarlo. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'El placer y el hogar pueden fundirse: baño largo, ropa cómoda, comida bella, silencio en un rincón. {ciudad} favorece descanso sensorial — cuerpo mimado sin necesidad de explicarlo.' },
         { title: 'Qué puede desafiar', body: 'Puede volverse aislamiento dulce o consumo para no sentir. También aparece culpa por disfrutar si tu narrativa es muy exigente. El descanso puede parecer “demasiado blando”.' },
-        { title: 'Cómo aprovecharlo', body: 'Un placer doméstico al día sin productividad. Abre ventana, cambia sábanas, cocina lento. Alterna nido con un paseo corto para que el mundo no desaparezca del todo. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Un placer doméstico al día sin productividad. Abre ventana, cambia sábanas, cocina lento. Alterna nido con un paseo corto para que el mundo no desaparezca del todo. Baño largo o cocina lenta; deja que el placer sea fin en sí, no preludio de productividad. Respira cinco minutos después del placer; el cuerpo asimila mejor con pausa.' },
         { title: null, body: 'Descansar en {ciudad} puede ser reentrenarte en recibir en privado. Eso también es fortaleza.' }
       ]
     }
@@ -303,25 +471,25 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'Puede activarse tu capacidad de vínculo equilibrado: química, reciprocidad, encuentros con presencia. Si buscas amor, {ciudad} suele ofrecer un escenario favorable — conversación fácil, placer compartido, gente que también busca conexión.' },
         { title: 'Qué puede desafiar', body: 'También puede activar comparación, dependencia de validación o elegir quien encanta pero no sostiene. Si llegas con hambre de llenar un vacío, el lugar lo nota y pospone. El exceso de complacencia evita verdades necesarias.' },
-        { title: 'Cómo aprovecharlo', body: 'Llega nutrido contigo: tres gestos de autocuidado antes de buscar al otro. Inicia conversación con calma. Observa si hay reciprocidad en lo pequeño antes de idealizar. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Llega nutrido contigo: tres gestos de autocuidado antes de buscar al otro. Inicia conversación con calma. Observa si hay reciprocidad en lo pequeño antes de idealizar. Mira reciprocidad en detalles pequeños antes de idealizar; el equilibrio se nota en lo cotidiano.' },
         { title: null, body: 'El amor en {ciudad} puede ser más accesible cuando no negocias tu dignidad por compañía. La armonía real incluye límites.' }
       ]
     },
     trabajo: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Colaboraciones armoniosas: socios, clientes, equipos donde el trato importa. {ciudad} favorece negociación elegante, diseño en pareja, alianzas creativas — trabajo que se siente humano y equilibrado. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Colaboraciones armoniosas: socios, clientes, equipos donde el trato importa. {ciudad} favorece negociación elegante, diseño en pareja, alianzas creativas — trabajo que se siente humano y equilibrado.' },
         { title: 'Qué puede desafiar', body: 'Evitar conflicto necesario por mantener paz, o firmar acuerdos bonitos sin detalle. También puede aparecer dependencia del socio o distracción social que come horas.' },
-        { title: 'Cómo aprovecharlo', body: 'Pon por escrito lo acordado aunque la química sea buena. Revisa reciprocidad de esfuerzo cada semana. Di no con suavidad cuando haga falta — la armonía sostiene con verdad. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Pon por escrito lo acordado aunque la química sea buena. Revisa reciprocidad de esfuerzo cada semana. Di no con suavidad cuando haga falta — la armonía sostiene con verdad. Relee el acuerdo en frío al día siguiente; la armonía aguanta cuando el texto también. Si algo no cuadra en el acuerdo, dilo pronto y con respeto.' },
         { title: null, body: 'En {ciudad} el trabajo en equipo puede fluir si el respeto es mutuo. La belleza del trato no sustituye la claridad.' }
       ]
     },
     descanso: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Descanso compartido: cenas largas, paseos a dos, placer social sin exigencia. {ciudad} favorece recuperarte en compañía elegida — risa, mesa, conversación que baja el ritmo. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Descanso compartido: cenas largas, paseos a dos, placer social sin exigencia. {ciudad} favorece recuperarte en compañía elegida — risa, mesa, conversación que baja el ritmo.' },
         { title: 'Qué puede desafiar', body: 'Puede costar estar solo si asocias descanso a compañía. También aparece agenda social que agota o comparación con la vida ajena. El placer ajeno no siempre es tu descanso.' },
-        { title: 'Cómo aprovecharlo', body: 'Elige una o dos personas de confianza, no toda la ciudad. Un plan placentero sin foto obligatoria. Deja un día solo para integrar lo vivido. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Elige una o dos personas de confianza, no toda la ciudad. Un plan placentero sin foto obligatoria. Deja un día solo para integrar lo vivido. Un día solo tras compartir; integrar en silencio evita confundir ruido social con descanso. Elige compañía que te deje tranquilo, no solo entretenido.' },
         { title: null, body: 'Descansar en {ciudad} puede ser compartir el gusto con quien te deja más entero. La calidad del vínculo importa más que la cantidad.' }
       ]
     }
@@ -353,22 +521,70 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'El descanso puede ser activo: caminar fuerte, nadar, entrenar, explorar barrios a pie hasta cansarte bien. {ciudad} a veces suelta tensión cuando el cuerpo gasta lo que la cabeza acumuló. Dormir profundo tras movimiento es habitual.' },
         { title: 'Qué puede desafiar', body: 'Cuesta estar quieto sin irritarte. Puede aparecer ansiedad de fondo, sueño ligero si no mueves suficiente, o tensión si no tienes válvula física. El no hacer nada puede sentirse como fallo.' },
-        { title: 'Cómo aprovecharlo', body: 'Planifica movimiento diario antes que pantalla. Masaje, agua fría, estiramientos. Si viajas con alguien, acuerden descanso corporal compartido — caminar, cocinar, jugar — no solo sofá. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Planifica movimiento diario antes que pantalla. Masaje, agua fría, estiramientos. Si viajas con alguien, acuerden descanso corporal compartido — caminar, cocinar, jugar — no solo sofá. Termina el día con estiramiento y una hora sin pantalla; el cuerpo dirá si el ritmo fue el adecuado.' },
         { title: null, body: 'Descansar en {ciudad} puede ser agotarte bien para volver a ti. Cuando el cuerpo termina, la mente por fin baja el volumen.' }
       ]
     }
   },
   MARTE_MC: {
     planeta: 'Marte', angulo: 'MC', color: '#B91C1C',
-    amor:     "Tu ambición es visible y atrae a quien la respeta — o a quien la rivaliza. Define qué quieres antes de implicarte.",
-    trabajo:  "Aquí compites y a menudo ganas. Liderazgo, deporte, ejecutivo, emprendimiento. La fricción es parte del éxito.",
-    descanso: "Difícil descansar — el lugar te pide actuar. Acepta que el descanso es la conquista, no el reposo."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Tu ambición puede ser visible y atraer quien la respeta — o quien la rivaliza con franqueza. En {ciudad} el amor puede ligarse a proyectos exigentes, parejas directas, vínculos que no temen decir qué quieren.' },
+        { title: 'Qué puede desafiar', body: 'Competir con la pareja, confundir deseo con conquista, o postergar ternura por prisa. También aparece celos ligados a logros. Si no defines qué buscas, puedes implicarte en dinámicas de choque. Si hay duda, nómbrala con calma antes de que crezca.' },
+        { title: 'Cómo aprovecharlo', body: 'Aclara intención antes de mezclar cama y carrera. Protege tiempo sin agenda profesional. Si hay interés, negocia límites de trabajo y de intimidad por separado. La pasión aquí necesita dirección, no solo impulso.' },
+        { title: null, body: 'El amor en {ciudad} puede ser fuego con nombre. Sin nombre, quema; con nombre, calienta.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Competir y ejecutar: liderazgo, deporte, cirugía, ingeniería, emprendimiento, roles de decisión rápida. {ciudad} favorece quien hace que las cosas ocurran — la fricción puede ser parte del éxito si hay meta clara.' },
+        { title: 'Qué puede desafiar', body: 'Quemar puentes, agotarte, o confundir agresividad con liderazgo. También aparece conflicto con autoridad si no canalizas la energía. Sin diana, el cansancio llega pronto. Ajusta el siguiente paso con datos, no solo con intuición. El cuerpo marca si el ritmo fue el correcto; escúchalo antes de juzgar el lugar.' },
+        { title: 'Cómo aprovecharlo', body: 'Define objetivo medible para la estancia. Deporte intenso como higiene. Cierra reuniones con acción asignada y fecha. Termina el día con estiramiento para que la cabeza no siga en modo combate.' },
+        { title: null, body: 'En {ciudad} el trabajo puede avanzar a golpes firmes si cuidas recuperación y relaciones, no solo victorias.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Descanso como conquista cumplida: sensación de haber terminado algo fuerte y poder soltar. {ciudad} a veces descansa mejor tras esfuerzo físico real — competencia sana, caminata larga, trabajo manual.' },
+        { title: 'Qué puede desafiar', body: 'Difícil estar quieto, insomnio por mente en alerta, o culpa por no producir. El lugar puede pedir acción incluso en vacaciones. El silencio breve después del día ayuda a integrar. El cuerpo marca si el ritmo fue el correcto; escúchalo antes de juzgar el lugar. El silencio breve después del día ayuda a integrar.' },
+        { title: 'Cómo aprovecharlo', body: 'Canaliza energía antes de intentar dormir. Acepta que aquí el reposo puede ser victoria, no sofá pasivo. Un día fuerte, una noche sin pantalla.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser haber gastado bien la batería. Cuando no la gastas, la ciudad te inquieta.' }
+      ]
+    }
   },
   MARTE_IC: {
     planeta: 'Marte', angulo: 'IC', color: '#B91C1C',
-    amor:     "Tensión en lo íntimo. Las discusiones aquí escalan rápido; lo que callas en casa explota cuando menos lo esperas.",
-    trabajo:  "Trabajar desde el hogar puede frustrar. Mejor separar espacios — ambiente cargado, productividad irregular.",
-    descanso: "Cuidado con la irritabilidad doméstica. Necesitas válvulas físicas: ejercicio, jardinería, algo que canalice."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Tensión íntima que puede volverse honestidad: lo que callas en casa aquí puede salir y ordenarse. En {ciudad} los vínculos cercanos ganan franqueza — menos teatro, más verdad doméstica.' },
+        { title: 'Qué puede desafiar', body: 'Discusiones que escalan rápido, irritabilidad en espacios pequeños, o explosión de lo postergado. También aparece competir por el hogar en lugar de compartirlo. Si no hay válvula, el amor se daña. Si hay duda, nómbrala con calma antes de que crezca.' },
+        { title: 'Cómo aprovecharlo', body: 'Habla antes de que suba la temperatura. Sal a caminar cuando el ambiente se carga. Si hay interés, acuerda pausas y palabras seguras. Una tarea doméstica juntos puede bajar la tensión mejor que otra ronda de argumentos.' },
+        { title: null, body: 'El amor en {ciudad} puede ser fuego en la cocina. Con cuidado, cocina; sin cuidado, quema la olla.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Trabajo desde casa con urgencia: reformas, proyectos físicos, oficios manuales, defensa de lo tuyo. {ciudad} puede empujar a hacer en privado lo que postergabas — ordenar, arreglar, construir.' },
+        { title: 'Qué puede desafiar', body: 'Frustración si mezclas hogar y oficina sin límites. Productividad irregular, discusiones que interrumpen foco. Ambiente cargado si no canalizas la energía. Ajusta el siguiente paso con datos, no solo con intuición. El cuerpo marca si el ritmo fue el correcto; escúchalo antes de juzgar el lugar.' },
+        { title: 'Cómo aprovecharlo', body: 'Separa espacio y horario. Tarea física antes de sentarte a escribir. Si trabajas con alguien en casa, acuerda señales de no molestar. Cierra la reunión con quién hace qué y cuándo.' },
+        { title: null, body: 'En {ciudad} el trabajo doméstico puede avanzar si el cuerpo gasta tensión antes que la palabra.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Descanso con válvula física: ejercicio, jardinería, limpiar con energía, mover muebles. {ciudad} suelta irritabilidad doméstica cuando el cuerpo hace algo concreto.' },
+        { title: 'Qué puede desafiar', body: 'Discusiones en casa, sueño ligero, sensación de que algo va a explotar. El descanso puede sentirse imposible si hay guerra fría. El silencio breve después del día ayuda a integrar. El cuerpo marca si el ritmo fue el correcto; escúchalo antes de juzgar el lugar. El silencio breve después del día ayuda a integrar.' },
+        { title: 'Cómo aprovecharlo', body: 'Canaliza antes de dormir: ducha fría, estiramientos, paseo rápido. Si vives con alguien, agenda conversación pendiente con inicio y fin. Cuidado con la irritabilidad doméstica; el cuerpo pide salida.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser vaciar la caldera en casa. Cuando no la vacías, hierve por la noche.' }
+      ]
+    }
   },
   MARTE_DC: {
     planeta: 'Marte', angulo: 'DC', color: '#B91C1C',
@@ -377,16 +593,16 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'Pasión clara y franqueza: atracción que no se esconde, conversaciones que van al punto. En {ciudad} los vínculos pueden ser intensos — a veces conflicto y deseo en la misma tarde — pero suelen ser honestos.' },
         { title: 'Qué puede desafiar', body: 'Discusiones que escalan, competencia entre parejas, o confundir adrenalina con amor. También aparece impaciencia con la tibieza ajena. Si evitas el conflicto en casa, el lugar lo trae aquí.' },
-        { title: 'Cómo aprovecharlo', body: 'Mueve el cuerpo antes de hablar de lo importante. Usa frases cortas y concretas. Si hay tensión, pausa y vuelve — no ganes la pelea y pierdas el vínculo. La pasión necesita límites. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Mueve el cuerpo antes de hablar de lo importante. Usa frases cortas y concretas. Si hay tensión, pausa y vuelve — no ganes la pelea y pierdas el vínculo. La pasión necesita límites. Después de la charla, camina diez minutos; el cuerpo baja la intensidad y la cabeza ordena.' },
         { title: null, body: 'El amor en {ciudad} rara vez es tibio. Puede ser transformador si eliges verdad sobre victoria.' }
       ]
     },
     trabajo: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Socios con carácter y negociaciones directas: acuerdos rápidos cuando hay respeto, energía para empujar proyectos compartidos. {ciudad} favorece equipos que ejecutan — menos diplomacia vacía, más acción. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Socios con carácter y negociaciones directas: acuerdos rápidos cuando hay respeto, energía para empujar proyectos compartidos. {ciudad} favorece equipos que ejecutan — menos diplomacia vacía, más acción.' },
         { title: 'Qué puede desafiar', body: 'Choques de ego, contratos firmados en caliente, rupturas impulsivas. La fricción puede quemar puentes si no hay reglas. También aparece competir con aliados en lugar de colaborar.' },
-        { title: 'Cómo aprovecharlo', body: 'Define roles y plazos por escrito. Canaliza la energía hacia un enemigo común — el problema, no la persona. Reuniones cortas con decisión al final. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Define roles y plazos por escrito. Canaliza la energía hacia un enemigo común — el problema, no la persona. Reuniones cortas con decisión al final. Cierra la reunión con quién hace qué y cuándo; la fricción útil termina en acción. Después de negociar, muévete; el cuerpo suelta la tensión residual.' },
         { title: null, body: 'En {ciudad} el trabajo en pareja puede avanzar rápido si el conflico tiene canal. Sin canal, solo deja cicatrices.' }
       ]
     },
@@ -395,7 +611,7 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'Descanso después de decir lo no dicho: alivio cuando la verdad sale con cuidado. {ciudad} puede permitir conversaciones que limpian tensión acumulada — especialmente si viajas con alguien.' },
         { title: 'Qué puede desafiar', body: 'Difícil estar en calma si hay guerra fría o discusión pendiente. Puede aparecer insomnio, cuerpo tenso, necesidad de moverte para no explotar. El descanso no llega mientras la pelea sigue en la cabeza.' },
-        { title: 'Cómo aprovecharlo', body: 'Agenda una conversación con inicio y fin. Camina junto, no frente a frente en mesa. Si no hay acuerdo, al menos hay claridad — eso también descansa. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Agenda una conversación con inicio y fin. Camina junto, no frente a frente en mesa. Si no hay acuerdo, al menos hay claridad — eso también descansa. Si quedó algo sin decir, ponle horario; la claridad también es forma de descanso.' },
         { title: null, body: 'Descansar en {ciudad} puede ser dejar de postergar la fricción con nombre. Cuando se nombra, el cuerpo a veces suelta antes que la mente.' }
       ]
     }
@@ -418,7 +634,7 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'Las puertas pueden abrirse con más facilidad: contactos, invitaciones, proyectos que crecen. {ciudad} favorece enseñar, publicar, expandir, negociar con visión — si traes sustancia, el lugar ayuda a que se note antes.' },
         { title: 'Qué puede desafiar', body: 'Riesgo de decir que sí a todo, inflar presupuestos o reputación, o frustrarte si la grandeza no llega al instante. También aparece la tentación de parecer más grande de lo que estás listo para sostener.' },
-        { title: 'Cómo aprovecharlo', body: 'Elige dos apuestas máximo y profundiza. Haz tres contactos útiles con seguimiento. Documenta promesas. La expansión aquí funciona cuando anclas cada oportunidad en un siguiente paso concreto. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Elige dos apuestas máximo y profundiza. Haz tres contactos útiles con seguimiento. Documenta promesas. La expansión aquí funciona cuando anclas cada oportunidad en un siguiente paso concreto. Anota qué puerta abriste y qué quedó en intención; la amplitud se mide en pasos cumplidos.' },
         { title: null, body: 'En {ciudad} el trabajo puede crecer si piensas en grande y actúas en pequeño. La amplitud sin ejecución se convierte en ruido.' }
       ]
     },
@@ -427,7 +643,7 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'Descanso con amplitud: viajes cortos desde la ciudad, naturaleza, mesas largas, risa, sensación de suficiencia. {ciudad} puede devolverte ganas de explorar sin culpa — útil si llegas encogido por la escasez mental.' },
         { title: 'Qué puede desafiar', body: 'Puede costar parar: quieres un plan más, un viaje más, una fiesta más. El exceso también cansa. También aparece comparación con vidas más grandes que la tuya en la calle o en pantalla.' },
-        { title: 'Cómo aprovecharlo', body: 'Reserva días sin meta turística. Come bien una vez al día sin prisa. Camina sin mapa una hora. El descanso jupiteriano es espacio, no solo consumo. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Reserva días sin meta turística. Come bien una vez al día sin prisa. Camina sin mapa una hora. El descanso jupiteriano es espacio, no solo consumo. Deja un día sin planes grandes; el descanso aquí es margen, no otra carrera.' },
         { title: null, body: 'Descansar en {ciudad} puede ser recordar que la vida tiene margen. Cuando lo sientes en el cuerpo, vuelves con otro ritmo.' }
       ]
     }
@@ -439,7 +655,7 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'El reconocimiento puede hacerte más visible y eso abre vínculos con quien admira tu trayectoria o tu generosidad. En {ciudad} puede haber amor ligado a crecimiento compartido — parejas que amplían horizonte, no que lo reducen.' },
         { title: 'Qué puede desafiar', body: 'Confundir admiración con amor es el riesgo clásico. También aparece elogio que no compromete, o relaciones donde tú das más visibilidad de la que recibes cuidado. Puede costar ver al otro detrás del aplauso.' },
-        { title: 'Cómo aprovecharlo', body: 'Pregunta cómo es el otro cuando no brilla. Comparte tiempo sin audiencia. Si hay interés, negocia reciprocidad emocional con la misma claridad que un acuerdo laboral. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Pregunta cómo es el otro cuando no brilla. Comparte tiempo sin audiencia. Si hay interés, negocia reciprocidad emocional con la misma claridad que un acuerdo laboral. Observa si la admiración que recibes incluye cuidado mutuo, no solo aplauso a tu imagen.' },
         { title: null, body: 'El amor en {ciudad} puede crecer con tu carrera si no le pides que sea público para existir. La intimidad también merece expansión.' }
       ]
     },
@@ -448,16 +664,16 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'Expansión profesional con viento a favor: contactos, invitaciones a enseñar, publicar, liderar, escalar un proyecto. {ciudad} favorece pensar en grande con ejecución — la visión encuentra más eco aquí.' },
         { title: 'Qué puede desafiar', body: 'Prometer de más, inflar presupuestos, frustrarte si el salto no es inmediato. También puede activar soberbia o dispersión en demasiados frentes. El lugar amplifica; no sustituye preparación.' },
-        { title: 'Cómo aprovecharlo', body: 'Haz al menos tres contactos con seguimiento escrito. Elige un salto realista y desglósalo. Celebra hitos pequeños para no vivir solo en la fantasía del gran golpe. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Haz al menos tres contactos con seguimiento escrito. Elige un salto realista y desglósalo. Celebra hitos pequeños para no vivir solo en la fantasía del gran golpe. Elige un contacto para seguir en dos semanas; la amplitud profesional necesita continuidad.' },
         { title: null, body: 'En {ciudad} la carrera puede abrirse si actúas en la dirección del crecimiento, no solo en su narrativa. La generosidad profesional funciona cuando tiene límites.' }
       ]
     },
     descanso: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Descanso como celebración contenida: cena larga tras un logro, viaje corto, sensación de suficiencia. {ciudad} puede permitirte disfrutar el éxito sin convertirlo inmediatamente en la siguiente meta. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Descanso como celebración contenida: cena larga tras un logro, viaje corto, sensación de suficiencia. {ciudad} puede permitirte disfrutar el éxito sin convertirlo inmediatamente en la siguiente meta.' },
         { title: 'Qué puede desafiar', body: 'Cuesta parar de producir o de planificar el siguiente nivel. Puede aparecer ansiedad si no creces, o consumo para compensar presión. El éxito aquí no descansa solo.' },
-        { title: 'Cómo aprovecharlo', body: 'Agenda días sin producción antes de llegar. Comparte el logro con pocas personas de confianza. Camina sin objetivo de networking. El descanso es bajar el listón un tiempo. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Agenda días sin producción antes de llegar. Comparte el logro con pocas personas de confianza. Camina sin objetivo de networking. El descanso es bajar el listón un tiempo. Baja el listón un día entero; celebrar sin convertirlo en la siguiente meta es parte del descanso. Un paseo sin meta cuenta como descanso si lo permites sin culpa.' },
         { title: null, body: 'Descansar en {ciudad} puede ser honrar lo logrado sin exigirte la versión siguiente al día siguiente. Eso también es madurez.' }
       ]
     }
@@ -473,27 +689,27 @@ window.INTERPRETATIONS = {
     amor: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Puedes atraer personas que abren mundo: viajeros, maestros, extranjeros, quien trae perspectiva. En {ciudad} el amor puede ampliar — menos posesión, más horizonte compartido, vínculos que enseñan algo. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Puedes atraer personas que abren mundo: viajeros, maestros, extranjeros, quien trae perspectiva. En {ciudad} el amor puede ampliar — menos posesión, más horizonte compartido, vínculos que enseñan algo.' },
         { title: 'Qué puede desafiar', body: 'Idealizar al otro como guru, prometer viajes sin cumplir, o confundir amplitud con falta de compromiso. También aparece relaciones donde tú das más espacio del que recibes cuidado.' },
-        { title: 'Cómo aprovecharlo', body: 'Pregunta qué sostiene el vínculo más allá de la aventura. Comparte un plan realista, no solo un sueño. Si hay interés, construye acuerdos concretos — tiempo, dinero, presencia. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
-        { title: null, body: 'El amor en {ciudad} puede ensanchar tu mapa. La pregunta útil es si también te da suelo, no solo cielo.' }
+        { title: 'Cómo aprovecharlo', body: 'Pregunta qué sostiene el vínculo más allá de la aventura. Comparte un plan realista, no solo un sueño. Si hay interés, construye acuerdos concretos — tiempo, dinero, presencia. Un plan concreto a dos semanas basta para probar si hay sostén real.' },
+        { title: null, body: 'El amor en {ciudad} puede ensanchar tu mapa. La pregunta útil es si también te da suelo, no solo cielo — y si puedes caminar sobre ese suelo juntos.' }
       ]
     },
     trabajo: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Socios generosos, contratos amplios, alianzas donde ambas partes ganan. {ciudad} favorece negociar con visión — mercados nuevos, mentoría, proyectos que crecen con otra cabeza pensante. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Socios generosos, contratos amplios, alianzas donde ambas partes ganan. {ciudad} favorece negociar con visión — mercados nuevos, mentoría, proyectos que crecen con otra cabeza pensante.' },
         { title: 'Qué puede desafiar', body: 'Prometer de más en acuerdos, confiar sin verificar, o dispersarte en demasiadas alianzas. También puede aparecer el socio encantador que no ejecuta.' },
-        { title: 'Cómo aprovecharlo', body: 'Revisa términos con calma aunque la química sea buena. Define hitos compartidos. Celebra amplitud con documentación — la confianza se construye, no se asume. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Revisa términos con calma aunque la química sea buena. Define hitos compartidos. Celebra amplitud con documentación — la confianza se construye, no se asume. Guarda los términos acordados donde los veas; la confianza se construye, no se asume. Un hito compartido pequeño vale más que un contrato grandilocuente.' },
         { title: null, body: 'En {ciudad} el trabajo en alianza puede crecer si la generosidad tiene estructura. Sin estructura, solo deja buenas intenciones que conviene revisar con calma antes de seguir.' }
       ]
     },
     descanso: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Descanso social amplio: mesa larga, amigos nuevos, conversación que abre puertas. {ciudad} favorece recuperarte en compañía que inspira — risa, comida, historias que cambian el ánimo. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Descanso social amplio: mesa larga, amigos nuevos, conversación que abre puertas. {ciudad} favorece recuperarte en compañía que inspira — risa, comida, historias que cambian el ánimo.' },
         { title: 'Qué puede desafiar', body: 'Agenda social que agota, planes demasiado grandes, dificultad para estar solo. También aparece comparación con vidas más expansivas. El descanso puede convertirse en otro rendimiento.' },
-        { title: 'Cómo aprovecharlo', body: 'Elige pocas encuentros de calidad. Deja un día sin presentaciones nuevas. Camina solo después de compartir — integra lo vivido. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Elige pocas encuentros de calidad. Deja un día sin presentaciones nuevas. Camina solo después de compartir — integra lo vivido. Pocas mesas, buena compañía; el descanso social aquí es profundidad, no volumen. Menos invitaciones, más presencia; así el descanso no se diluye.' },
         { title: null, body: 'Descansar en {ciudad} puede ser dejarte alimentar por la compañía correcta. La amplitud descansa cuando no es obligación y cuando eliges con criterio, no por miedo a quedarte fuera.' }
       ]
     }
@@ -537,25 +753,25 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'Puede favorecer vínculos sobrios y duraderos: parejas que respetan tu tiempo, tu trabajo, tu palabra. En {ciudad} el amor maduro suele llegar cuando la vida está ordenada — menos fuegos artificiales, más compromiso explícito.' },
         { title: 'Qué puede desafiar', body: 'El trabajo puede absorber el calendario amoroso. También aparece frialdad, miedo al rechazo, o sensación de que no hay espacio para ligereza. Si esperas romance de película, puede frustrarte.' },
-        { title: 'Cómo aprovecharlo', body: 'Protege citas como reuniones importantes. Comunica ritmo y límites sin dramatizar. Si hay interés mutuo, construye acuerdos simples — tiempo, expectativas, silencios compartidos. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Protege citas como reuniones importantes. Comunica ritmo y límites sin dramatizar. Si hay interés mutuo, construye acuerdos simples — tiempo, expectativas, silencios compartidos. Protege una cita como reunión seria; la constancia pequeña pesa más que el gesto grande.' },
         { title: null, body: 'El amor en {ciudad} puede ser lento y serio. Si sobrevive aquí, suele sobrevivir porque tiene estructura, no solo porque arde.' }
       ]
     },
     trabajo: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Carrera con peso: reputación que dura, ascensos lentos, autoridad ganada con años y entregables. {ciudad} favorece construir algo que aguante — instituciones, oficio, maestría, contratos largos. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Carrera con peso: reputación que dura, ascensos lentos, autoridad ganada con años y entregables. {ciudad} favorece construir algo que aguante — instituciones, oficio, maestría, contratos largos.' },
         { title: 'Qué puede desafiar', body: 'Fricción, retrasos, sensación de que todo cuesta el doble. Puede activar dureza contigo o exigencia crónica. Si buscas golpe de efecto, el lugar puede desanimar antes de recompensar.' },
-        { title: 'Cómo aprovecharlo', body: 'Trabaja como si quedara registro: plazos cumplidos, documentación clara, mentor si existe. Define hitos trimestrales, no diarios. La paciencia aquí es estrategia, no resignación. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Trabaja como si quedara registro: plazos cumplidos, documentación clara, mentor si existe. Define hitos trimestrales, no diarios. La paciencia aquí es estrategia, no resignación. Revisa un entregable cumplido antes de exigirte más; Saturno premia lo cerrado, no lo anunciado. Firma el cierre de una tarea antes de abrir la siguiente; eso calma la exigencia.' },
         { title: null, body: 'En {ciudad} el trabajo puede sentirse más lento y más real. Lo que dejas hecho tiende a quedarse en tu historial profesional.' }
       ]
     },
     descanso: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Descanso entre temporadas: cuando cierras un ciclo, el cuerpo puede soltar. {ciudad} a veces enseña pausa estructurada — sueño regular, rutina, silencio después de cumplir. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Descanso entre temporadas: cuando cierras un ciclo, el cuerpo puede soltar. {ciudad} a veces enseña pausa estructurada — sueño regular, rutina, silencio después de cumplir.' },
         { title: 'Qué puede desafiar', body: 'Cuesta soltar si sientes que siempre falta algo. Puede aparecer culpa por no producir o descanso que se siente como debilidad. No es el lugar más blando para vacío total.' },
-        { title: 'Cómo aprovecharlo', body: 'Negocia límites de trabajo antes de viajar. Un ritual de cierre — lista hecha, equipo avisado — y luego silencio. El descanso saturnino es orden, no abandono. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Negocia límites de trabajo antes de viajar. Un ritual de cierre — lista hecha, equipo avisado — y luego silencio. El descanso saturnino es orden, no abandono. Ritual de cierre breve y luego silencio; el descanso aquí es orden, no abandono.' },
         { title: null, body: 'Descansar en {ciudad} puede ser la pausa entre capítulos. No siempre es ligero; a veces es exactamente lo que tu ritmo llevaba tiempo pidiendo.' }
       ]
     }
@@ -567,34 +783,58 @@ window.INTERPRETATIONS = {
       sections: [
         { title: 'Qué puede favorecer', body: 'El amor puede pedir madurez doméstica: compromiso, límites claros, vínculos que sostienen la vida real. En {ciudad} puede aparecer pareja seria o profundizar un vínculo existente — menos teatro, más construcción.' },
         { title: 'Qué puede desafiar', body: 'El hogar pesa: resuena lo familiar antiguo, mandatos heredados, frialdad si evitas sentir. Puede activar distancia, miedo a necesitar, o sensación de que el amor es obligación. No confundas prudencia con desamor.' },
-        { title: 'Cómo aprovecharlo', body: 'Habla de hogar y expectativas con calma. Si hay heridas familiares, ponles nombre sin dramatizar. En pareja, acuerdos sobre espacio, tiempo y dinero evitan resentimiento. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Habla de hogar y expectativas con calma. Si hay heridas familiares, ponles nombre sin dramatizar. En pareja, acuerdos sobre espacio, tiempo y dinero evitan resentimiento. Nombra un límite doméstico con calma; el vínculo gana suelo cuando la casa tiene reglas claras.' },
         { title: null, body: 'El amor en {ciudad} puede ser trabajo interior compartido. Cuando se hace, el vínculo gana suelo; cuando se evita, el peso domina.' }
       ]
     },
     trabajo: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Reorganizar raíces puede fluir: herencias, archivo, vivienda, historia familiar, negocio desde casa con estructura. {ciudad} favorece lo que requiere paciencia y documentación — ordenar lo heredado para avanzar. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Reorganizar raíces puede fluir: herencias, archivo, vivienda, historia familiar, negocio desde casa con estructura. {ciudad} favorece lo que requiere paciencia y documentación — ordenar lo heredado para avanzar.' },
         { title: 'Qué puede desafiar', body: 'Burocracia lenta, tensiones con autoridad o familia, sensación de carga. Puede activar rigidez o miedo a empezar si temes equivocarte. No es escenario para improvisar lo serio.' },
-        { title: 'Cómo aprovecharlo', body: 'Lista pequeña de pendientes reales. Un trámite a la vez. Pide ayuda profesional si hace falta. Cierra ciclos antes de abrir otros — Saturno premia el orden, no la acumulación. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Lista pequeña de pendientes reales. Un trámite a la vez. Pide ayuda profesional si hace falta. Cierra ciclos antes de abrir otros — Saturno premia el orden, no la acumulación. Un trámite hoy, otro mañana; la paciencia con papeles evita el caos heredado. Guarda copia de lo tramitado; el orden reduce la ansiedad de raíz.' },
         { title: null, body: 'En {ciudad} el trabajo de raíz puede ser pesado y liberador. Lo que ordenas aquí suele aligerar años después.' }
       ]
     },
     descanso: {
       expanded: true,
       sections: [
-        { title: 'Qué puede favorecer', body: 'Soledad útil: estar sin compañía y que eso sea exactamente lo necesario. {ciudad} puede permitir silencio, sueño largo, orden en casa, sensación de suelo bajo los pies. También conviene notar qué te activa y qué te agota, sin convertirlo en veredicto inmediato.' },
+        { title: 'Qué puede favorecer', body: 'Soledad útil: estar sin compañía y que eso sea exactamente lo necesario. {ciudad} puede permitir silencio, sueño largo, orden en casa, sensación de suelo bajo los pies.' },
         { title: 'Qué puede desafiar', body: 'Puede sentirse opresivo, frío o demasiado adulto. También aparece culpa por descansar si tu modelo familiar fue esfuerzo constante. El descanso no siempre es tierno.' },
-        { title: 'Cómo aprovecharlo', body: 'Ordena un rincón, no toda la vida. Camina solo una hora. Escribe lo que heredaste y qué quieres soltar. El descanso saturnino es estructura mínima que calma. Dale unos días para contrastar sensación y hechos antes de cerrar la experiencia.' },
+        { title: 'Cómo aprovecharlo', body: 'Ordena un rincón, no toda la vida. Camina solo una hora. Escribe lo que heredaste y qué quieres soltar. El descanso saturnino es estructura mínima que calma. Ordena un solo rincón y descansa ahí; no hace falta arreglar la vida entera. Una hora de silencio con taza caliente; no hace falta más para empezar.' },
         { title: null, body: 'Descansar en {ciudad} puede ser estar contigo sin rendir cuentas a nadie. A veces eso es la forma más seria de cuidarte.' }
       ]
     }
   },
   SATURNO_DC: {
     planeta: 'Saturno', angulo: 'DC', color: '#4B5563',
-    amor:     "Vínculos de compromiso, parejas con peso, relaciones con diferencia de edad o de mundo. El amor aquí no es ligero.",
-    trabajo:  "Socios serios, contratos largos. Aquí no se firma a la primera — y eso te protege.",
-    descanso: "Compañía sobria. {ciudad} no es para amistades de superficie."
+    amor: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Vínculos de compromiso: parejas con peso, relaciones serias, diferencia de edad o de mundo que aporta madurez. En {ciudad} el amor no es ligero — puede ser lento, claro, con palabra que se cumple.' },
+        { title: 'Qué puede desafiar', body: 'Frialdad inicial, miedo al rechazo, o sensación de examen constante. También aparece rigidez o pareja que representa autoridad. Si esperas fantasía sin esfuerzo, puede frustrarte. Si hay duda, nómbrala con calma antes de que crezca. La constancia pequeña vale más que el gesto grande; revisa eso al cabo de una semana.' },
+        { title: 'Cómo aprovecharlo', body: 'Comunica expectativas sin dramatizar. Pequeños gestos sostenidos. Si hay interés, construye acuerdos simples y revisa cumplimiento con calma. La palabra dada aquí pesa más que la promesa grande.' },
+        { title: null, body: 'El amor en {ciudad} puede ser contrato del alma. No es para todos los ritmos; para el tuyo, puede ser exacto.' }
+      ]
+    },
+    trabajo: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Socios serios, contratos largos, alianzas que priorizan fiabilidad sobre chispa. {ciudad} favorece no firmar a la primera — y eso puede protegerte de prisas costosas.' },
+        { title: 'Qué puede desafiar', body: 'Burocracia, desconfianza, o sensación de que todo tarda. También aparece socios rígidos o negociaciones que se enfrían. Ajusta el siguiente paso con datos, no solo con intuición. La constancia pequeña vale más que el gesto grande; revisa eso al cabo de una semana. Ajusta el siguiente paso con datos, no solo con intuición. La constancia pequeña vale más que el gesto grande; revisa eso al cabo de una semana.' },
+        { title: 'Cómo aprovecharlo', body: 'Lee contratos con tiempo. Pide referencias. Define plazos realistas y cumple los tuyos. La reputación aquí se gana con constancia, no con discurso.' },
+        { title: null, body: 'En {ciudad} el trabajo en alianza puede durar si el papel está claro y el tiempo, respetado.' }
+      ]
+    },
+    descanso: {
+      expanded: true,
+      sections: [
+        { title: 'Qué puede favorecer', body: 'Compañía sobria: pocas personas, conversación con sustancia, descanso sin ruido social vacío. {ciudad} no es para amistades de superficie — puede ser para silencio compartido que restaura.' },
+        { title: 'Qué puede desafiar', body: 'Soledad si esperas ligereza, o sensación de juicio en compañía. También aparece rigidez en planes. El silencio breve después del día ayuda a integrar. La constancia pequeña vale más que el gesto grande; revisa eso al cabo de una semana. El silencio breve después del día ayuda a integrar.' },
+        { title: 'Cómo aprovecharlo', body: 'Elige una cena tranquila en lugar de cinco eventos. Camina con quien respeta el silencio. Negocia límites de trabajo antes de viajar; el descanso saturnino es orden, no abandono.' },
+        { title: null, body: 'Descansar en {ciudad} puede ser calidad pequeña en compañía correcta. No hace falta multitud; hace falta respeto.' }
+      ]
+    }
   },
 
   /* ─────────────── URANO ─────────────── */
@@ -676,15 +916,21 @@ window.INTERPRETATIONS = {
   }
 };
 
-/* Fase 3.8d / 3.8d.2 — lecturas expandidas (piloto editorial) */
+/* Fase 3.8d / 3.8d.2 / 3.8d.3 — lecturas expandidas (piloto editorial) */
 window.KairosCityReading = (function () {
   var PILOT_KEYS = [
     'MERCURIO_AC', 'VENUS_AC', 'LUNA_AC', 'SATURNO_AC',
     'SOL_AC', 'MARTE_AC', 'JUPITER_AC',
     'SOL_MC', 'VENUS_MC', 'JUPITER_MC', 'SATURNO_MC',
     'LUNA_IC', 'VENUS_IC', 'SATURNO_IC',
-    'VENUS_DC', 'MARTE_DC', 'JUPITER_DC'
+    'VENUS_DC', 'MARTE_DC', 'JUPITER_DC',
+    'MERCURIO_MC', 'MERCURIO_IC', 'MERCURIO_DC',
+    'MARTE_MC', 'MARTE_IC',
+    'SOL_IC', 'SOL_DC',
+    'LUNA_MC', 'LUNA_DC',
+    'SATURNO_DC'
   ];
+  var EXPECTED_EXPANDED_READINGS = 81;
   var ASPECTS = ['amor', 'trabajo', 'descanso'];
   var MIN_WORDS = 120;
   var MAX_WORDS = 250;
