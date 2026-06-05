@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke City Premium Composition (Fase 3.8e.9a DEV)
+# Kairos Maps — Smoke City Premium Composition (Fase 3.8e.9b DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -20,7 +20,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — City Premium Composition smoke (3.8e.9a)"
+echo " KAIROS MAPS — City Premium Composition smoke (3.8e.9b)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -152,8 +152,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Compositor existe (schema 3.8e.9a)',
-  Premium && Premium.SCHEMA_VERSION.indexOf('3.8e.9a') === 0,
+  'Compositor existe (schema 3.8e.9b)',
+  Premium && Premium.SCHEMA_VERSION.indexOf('3.8e.9b') === 0,
   'schema=' + (Premium && Premium.SCHEMA_VERSION)
 );
 
@@ -308,7 +308,7 @@ labCases.forEach(function (s) {
   const lower = full.toLowerCase();
   const nc = s.reading.meta.narrativeContext;
   const integracion = s.reading.sections.filter(function (x) { return x.id === 'integracion'; })[0];
-  if (countWord(lower, 'conviene') > 4) {
+  if (countWord(lower, 'conviene') > 1) {
     voiceFail = true;
     console.log('  Exceso conviene en ' + s.city + '/' + s.goal + ': ' + countWord(lower, 'conviene'));
   }
@@ -521,6 +521,51 @@ let tourismFail = false;
 });
 assert('Sin tokens turísticos prohibidos (lab 3)', !tourismFail, null);
 
+const prohibitedTransitions = Premium.PROHIBITED_TRANSITIONS || [];
+let transitionFail = false;
+[lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
+  if (!s) return;
+  const lower = s.reading.sections.map(function (x) { return x.body; }).join(' ').toLowerCase();
+  prohibitedTransitions.forEach(function (tok) {
+    if (lower.indexOf(tok) !== -1) {
+      transitionFail = true;
+      console.log('  Transición prohibida "' + tok + '" en ' + s.city + '/' + s.goal);
+    }
+  });
+});
+assert('Sin transiciones mecánicas prohibidas (lab 3)', !transitionFail, null);
+
+let methodologyFail = false;
+[lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
+  if (!s) return;
+  const hits = s.reading.meta.methodologyHits != null ? s.reading.meta.methodologyHits : 99;
+  if (hits > 1) {
+    methodologyFail = true;
+    console.log('  methodologyHits=' + hits + ' en ' + s.city + '/' + s.goal);
+  }
+  const full = s.reading.sections.map(function (x) { return x.body; }).join(' ').toLowerCase();
+  if (full.indexOf('con foco en') !== -1) {
+    methodologyFail = true;
+    console.log('  "Con foco en" visible en ' + s.city + '/' + s.goal);
+  }
+  if (full.indexOf('cuando una energía está poco integrada') !== -1) {
+    methodologyFail = true;
+    console.log('  Frase metodológica integrada visible en ' + s.city + '/' + s.goal);
+  }
+});
+assert('methodologyHits bajo umbral (≤1) y sin Con foco en (lab 3)', !methodologyFail, null);
+
+let repeatTransitionFail = false;
+[lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
+  if (!s) return;
+  const repeated = s.reading.meta.repeatedTransitions || [];
+  if (repeated.length > 0) {
+    repeatTransitionFail = true;
+    console.log('  repeatedTransitions en ' + s.city + '/' + s.goal + ': ' + repeated.length);
+  }
+});
+assert('Sin transiciones repetidas en lectura (lab 3)', !repeatTransitionFail, null);
+
 console.log('\n' + '═'.repeat(60));
 console.log('Lab casos — palabras y sourceBreakdown');
 [lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
@@ -539,6 +584,10 @@ console.log('Lab casos — palabras y sourceBreakdown');
     if (nc.cityAtmosphere) {
       console.log('    citySlug:', nc.cityAtmosphere.citySlug);
       console.log('    atmosphereLinesUsed:', s.reading.meta.atmosphereLinesUsed);
+      console.log('    methodologyHits:', s.reading.meta.methodologyHits);
+      console.log('    softenedBlocks:', s.reading.meta.softenedBlocks);
+      console.log('    conviene:', s.reading.meta.clinicalTermsCount
+        ? s.reading.meta.clinicalTermsCount.conviene : 0);
       console.log('    selectedLines:');
       nc.cityAtmosphere.selectedLines.forEach(function (line) {
         console.log('      ·', line);

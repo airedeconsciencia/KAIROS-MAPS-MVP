@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Kairos Maps — City Premium Reading Lab (3.8e.5 DEV)</title>
+  <title>Kairos Maps — City Premium Reading Lab (3.8e.9b DEV)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -87,7 +87,7 @@
   </style>
 </head>
 <body>
-  <div class="dev-banner">DEV ONLY · 3.8e.5 Narrative Intelligence + Knowledge · Sin mapa · Sin paywall</div>
+  <div class="dev-banner">DEV ONLY · 3.8e.9b Voice cleanup · Transiciones + metodología · Sin paywall</div>
   <div class="page">
     <h1>City Premium Reading Lab</h1>
     <p class="sub">
@@ -112,6 +112,7 @@
     </div>
 
     <div id="status" class="panel" style="display:none"></div>
+    <div id="voice-panel" class="panel" style="display:none"></div>
     <div id="meta-panel" class="panel" style="display:none"></div>
     <div id="knowledge-panel" class="panel" style="display:none"></div>
     <div id="influences-panel" class="panel" style="display:none"></div>
@@ -195,6 +196,25 @@
       profile: { firstName: 'Roberto' },
       score: scored ? scored.score : null
     });
+  }
+
+  function renderVoiceWarnings(reading) {
+    var m = reading.meta;
+    var html = '<p class="panel-title">Voice cleanup (3.8e.9b)</p><div class="meta-grid">';
+    html += metaItem('methodologyHits', String(m.methodologyHits != null ? m.methodologyHits : '—'));
+    html += metaItem('softenedBlocks', String(m.softenedBlocks != null ? m.softenedBlocks : '—'));
+    var clinical = m.clinicalTermsCount || {};
+    html += metaItem('conviene', String(clinical.conviene != null ? clinical.conviene : 0));
+    html += metaItem('moderarExpectativas', String(clinical.moderarExpectativas != null ? clinical.moderarExpectativas : 0));
+    html += metaItem('observarSi', String(clinical.observarSi != null ? clinical.observarSi : 0));
+    html += metaItem('enLaPractica', String(clinical.enLaPractica != null ? clinical.enLaPractica : 0));
+    html += '</div>';
+    var repeated = m.repeatedTransitions || [];
+    html += '<div class="meta-item" style="margin-top:8px"><strong>repeatedTransitions</strong>' +
+      (repeated.length ? repeated.map(function (t) { return escapeHtml(t); }).join('<br>') : '—') +
+      '</div>';
+    document.getElementById('voice-panel').innerHTML = html;
+    document.getElementById('voice-panel').style.display = 'block';
   }
 
   function renderMeta(reading, scored) {
@@ -298,6 +318,7 @@
       var reading = runOne(cityKey, goalId);
       document.getElementById('batch-panel').style.display = 'none';
       renderMeta(reading, reading.meta.score);
+      renderVoiceWarnings(reading);
       renderKnowledge(reading);
       renderInfluences(reading);
       renderReading(reading);

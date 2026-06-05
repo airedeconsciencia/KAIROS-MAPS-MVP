@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke Narrative Intelligence (Fase 3.8e.9a DEV)
+# Kairos Maps — Smoke Narrative Intelligence (Fase 3.8e.9b DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -17,7 +17,7 @@ NARRATIVE="$ROOT/src/services/narrative-intelligence-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — Narrative Intelligence smoke (3.8e.9a)"
+echo " KAIROS MAPS — Narrative Intelligence smoke (3.8e.9b)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 

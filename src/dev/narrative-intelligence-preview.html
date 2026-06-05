@@ -232,6 +232,9 @@
       '<div class="spine-item"><strong>palabras</strong>' + m.wordCount + '</div>' +
       '<div class="spine-item"><strong>schema</strong>' + KairosCityPremiumComposition.SCHEMA_VERSION + '</div>' +
       '<div class="spine-item"><strong>atmosphereLinesUsed</strong>' + (m.atmosphereLinesUsed || 0) + '</div>' +
+      '<div class="spine-item"><strong>methodologyHits</strong>' + (m.methodologyHits != null ? m.methodologyHits : '—') + '</div>' +
+      '<div class="spine-item"><strong>softenedBlocks</strong>' + (m.softenedBlocks != null ? m.softenedBlocks : '—') + '</div>' +
+      '<div class="spine-item"><strong>conviene</strong>' + (m.clinicalTermsCount ? m.clinicalTermsCount.conviene : 0) + '</div>' +
       '<div class="spine-item"><strong>methodologyRepeats</strong>' + (m.methodologyPhraseRepeats || 0) + '</div>';
     document.getElementById('meta-panel').style.display = 'block';
   }

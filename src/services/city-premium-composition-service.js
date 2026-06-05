@@ -1,5 +1,5 @@
 /**
- * KAIROS MAPS — City Premium Reading composition (Fase 3.8e.9a DEV)
+ * KAIROS MAPS — City Premium Reading composition (Fase 3.8e.9b DEV)
  *
  * Lectura integrada: voz premium cálida + premium-blocks + fallback.
  * Sin IA, sin inventar datos astrológicos.
@@ -9,7 +9,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8e.9a-dev-0.1';
+  var SCHEMA_VERSION = '3.8e.9b-dev-0.1';
   var MAX_ATMOSPHERE_LINES = 3;
   var MIN_WORDS = 500;
   var MAX_WORDS = 900;
@@ -99,16 +99,94 @@
     'no se anulan',
     'no clasifica como destino',
     'no sustituye entregables',
+    'como mucho dos capas',
+    'con foco en',
+    'cuando una energía está poco integrada',
+    'la línea aislada',
+    'la promesa natal',
+    'el entorno ofrece escenario',
+    'esta lectura ordena'
+  ];
+
+  var METHODOLOGY_SUPPRESS_MARKERS = [
+    'con foco en',
+    'cuando una energía está poco integrada',
+    'la línea aislada',
+    'la promesa natal',
+    'el entorno ofrece escenario',
+    'esta lectura ordena',
+    'nunca la línea aislada',
     'como mucho dos capas'
   ];
 
-  var INFLUENCE_TRANSITIONS = [
-    '',
-    'La segunda capa del lugar aparece en cómo ',
-    'Junto a esto, también conviene mirar cómo ',
-    'No todo empuja en la misma dirección: ',
-    'Ahí aparece una tensión interesante, porque '
+  var PROHIBITED_TRANSITIONS = [
+    'ahí aparece una tensión interesante',
+    'junto a esto',
+    'la segunda capa del lugar',
+    'no todo empuja en la misma dirección',
+    'también conviene mirar cómo'
   ];
+
+  var VOICE_METAPHOR_MARKERS = [
+    'habitación que se ordena',
+    'escena cotidiana',
+    'como brújula',
+    'pequeña expedición'
+  ];
+
+  var VOICE_TRANSITION_POOL = {
+    matiz: [
+      'Detrás de eso hay otra textura, más silenciosa.',
+      'Con el tiempo, el matiz se aclara.',
+      'Lo que viene después no corrige: completa.',
+      'Hay un contraste que no es oposición: es matiz.',
+      'Lo que parecía claro se vuelve más fino al repetirse.',
+      'Hay otra lectura posible del mismo momento.'
+    ],
+    contradiccion: [
+      'La segunda mirada suele ser más honesta que la primera.',
+      'Y ahí aparece algo distinto — sin contradecir lo anterior.',
+      'Lo que hoy choca puede ser dos ritmos conviviendo.',
+      'La lectura gana profundidad cuando aceptas la contradicción.',
+      'Entre lo que favorece y lo que desafía hay un pasillo estrecho.'
+    ],
+    capa: [
+      'Hay una capa que solo aparece cuando bajas el ruido.',
+      'Lo que sigue no es anexo: es otra cara del mismo lugar.',
+      'Detrás del impulso hay una pregunta más lenta.',
+      'Hay un hilo que conecta lo visible con lo no dicho.'
+    ],
+    advertencia: [
+      'Si te quedas un poco más, el tono cambia.',
+      'Algo se mueve cuando dejas de exigirte respuesta inmediata.',
+      'Detrás de la urgencia hay algo que pide tiempo.',
+      'La escena cambia cuando dejas de medirla con prisa.'
+    ],
+    cierre: [
+      'Entre una señal y otra hay espacio para elegir.',
+      'La escena cotidiana confirma o matiza lo que intuías.',
+      'Hay un giro pequeño que altera el sentido de todo.'
+    ],
+    cuerpo: [
+      'La lectura se afina cuando el cuerpo también opina.',
+      'Algo se revela cuando sueltas la necesidad de encajar todo.',
+      'No todo lo que se activa apunta al mismo norte.'
+    ],
+    ciudad: [
+      'Hay momentos en que el lugar habla por contraste, no por confirmación.',
+      'Lo que activa el lugar no siempre activa lo mismo en ti.',
+      'Hay señales que se entienden mejor en la repetición.'
+    ]
+  };
+
+  var SECTION_TRANSITION_CATS = {
+    sintesis: ['capa', 'matiz'],
+    favorece: ['matiz', 'ciudad'],
+    desafia: ['contradiccion', 'advertencia'],
+    aprovecha: ['cuerpo', 'matiz'],
+    observar: ['cuerpo', 'cierre'],
+    integracion: ['cierre', 'ciudad']
+  };
 
   var FORBIDDEN = [
     'universo quiere', 'destino está escrito', 'energías cósmicas',
@@ -336,6 +414,210 @@
     return false;
   }
 
+  function hasMethodologySuppressMarker(text) {
+    var lower = String(text || '').toLowerCase();
+    for (var i = 0; i < METHODOLOGY_SUPPRESS_MARKERS.length; i++) {
+      if (lower.indexOf(METHODOLOGY_SUPPRESS_MARKERS[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  function initVoiceContext(ctx) {
+    ctx._usedTransitions = ctx._usedTransitions || {};
+    ctx._usedMetaphors = ctx._usedMetaphors || {};
+    ctx._softenedBlocks = ctx._softenedBlocks || 0;
+    ctx._methodologyHits = ctx._methodologyHits || 0;
+    ctx._clinicalTerms = ctx._clinicalTerms || {
+      conviene: 0,
+      moderarExpectativas: 0,
+      observarSi: 0,
+      enLaPractica: 0
+    };
+  }
+
+  function softenClinicalTerms(text, ctx) {
+    if (!text) return '';
+    initVoiceContext(ctx);
+    var out = text;
+    var lower = out.toLowerCase();
+
+    if (lower.indexOf('en la práctica') !== -1) {
+      out = out.replace(/\ben la práctica\b/gi, 'con el tiempo');
+      ctx._clinicalTerms.enLaPractica += 1;
+    }
+    if (lower.indexOf('moderar expectativas') !== -1) {
+      out = out.replace(/conviene moderar expectativas/gi, 'ayuda aflojar expectativas');
+      out = out.replace(/moderar expectativas/gi, 'aflojar expectativas');
+      ctx._clinicalTerms.moderarExpectativas += 1;
+    }
+    if (/\bobservar si\b/i.test(out)) {
+      out = out.replace(/\bobservar si\b/gi, 'mirar si');
+      ctx._clinicalTerms.observarSi += 1;
+    }
+
+    var convMatches = out.match(/\bconviene\b/gi) || [];
+    if (convMatches.length) {
+      if (ctx._clinicalTerms.conviene >= 1) {
+        out = out.replace(/\bconviene\b/gi, 'puede');
+      }
+      ctx._clinicalTerms.conviene += convMatches.length;
+    }
+
+    return out;
+  }
+
+  function softenMethodologyText(text, ctx) {
+    if (!text) return { text: '', softened: false, suppressed: false, hit: false };
+
+    initVoiceContext(ctx);
+    var original = String(text);
+    var lower = original.toLowerCase();
+    var hit = hasMethodologySuppressMarker(original) || isMethodologyPhrase(original);
+    var softened = false;
+    var suppressed = false;
+    var t = original;
+
+    if (lower.indexOf('esta lectura ordena') !== -1) {
+      return { text: '', softened: false, suppressed: true, hit: true };
+    }
+
+    if (lower.indexOf('con foco en trabajo') !== -1) {
+      t = 'En trabajo, ' + ctx.cityName +
+        ' no habla solo de hacer más, sino de entender qué merece ser visto.';
+      softened = true;
+    } else if (lower.indexOf('con foco en amor') !== -1) {
+      t = 'En amor, ' + ctx.cityName +
+        ' pide presencia en el encuentro antes que rellenar vacíos desde fuera.';
+      softened = true;
+    } else if (lower.indexOf('con foco en descanso') !== -1) {
+      t = 'En descanso, ' + ctx.cityName +
+        ' invita a bajar exigencia sin convertir la pausa en otro rendimiento.';
+      softened = true;
+    } else if (lower.indexOf('cuando una energía está poco integrada') !== -1) {
+      t = 'A veces el lugar devuelve de golpe algo que aún no estaba del todo asumido.';
+      softened = true;
+    } else if (lower.indexOf('la promesa natal') !== -1) {
+      t = 'El mapa natal sigue siendo tu referencia; el lugar solo activa lo que ya traes.';
+      softened = true;
+    } else if (lower.indexOf('el entorno ofrece escenario') !== -1) {
+      t = original.replace(
+        /[^.!?…]*el entorno ofrece escenario[^.!?…]*[.!?…]?\s*/gi,
+        ''
+      ).trim();
+      if (!t || t.length < 24) {
+        suppressed = true;
+        t = '';
+      }
+      softened = true;
+    } else if (lower.indexOf('nunca la línea aislada') !== -1 ||
+        lower.indexOf('la línea aislada') !== -1) {
+      t = 'Una sola señal nunca cuenta toda la historia del lugar.';
+      softened = true;
+    } else if (lower.indexOf('como mucho dos capas') !== -1) {
+      t = 'Con dos hilos vivos basta para leer el lugar sin abrir demasiados frentes.';
+      softened = true;
+    } else if (lower.indexOf('no clasifica como destino') !== -1) {
+      t = ctx.cityName + ' no se lee como destino bueno o malo: se lee según lo que necesitas aprender ahora.';
+      softened = true;
+    } else if (lower.indexOf('conviene moderar expectativas') !== -1) {
+      t = 'Cerca del trazo la experiencia puede ser intensa; si aún no canalizas esa energía, afloja ritmo y expectativas.';
+      softened = true;
+    } else if (lower.indexOf('conviene leer ambos planos') !== -1) {
+      t = 'El impulso del territorio y la carta relocada cuentan historias distintas — merece la pena leerlas juntas sin mezclarlas.';
+      softened = true;
+    }
+
+    if (suppressed || !t) {
+      if (hit) ctx._methodologyHits += 1;
+      return { text: '', softened: softened, suppressed: true, hit: hit };
+    }
+
+    t = softenClinicalTerms(t, ctx);
+    if (softened) ctx._softenedBlocks += 1;
+    if (hit) ctx._methodologyHits += 1;
+
+    return { text: t, softened: softened, suppressed: false, hit: hit };
+  }
+
+  function applyTextPolish(text, ctx, narrativeContext) {
+    if (!text) return '';
+    var polished = text;
+    if (narrativeContext) {
+      var soft = softenMethodologyText(replaceCity(text, ctx.cityName, ctx.name), ctx);
+      if (soft.suppressed) return '';
+      polished = soft.text;
+    } else {
+      polished = softenClinicalTerms(replaceCity(text, ctx.cityName, ctx.name), ctx);
+    }
+    return polished;
+  }
+
+  function metaphorFingerprint(text) {
+    var lower = String(text || '').toLowerCase();
+    for (var i = 0; i < VOICE_METAPHOR_MARKERS.length; i++) {
+      if (lower.indexOf(VOICE_METAPHOR_MARKERS[i]) !== -1) {
+        return VOICE_METAPHOR_MARKERS[i];
+      }
+    }
+    return '';
+  }
+
+  function claimMetaphor(text, ctx) {
+    var fp = metaphorFingerprint(text);
+    if (!fp) return true;
+    initVoiceContext(ctx);
+    if (ctx._usedMetaphors[fp]) return false;
+    ctx._usedMetaphors[fp] = true;
+    return true;
+  }
+
+  function pickVoiceTransition(ctx, sectionId, blockKey, rank) {
+    initVoiceContext(ctx);
+    var cats = SECTION_TRANSITION_CATS[sectionId] || ['matiz', 'contradiccion'];
+    var attempts = 0;
+    var maxAttempts = 24;
+
+    while (attempts < maxAttempts) {
+      var cat = cats[(rank + attempts) % cats.length];
+      var pool = VOICE_TRANSITION_POOL[cat] || VOICE_TRANSITION_POOL.matiz;
+      var idx = hash32(ctx.seed + ':' + sectionId + ':' + blockKey + ':' + attempts) % pool.length;
+      var line = pool[idx];
+      var banned = false;
+      var lowerLine = line.toLowerCase();
+      for (var p = 0; p < PROHIBITED_TRANSITIONS.length; p++) {
+        if (lowerLine.indexOf(PROHIBITED_TRANSITIONS[p]) !== -1) banned = true;
+      }
+      if (!banned && !ctx._usedTransitions[line]) {
+        ctx._usedTransitions[line] = true;
+        return line;
+      }
+      attempts += 1;
+    }
+    return '';
+  }
+
+  function countMethodologyHitsInText(fullText) {
+    var lower = String(fullText || '').toLowerCase();
+    var hits = 0;
+    METHODOLOGY_SUPPRESS_MARKERS.forEach(function (marker) {
+      if (lower.indexOf(marker) !== -1) hits += 1;
+    });
+    return hits;
+  }
+
+  function collectRepeatedTransitions(fullText, ctx) {
+    var repeated = [];
+    initVoiceContext(ctx);
+    Object.keys(ctx._usedTransitions).forEach(function (line) {
+      var fp = line.toLowerCase().slice(0, 28);
+      var first = fullText.toLowerCase().indexOf(fp);
+      if (first === -1) return;
+      var second = fullText.toLowerCase().indexOf(fp, first + fp.length);
+      if (second !== -1) repeated.push(line);
+    });
+    return repeated;
+  }
+
   function spineField(nc, key, fallbackKey) {
     if (nc[key]) return nc[key];
     return nc[fallbackKey] || '';
@@ -480,26 +762,21 @@
         if (methLeft <= 0) return;
         methLeft -= 1;
       }
-      if (narrativeContext && isMethodologyPhrase(block.text)) {
-        if (methLeft <= 0) return;
-        methLeft -= 1;
-      }
-
-      var text = replaceCity(block.text, ctx.cityName, ctx.name);
+      var text = applyTextPolish(block.text, ctx, narrativeContext);
+      if (!text) return;
       var norm = normalizeSentence(text, ctx.cityName);
       if (!norm || globalSeen[norm]) return;
-      if (narrativeContext && isMethodologyPhrase(text) && methLeft <= 0) return;
+      if (!claimMetaphor(text, ctx)) return;
 
       var prefix = '';
-      if (block.interpKey && block.interpKey !== lastKey) {
-        prefix = INFLUENCE_TRANSITIONS[1 + (hash32(ctx.seed + block.interpKey + rank) % (INFLUENCE_TRANSITIONS.length - 1))];
+      if (block.interpKey && block.interpKey !== lastKey && parts.length) {
+        prefix = pickVoiceTransition(ctx, sectionId, block.interpKey, rank);
         rank += 1;
         lastKey = block.interpKey;
       }
 
-      if (prefix && parts.length) {
-        var lower = text.charAt(0).toLowerCase() + text.slice(1);
-        text = prefix + lower;
+      if (prefix) {
+        text = prefix + ' ' + text;
       }
 
       if (!claimText(text, ctx.cityName, globalSeen)) return;
@@ -647,14 +924,15 @@
     var targets = ['favorece', 'aprovecha', 'desafia', 'observar', 'integracion'];
     var idx = 0;
     var guard = 0;
-    while (sectionsWordTotal(copy) < minTotal && guard < 18) {
+    while (sectionsWordTotal(copy) < minTotal && guard < 36) {
       var tpl = HUMAN_EDITORIAL_PADS[(idx + hash32(ctx.seed + ':pad:' + guard)) % HUMAN_EDITORIAL_PADS.length];
       idx += 1;
       guard += 1;
-      var text = replaceCity(tpl, ctx.cityName, ctx.name);
+      var text = applyTextPolish(tpl, ctx, true);
       var sec = copy.find(function (s) { return s.id === targets[guard % targets.length]; });
       if (!sec) break;
-      if (!claimText(text, ctx.cityName, globalSeen)) continue;
+      var needFill = sectionsWordTotal(copy) < minTotal;
+      if (!text || (!needFill && !claimMetaphor(text, ctx)) || !claimText(text, ctx.cityName, globalSeen)) continue;
       sec.body = sec.body ? sec.body + '\n\n' + text : text;
       sec.words = wordCount(sec.body);
       stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
@@ -683,12 +961,14 @@
     });
     var targets = ['observar', 'integracion', 'favorece', 'aprovecha', 'desafia'];
     var guard = 0;
-    while (sectionsWordTotal(copy) < minTotal && guard < 32) {
+    while (sectionsWordTotal(copy) < minTotal && guard < 48) {
       var tpl = HUMAN_TOPUP_VARIANTS[(guard + hash32(ctx.seed + ':top:' + guard)) % HUMAN_TOPUP_VARIANTS.length];
       guard += 1;
-      var text = replaceCity(tpl, ctx.cityName, ctx.name);
+      var text = applyTextPolish(tpl, ctx, true);
       var sec = copy.find(function (s) { return s.id === targets[guard % targets.length]; });
-      if (!sec || !claimText(text, ctx.cityName, globalSeen)) continue;
+      var needFill = sectionsWordTotal(copy) < minTotal;
+      if (!sec || !text || (!needFill && !claimMetaphor(text, ctx)) ||
+          !claimText(text, ctx.cityName, globalSeen)) continue;
       sec.body = sec.body ? sec.body + '\n\n' + text : text;
       sec.words = wordCount(sec.body);
       stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
@@ -726,13 +1006,13 @@
     blocks.slice().sort(function (a, b) {
       return slotOrder(a) - slotOrder(b);
     }).forEach(function (block) {
-      if (isMethodologyBlock(block) || isMethodologyPhrase(block.text)) return;
+      if (isMethodologyBlock(block)) return;
       if (usedBlockIds[block.id]) return;
       var sid = sectionIdForBlock(block);
       var sec = copy.find(function (s) { return s.id === sid; });
       if (!sec) return;
-      var text = replaceCity(block.text, ctx.cityName, ctx.name);
-      if (!claimText(text, ctx.cityName, globalSeen)) return;
+      var text = applyTextPolish(block.text, ctx, true);
+      if (!text || !claimMetaphor(text, ctx) || !claimText(text, ctx.cityName, globalSeen)) return;
       var kind = classifyBlockSource(block);
       usedBlockIds[block.id] = true;
       stats[kind] = (stats[kind] || 0) + 1;
@@ -954,7 +1234,17 @@
       seed: seed,
       influences: influences,
       patterns: detectPatterns(influences),
-      _atmosphereLinesUsed: 0
+      _atmosphereLinesUsed: 0,
+      _usedTransitions: {},
+      _usedMetaphors: {},
+      _softenedBlocks: 0,
+      _methodologyHits: 0,
+      _clinicalTerms: {
+        conviene: 0,
+        moderarExpectativas: 0,
+        observarSi: 0,
+        enLaPractica: 0
+      }
     };
 
     var narrativeWrap = resolveNarrativeContext(input, ctx);
@@ -1112,6 +1402,8 @@
     var englishTheme = containsEnglishThemeKeys(fullText);
     var sourceBreakdown = finalizeSourceBreakdown(stats, totalWords, Object.keys(usedBlockIds).length);
     var methodologyRepeats = narrativeContext ? countMethodologyRepeats(fullText.toLowerCase()) : 0;
+    var methodologyHitsFinal = countMethodologyHitsInText(fullText);
+    var repeatedTransitions = collectRepeatedTransitions(fullText, ctx);
 
     var used = influences.map(function (inf, i) {
       var line = inf.line;
@@ -1162,7 +1454,16 @@
         atmosphereLinesUsed: ctx._atmosphereLinesUsed || 0,
         citySlug: narrativeContext && narrativeContext.cityAtmosphere
           ? narrativeContext.cityAtmosphere.citySlug
-          : null
+          : null,
+        repeatedTransitions: repeatedTransitions,
+        methodologyHits: methodologyHitsFinal,
+        softenedBlocks: ctx._softenedBlocks || 0,
+        clinicalTermsCount: ctx._clinicalTerms || {
+          conviene: 0,
+          moderarExpectativas: 0,
+          observarSi: 0,
+          enLaPractica: 0
+        }
       }
     };
   }
@@ -1190,11 +1491,16 @@
     composeCityReading: composeCityReading,
     METHODOLOGY_BLOCK_IDS: METHODOLOGY_BLOCK_IDS,
     METHODOLOGY_PHRASE_MARKERS: METHODOLOGY_PHRASE_MARKERS,
+    METHODOLOGY_SUPPRESS_MARKERS: METHODOLOGY_SUPPRESS_MARKERS,
+    PROHIBITED_TRANSITIONS: PROHIBITED_TRANSITIONS,
+    VOICE_TRANSITION_POOL: VOICE_TRANSITION_POOL,
     _dev: {
       classifyBlockSource: classifyBlockSource,
       sectionIdForBlock: sectionIdForBlock,
       buildSpineLead: buildSpineLead,
-      countMethodologyRepeats: countMethodologyRepeats
+      countMethodologyRepeats: countMethodologyRepeats,
+      softenMethodologyText: softenMethodologyText,
+      pickVoiceTransition: pickVoiceTransition
     }
   };
 })();
