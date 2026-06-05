@@ -1,5 +1,5 @@
 /**
- * KAIROS MAPS — City Premium Reading composition (Fase 3.8e.6a DEV)
+ * KAIROS MAPS — City Premium Reading composition (Fase 3.8e.9a DEV)
  *
  * Lectura integrada: voz premium cálida + premium-blocks + fallback.
  * Sin IA, sin inventar datos astrológicos.
@@ -9,7 +9,8 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8e.6a-dev-0.1';
+  var SCHEMA_VERSION = '3.8e.9a-dev-0.1';
+  var MAX_ATMOSPHERE_LINES = 3;
   var MIN_WORDS = 500;
   var MAX_WORDS = 900;
   var MAX_INFLUENCES = 5;
@@ -340,14 +341,69 @@
     return nc[fallbackKey] || '';
   }
 
+  function atmosphereFingerprint(line) {
+    var s = String(line || '').toLowerCase().trim();
+    var m = s.match(/^en [^,]+,\s*(.+)/);
+    if (m) s = m[1];
+    return s.slice(0, 36);
+  }
+
+  function fragmentAlreadyIn(text, fragment) {
+    if (!text || !fragment) return false;
+    var fp = atmosphereFingerprint(fragment);
+    return fp.length >= 12 && text.toLowerCase().indexOf(fp) !== -1;
+  }
+
+  function countAtmosphereHits(text, selectedLines) {
+    if (!text || !selectedLines || !selectedLines.length) return 0;
+    var hits = 0;
+    selectedLines.forEach(function (line) {
+      if (fragmentAlreadyIn(text, line)) hits += 1;
+    });
+    return hits;
+  }
+
+  function countEmbeddedAtmosphere(nc) {
+    if (!nc || !nc.cityAtmosphere || !nc.cityAtmosphere.selectedLines) return 0;
+    var spine = [
+      nc.narrativeSummary,
+      nc.humanTheme,
+      nc.humanObserve,
+      nc.humanConflict,
+      nc.humanOpportunity,
+      nc.humanClosing
+    ].join('\n');
+    return countAtmosphereHits(spine, nc.cityAtmosphere.selectedLines);
+  }
+
+  function takeAtmosphereLine(ctx, line) {
+    if (!line) return '';
+    ctx._atmosphereLinesUsed = ctx._atmosphereLinesUsed || 0;
+    if (ctx._atmosphereLinesUsed >= MAX_ATMOSPHERE_LINES) return '';
+    ctx._atmosphereLinesUsed += 1;
+    return line;
+  }
+
+  function mergeAtmosphereLead(ctx, base, extra) {
+    if (!extra || fragmentAlreadyIn(base, extra)) return base || '';
+    var line = takeAtmosphereLine(ctx, extra);
+    if (!line) return base || '';
+    return base ? base + '\n\n' + line : line;
+  }
+
   function buildSpineLead(sectionId, narrativeContext, ctx) {
     if (!narrativeContext) return '';
     var nc = narrativeContext;
     var city = ctx.cityName;
     var seed = ctx.seed || '';
     switch (sectionId) {
-      case 'sintesis':
-        return nc.narrativeSummary || '';
+      case 'sintesis': {
+        var syn = nc.narrativeSummary || '';
+        if (nc.cityEmotionalTexture) {
+          syn = mergeAtmosphereLead(ctx, syn, nc.cityEmotionalTexture);
+        }
+        return syn;
+      }
       case 'favorece':
         return SPINE_FAVORECE_OPEN[hash32(seed + ':fav') % SPINE_FAVORECE_OPEN.length] +
           spineField(nc, 'humanOpportunity', 'mainOpportunity.label');
@@ -359,9 +415,14 @@
           city,
           ctx.name
         ) + spineField(nc, 'humanOpportunityAction', 'humanOpportunity');
-      case 'observar':
-        return nc.humanObserve ||
+      case 'observar': {
+        var obs = nc.humanObserve ||
           ('Si permaneces en ' + city + ', mira si lo vivido aquí sigue teniendo latido en el día a día.');
+        if (nc.cityImages && !fragmentAlreadyIn(obs, nc.cityImages)) {
+          obs = mergeAtmosphereLead(ctx, obs, nc.cityImages);
+        }
+        return obs;
+      }
       case 'integracion': {
         var lines = [];
         if (nc.guidingQuestion) lines.push(nc.guidingQuestion);
@@ -892,11 +953,13 @@
       aspect: aspect,
       seed: seed,
       influences: influences,
-      patterns: detectPatterns(influences)
+      patterns: detectPatterns(influences),
+      _atmosphereLinesUsed: 0
     };
 
     var narrativeWrap = resolveNarrativeContext(input, ctx);
     var narrativeContext = narrativeWrap.narrativeContext;
+    ctx._atmosphereLinesUsed = countEmbeddedAtmosphere(narrativeContext);
 
     var knowledgeWrap = resolveKnowledgeBlocks(input, ctx, narrativeContext);
     var knowledgeBlocks = knowledgeWrap.blocks || [];
@@ -1095,7 +1158,11 @@
         narrativeAutoResolved: narrativeWrap.autoResolved,
         narrativeMeta: narrativeWrap.narrativeMeta || null,
         methodologyPhraseRepeats: methodologyRepeats,
-        spineLabel: narrativeContext ? narrativeContext.dominantTheme.label : null
+        spineLabel: narrativeContext ? narrativeContext.dominantTheme.label : null,
+        atmosphereLinesUsed: ctx._atmosphereLinesUsed || 0,
+        citySlug: narrativeContext && narrativeContext.cityAtmosphere
+          ? narrativeContext.cityAtmosphere.citySlug
+          : null
       }
     };
   }
@@ -1116,6 +1183,7 @@
     SCHEMA_VERSION: SCHEMA_VERSION,
     MIN_WORDS: MIN_WORDS,
     MAX_WORDS: MAX_WORDS,
+    MAX_ATMOSPHERE_LINES: MAX_ATMOSPHERE_LINES,
     THEME_ES: THEME_ES,
     EN_THEME_KEYS: EN_THEME_KEYS,
     FORBIDDEN: FORBIDDEN,

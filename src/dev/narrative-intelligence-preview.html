@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Kairos Maps — Narrative Intelligence Lab (3.8e.6a DEV)</title>
+  <title>Kairos Maps — Narrative Intelligence Lab (3.8e.9a DEV)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -64,7 +64,7 @@
   </style>
 </head>
 <body>
-  <div class="dev-banner">DEV ONLY · 3.8e.5 Narrative Intelligence · Spine + lectura completa</div>
+  <div class="dev-banner">DEV ONLY · 3.8e.9a City Atmosphere · Spine + lectura completa</div>
   <div class="page">
     <h1>Narrative Intelligence Lab</h1>
     <p class="sub">Roberto (29 may 1973, Maó) · Deriva hilo narrativo y compone lectura premium con el mismo pipeline.</p>
@@ -80,6 +80,7 @@
     </div>
 
     <div id="spine-panel" class="panel" style="display:none"></div>
+    <div id="atmosphere-panel" class="panel" style="display:none"></div>
     <div id="meta-panel" class="panel" style="display:none"></div>
     <div id="reading-panel" class="panel" style="display:none"></div>
     <div id="batch-panel" class="panel" style="display:none"></div>
@@ -190,6 +191,32 @@
     html += spineRow('narrativeSummary', nc.narrativeSummary);
     document.getElementById('spine-panel').innerHTML = html;
     document.getElementById('spine-panel').style.display = 'block';
+    renderAtmosphere(nc);
+  }
+
+  function renderAtmosphere(nc) {
+    var panel = document.getElementById('atmosphere-panel');
+    if (!nc.cityAtmosphere) {
+      panel.innerHTML = '<p class="panel-title">City atmosphere</p>' +
+        '<div class="spine-item">Sin atmósfera indexada (fail-soft)</div>';
+      panel.style.display = 'block';
+      return;
+    }
+    var atm = nc.cityAtmosphere;
+    var html = '<p class="panel-title">City atmosphere · ' + escapeHtml(atm.citySlug) + '</p>';
+    html += spineRow('cityRhythm', nc.cityRhythm);
+    html += spineRow('cityEmotionalTexture', nc.cityEmotionalTexture);
+    html += spineRow('cityGoalTone', nc.cityGoalTone);
+    html += spineRow('cityImages', nc.cityImages);
+    html += '<div class="spine-item"><strong>selectedLines</strong>';
+    (atm.selectedLines || []).forEach(function (line, i) {
+      html += '<div style="margin-top:4px">' + (i + 1) + '. ' + escapeHtml(line) + '</div>';
+    });
+    html += '</div>';
+    html += '<div class="spine-item"><strong>atmosphereWarnings</strong>' +
+      escapeHtml((nc.atmosphereWarnings || []).join(' · ')) + '</div>';
+    panel.innerHTML = html;
+    panel.style.display = 'block';
   }
 
   function spineRow(label, val) {
@@ -204,6 +231,7 @@
       reading.ok + '</span></div>' +
       '<div class="spine-item"><strong>palabras</strong>' + m.wordCount + '</div>' +
       '<div class="spine-item"><strong>schema</strong>' + KairosCityPremiumComposition.SCHEMA_VERSION + '</div>' +
+      '<div class="spine-item"><strong>atmosphereLinesUsed</strong>' + (m.atmosphereLinesUsed || 0) + '</div>' +
       '<div class="spine-item"><strong>methodologyRepeats</strong>' + (m.methodologyPhraseRepeats || 0) + '</div>';
     document.getElementById('meta-panel').style.display = 'block';
   }
@@ -238,6 +266,7 @@
       html += '<div class="spine-item"><strong>' + escapeHtml(CASES[key].city.name) + ' · ' +
         CASES[key].goal + '</strong>' +
         'tema: ' + escapeHtml(nc.dominantTheme.label) + '<br>' +
+        'atmósfera: ' + (nc.cityAtmosphere ? escapeHtml(nc.cityAtmosphere.citySlug) : '—') + '<br>' +
         'pregunta: ' + escapeHtml(nc.guidingQuestion) + '<br>' +
         'ok=' + out.reading.ok + ' · ' + out.reading.meta.wordCount + ' palabras</div>';
     });

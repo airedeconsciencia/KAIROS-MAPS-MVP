@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke Narrative Intelligence (Fase 3.8e.6a DEV)
+# Kairos Maps — Smoke Narrative Intelligence (Fase 3.8e.9a DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -17,7 +17,7 @@ NARRATIVE="$ROOT/src/services/narrative-intelligence-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — Narrative Intelligence smoke (3.8e.6a)"
+echo " KAIROS MAPS — Narrative Intelligence smoke (3.8e.9a)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -100,8 +100,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Servicio existe (schema 3.8e.6a)',
-  Narrative && Narrative.SCHEMA_VERSION.indexOf('3.8e.6a') === 0,
+  'Servicio existe (schema 3.8e.9a)',
+  Narrative && Narrative.SCHEMA_VERSION.indexOf('3.8e.9a') === 0,
   'schema=' + (Narrative && Narrative.SCHEMA_VERSION)
 );
 
@@ -218,6 +218,56 @@ assert(
   'seed=' + detA.meta.deterministicSeed
 );
 
+assert(
+  'cityAtmosphere presente (Lisboa, Toronto, Cabo)',
+  samples.every(function (s) {
+    var nc = s.result.narrativeContext;
+    return nc.cityAtmosphere && nc.cityAtmosphere.citySlug &&
+      nc.cityRhythm && nc.cityEmotionalTexture && nc.cityGoalTone &&
+      nc.cityImages && nc.atmosphereWarnings &&
+      nc.cityAtmosphere.selectedLines && nc.cityAtmosphere.selectedLines.length >= 3 &&
+      nc.cityAtmosphere.selectedLines.length <= 5;
+  }),
+  samples.map(function (s) {
+    var atm = s.result.narrativeContext.cityAtmosphere;
+    return s.city + '=' + (atm ? atm.citySlug + ' lines=' + atm.selectedLines.length : 'missing');
+  }).join(' · ')
+);
+
+const barcelona = Narrative.deriveNarrativeContext({
+  city: { name: 'Barcelona', lat: 41.3874, lon: 2.1686 },
+  goal: 'amor',
+  relevantInfluences: Scorer.rankInfluences(
+    { name: 'Barcelona', lat: 41.3874, lon: 2.1686 },
+    buildInput('amor')
+  ).slice(0, 5),
+  bridgeProfile: bp
+});
+assert(
+  'Ciudad desconocida fail-soft (sin cityAtmosphere)',
+  barcelona.ok && !barcelona.narrativeContext.cityAtmosphere &&
+    !barcelona.narrativeContext.cityRhythm,
+  'Barcelona citySlug=' + barcelona.meta.citySlug
+);
+
+const tourismTokens = Narrative.GLOBAL_TOURISM_TOKENS || [];
+let tourismFail = false;
+samples.forEach(function (s) {
+  var bundle = [
+    s.result.narrativeContext.narrativeSummary,
+    s.result.narrativeContext.humanTheme,
+    s.result.narrativeContext.humanObserve,
+    (s.result.narrativeContext.cityAtmosphere.selectedLines || []).join(' ')
+  ].join(' ').toLowerCase();
+  tourismTokens.forEach(function (tok) {
+    if (bundle.indexOf(tok) !== -1) {
+      tourismFail = true;
+      console.log('  Token turístico "' + tok + '" en ' + s.city + '/' + s.goal);
+    }
+  });
+});
+assert('Sin tokens turísticos prohibidos (lab 3)', !tourismFail, null);
+
 console.log('\n' + '═'.repeat(60));
 console.log('Lab — spine por caso');
 samples.forEach(function (s) {
@@ -228,6 +278,13 @@ samples.forEach(function (s) {
   console.log('    humanOpportunity:', nc.humanOpportunity);
   console.log('    humanClosing:', nc.humanClosing);
   console.log('    pregunta:', nc.guidingQuestion);
+  if (nc.cityAtmosphere) {
+    console.log('    citySlug:', nc.cityAtmosphere.citySlug);
+    console.log('    selectedLines:');
+    nc.cityAtmosphere.selectedLines.forEach(function (line) {
+      console.log('      ·', line);
+    });
+  }
 });
 
 console.log('\n' + '═'.repeat(60));

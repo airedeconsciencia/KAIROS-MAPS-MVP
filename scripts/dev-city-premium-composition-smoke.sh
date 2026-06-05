@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke City Premium Composition (Fase 3.8e.6a DEV)
+# Kairos Maps — Smoke City Premium Composition (Fase 3.8e.9a DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -20,7 +20,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — City Premium Composition smoke (3.8e.6a)"
+echo " KAIROS MAPS — City Premium Composition smoke (3.8e.9a)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -75,6 +75,7 @@ const Bridge = ctx.window.KairosNatalMapBridge;
 const Scorer = ctx.window.KairosCityScorer;
 const Premium = ctx.window.KairosCityPremiumComposition;
 const Knowledge = ctx.window.KairosPremiumKnowledge;
+const Narrative = ctx.window.KairosNarrativeIntelligence;
 
 const CITIES = [
   { name: 'Lisboa', country: 'Portugal', lat: 38.7223, lon: -9.1393 },
@@ -151,8 +152,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Compositor existe (schema 3.8e.6a)',
-  Premium && Premium.SCHEMA_VERSION.indexOf('3.8e.6a') === 0,
+  'Compositor existe (schema 3.8e.9a)',
+  Premium && Premium.SCHEMA_VERSION.indexOf('3.8e.9a') === 0,
   'schema=' + (Premium && Premium.SCHEMA_VERSION)
 );
 
@@ -438,6 +439,88 @@ assert(
   'seed=' + a.meta.deterministicSeed
 );
 
+assert(
+  'cityAtmosphere en narrativeContext (lab 3)',
+  [lisboaAmor, torontoTrabajo, caboDescanso].every(function (s) {
+    if (!s) return false;
+    var nc = s.reading.meta.narrativeContext;
+    return nc && nc.cityAtmosphere && nc.cityAtmosphere.selectedLines &&
+      nc.cityAtmosphere.selectedLines.length >= 3;
+  }),
+  [lisboaAmor, torontoTrabajo, caboDescanso].map(function (s) {
+    if (!s) return 'missing';
+    var atm = s.reading.meta.narrativeContext.cityAtmosphere;
+    return s.city + '=' + (atm ? atm.citySlug : 'none');
+  }).join(' · ')
+);
+
+const barcelonaReading = Premium.composeCityReading({
+  city: { name: 'Barcelona', country: 'España', lat: 41.3874, lon: 2.1686 },
+  goal: 'amor',
+  relevantInfluences: Scorer.rankInfluences(
+    { name: 'Barcelona', country: 'España', lat: 41.3874, lon: 2.1686 },
+    buildInput('amor')
+  ).slice(0, 5),
+  bridgeProfile: bridgeProfile,
+  profile: { firstName: 'Roberto' }
+});
+assert(
+  'Ciudad desconocida fail-soft (sin cityAtmosphere en lectura)',
+  barcelonaReading.meta.narrativeContext &&
+    !barcelonaReading.meta.narrativeContext.cityAtmosphere &&
+    !barcelonaReading.meta.narrativeContext.cityRhythm,
+  'ok=' + barcelonaReading.ok + ' citySlug=' + barcelonaReading.meta.citySlug
+);
+
+function atmosphereFingerprint(line) {
+  var s = String(line || '').toLowerCase().trim();
+  var m = s.match(/^en [^,]+,\s*(.+)/);
+  if (m) s = m[1];
+  return s.slice(0, 36);
+}
+
+function countAtmosphereHits(fullText, selectedLines) {
+  if (!selectedLines || !selectedLines.length) return 0;
+  var lower = fullText.toLowerCase();
+  var hits = 0;
+  selectedLines.forEach(function (line) {
+    var fp = atmosphereFingerprint(line);
+    if (fp.length >= 12 && lower.indexOf(fp) !== -1) hits += 1;
+  });
+  return hits;
+}
+
+let atmosphereBudgetFail = false;
+[lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
+  if (!s) return;
+  var nc = s.reading.meta.narrativeContext;
+  var full = s.reading.sections.map(function (x) { return x.body; }).join('\n\n');
+  var hits = countAtmosphereHits(full, nc.cityAtmosphere && nc.cityAtmosphere.selectedLines);
+  if (hits > 3) {
+    atmosphereBudgetFail = true;
+    console.log('  Exceso frases atmosféricas (' + hits + ') en ' + s.city + '/' + s.goal);
+  }
+  if ((s.reading.meta.atmosphereLinesUsed || 0) > Premium.MAX_ATMOSPHERE_LINES) {
+    atmosphereBudgetFail = true;
+    console.log('  atmosphereLinesUsed=' + s.reading.meta.atmosphereLinesUsed + ' en ' + s.city + '/' + s.goal);
+  }
+});
+assert('Máximo 3 frases atmosféricas por lectura (lab 3)', !atmosphereBudgetFail, null);
+
+const tourismTokens = (Narrative && Narrative.GLOBAL_TOURISM_TOKENS) || [];
+let tourismFail = false;
+[lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
+  if (!s) return;
+  var lower = s.reading.sections.map(function (x) { return x.body; }).join(' ').toLowerCase();
+  tourismTokens.forEach(function (tok) {
+    if (lower.indexOf(tok) !== -1) {
+      tourismFail = true;
+      console.log('  Token turístico "' + tok + '" en ' + s.city + '/' + s.goal);
+    }
+  });
+});
+assert('Sin tokens turísticos prohibidos (lab 3)', !tourismFail, null);
+
 console.log('\n' + '═'.repeat(60));
 console.log('Lab casos — palabras y sourceBreakdown');
 [lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
@@ -453,6 +536,14 @@ console.log('Lab casos — palabras y sourceBreakdown');
     console.log('    humanConflict:', nc.humanConflict.slice(0, 72) + '…');
     console.log('    humanClosing:', nc.humanClosing);
     console.log('    pregunta:', nc.guidingQuestion);
+    if (nc.cityAtmosphere) {
+      console.log('    citySlug:', nc.cityAtmosphere.citySlug);
+      console.log('    atmosphereLinesUsed:', s.reading.meta.atmosphereLinesUsed);
+      console.log('    selectedLines:');
+      nc.cityAtmosphere.selectedLines.forEach(function (line) {
+        console.log('      ·', line);
+      });
+    }
   }
 });
 
