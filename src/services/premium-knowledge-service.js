@@ -9,8 +9,25 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8e.3-0.1';
+  var SCHEMA_VERSION = '3.8e.5-0.1';
   var STAGE_ORDER = ['integrar', 'favorece', 'desafia', 'aprovechar', 'observar'];
+
+  /** Bloques metodológicos — máximo uno por lectura con narrativeContext */
+  var METHODOLOGY_BLOCK_IDS = {
+    doc6_jerarquia_natal_linea: true,
+    doc5_metodologia_promesa_natal: true,
+    doc5_multiples_influencias: true,
+    doc6_conclusion_alineacion: true,
+    doc6_contradiccion_friccion_evolutiva: true,
+    doc5_no_pildora_magica: true,
+    doc17_max_dos_profundas: true
+  };
+
+  var GOAL_OBJECTIVE_IDS = {
+    amor: 'doc6_objetivo_amor_dc_venus',
+    trabajo: 'doc6_objetivo_trabajo_mc',
+    descanso: 'doc6_objetivo_descanso_ic'
+  };
 
   var THEME_ES = {
     belonging: 'pertenencia',
@@ -107,9 +124,31 @@
     return true;
   }
 
+  function themeScore(block, narrativeContext) {
+    if (!narrativeContext || !narrativeContext.dominantTheme) return 0;
+    var want = narrativeContext.dominantTheme.themes || [];
+    var bt = block.themes || [];
+    var score = 0;
+    want.forEach(function (t) {
+      if (bt.indexOf(t) !== -1) score += 2;
+    });
+    if (narrativeContext.mainOpportunity && narrativeContext.mainOpportunity.themes) {
+      narrativeContext.mainOpportunity.themes.forEach(function (t) {
+        if (bt.indexOf(t) !== -1) score += 1;
+      });
+    }
+    return score;
+  }
+
   function selectDoc17Blocks(ctx, catalog, selectedIds) {
     var maxDeep = catalog.TAXONOMY.maxDeepInfluences || 2;
-    var deep = ctx.influences.slice(0, maxDeep);
+    var deepKeys = ctx.narrativeContext && ctx.narrativeContext.deepInfluenceKeys;
+    var deep = ctx.narrativeContext
+      ? ctx.influences.filter(function (inf) {
+        return deepKeys && deepKeys.indexOf(interpKey(inf.line)) !== -1;
+      })
+      : ctx.influences.slice(0, maxDeep);
+    if (!deep.length) deep = ctx.influences.slice(0, maxDeep);
     var useShadow = ctx.bridgeProfile && ctx.bridgeProfile.tensionMode === true;
 
     deep.forEach(function (inf) {
@@ -132,11 +171,63 @@
   }
 
   function selectSynthesisBlocks(ctx, catalog, selectedIds) {
-    catalog.BLOCKS.forEach(function (block) {
-      if (block.interpKey) return;
-      if (!goalMatches(block.goals, ctx.goalId)) return;
+    var narrative = ctx.narrativeContext;
+    var methodologyUsed = 0;
+    var maxMethodology = narrative ? 0 : 99;
+    var maxSynthesis = narrative ? 3 : 99;
+    var synthesisCount = 0;
+
+    var priorityIds = [];
+    if (narrative) {
+      var objId = GOAL_OBJECTIVE_IDS[ctx.goalId];
+      if (objId) priorityIds.push(objId);
+      if (ctx.bridgeProfile && ctx.bridgeProfile.tensionMode) {
+        priorityIds.push('doc6_integrado_sobre_sombra');
+      }
+      if (ctx.influences.length >= 2) {
+        priorityIds.push('doc6_marte_jupiter_friccion');
+      }
+      var best = ctx.influences[0];
+      if (best && best.distKm != null && best.distKm <= 80) {
+        priorityIds.push('doc6_intensidad_linea_exacta');
+      } else if (best && best.distKm != null && best.distKm >= 200) {
+        priorityIds.push('doc6_intensidad_linea_cercana');
+      }
+      if (ctx.relocationProfile && ctx.relocationProfile.ok) {
+        priorityIds.push('doc7_linea_vs_reloc');
+      }
+    }
+
+    priorityIds.forEach(function (id) {
+      if (synthesisCount >= maxSynthesis) return;
+      var block = catalog.INDEX.byId[id];
+      if (!block || !goalMatches(block.goals, ctx.goalId)) return;
       if (!matchSpec(block, ctx)) return;
+      selectedIds[id] = true;
+      synthesisCount += 1;
+    });
+
+    var candidates = catalog.BLOCKS.filter(function (block) {
+      if (block.interpKey) return false;
+      if (!goalMatches(block.goals, ctx.goalId)) return false;
+      if (!matchSpec(block, ctx)) return false;
+      if (selectedIds[block.id]) return false;
+      if (narrative && METHODOLOGY_BLOCK_IDS[block.id]) return false;
+      return true;
+    });
+
+    if (narrative) {
+      candidates.sort(function (a, b) {
+        return themeScore(b, narrative) - themeScore(a, narrative);
+      });
+    }
+
+    candidates.forEach(function (block) {
+      if (synthesisCount >= maxSynthesis) return;
+      if (METHODOLOGY_BLOCK_IDS[block.id] && methodologyUsed >= maxMethodology) return;
       selectedIds[block.id] = true;
+      synthesisCount += 1;
+      if (METHODOLOGY_BLOCK_IDS[block.id]) methodologyUsed += 1;
     });
   }
 
@@ -207,7 +298,8 @@
       bridgeProfile: input.bridgeProfile || null,
       relocationProfile: input.relocationProfile || null,
       duration: input.duration || null,
-      cityName: input.city && input.city.name ? input.city.name : ''
+      cityName: input.city && input.city.name ? input.city.name : '',
+      narrativeContext: input.narrativeContext || null
     };
 
     if (ctx.relocationProfile && ctx.relocationProfile.angles == null && ctx.relocationProfile.relocAngles) {
@@ -242,7 +334,8 @@
         coverage: coverageStats(blocks),
         bridgeThemesEs: (ctx.bridgeProfile && ctx.bridgeProfile.themes)
           ? ctx.bridgeProfile.themes.map(function (t) { return THEME_ES[t] || t; })
-          : []
+          : [],
+        narrativeContextUsed: !!(input && input.narrativeContext)
       }
     };
   }

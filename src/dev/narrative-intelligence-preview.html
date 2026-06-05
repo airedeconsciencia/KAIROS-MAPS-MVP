@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Narrative Intelligence Lab (3.8e.6a DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: #0f1115;
+      color: #e5e7eb;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .dev-banner {
+      background: rgba(96, 165, 250, 0.1);
+      border-bottom: 1px solid rgba(96, 165, 250, 0.35);
+      color: #93c5fd;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 980px; margin: 0 auto; padding: 20px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 18px; color: #93c5fd; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 12px; margin: 0 0 16px; max-width: 760px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    button, select {
+      font: inherit;
+      cursor: pointer;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    button.primary { background: rgba(96, 165, 250, 0.12); border-color: #60a5fa; }
+    .panel {
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    .spine-item { margin-bottom: 10px; font-size: 12px; color: #d1d5db; }
+    .spine-item strong { color: #93c5fd; display: block; font-size: 10px; }
+    .section { margin-bottom: 16px; }
+    .section h3 { margin: 0 0 6px; font-size: 13px; color: #fcd34d; }
+    .section p { margin: 0; white-space: pre-wrap; color: #d1d5db; }
+    .ok-tag { color: #86efac; }
+    .fail-tag { color: #fca5a5; }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV ONLY · 3.8e.5 Narrative Intelligence · Spine + lectura completa</div>
+  <div class="page">
+    <h1>Narrative Intelligence Lab</h1>
+    <p class="sub">Roberto (29 may 1973, Maó) · Deriva hilo narrativo y compone lectura premium con el mismo pipeline.</p>
+
+    <div class="toolbar">
+      <select id="case-select">
+        <option value="lisboa-amor">Lisboa · Amor</option>
+        <option value="toronto-trabajo">Toronto · Trabajo</option>
+        <option value="cabo-descanso">Ciudad del Cabo · Descanso</option>
+      </select>
+      <button type="button" class="primary" id="btn-run">Generar</button>
+      <button type="button" id="btn-all">Generar los 3 casos</button>
+    </div>
+
+    <div id="spine-panel" class="panel" style="display:none"></div>
+    <div id="meta-panel" class="panel" style="display:none"></div>
+    <div id="reading-panel" class="panel" style="display:none"></div>
+    <div id="batch-panel" class="panel" style="display:none"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+  <script src="../engines/astro.js"></script>
+  <script src="../content/goal-signal.js"></script>
+  <script src="../content/natal-lite.js"></script>
+  <script src="../services/natal-composition-service.js"></script>
+  <script src="../services/natal-map-bridge-service.js"></script>
+  <script src="../content/interpretations.js"></script>
+  <script src="../content/premium-blocks.js"></script>
+  <script src="../services/narrative-intelligence-service.js"></script>
+  <script src="../services/premium-knowledge-service.js"></script>
+  <script src="../content/city-scorer.js"></script>
+  <script src="../services/city-premium-composition-service.js"></script>
+
+  <script>
+(function () {
+  'use strict';
+
+  var CASES = {
+    'lisboa-amor': { city: { name: 'Lisboa', lat: 38.7223, lon: -9.1393 }, goal: 'amor' },
+    'toronto-trabajo': { city: { name: 'Toronto', lat: 43.6532, lon: -79.3832 }, goal: 'trabajo' },
+    'cabo-descanso': { city: { name: 'Ciudad del Cabo', lat: -33.9249, lon: 18.4241 }, goal: 'descanso' }
+  };
+
+  var birthUtc = new Date('1973-05-29T05:30:00.000Z');
+  var lines = null;
+  var bridgeProfile = null;
+  var scorerInputs = {};
+
+  function init() {
+    lines = KairosAstro.computeAllLines(birthUtc);
+    var comp = KairosNatalComposition.composeNatalLiteReading({ sun: 'gemini', moon: 'aries', asc: 'cancer' });
+    bridgeProfile = comp.meta && comp.meta.bridgeProfile;
+    Object.keys(CASES).forEach(function (key) {
+      var c = CASES[key];
+      scorerInputs[key] = buildScorerInput(c.goal);
+    });
+  }
+
+  function buildScorerInput(goalId) {
+    var goalContext = KairosGoalSignal.buildContext({ mainGoal: goalId });
+    var bridgeResult = KairosNatalMapBridge.buildBridge({
+      tags: bridgeProfile.tags,
+      themes: bridgeProfile.themes,
+      tensionMode: bridgeProfile.tensionMode === true,
+      mapLines: lines.map(function (l) {
+        return { id: l.id, planet: l.planet, angle: l.angle };
+      }),
+      goalContext: goalContext
+    });
+    return {
+      lines: lines,
+      goalContext: goalContext,
+      bridgeResult: bridgeResult,
+      options: {
+        proxKm: KairosCityScorer.PROX_KM,
+        maxSuggestions: 3,
+        minScore: 0.28,
+        enabledPlanets: new Set(KairosAstro.PLANETS.map(function (p) { return p.id; })),
+        enabledAngles: new Set(KairosAstro.ANGLES)
+      }
+    };
+  }
+
+  function runCase(caseKey) {
+    var c = CASES[caseKey];
+    var input = scorerInputs[caseKey];
+    var ranked = KairosCityScorer.rankInfluences(c.city, input);
+    var narrative = KairosNarrativeIntelligence.deriveNarrativeContext({
+      city: c.city,
+      goal: c.goal,
+      relevantInfluences: ranked.slice(0, 5),
+      bridgeProfile: bridgeProfile
+    });
+    var reading = KairosCityPremiumComposition.composeCityReading({
+      city: c.city,
+      goal: c.goal,
+      relevantInfluences: ranked.slice(0, 5),
+      bridgeProfile: bridgeProfile,
+      profile: { firstName: 'Roberto' },
+      narrativeContext: narrative.narrativeContext
+    });
+    return { narrative: narrative, reading: reading, ranked: ranked };
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function renderSpine(narrative) {
+    var nc = narrative.narrativeContext;
+    var html = '<p class="panel-title">Narrative spine</p>';
+    html += spineRow('humanTheme', nc.humanTheme);
+    html += spineRow('humanConflict', nc.humanConflict);
+    html += spineRow('humanOpportunity', nc.humanOpportunity);
+    html += spineRow('humanObserve', nc.humanObserve);
+    html += spineRow('humanClosing', nc.humanClosing);
+    html += spineRow('guidingQuestion', nc.guidingQuestion);
+    html += spineRow('deepInfluenceKeys', nc.deepInfluenceKeys.join(', '));
+    html += spineRow('echoInfluenceKeys', (nc.echoInfluenceKeys || []).join(', ') || '—');
+    html += spineRow('narrativeSummary', nc.narrativeSummary);
+    document.getElementById('spine-panel').innerHTML = html;
+    document.getElementById('spine-panel').style.display = 'block';
+  }
+
+  function spineRow(label, val) {
+    return '<div class="spine-item"><strong>' + escapeHtml(label) + '</strong>' + escapeHtml(val) + '</div>';
+  }
+
+  function renderMeta(reading) {
+    var m = reading.meta;
+    document.getElementById('meta-panel').innerHTML =
+      '<p class="panel-title">Lectura</p>' +
+      '<div class="spine-item"><strong>ok</strong><span class="' + (reading.ok ? 'ok-tag' : 'fail-tag') + '">' +
+      reading.ok + '</span></div>' +
+      '<div class="spine-item"><strong>palabras</strong>' + m.wordCount + '</div>' +
+      '<div class="spine-item"><strong>schema</strong>' + KairosCityPremiumComposition.SCHEMA_VERSION + '</div>' +
+      '<div class="spine-item"><strong>methodologyRepeats</strong>' + (m.methodologyPhraseRepeats || 0) + '</div>';
+    document.getElementById('meta-panel').style.display = 'block';
+  }
+
+  function renderReading(reading) {
+    var html = '<p class="panel-title">Lectura completa</p><h2 style="color:#fde68a;margin:0 0 12px">' +
+      escapeHtml(reading.title) + '</h2>';
+    reading.sections.forEach(function (sec) {
+      html += '<div class="section"><h3>' + escapeHtml(sec.title) + '</h3><p>' +
+        escapeHtml(sec.body) + '</p></div>';
+    });
+    document.getElementById('reading-panel').innerHTML = html;
+    document.getElementById('reading-panel').style.display = 'block';
+  }
+
+  document.getElementById('btn-run').addEventListener('click', function () {
+    if (!lines) init();
+    var key = document.getElementById('case-select').value;
+    var out = runCase(key);
+    document.getElementById('batch-panel').style.display = 'none';
+    renderSpine(out.narrative);
+    renderMeta(out.reading);
+    renderReading(out.reading);
+  });
+
+  document.getElementById('btn-all').addEventListener('click', function () {
+    if (!lines) init();
+    var html = '<p class="panel-title">Batch 3 casos</p>';
+    Object.keys(CASES).forEach(function (key) {
+      var out = runCase(key);
+      var nc = out.narrative.narrativeContext;
+      html += '<div class="spine-item"><strong>' + escapeHtml(CASES[key].city.name) + ' · ' +
+        CASES[key].goal + '</strong>' +
+        'tema: ' + escapeHtml(nc.dominantTheme.label) + '<br>' +
+        'pregunta: ' + escapeHtml(nc.guidingQuestion) + '<br>' +
+        'ok=' + out.reading.ok + ' · ' + out.reading.meta.wordCount + ' palabras</div>';
+    });
+    document.getElementById('batch-panel').innerHTML = html;
+    document.getElementById('batch-panel').style.display = 'block';
+    document.getElementById('case-select').value = 'lisboa-amor';
+    document.getElementById('btn-run').click();
+  });
+
+  init();
+})();
+  </script>
+</body>
+</html>

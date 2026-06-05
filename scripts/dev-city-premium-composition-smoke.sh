@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke City Premium Composition (Fase 3.8e.4 DEV)
+# Kairos Maps — Smoke City Premium Composition (Fase 3.8e.6a DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -15,15 +15,16 @@ ASTRO="$ROOT/src/engines/astro.js"
 INTERP="$ROOT/src/content/interpretations.js"
 BLOCKS="$ROOT/src/content/premium-blocks.js"
 KNOWLEDGE="$ROOT/src/services/premium-knowledge-service.js"
+NARRATIVE="$ROOT/src/services/narrative-intelligence-service.js"
 PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — City Premium Composition smoke (3.8e.4)"
+echo " KAIROS MAPS — City Premium Composition smoke (3.8e.6a)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
-for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$SCORER" "$ASTRO" "$INTERP" "$BLOCKS" "$KNOWLEDGE" "$PREMIUM"; do
+for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$SCORER" "$ASTRO" "$INTERP" "$BLOCKS" "$KNOWLEDGE" "$NARRATIVE" "$PREMIUM"; do
   if [[ ! -f "$f" ]]; then
     echo "ERROR: No se encuentra: $f"
     exit 1
@@ -36,7 +37,7 @@ if [[ ! -f "$ASTRONOMY" ]]; then
   curl -fsSL "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" -o "$ASTRONOMY"
 fi
 
-export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE SCORER ASTRO INTERP BLOCKS KNOWLEDGE PREMIUM ASTRONOMY ROOT
+export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE SCORER ASTRO INTERP BLOCKS KNOWLEDGE NARRATIVE PREMIUM ASTRONOMY ROOT
 
 node <<'NODE'
 const fs = require('fs');
@@ -61,6 +62,7 @@ if (typeof ctx.Astronomy === 'undefined' && ctx.window && ctx.window.Astronomy) 
   process.env.INTERP,
   process.env.BLOCKS,
   process.env.KNOWLEDGE,
+  process.env.NARRATIVE,
   process.env.PREMIUM
 ].forEach(function (path) {
   vm.runInContext(fs.readFileSync(path, 'utf8'), ctx, { filename: path });
@@ -149,9 +151,16 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Compositor existe (schema 3.8e.4)',
-  Premium && Premium.SCHEMA_VERSION.indexOf('3.8e.4') === 0,
+  'Compositor existe (schema 3.8e.6a)',
+  Premium && Premium.SCHEMA_VERSION.indexOf('3.8e.6a') === 0,
   'schema=' + (Premium && Premium.SCHEMA_VERSION)
+);
+
+assert(
+  'Narrative Intelligence cargada',
+  ctx.window.KairosNarrativeIntelligence &&
+    typeof ctx.window.KairosNarrativeIntelligence.deriveNarrativeContext === 'function',
+  null
 );
 
 assert(
@@ -193,7 +202,7 @@ assert(
 );
 
 assert(
-  'Longitud 500–1500 en todas las muestras',
+  'Longitud 500–900 en todas las muestras',
   samples.every(function (s) {
     const w = s.reading.meta.wordCount;
     return w >= Premium.MIN_WORDS && w <= Premium.MAX_WORDS;
@@ -217,10 +226,11 @@ assert(
 );
 
 assert(
-  'premiumBlocks > interpretationFallbacks (unidades)',
+  'premiumBlocks > interpretationFallbacks (unidades) o wordSharePremium ≥ 70%',
   samples.every(function (s) {
     const sb = s.reading.meta.sourceBreakdown;
-    return sb.premiumBlockUnits > sb.interpretationFallbacks;
+    return sb.premiumBlockUnits > sb.interpretationFallbacks ||
+      (s.reading.meta.narrativeContext && sb.wordSharePremium >= 70);
   }),
   samples.map(function (s) {
     const sb = s.reading.meta.sourceBreakdown;
@@ -233,6 +243,120 @@ assert(
   'knowledgeAutoResolved en todas las muestras',
   samples.every(function (s) { return s.reading.meta.knowledgeAutoResolved === true; }),
   'blockCount ejemplo=' + (lisboaAmor && lisboaAmor.reading.meta.knowledgeBlockCount)
+);
+
+assert(
+  'narrativeContext presente en todas las muestras',
+  samples.every(function (s) {
+    const nc = s.reading.meta.narrativeContext;
+    return nc && nc.dominantTheme && nc.centralTension && nc.mainOpportunity && nc.guidingQuestion;
+  }),
+  lisboaAmor ? lisboaAmor.reading.meta.narrativeContext.dominantTheme.label : null
+);
+
+const METHODOLOGY_MARKERS = Premium.METHODOLOGY_PHRASE_MARKERS || [];
+
+assert(
+  'Eje narrativo humanizado en las 6 secciones (lab 3 casos)',
+  [lisboaAmor, torontoTrabajo, caboDescanso].every(function (s) {
+    if (!s) return false;
+    const nc = s.reading.meta.narrativeContext;
+    const full = s.reading.sections.map(function (x) { return x.body; }).join(' ').toLowerCase();
+    const questionHit = full.indexOf(nc.guidingQuestion.toLowerCase().slice(0, 20)) !== -1;
+    const sintesis = s.reading.sections[0] ? s.reading.sections[0].body : '';
+    const sintesisHasSummary = sintesis.indexOf(nc.narrativeSummary.slice(0, 28)) !== -1;
+    const favorece = s.reading.sections.filter(function (x) { return x.id === 'favorece'; })[0];
+    const desafia = s.reading.sections.filter(function (x) { return x.id === 'desafia'; })[0];
+    const favHit = favorece && nc.humanOpportunity &&
+      favorece.body.toLowerCase().indexOf(nc.humanOpportunity.toLowerCase().slice(0, 24)) !== -1;
+    const desHit = desafia && nc.humanConflict &&
+      desafia.body.toLowerCase().indexOf(nc.humanConflict.toLowerCase().slice(0, 24)) !== -1;
+    const integracion = s.reading.sections.filter(function (x) { return x.id === 'integracion'; })[0];
+    const integracionHasQuestion = integracion &&
+      integracion.body.toLowerCase().indexOf(nc.guidingQuestion.toLowerCase().slice(0, 18)) !== -1;
+    const integracionHasClosing = integracion && nc.humanClosing &&
+      integracion.body.toLowerCase().indexOf(nc.humanClosing.toLowerCase().slice(0, 20)) !== -1;
+    return questionHit && sintesisHasSummary && favHit && desHit &&
+      integracionHasQuestion && integracionHasClosing;
+  }),
+  null
+);
+
+let systemVoiceFail = false;
+[lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
+  if (!s) return;
+  const full = s.reading.sections.map(function (x) { return x.body; }).join(' ');
+  if (/Nota \d/i.test(full)) systemVoiceFail = true;
+  if (full.indexOf('«') !== -1) systemVoiceFail = true;
+  if (/El tema «/i.test(full)) systemVoiceFail = true;
+  if (/La oportunidad «/i.test(full)) systemVoiceFail = true;
+  if (/La tensión «/i.test(full)) systemVoiceFail = true;
+});
+assert('Sin lenguaje de sistema (Nota X, «tema», «oportunidad»)', !systemVoiceFail, null);
+
+function countWord(text, word) {
+  const re = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+  return (text.match(re) || []).length;
+}
+
+let voiceFail = false;
+const labCases = [lisboaAmor, torontoTrabajo, caboDescanso];
+labCases.forEach(function (s) {
+  if (!s) return;
+  const full = s.reading.sections.map(function (x) { return x.body; }).join(' ');
+  const lower = full.toLowerCase();
+  const nc = s.reading.meta.narrativeContext;
+  const integracion = s.reading.sections.filter(function (x) { return x.id === 'integracion'; })[0];
+  if (countWord(lower, 'conviene') > 4) {
+    voiceFail = true;
+    console.log('  Exceso conviene en ' + s.city + '/' + s.goal + ': ' + countWord(lower, 'conviene'));
+  }
+  if (countWord(lower, 'puede') > 14) {
+    voiceFail = true;
+    console.log('  Exceso puede en ' + s.city + '/' + s.goal + ': ' + countWord(lower, 'puede'));
+  }
+  if ((lower.match(/puede que/g) || []).length > 4) {
+    voiceFail = true;
+    console.log('  Exceso "puede que" en ' + s.city + '/' + s.goal);
+  }
+  if (countWord(lower, 'no hace falta') > 1) {
+    voiceFail = true;
+    console.log('  Exceso "no hace falta" en ' + s.city + '/' + s.goal);
+  }
+  if (lower.indexOf('un apunte útil') !== -1) {
+    voiceFail = true;
+    console.log('  Frase clínica "un apunte útil" en ' + s.city + '/' + s.goal);
+  }
+  if (lower.indexOf('en la práctica') !== -1) {
+    voiceFail = true;
+    console.log('  Frase funcional "en la práctica" en ' + s.city + '/' + s.goal);
+  }
+  if (lower.indexOf('un último apunte para') !== -1) {
+    voiceFail = true;
+    console.log('  Cierre genérico en ' + s.city + '/' + s.goal);
+  }
+  if (nc && nc.humanClosing && integracion &&
+      integracion.body.toLowerCase().indexOf(nc.humanClosing.toLowerCase().slice(0, 22)) === -1) {
+    voiceFail = true;
+    console.log('  Falta humanClosing en integración: ' + s.city + '/' + s.goal);
+  }
+});
+assert('Voz premium: sin exceso clínico y cierre humanClosing (lab 3)', !voiceFail, null);
+
+assert(
+  'Sin repeticiones metodológicas excesivas (≤1 duplicado por marcador)',
+  samples.every(function (s) {
+    const full = s.reading.sections.map(function (x) { return x.body; }).join(' ').toLowerCase();
+    let bad = false;
+    METHODOLOGY_MARKERS.forEach(function (marker) {
+      const first = full.indexOf(marker);
+      if (first === -1) return;
+      const second = full.indexOf(marker, first + marker.length);
+      if (second !== -1) bad = true;
+    });
+    return !bad && (s.reading.meta.methodologyPhraseRepeats == null || s.reading.meta.methodologyPhraseRepeats <= 1);
+  }),
+  'repeats ejemplo=' + (lisboaAmor && lisboaAmor.reading.meta.methodologyPhraseRepeats)
 );
 
 let englishFail = false;
@@ -323,6 +447,13 @@ console.log('Lab casos — palabras y sourceBreakdown');
   console.log('    breakdown: premium=' + sb.premiumBlocks + ' synth=' + sb.synthesisBlocks +
     ' reloc=' + sb.relocationBlocks + ' fb=' + sb.interpretationFallbacks);
   console.log('    wordSharePremium=' + sb.wordSharePremium + '% · blocks=' + s.reading.meta.knowledgeBlockCount);
+  const nc = s.reading.meta.narrativeContext;
+  if (nc) {
+    console.log('    humanTheme:', nc.humanTheme);
+    console.log('    humanConflict:', nc.humanConflict.slice(0, 72) + '…');
+    console.log('    humanClosing:', nc.humanClosing);
+    console.log('    pregunta:', nc.guidingQuestion);
+  }
 });
 
 console.log('\n' + '═'.repeat(60));

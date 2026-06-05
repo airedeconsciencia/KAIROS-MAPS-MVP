@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Kairos Maps — City Premium Reading Lab (3.8e.4 DEV)</title>
+  <title>Kairos Maps — City Premium Reading Lab (3.8e.5 DEV)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -87,7 +87,7 @@
   </style>
 </head>
 <body>
-  <div class="dev-banner">DEV ONLY · 3.8e.4 Knowledge-Driven Composition · Sin mapa · Sin paywall</div>
+  <div class="dev-banner">DEV ONLY · 3.8e.5 Narrative Intelligence + Knowledge · Sin mapa · Sin paywall</div>
   <div class="page">
     <h1>City Premium Reading Lab</h1>
     <p class="sub">
@@ -127,6 +127,7 @@
   <script src="../services/natal-map-bridge-service.js"></script>
   <script src="../content/interpretations.js"></script>
   <script src="../content/premium-blocks.js"></script>
+  <script src="../services/narrative-intelligence-service.js"></script>
   <script src="../services/premium-knowledge-service.js"></script>
   <script src="../content/city-scorer.js"></script>
   <script src="../services/city-premium-composition-service.js"></script>
@@ -204,6 +205,10 @@
     var html = '<p class="panel-title">Metadatos</p><div class="meta-grid">';
     html += metaItem('ok', reading.ok ? '<span class="ok-tag">true</span>' : '<span class="fail-tag">false</span>');
     html += metaItem('Schema', KairosCityPremiumComposition.SCHEMA_VERSION);
+    if (m.narrativeContext) {
+      html += metaItem('Spine', m.narrativeContext.dominantTheme.label);
+      html += metaItem('Pregunta', m.narrativeContext.guidingQuestion);
+    }
     html += metaItem('Palabras', m.wordCount + ' (rango ' + KairosCityPremiumComposition.MIN_WORDS + '–' + KairosCityPremiumComposition.MAX_WORDS + ')');
     html += metaItem('Score ciudad', scored != null ? scored.toFixed(4) : '—');
     html += metaItem('Objetivo', m.goalId + ' / ' + m.aspect);

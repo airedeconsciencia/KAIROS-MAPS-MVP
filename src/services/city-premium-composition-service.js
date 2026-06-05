@@ -1,17 +1,17 @@
 /**
- * KAIROS MAPS — City Premium Reading composition (Fase 3.8e.4 DEV)
+ * KAIROS MAPS — City Premium Reading composition (Fase 3.8e.6a DEV)
  *
- * Lectura integrada: premium-blocks (primario) + interpretations.js (fallback).
+ * Lectura integrada: voz premium cálida + premium-blocks + fallback.
  * Sin IA, sin inventar datos astrológicos.
  *
- * Depende de: KairosPremiumKnowledge, KairosPremiumBlocks, INTERPRETATIONS (opcional)
+ * Depende de: KairosNarrativeIntelligence, KairosPremiumKnowledge, KairosPremiumBlocks
  */
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8e.4-dev-0.1';
+  var SCHEMA_VERSION = '3.8e.6a-dev-0.1';
   var MIN_WORDS = 500;
-  var MAX_WORDS = 1500;
+  var MAX_WORDS = 900;
   var MAX_INFLUENCES = 5;
 
   var THEME_ES = {
@@ -69,19 +69,37 @@
     descanso: 'descanso y bienestar'
   };
 
-  var MIN_LENGTH_BRIDGE =
-    'Para cerrar: {ciudad} no es promesa automática ni condena — es campo de prueba donde alineas ritmo, vínculos y objetivo con paciencia, revisando cada mes si el entorno sigue nutriendo lo que viniste a cultivar.';
-  var MIN_LENGTH_TAIL =
-    'Un último apunte para {ciudad}: sostén el ritmo y deja que la experiencia se confirme con hechos pequeños, sin prisa.';
+  var SPINE_FAVORECE_OPEN = [
+    'Algo se abre con suavidad: ',
+    'Hay una puerta que merece la pena mirar: ',
+    'Se insinúa un gesto posible: '
+  ];
 
-  var SECTION_FILLERS = {
-    sintesis: 'La lectura siguiente ordena esas señales en un solo hilo aplicable a tu objetivo en {ciudad} — sin convertir el mapa en una lista fría.',
-    favorece: 'Lo favorable en {ciudad} aparece cuando alineas ritmo cotidiano y vínculos con lo que el mapa ya activó en las líneas dominantes.',
-    desafia: 'Los roces del lugar no anulan su potencial: marcan dónde conviene bajar velocidad y aclarar expectativas contigo mismo.',
-    aprovecha: 'Aprovechar {ciudad} es iterar: un gesto concreto por semana y observar qué cambia en cuerpo y ánimo.',
-    observar: 'Si permaneces en {ciudad}, revisa cada pocas semanas si el ritmo del lugar sigue acompañando lo que buscas — no solo la primera impresión.',
-    integracion: 'Esta lectura integra señales del mapa con tu objetivo: úsala como brújula práctica en {ciudad}, no como veredicto cerrado.'
+  var SPINE_APROVECHA_OPEN = [
+    'En {ciudad}, un gesto pequeño puede sostener lo anterior: ',
+    'Para habituar la apertura en {ciudad}, prueba esto: ',
+    'Un paso concreto en {ciudad}: '
+  ];
+
+  var METHODOLOGY_BLOCK_IDS = {
+    doc6_jerarquia_natal_linea: true,
+    doc5_metodologia_promesa_natal: true,
+    doc5_multiples_influencias: true,
+    doc6_conclusion_alineacion: true,
+    doc6_contradiccion_friccion_evolutiva: true,
+    doc5_no_pildora_magica: true,
+    doc17_max_dos_profundas: true
   };
+
+  var METHODOLOGY_PHRASE_MARKERS = [
+    'no sustituye tu trabajo interior',
+    'no es una sola nota',
+    'nunca la línea aislada',
+    'no se anulan',
+    'no clasifica como destino',
+    'no sustituye entregables',
+    'como mucho dos capas'
+  ];
 
   var INFLUENCE_TRANSITIONS = [
     '',
@@ -163,14 +181,26 @@
 
   function normalizeInfluences(relevantInfluences) {
     if (!Array.isArray(relevantInfluences)) return [];
-    return relevantInfluences.slice(0, MAX_INFLUENCES).map(function (item) {
-      if (item.line) return item;
+    return relevantInfluences.slice(0, MAX_INFLUENCES).map(function (item, rank) {
+      if (item.line) {
+        return {
+          line: item.line,
+          composite: item.composite || 0,
+          distKm: item.distKm != null ? item.distKm : item.dist,
+          lineId: item.lineId || item.id,
+          rank: rank
+        };
+      }
       return {
         line: item,
         composite: item.composite || 0,
         distKm: item.distKm || item.dist || 0,
-        lineId: item.lineId || item.id
+        lineId: item.lineId || item.id,
+        rank: rank
       };
+    }).sort(function (a, b) {
+      if (b.composite !== a.composite) return b.composite - a.composite;
+      return (a.rank || 0) - (b.rank || 0);
     });
   }
 
@@ -237,7 +267,29 @@
     (block.themes || []).forEach(function (t) { usedThemes[t] = true; });
   }
 
-  function resolveKnowledgeBlocks(input, ctx) {
+  function resolveNarrativeContext(input, ctx) {
+    if (input.narrativeContext) {
+      return { narrativeContext: input.narrativeContext, autoResolved: false };
+    }
+    var Narrative = window.KairosNarrativeIntelligence;
+    if (!Narrative || typeof Narrative.deriveNarrativeContext !== 'function') {
+      return { narrativeContext: null, autoResolved: false };
+    }
+    var result = Narrative.deriveNarrativeContext({
+      city: input.city,
+      goal: ctx.goalId,
+      relevantInfluences: input.relevantInfluences || ctx.influences,
+      bridgeProfile: input.bridgeProfile,
+      relocationProfile: input.relocationProfile || null
+    });
+    return {
+      narrativeContext: result && result.narrativeContext ? result.narrativeContext : null,
+      autoResolved: true,
+      narrativeMeta: result ? result.meta : null
+    };
+  }
+
+  function resolveKnowledgeBlocks(input, ctx, narrativeContext) {
     if (input.knowledgeBlocks && input.knowledgeBlocks.length) {
       return { blocks: input.knowledgeBlocks, autoResolved: false };
     }
@@ -251,7 +303,8 @@
       relevantInfluences: ctx.influences,
       bridgeProfile: input.bridgeProfile,
       relocationProfile: input.relocationProfile || null,
-      duration: input.duration || null
+      duration: input.duration || null,
+      narrativeContext: narrativeContext
     });
     return {
       blocks: result && result.blocks ? result.blocks : [],
@@ -270,27 +323,87 @@
     return bySection;
   }
 
-  function buildSectionFromBlocks(sectionId, blockList, ctx, globalSeen, sectionThemes, stats, maxWords, usedBlockIds) {
+  function isMethodologyBlock(block) {
+    return !!(block && block.id && METHODOLOGY_BLOCK_IDS[block.id]);
+  }
+
+  function isMethodologyPhrase(text) {
+    var lower = String(text).toLowerCase();
+    for (var i = 0; i < METHODOLOGY_PHRASE_MARKERS.length; i++) {
+      if (lower.indexOf(METHODOLOGY_PHRASE_MARKERS[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  function spineField(nc, key, fallbackKey) {
+    if (nc[key]) return nc[key];
+    return nc[fallbackKey] || '';
+  }
+
+  function buildSpineLead(sectionId, narrativeContext, ctx) {
+    if (!narrativeContext) return '';
+    var nc = narrativeContext;
+    var city = ctx.cityName;
+    var seed = ctx.seed || '';
+    switch (sectionId) {
+      case 'sintesis':
+        return nc.narrativeSummary || '';
+      case 'favorece':
+        return SPINE_FAVORECE_OPEN[hash32(seed + ':fav') % SPINE_FAVORECE_OPEN.length] +
+          spineField(nc, 'humanOpportunity', 'mainOpportunity.label');
+      case 'desafia':
+        return spineField(nc, 'humanConflict', 'centralTension.label');
+      case 'aprovecha':
+        return replaceCity(
+          SPINE_APROVECHA_OPEN[hash32(seed + ':apr') % SPINE_APROVECHA_OPEN.length],
+          city,
+          ctx.name
+        ) + spineField(nc, 'humanOpportunityAction', 'humanOpportunity');
+      case 'observar':
+        return nc.humanObserve ||
+          ('Si permaneces en ' + city + ', mira si lo vivido aquí sigue teniendo latido en el día a día.');
+      case 'integracion': {
+        var lines = [];
+        if (nc.guidingQuestion) lines.push(nc.guidingQuestion);
+        if (nc.humanClosing) lines.push(nc.humanClosing);
+        return lines.join('\n\n');
+      }
+      default:
+        return '';
+    }
+  }
+
+  function appendSpineLead(parts, sectionId, narrativeContext, ctx, globalSeen, stats) {
+    var lead = buildSpineLead(sectionId, narrativeContext, ctx);
+    if (!lead) return 0;
+    var text = replaceCity(lead, ctx.cityName, ctx.name);
+    if (!claimText(text, ctx.cityName, globalSeen)) return 0;
+    parts.push(text);
+    stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
+    stats._wordsByKind = stats._wordsByKind || {};
+    stats._wordsByKind.synthesisBlocks = (stats._wordsByKind.synthesisBlocks || 0) + wordCount(text);
+    return wordCount(text);
+  }
+
+  function buildSectionFromBlocks(sectionId, blockList, ctx, globalSeen, sectionThemes, stats, maxWords, usedBlockIds, narrativeContext, methodologyBudget) {
     var parts = [];
     var words = 0;
     var lastKey = null;
     var rank = 0;
+    var methLeft = methodologyBudget != null ? methodologyBudget : 0;
 
-    if (sectionId === 'sintesis' && blockList.length) {
-      var hasIntroBlock = blockList.some(function (b) {
-        return b.id === 'doc5_metodologia_promesa_natal' || b.slot === 'context';
-      });
-      if (!hasIntroBlock) {
-        var open = SYNTHESIS_OPEN[ctx.goalId] || SYNTHESIS_OPEN.amor;
-        var openText = replaceCity(
-          open.replace(/\{objetivo\}/g, GOAL_LABELS[ctx.goalId] || ctx.goalId),
-          ctx.cityName,
-          ctx.name
-        );
-        if (claimText(openText, ctx.cityName, globalSeen)) {
-          parts.push(openText);
-          words += wordCount(openText);
-        }
+    if (narrativeContext) {
+      words += appendSpineLead(parts, sectionId, narrativeContext, ctx, globalSeen, stats);
+    } else if (sectionId === 'sintesis' && blockList.length) {
+      var open = SYNTHESIS_OPEN[ctx.goalId] || SYNTHESIS_OPEN.amor;
+      var openText = replaceCity(
+        open.replace(/\{objetivo\}/g, GOAL_LABELS[ctx.goalId] || ctx.goalId),
+        ctx.cityName,
+        ctx.name
+      );
+      if (claimText(openText, ctx.cityName, globalSeen)) {
+        parts.push(openText);
+        words += wordCount(openText);
       }
     }
 
@@ -302,9 +415,19 @@
     });
 
     sorted.forEach(function (block) {
+      if (narrativeContext && isMethodologyBlock(block)) {
+        if (methLeft <= 0) return;
+        methLeft -= 1;
+      }
+      if (narrativeContext && isMethodologyPhrase(block.text)) {
+        if (methLeft <= 0) return;
+        methLeft -= 1;
+      }
+
       var text = replaceCity(block.text, ctx.cityName, ctx.name);
       var norm = normalizeSentence(text, ctx.cityName);
       if (!norm || globalSeen[norm]) return;
+      if (narrativeContext && isMethodologyPhrase(text) && methLeft <= 0) return;
 
       var prefix = '';
       if (block.interpKey && block.interpKey !== lastKey) {
@@ -440,27 +563,98 @@
     return { sintesis: 160, favorece: 200, desafia: 170, aprovecha: 160, observar: 120, integracion: 140 };
   }
 
-  function applySectionFillers(sections, ctx, globalSeen, stats, minTotal) {
-    var total = sectionsWordTotal(sections);
+  var HUMAN_EDITORIAL_PADS = [
+    'En {ciudad}, lo esencial suele aparecer en gestos pequeños — no en el gran momento.',
+    '{ciudad} enseña despacio, como una habitación que se ordena poco a poco.',
+    'El mapa abre una puerta; caminarla es otra historia — y también la más honesta.',
+    'Algo hermoso vive en la repetición tranquila, no solo en la epifanía.',
+    'Tal vez el lugar no pida prisa: pida presencia.',
+    'Cuando algo incomoda, escúchalo como brújula, no como fallo.',
+    'Lo contradictorio de hoy puede volverse legible si aflojas la urgencia de resolver.',
+    'Anota una escena concreta — un encuentro, un cansancio — y léela con calma más tarde.',
+    'Un gesto pequeño basta para seguir habitando {ciudad} con verdad.',
+    'Dale tiempo al lugar antes de juzgarlo por un solo día perfecto o un roce incómodo.',
+    'La experiencia cotidiana confirma o matiza la lectura — más que cualquier idea fija.',
+    'Observa si lo que sientes hoy sigue vivo dentro de un mes — sin presión.'
+  ];
+
+  function narrativeWordPadding(sections, narrativeContext, ctx, globalSeen, stats, minTotal) {
+    if (!narrativeContext) return sections;
     var copy = sections.map(function (s) {
       return { id: s.id, title: s.title, body: s.body, words: s.words };
     });
-    var forceAll = total < minTotal;
-    Object.keys(SECTION_FILLERS).forEach(function (sid) {
-      if (!forceAll && total >= minTotal) return;
-      var sec = copy.find(function (s) { return s.id === sid; });
-      var filler = SECTION_FILLERS[sid];
-      if (!sec || !filler) return;
-      if (!forceAll && sec.words >= 35) return;
-      var text = replaceCity(filler, ctx.cityName, ctx.name);
-      if (!claimText(text, ctx.cityName, globalSeen)) return;
+    var targets = ['favorece', 'aprovecha', 'desafia', 'observar', 'integracion'];
+    var idx = 0;
+    var guard = 0;
+    while (sectionsWordTotal(copy) < minTotal && guard < 18) {
+      var tpl = HUMAN_EDITORIAL_PADS[(idx + hash32(ctx.seed + ':pad:' + guard)) % HUMAN_EDITORIAL_PADS.length];
+      idx += 1;
+      guard += 1;
+      var text = replaceCity(tpl, ctx.cityName, ctx.name);
+      var sec = copy.find(function (s) { return s.id === targets[guard % targets.length]; });
+      if (!sec) break;
+      if (!claimText(text, ctx.cityName, globalSeen)) continue;
+      sec.body = sec.body ? sec.body + '\n\n' + text : text;
+      sec.words = wordCount(sec.body);
       stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
       stats._wordsByKind = stats._wordsByKind || {};
       stats._wordsByKind.synthesisBlocks = (stats._wordsByKind.synthesisBlocks || 0) + wordCount(text);
+    }
+    return copy;
+  }
+
+  var HUMAN_TOPUP_VARIANTS = [
+    '{ciudad} se afina cuando el cuerpo también opina.',
+    'Los ritmos honestos suelen guiar mejor que los planes demasiado pulidos.',
+    'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó.',
+    'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva cuando el ruido baja.',
+    'A veces hay que caminar una escena cotidiana para entender el mapa.',
+    'La coherencia no tiene que ser total: basta un hilo que te sostenga.',
+    'Hay lecturas que maduran despacio — como una habitación que se ordena poco a poco.',
+    'El lugar habla en detalles: una mirada, un cansancio, un silencio que pesa distinto.',
+    'Afloja la prisa de concluir; deja que la experiencia te devuelva su propio ritmo.',
+    'Un hilo vivo basta para seguir caminando {ciudad} con verdad.'
+  ];
+
+  function humanEditorialTopUp(sections, ctx, globalSeen, stats, minTotal) {
+    var copy = sections.map(function (s) {
+      return { id: s.id, title: s.title, body: s.body, words: s.words };
+    });
+    var targets = ['observar', 'integracion', 'favorece', 'aprovecha', 'desafia'];
+    var guard = 0;
+    while (sectionsWordTotal(copy) < minTotal && guard < 32) {
+      var tpl = HUMAN_TOPUP_VARIANTS[(guard + hash32(ctx.seed + ':top:' + guard)) % HUMAN_TOPUP_VARIANTS.length];
+      guard += 1;
+      var text = replaceCity(tpl, ctx.cityName, ctx.name);
+      var sec = copy.find(function (s) { return s.id === targets[guard % targets.length]; });
+      if (!sec || !claimText(text, ctx.cityName, globalSeen)) continue;
       sec.body = sec.body ? sec.body + '\n\n' + text : text;
       sec.words = wordCount(sec.body);
-      total += wordCount(text);
+      stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
+      stats._wordsByKind = stats._wordsByKind || {};
+      stats._wordsByKind.synthesisBlocks = (stats._wordsByKind.synthesisBlocks || 0) + wordCount(text);
+    }
+    return copy;
+  }
+
+  function applySectionFillers(sections, ctx, globalSeen, stats, minTotal, narrativeContext) {
+    var total = sectionsWordTotal(sections);
+    if (!narrativeContext && total >= minTotal) return sections;
+    var copy = sections.map(function (s) {
+      return { id: s.id, title: s.title, body: s.body, words: s.words };
     });
+    if (narrativeContext && total < minTotal) {
+      var observar = copy.find(function (s) { return s.id === 'observar'; });
+      if (observar && observar.words < 50) {
+        var obsText = narrativeContext.humanObserve ||
+          ('Si permaneces en ' + ctx.cityName +
+            ', mira cada pocas semanas si lo vivido aquí sigue teniendo latido en tu experiencia.');
+        if (claimText(obsText, ctx.cityName, globalSeen)) {
+          observar.body = observar.body ? observar.body + '\n\n' + obsText : obsText;
+          observar.words = wordCount(observar.body);
+        }
+      }
+    }
     return copy;
   }
 
@@ -471,6 +665,7 @@
     blocks.slice().sort(function (a, b) {
       return slotOrder(a) - slotOrder(b);
     }).forEach(function (block) {
+      if (isMethodologyBlock(block) || isMethodologyPhrase(block.text)) return;
       if (usedBlockIds[block.id]) return;
       var sid = sectionIdForBlock(block);
       var sec = copy.find(function (s) { return s.id === sid; });
@@ -700,8 +895,16 @@
       patterns: detectPatterns(influences)
     };
 
-    var knowledgeWrap = resolveKnowledgeBlocks(input, ctx);
+    var narrativeWrap = resolveNarrativeContext(input, ctx);
+    var narrativeContext = narrativeWrap.narrativeContext;
+
+    var knowledgeWrap = resolveKnowledgeBlocks(input, ctx, narrativeContext);
     var knowledgeBlocks = knowledgeWrap.blocks || [];
+    if (narrativeContext) {
+      knowledgeBlocks = knowledgeBlocks.filter(function (b) {
+        return !isMethodologyBlock(b) && !isMethodologyPhrase(b.text);
+      });
+    }
     var bySection = partitionBlocks(knowledgeBlocks);
     var budgets = sectionBudgets(influences.length);
     var globalSeen = {};
@@ -713,6 +916,7 @@
       _wordsByKind: {}
     };
     var usedBlockIds = {};
+    var methodologyBudget = narrativeContext ? 0 : 2;
 
     var sections = [];
     SECTION_DEFS.forEach(function (def) {
@@ -725,7 +929,9 @@
         sectionThemes,
         stats,
         budgets[def.id],
-        usedBlockIds
+        usedBlockIds,
+        narrativeContext,
+        methodologyBudget
       );
       sections.push({
         id: def.id,
@@ -736,7 +942,7 @@
     });
 
     sections = injectUnusedKnowledgeBlocks(sections, knowledgeBlocks, ctx, globalSeen, stats, usedBlockIds);
-    sections = applySectionFillers(sections, ctx, globalSeen, stats, MIN_WORDS);
+    sections = applySectionFillers(sections, ctx, globalSeen, stats, MIN_WORDS, narrativeContext);
 
     var interpretations = window.INTERPRETATIONS;
     syncSectionWords(sections);
@@ -746,10 +952,10 @@
     if (preTrimWords < MIN_WORDS) {
       var needWords = MIN_WORDS - preTrimWords;
       var estSentences = Math.ceil(needWords / 22);
-      fallbackCap = Math.min(12, Math.max(estSentences, 2));
+      fallbackCap = Math.min(8, Math.max(estSentences, 3));
     }
-    if (premiumUnits > 0) {
-      fallbackCap = Math.min(fallbackCap, Math.max(0, premiumUnits - 1));
+    if (premiumUnits > 0 && preTrimWords >= MIN_WORDS) {
+      fallbackCap = Math.min(fallbackCap, Math.max(1, premiumUnits - 1));
     }
 
     if (interpretations) {
@@ -777,39 +983,61 @@
       sections = ensureMinWordCount(sections, fbPool, ctx, globalSeen, stats, MIN_WORDS, fallbackCap);
     }
 
-    sections = applySectionFillers(sections, ctx, globalSeen, stats, MIN_WORDS);
+    sections = applySectionFillers(sections, ctx, globalSeen, stats, MIN_WORDS, narrativeContext);
 
     if (interpretations) {
       syncSectionWords(sections);
       var postWords = sectionsWordTotal(sections);
       if (postWords < MIN_WORDS) {
-        var extraCap = Math.min(8, Math.max(0, premiumUnits - 1) - (stats.interpretationFallbacks || 0));
-        if (extraCap > 0) {
-          var fbPool2 = buildFallbackPool(influences, aspect, interpretations, cityName);
-          sections = ensureMinWordCount(sections, fbPool2, ctx, globalSeen, stats, MIN_WORDS, extraCap);
+        sections = narrativeWordPadding(sections, narrativeContext, ctx, globalSeen, stats, MIN_WORDS);
+        syncSectionWords(sections);
+        postWords = sectionsWordTotal(sections);
+        if (postWords < MIN_WORDS) {
+          var extraCap = Math.min(8, Math.ceil((MIN_WORDS - postWords) / 18));
+          if (extraCap > 0) {
+            var fbPool2 = buildFallbackPool(influences, aspect, interpretations, cityName);
+            sections = ensureMinWordCount(sections, fbPool2, ctx, globalSeen, stats, MIN_WORDS, extraCap);
+          }
         }
-        sections = applySectionFillers(sections, ctx, globalSeen, stats, MIN_WORDS);
+        sections = applySectionFillers(sections, ctx, globalSeen, stats, MIN_WORDS, narrativeContext);
       }
     }
 
     syncSectionWords(sections);
+    if (narrativeContext && sectionsWordTotal(sections) < MIN_WORDS) {
+      sections = narrativeWordPadding(sections, narrativeContext, ctx, globalSeen, stats, MIN_WORDS);
+    }
+    syncSectionWords(sections);
+    if (interpretations && sectionsWordTotal(sections) < MIN_WORDS) {
+      var fbFinal = buildFallbackPool(influences, aspect, interpretations, cityName);
+      var needCap = Math.min(8, Math.ceil((MIN_WORDS - sectionsWordTotal(sections)) / 20));
+      sections = ensureMinWordCount(sections, fbFinal, ctx, globalSeen, stats, MIN_WORDS, needCap);
+    }
     var preTrimTotal = sectionsWordTotal(sections);
     if (preTrimTotal < MIN_WORDS) {
+      sections = humanEditorialTopUp(sections, ctx, globalSeen, stats, MIN_WORDS);
+      syncSectionWords(sections);
+      preTrimTotal = sectionsWordTotal(sections);
+    }
+    if (preTrimTotal < MIN_WORDS && narrativeContext) {
+      sections = narrativeWordPadding(sections, narrativeContext, ctx, globalSeen, stats, MIN_WORDS);
+      syncSectionWords(sections);
+      preTrimTotal = sectionsWordTotal(sections);
+    }
+    if (preTrimTotal < MIN_WORDS) {
       var integracionSec = sections.find(function (s) { return s.id === 'integracion'; });
-      if (integracionSec) {
-        [MIN_LENGTH_BRIDGE, MIN_LENGTH_TAIL].forEach(function (tpl) {
-          if (sectionsWordTotal(sections) >= MIN_WORDS) return;
-          var bridgeText = replaceCity(tpl, cityName, name);
-          if (!claimText(bridgeText, cityName, globalSeen)) return;
-          integracionSec.body = integracionSec.body
-            ? integracionSec.body + '\n\n' + bridgeText
-            : bridgeText;
-          integracionSec.words = wordCount(integracionSec.body);
-          stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
-          stats._wordsByKind = stats._wordsByKind || {};
-          stats._wordsByKind.synthesisBlocks =
-            (stats._wordsByKind.synthesisBlocks || 0) + wordCount(bridgeText);
-        });
+      if (integracionSec && narrativeContext) {
+        if (narrativeContext.humanClosing) {
+          var closeText = narrativeContext.humanClosing;
+          var hasClose = integracionSec.body &&
+            integracionSec.body.indexOf(closeText.slice(0, 24)) !== -1;
+          if (!hasClose && claimText(closeText, cityName, globalSeen)) {
+            integracionSec.body = integracionSec.body
+              ? integracionSec.body + '\n\n' + closeText
+              : closeText;
+            integracionSec.words = wordCount(integracionSec.body);
+          }
+        }
       }
     }
 
@@ -820,6 +1048,7 @@
     var forbidden = containsForbidden(fullText);
     var englishTheme = containsEnglishThemeKeys(fullText);
     var sourceBreakdown = finalizeSourceBreakdown(stats, totalWords, Object.keys(usedBlockIds).length);
+    var methodologyRepeats = narrativeContext ? countMethodologyRepeats(fullText.toLowerCase()) : 0;
 
     var used = influences.map(function (inf, i) {
       var line = inf.line;
@@ -861,9 +1090,26 @@
         blocksUsed: Object.keys(usedBlockIds),
         documentsUsed: collectDocuments(knowledgeBlocks),
         sourceBreakdown: sourceBreakdown,
-        knowledgeMeta: knowledgeWrap.knowledgeMeta || null
+        knowledgeMeta: knowledgeWrap.knowledgeMeta || null,
+        narrativeContext: narrativeContext,
+        narrativeAutoResolved: narrativeWrap.autoResolved,
+        narrativeMeta: narrativeWrap.narrativeMeta || null,
+        methodologyPhraseRepeats: methodologyRepeats,
+        spineLabel: narrativeContext ? narrativeContext.dominantTheme.label : null
       }
     };
+  }
+
+  function countMethodologyRepeats(fullText) {
+    var count = 0;
+    METHODOLOGY_PHRASE_MARKERS.forEach(function (marker) {
+      var idx = fullText.toLowerCase().indexOf(marker);
+      if (idx !== -1) {
+        var rest = fullText.toLowerCase().slice(idx + marker.length);
+        if (rest.indexOf(marker) !== -1) count += 1;
+      }
+    });
+    return count;
   }
 
   window.KairosCityPremiumComposition = {
@@ -874,9 +1120,13 @@
     EN_THEME_KEYS: EN_THEME_KEYS,
     FORBIDDEN: FORBIDDEN,
     composeCityReading: composeCityReading,
+    METHODOLOGY_BLOCK_IDS: METHODOLOGY_BLOCK_IDS,
+    METHODOLOGY_PHRASE_MARKERS: METHODOLOGY_PHRASE_MARKERS,
     _dev: {
       classifyBlockSource: classifyBlockSource,
-      sectionIdForBlock: sectionIdForBlock
+      sectionIdForBlock: sectionIdForBlock,
+      buildSpineLead: buildSpineLead,
+      countMethodologyRepeats: countMethodologyRepeats
     }
   };
 })();
