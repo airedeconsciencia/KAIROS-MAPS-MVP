@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Kairos Maps — City Premium Reading Lab (3.8e DEV)</title>
+  <title>Kairos Maps — City Premium Reading Lab (3.8e.4 DEV)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -71,15 +71,28 @@
     .err { color: #fca5a5; }
     .ok-tag { color: #86efac; }
     .fail-tag { color: #fca5a5; }
+    .bar-wrap { margin-top: 8px; height: 8px; background: #111827; border-radius: 4px; overflow: hidden; }
+    .bar-premium { height: 100%; background: #86efac; float: left; }
+    .bar-fallback { height: 100%; background: #f87171; float: left; }
+    .block-chip {
+      display: inline-block;
+      margin: 2px 4px 2px 0;
+      padding: 2px 6px;
+      background: #111827;
+      border: 1px solid #374151;
+      border-radius: 4px;
+      font-size: 10px;
+      color: #9ca3af;
+    }
   </style>
 </head>
 <body>
-  <div class="dev-banner">DEV ONLY · 3.8e Premium Reading Prototype · Sin mapa · Sin paywall</div>
+  <div class="dev-banner">DEV ONLY · 3.8e.4 Knowledge-Driven Composition · Sin mapa · Sin paywall</div>
   <div class="page">
     <h1>City Premium Reading Lab</h1>
     <p class="sub">
-      Roberto (29 may 1973, Maó) · Lectura integrada por ciudad y objetivo.
-      Compositor determinista: <code>city-premium-composition-service.js</code>.
+      Roberto (29 may 1973, Maó) · Lectura desde premium-blocks (primario) + interpretations.js (fallback).
+      Audita sourceBreakdown, bloques y documentos usados.
     </p>
 
     <div class="toolbar">
@@ -95,10 +108,12 @@
       </select>
       <button type="button" class="primary" id="btn-run">Generar lectura</button>
       <button type="button" id="btn-all">Generar las 9 combinaciones</button>
+      <button type="button" id="btn-lab-cases">Lab: Lisboa / Toronto / Cabo</button>
     </div>
 
     <div id="status" class="panel" style="display:none"></div>
     <div id="meta-panel" class="panel" style="display:none"></div>
+    <div id="knowledge-panel" class="panel" style="display:none"></div>
     <div id="influences-panel" class="panel" style="display:none"></div>
     <div id="reading-panel" class="panel" style="display:none"></div>
     <div id="batch-panel" class="panel" style="display:none"></div>
@@ -111,6 +126,8 @@
   <script src="../services/natal-composition-service.js"></script>
   <script src="../services/natal-map-bridge-service.js"></script>
   <script src="../content/interpretations.js"></script>
+  <script src="../content/premium-blocks.js"></script>
+  <script src="../services/premium-knowledge-service.js"></script>
   <script src="../content/city-scorer.js"></script>
   <script src="../services/city-premium-composition-service.js"></script>
 
@@ -181,18 +198,52 @@
 
   function renderMeta(reading, scored) {
     var m = reading.meta;
+    var sb = m.sourceBreakdown || {};
+    var premiumPct = sb.wordSharePremium != null ? sb.wordSharePremium : 0;
+    var fbPct = sb.wordShareFallback != null ? sb.wordShareFallback : 0;
     var html = '<p class="panel-title">Metadatos</p><div class="meta-grid">';
     html += metaItem('ok', reading.ok ? '<span class="ok-tag">true</span>' : '<span class="fail-tag">false</span>');
+    html += metaItem('Schema', KairosCityPremiumComposition.SCHEMA_VERSION);
     html += metaItem('Palabras', m.wordCount + ' (rango ' + KairosCityPremiumComposition.MIN_WORDS + '–' + KairosCityPremiumComposition.MAX_WORDS + ')');
     html += metaItem('Score ciudad', scored != null ? scored.toFixed(4) : '—');
     html += metaItem('Objetivo', m.goalId + ' / ' + m.aspect);
+    html += metaItem('Knowledge auto', m.knowledgeAutoResolved ? 'sí' : 'no');
+    html += metaItem('Bloques catálogo', String(m.knowledgeBlockCount || 0));
     html += metaItem('Seed', String(m.deterministicSeed));
     if (m.patterns) {
       html += metaItem('Patrones', JSON.stringify(m.patterns));
     }
     html += '</div>';
+    html += '<p class="panel-title" style="margin-top:12px">sourceBreakdown (unidades)</p><div class="meta-grid">';
+    html += metaItem('premiumBlocks', String(sb.premiumBlocks || 0));
+    html += metaItem('synthesisBlocks', String(sb.synthesisBlocks || 0));
+    html += metaItem('relocationBlocks', String(sb.relocationBlocks || 0));
+    html += metaItem('interpretationFallbacks', String(sb.interpretationFallbacks || 0));
+    html += metaItem('premiumBlockUnits', String(sb.premiumBlockUnits || 0));
+    html += '</div>';
+    html += '<p class="panel-title" style="margin-top:12px">Proporción palabras (premium vs fallback)</p>';
+    html += '<div class="meta-item">Premium ~' + premiumPct + '% · Fallback ~' + fbPct + '%</div>';
+    html += '<div class="bar-wrap"><div class="bar-premium" style="width:' + premiumPct + '%"></div>';
+    html += '<div class="bar-fallback" style="width:' + fbPct + '%"></div></div>';
     document.getElementById('meta-panel').innerHTML = html;
     document.getElementById('meta-panel').style.display = 'block';
+  }
+
+  function renderKnowledge(reading) {
+    var m = reading.meta;
+    var docs = m.documentsUsed || {};
+    var docLines = Object.keys(docs).sort().map(function (d) {
+      return '<span class="block-chip">' + escapeHtml(d) + ' ×' + docs[d] + '</span>';
+    }).join('');
+    var blocks = (m.blocksUsed || []).map(function (id) {
+      return '<span class="block-chip">' + escapeHtml(id) + '</span>';
+    }).join('');
+    var html = '<p class="panel-title">Capa knowledge</p>';
+    html += '<div class="meta-item"><strong>Documentos</strong>' + (docLines || '—') + '</div>';
+    html += '<div class="meta-item" style="margin-top:8px"><strong>Bloques utilizados (' + (m.blocksUsed || []).length + ')</strong><br>' +
+      (blocks || '—') + '</div>';
+    document.getElementById('knowledge-panel').innerHTML = html;
+    document.getElementById('knowledge-panel').style.display = 'block';
   }
 
   function metaItem(label, val) {
@@ -242,6 +293,7 @@
       var reading = runOne(cityKey, goalId);
       document.getElementById('batch-panel').style.display = 'none';
       renderMeta(reading, reading.meta.score);
+      renderKnowledge(reading);
       renderInfluences(reading);
       renderReading(reading);
       setStatus('Lectura generada: ' + reading.meta.wordCount + ' palabras · ok=' + reading.ok);
@@ -267,6 +319,36 @@
       setStatus('Batch completado (9 lecturas)');
     } catch (e) {
       setStatus('Error batch: ' + e.message, true);
+    }
+  });
+
+  document.getElementById('btn-lab-cases').addEventListener('click', function () {
+    var cases = [
+      { city: 'lisboa', goal: 'amor', label: 'Lisboa · amor' },
+      { city: 'toronto', goal: 'trabajo', label: 'Toronto · trabajo' },
+      { city: 'cabo', goal: 'descanso', label: 'Ciudad del Cabo · descanso' }
+    ];
+    try {
+      if (!lines) init();
+      var out = '<p class="panel-title">Casos validación 3.8e.4</p>';
+      cases.forEach(function (c) {
+        var r = runOne(c.city, c.goal);
+        var sb = r.meta.sourceBreakdown || {};
+        out += '<div class="influence-row"><strong>' + c.label + '</strong> · ' +
+          r.meta.wordCount + ' palabras · ok=' + r.ok +
+          ' · premiumUnits=' + (sb.premiumBlockUnits || 0) +
+          ' · fb=' + (sb.interpretationFallbacks || 0) +
+          ' · wordsPremium=' + (sb.wordSharePremium || 0) + '%' +
+          (r.meta.sparseInfluences ? ' · sparse' : '') + '</div>';
+      });
+      document.getElementById('batch-panel').innerHTML = out;
+      document.getElementById('batch-panel').style.display = 'block';
+      document.getElementById('city-select').value = 'lisboa';
+      document.getElementById('goal-select').value = 'amor';
+      document.getElementById('btn-run').click();
+      setStatus('Casos lab generados — revisar lectura Lisboa amor en panel');
+    } catch (e) {
+      setStatus('Error lab: ' + e.message, true);
     }
   });
 

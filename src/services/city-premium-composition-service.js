@@ -1,28 +1,67 @@
 /**
- * KAIROS MAPS — City Premium Reading composition (Fase 3.8e DEV)
+ * KAIROS MAPS — City Premium Reading composition (Fase 3.8e.4 DEV)
  *
- * Lectura integrada por ciudad: narrativa global desde influencias rankeadas.
- * Sin IA, sin DOM, sin inventar datos astrológicos — solo composición editorial.
+ * Lectura integrada: premium-blocks (primario) + interpretations.js (fallback).
+ * Sin IA, sin inventar datos astrológicos.
  *
- * Depende de: INTERPRETATIONS, KairosCityReading (opcional), rankInfluences previo.
+ * Depende de: KairosPremiumKnowledge, KairosPremiumBlocks, INTERPRETATIONS (opcional)
  */
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8e-dev-0.1';
-  var MIN_WORDS = 600;
-  var MAX_WORDS = 1800;
-  var TARGET_MIN = 800;
-  var TARGET_MAX = 1500;
+  var SCHEMA_VERSION = '3.8e.4-dev-0.1';
+  var MIN_WORDS = 500;
+  var MAX_WORDS = 1500;
   var MAX_INFLUENCES = 5;
 
+  var THEME_ES = {
+    belonging: 'pertenencia',
+    communication: 'comunicación',
+    movement: 'movimiento',
+    harmony: 'armonía',
+    visibility: 'visibilidad',
+    emotional_safety: 'seguridad emocional',
+    intimacy: 'intimidad',
+    initiative: 'iniciativa',
+    reflection: 'reflexión',
+    regulation: 'regulación',
+    stimulation: 'estimulación',
+    protection: 'protección',
+    control: 'control',
+    expansion: 'expansión',
+    precision: 'precisión',
+    intensity: 'intensidad',
+    permeability: 'permeabilidad',
+    reserve: 'reserva'
+  };
+
+  var EN_THEME_KEYS = Object.keys(THEME_ES);
+
   var SECTION_DEFS = [
-    { id: 'favorece', title: 'Qué puede favorecer', slot: 'favorece', budget: [200, 320] },
-    { id: 'desafia', title: 'Qué puede desafiar', slot: 'desafia', budget: [200, 320] },
-    { id: 'aprovecha', title: 'Cómo aprovecharlo', slot: 'aprovecha', budget: [180, 280] },
-    { id: 'observar', title: 'Qué observar si permaneces aquí', slot: 'observar', budget: [140, 240] },
-    { id: 'cierre', title: 'Cierre integrador', slot: 'cierre', budget: [120, 220] }
+    { id: 'sintesis', title: 'Síntesis del lugar' },
+    { id: 'favorece', title: 'Qué puede favorecer' },
+    { id: 'desafia', title: 'Qué puede desafiar' },
+    { id: 'aprovecha', title: 'Cómo aprovecharlo' },
+    { id: 'observar', title: 'Qué observar si permaneces aquí' },
+    { id: 'integracion', title: 'Integración final' }
   ];
+
+  var SLOT_TO_FALLBACK = {
+    sintesis: ['cierre'],
+    favorece: ['favorece'],
+    desafia: ['desafia'],
+    aprovecha: ['aprovecha'],
+    observar: ['aprovecha', 'cierre'],
+    integracion: ['cierre']
+  };
+
+  var MAX_FALLBACK_SENTENCES = 4;
+
+  var SYNTHESIS_OPEN = {
+    amor: 'Para {nombre}, {ciudad} puede leerse hoy como un escenario de {objetivo}: una lectura integrada, no una lista de piezas sueltas.',
+    trabajo: 'Para {nombre}, {ciudad} condensa hoy una lectura de {objetivo}: varias señales del mapa en un solo arco.',
+    descanso: 'Para {nombre}, {ciudad} ofrece hoy una lectura de {objetivo}: ritmo del entorno y lo que tu sistema pide, con claridad.'
+  };
 
   var GOAL_LABELS = {
     amor: 'amor y vínculo',
@@ -30,17 +69,27 @@
     descanso: 'descanso y bienestar'
   };
 
-  var GOAL_INTROS = {
-    amor: 'Si tu foco ahora es el amor y el vínculo, {ciudad} puede leerse como un escenario donde varias corrientes del mapa se superponen. Lo que sigue no es una lista de influencias aisladas: es una lectura integrada para {nombre}.',
-    trabajo: 'Si tu foco ahora es el trabajo y el propósito, {ciudad} puede sentirse como un lugar donde varias señales del mapa convergen en una sola experiencia. Lo que sigue está compuesto para {nombre} como narrativa global, no como suma de fragmentos.',
-    descanso: 'Si tu foco ahora es el descanso y el bienestar, {ciudad} puede ofrecer un ritmo distinto al que llevas en casa. Lo que sigue integra varias señales cercanas en una sola lectura para {nombre}.'
+  var MIN_LENGTH_BRIDGE =
+    'Para cerrar: {ciudad} no es promesa automática ni condena — es campo de prueba donde alineas ritmo, vínculos y objetivo con paciencia, revisando cada mes si el entorno sigue nutriendo lo que viniste a cultivar.';
+  var MIN_LENGTH_TAIL =
+    'Un último apunte para {ciudad}: sostén el ritmo y deja que la experiencia se confirme con hechos pequeños, sin prisa.';
+
+  var SECTION_FILLERS = {
+    sintesis: 'La lectura siguiente ordena esas señales en un solo hilo aplicable a tu objetivo en {ciudad} — sin convertir el mapa en una lista fría.',
+    favorece: 'Lo favorable en {ciudad} aparece cuando alineas ritmo cotidiano y vínculos con lo que el mapa ya activó en las líneas dominantes.',
+    desafia: 'Los roces del lugar no anulan su potencial: marcan dónde conviene bajar velocidad y aclarar expectativas contigo mismo.',
+    aprovecha: 'Aprovechar {ciudad} es iterar: un gesto concreto por semana y observar qué cambia en cuerpo y ánimo.',
+    observar: 'Si permaneces en {ciudad}, revisa cada pocas semanas si el ritmo del lugar sigue acompañando lo que buscas — no solo la primera impresión.',
+    integracion: 'Esta lectura integra señales del mapa con tu objetivo: úsala como brújula práctica en {ciudad}, no como veredicto cerrado.'
   };
 
-  var OBSERVAR_LEADS = {
-    amor: 'Si permaneces aquí más de unos días, conviene observar cómo evolucionan los vínculos — no solo el primer encuentro, sino si la intimidad se sostiene o se vuelve intensa sin anclaje.',
-    trabajo: 'Si permaneces aquí, observa si tu energía se orienta hacia proyectos con sentido o si el lugar solo activa prisa por visibilidad sin entregables.',
-    descanso: 'Si permaneces aquí, observa si el cuerpo baja el ritmo de verdad o si el entorno sigue pidiendo rendimiento disfrazado de descanso.'
-  };
+  var INFLUENCE_TRANSITIONS = [
+    '',
+    'La segunda capa del lugar aparece en cómo ',
+    'Junto a esto, también conviene mirar cómo ',
+    'No todo empuja en la misma dirección: ',
+    'Ahí aparece una tensión interesante, porque '
+  ];
 
   var FORBIDDEN = [
     'universo quiere', 'destino está escrito', 'energías cósmicas',
@@ -51,28 +100,17 @@
     'el universo', 'dimensión superior', 'despertar espiritual'
   ];
 
-  var ANGLE_THEMES = {
-    AC: 'presencia y primer contacto',
-    MC: 'trayectoria y visibilidad pública',
-    IC: 'raíz, hogar y vida privada',
-    DC: 'encuentro, pareja y acuerdos'
-  };
-
-  var PLANET_THEMES = {
-    sol: 'identidad y vitalidad',
-    luna: 'ritmo emocional y seguridad',
-    mercurio: 'pensamiento y comunicación',
-    venus: 'vínculo y disfrute',
-    marte: 'impulso y fronteras',
-    jupiter: 'expansión y sentido',
-    saturno: 'límite y madurez',
-    urano: 'cambio y despertar',
-    neptuno: 'permeabilidad y sueño',
-    pluton: 'profundidad y transformación'
-  };
-
   function wordCount(text) {
     return String(text || '').trim().split(/\s+/).filter(Boolean).length;
+  }
+
+  function sectionsWordTotal(sections) {
+    return sections.reduce(function (n, s) { return n + wordCount(s.body); }, 0);
+  }
+
+  function syncSectionWords(sections) {
+    sections.forEach(function (s) { s.words = wordCount(s.body); });
+    return sections;
   }
 
   function hash32(str) {
@@ -85,8 +123,10 @@
     return h >>> 0;
   }
 
-  function replaceCity(text, cityName) {
-    return String(text).replace(/\{ciudad\}/g, cityName);
+  function replaceCity(text, cityName, name) {
+    return String(text)
+      .replace(/\{ciudad\}/g, cityName)
+      .replace(/\{nombre\}/g, name || 'ti');
   }
 
   function resolveGoalId(goal) {
@@ -112,6 +152,192 @@
     return pk + '_' + line.angle;
   }
 
+  function normalizeSentence(s, cityName) {
+    return s
+      .toLowerCase()
+      .replace(/\{ciudad\}/g, '')
+      .replace(new RegExp(cityName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function normalizeInfluences(relevantInfluences) {
+    if (!Array.isArray(relevantInfluences)) return [];
+    return relevantInfluences.slice(0, MAX_INFLUENCES).map(function (item) {
+      if (item.line) return item;
+      return {
+        line: item,
+        composite: item.composite || 0,
+        distKm: item.distKm || item.dist || 0,
+        lineId: item.lineId || item.id
+      };
+    });
+  }
+
+  function classifyBlockSource(block) {
+    if (block.slot === 'reloc') return 'relocationBlocks';
+    if (block.slot === 'synthesis' || block.slot === 'context') return 'synthesisBlocks';
+    if (block.interpKey || (block.id && String(block.id).indexOf('doc17_') === 0)) {
+      return 'premiumBlocks';
+    }
+    return 'synthesisBlocks';
+  }
+
+  function sectionIdForBlock(block) {
+    if (block.stage === 'observar') return 'observar';
+    if (block.stage === 'favorece') return block.slot === 'reloc' ? 'sintesis' : 'favorece';
+    if (block.stage === 'desafia') return 'desafia';
+    if (block.stage === 'aprovechar') return 'aprovecha';
+    if (block.slot === 'context') return 'sintesis';
+    if (block.slot === 'reloc') {
+      return block.stage === 'integrar' ? 'integracion' : 'sintesis';
+    }
+    if (block.slot === 'synthesis') {
+      if (block.stage === 'integrar') {
+        var bid = block.id || '';
+        if (bid.indexOf('conclusion') !== -1 || bid.indexOf('alineacion') !== -1 ||
+            bid.indexOf('combinar') !== -1 || bid.indexOf('integrado') !== -1 ||
+            bid.indexOf('intensidad') !== -1) {
+          return 'integracion';
+        }
+        return 'sintesis';
+      }
+      if (block.stage === 'desafia') return 'desafia';
+      if (block.stage === 'observar') return 'observar';
+    }
+    if (block.interpKey || (block.id && String(block.id).indexOf('doc17_') === 0)) {
+      if (block.stage === 'integrar') return 'integracion';
+      if (block.stage === 'observar') return 'observar';
+      if (block.stage === 'desafia') return 'desafia';
+      if (block.stage === 'aprovechar') return 'aprovecha';
+      return 'favorece';
+    }
+    return 'integracion';
+  }
+
+  function slotOrder(block) {
+    var o = { t1: 1, t2: 2, t3: 3, t4: 4, synthesis: 5, context: 6, reloc: 7 };
+    return o[block.slot] || 9;
+  }
+
+  function themesOverlap(block, usedThemes) {
+    var themes = block.themes || [];
+    if (!themes.length) return false;
+    return themes.some(function (t) { return usedThemes[t]; });
+  }
+
+  function claimText(text, cityName, globalSeen) {
+    var norm = normalizeSentence(text, cityName);
+    if (!norm || globalSeen[norm]) return false;
+    globalSeen[norm] = true;
+    return true;
+  }
+
+  function markThemes(block, usedThemes) {
+    (block.themes || []).forEach(function (t) { usedThemes[t] = true; });
+  }
+
+  function resolveKnowledgeBlocks(input, ctx) {
+    if (input.knowledgeBlocks && input.knowledgeBlocks.length) {
+      return { blocks: input.knowledgeBlocks, autoResolved: false };
+    }
+    var Knowledge = window.KairosPremiumKnowledge;
+    if (!Knowledge || typeof Knowledge.getBlocksForContext !== 'function') {
+      return { blocks: [], autoResolved: false };
+    }
+    var result = Knowledge.getBlocksForContext({
+      city: input.city,
+      goal: ctx.goalId,
+      relevantInfluences: ctx.influences,
+      bridgeProfile: input.bridgeProfile,
+      relocationProfile: input.relocationProfile || null,
+      duration: input.duration || null
+    });
+    return {
+      blocks: result && result.blocks ? result.blocks : [],
+      autoResolved: true,
+      knowledgeMeta: result ? result.meta : null
+    };
+  }
+
+  function partitionBlocks(blocks) {
+    var bySection = {};
+    SECTION_DEFS.forEach(function (def) { bySection[def.id] = []; });
+    blocks.forEach(function (block) {
+      var sid = sectionIdForBlock(block);
+      if (bySection[sid]) bySection[sid].push(block);
+    });
+    return bySection;
+  }
+
+  function buildSectionFromBlocks(sectionId, blockList, ctx, globalSeen, sectionThemes, stats, maxWords, usedBlockIds) {
+    var parts = [];
+    var words = 0;
+    var lastKey = null;
+    var rank = 0;
+
+    if (sectionId === 'sintesis' && blockList.length) {
+      var hasIntroBlock = blockList.some(function (b) {
+        return b.id === 'doc5_metodologia_promesa_natal' || b.slot === 'context';
+      });
+      if (!hasIntroBlock) {
+        var open = SYNTHESIS_OPEN[ctx.goalId] || SYNTHESIS_OPEN.amor;
+        var openText = replaceCity(
+          open.replace(/\{objetivo\}/g, GOAL_LABELS[ctx.goalId] || ctx.goalId),
+          ctx.cityName,
+          ctx.name
+        );
+        if (claimText(openText, ctx.cityName, globalSeen)) {
+          parts.push(openText);
+          words += wordCount(openText);
+        }
+      }
+    }
+
+    var sorted = blockList.slice().sort(function (a, b) {
+      var sa = slotOrder(a);
+      var sb = slotOrder(b);
+      if (sa !== sb) return sa - sb;
+      return hash32(ctx.seed + ':' + sectionId + a.id) - hash32(ctx.seed + ':' + sectionId + b.id);
+    });
+
+    sorted.forEach(function (block) {
+      var text = replaceCity(block.text, ctx.cityName, ctx.name);
+      var norm = normalizeSentence(text, ctx.cityName);
+      if (!norm || globalSeen[norm]) return;
+
+      var prefix = '';
+      if (block.interpKey && block.interpKey !== lastKey) {
+        prefix = INFLUENCE_TRANSITIONS[1 + (hash32(ctx.seed + block.interpKey + rank) % (INFLUENCE_TRANSITIONS.length - 1))];
+        rank += 1;
+        lastKey = block.interpKey;
+      }
+
+      if (prefix && parts.length) {
+        var lower = text.charAt(0).toLowerCase() + text.slice(1);
+        text = prefix + lower;
+      }
+
+      if (!claimText(text, ctx.cityName, globalSeen)) return;
+
+      var kind = classifyBlockSource(block);
+      if (!usedBlockIds[block.id]) {
+        usedBlockIds[block.id] = true;
+        stats[kind] = (stats[kind] || 0) + 1;
+        stats._wordsByKind = stats._wordsByKind || {};
+        stats._wordsByKind[kind] = (stats._wordsByKind[kind] || 0) + wordCount(text);
+      }
+
+      markThemes(block, sectionThemes);
+      parts.push(text);
+      words += wordCount(text);
+    });
+
+    return { text: parts.join('\n\n'), words: words };
+  }
+
+  /* ── Fallback: interpretations.js ── */
+
   function slotFromSections(sections, slot) {
     if (!sections || !sections.length) return '';
     var titleMap = {
@@ -125,9 +351,7 @@
       if (want && sec.title === want) return sec.body || '';
       if (slot === 'cierre' && (!sec.title || sec.title === null)) return sec.body || '';
     }
-    if (slot === 'cierre' && sections.length) {
-      return sections[sections.length - 1].body || '';
-    }
+    if (slot === 'cierre' && sections.length) return sections[sections.length - 1].body || '';
     return '';
   }
 
@@ -157,39 +381,8 @@
       .filter(function (s) { return s.length > 12; });
   }
 
-  function normalizeSentence(s, cityName) {
-    return s
-      .toLowerCase()
-      .replace(/\{ciudad\}/g, '')
-      .replace(new RegExp(cityName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  function pickSentences(pool, maxWords, seed, cityName) {
-    var seen = {};
-    var out = [];
-    var words = 0;
-    var sorted = pool.slice().sort(function (a, b) {
-      if (b.weight !== a.weight) return b.weight - a.weight;
-      return hash32(seed + a.text) - hash32(seed + b.text);
-    });
-    for (var i = 0; i < sorted.length; i++) {
-      var item = sorted[i];
-      var norm = normalizeSentence(item.text, cityName);
-      if (!norm || seen[norm]) continue;
-      seen[norm] = true;
-      var w = wordCount(item.text);
-      if (words + w > maxWords && out.length) continue;
-      out.push(item.text);
-      words += w;
-      if (words >= maxWords) break;
-    }
-    return { text: out.join(' '), words: words };
-  }
-
-  function buildSentencePool(influences, aspect, interpretations, cityName) {
-    var pools = { favorece: [], desafia: [], aprovecha: [], cierre: [], observar: [] };
+  function buildFallbackPool(influences, aspect, interpretations, cityName) {
+    var pool = [];
     influences.forEach(function (inf, rank) {
       var line = inf.line || inf;
       var key = interpKey(line);
@@ -199,19 +392,206 @@
       var slots = extractSlots(entry);
       var weight = 1 / (rank + 1);
       Object.keys(slots).forEach(function (slot) {
-        var body = replaceCity(slots[slot], cityName);
+        var body = replaceCity(slots[slot], cityName, null);
         if (!body) return;
-        splitSentences(body).forEach(function (sent) {
-          pools[slot].push({ text: sent, weight: weight, key: key, rank: rank });
+        splitSentences(body).forEach(function (sent, idx) {
+          pool.push({
+            text: sent,
+            weight: weight - idx * 0.02,
+            key: key,
+            slot: slot === 'cierre' ? 'cierre' : slot
+          });
         });
       });
-      if (slots.desafia) {
-        splitSentences(replaceCity(slots.desafia, cityName)).forEach(function (sent) {
-          pools.observar.push({ text: sent, weight: weight * 0.85, key: key, rank: rank });
-        });
-      }
     });
-    return pools;
+    return pool;
+  }
+
+  function fillFromFallback(sectionId, pool, ctx, globalSeen, stats, maxWords, fallbackBudget) {
+    var slots = SLOT_TO_FALLBACK[sectionId] || [];
+    if (!slots.length) return { text: '', words: 0 };
+    var parts = [];
+    var words = 0;
+    var used = 0;
+    var candidates = pool.filter(function (p) { return slots.indexOf(p.slot) !== -1; })
+      .sort(function (a, b) {
+        if (b.weight !== a.weight) return b.weight - a.weight;
+        return hash32(ctx.seed + 'fb' + a.text) - hash32(ctx.seed + 'fb' + b.text);
+      });
+    var cap = fallbackBudget != null ? fallbackBudget : MAX_FALLBACK_SENTENCES;
+    for (var i = 0; i < candidates.length && words < maxWords && used < cap; i++) {
+      var sent = candidates[i].text;
+      if (!claimText(sent, ctx.cityName, globalSeen)) continue;
+      parts.push(sent);
+      words += wordCount(sent);
+      used += 1;
+      stats.interpretationFallbacks += 1;
+      stats._wordsByKind = stats._wordsByKind || {};
+      stats._wordsByKind.interpretationFallbacks =
+        (stats._wordsByKind.interpretationFallbacks || 0) + wordCount(sent);
+    }
+    return { text: parts.join(' '), words: words };
+  }
+
+  function sectionBudgets(n) {
+    if (n <= 2) {
+      return { sintesis: 150, favorece: 180, desafia: 160, aprovecha: 150, observar: 110, integracion: 130 };
+    }
+    return { sintesis: 160, favorece: 200, desafia: 170, aprovecha: 160, observar: 120, integracion: 140 };
+  }
+
+  function applySectionFillers(sections, ctx, globalSeen, stats, minTotal) {
+    var total = sectionsWordTotal(sections);
+    var copy = sections.map(function (s) {
+      return { id: s.id, title: s.title, body: s.body, words: s.words };
+    });
+    var forceAll = total < minTotal;
+    Object.keys(SECTION_FILLERS).forEach(function (sid) {
+      if (!forceAll && total >= minTotal) return;
+      var sec = copy.find(function (s) { return s.id === sid; });
+      var filler = SECTION_FILLERS[sid];
+      if (!sec || !filler) return;
+      if (!forceAll && sec.words >= 35) return;
+      var text = replaceCity(filler, ctx.cityName, ctx.name);
+      if (!claimText(text, ctx.cityName, globalSeen)) return;
+      stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
+      stats._wordsByKind = stats._wordsByKind || {};
+      stats._wordsByKind.synthesisBlocks = (stats._wordsByKind.synthesisBlocks || 0) + wordCount(text);
+      sec.body = sec.body ? sec.body + '\n\n' + text : text;
+      sec.words = wordCount(sec.body);
+      total += wordCount(text);
+    });
+    return copy;
+  }
+
+  function injectUnusedKnowledgeBlocks(sections, blocks, ctx, globalSeen, stats, usedBlockIds) {
+    var copy = sections.map(function (s) {
+      return { id: s.id, title: s.title, body: s.body, words: s.words };
+    });
+    blocks.slice().sort(function (a, b) {
+      return slotOrder(a) - slotOrder(b);
+    }).forEach(function (block) {
+      if (usedBlockIds[block.id]) return;
+      var sid = sectionIdForBlock(block);
+      var sec = copy.find(function (s) { return s.id === sid; });
+      if (!sec) return;
+      var text = replaceCity(block.text, ctx.cityName, ctx.name);
+      if (!claimText(text, ctx.cityName, globalSeen)) return;
+      var kind = classifyBlockSource(block);
+      usedBlockIds[block.id] = true;
+      stats[kind] = (stats[kind] || 0) + 1;
+      stats._wordsByKind = stats._wordsByKind || {};
+      stats._wordsByKind[kind] = (stats._wordsByKind[kind] || 0) + wordCount(text);
+      sec.body = sec.body ? sec.body + '\n\n' + text : text;
+      sec.words = wordCount(sec.body);
+    });
+    return copy;
+  }
+
+  function fillFromFallbackAny(pool, ctx, globalSeen, stats, maxWords, cap) {
+    var parts = [];
+    var words = 0;
+    var used = 0;
+    var candidates = pool.slice().sort(function (a, b) {
+      if (b.weight !== a.weight) return b.weight - a.weight;
+      return hash32(ctx.seed + 'any' + a.text) - hash32(ctx.seed + 'any' + b.text);
+    });
+    for (var i = 0; i < candidates.length && words < maxWords && used < cap; i++) {
+      var sent = candidates[i].text;
+      if (!claimText(sent, ctx.cityName, globalSeen)) continue;
+      parts.push(sent);
+      words += wordCount(sent);
+      used += 1;
+      stats.interpretationFallbacks += 1;
+      stats._wordsByKind = stats._wordsByKind || {};
+      stats._wordsByKind.interpretationFallbacks =
+        (stats._wordsByKind.interpretationFallbacks || 0) + wordCount(sent);
+    }
+    return { text: parts.join(' '), words: words };
+  }
+
+  function ensureMinWordCount(sections, pool, ctx, globalSeen, stats, minTotal, fallbackCap) {
+    var copy = sections.map(function (s) {
+      return { id: s.id, title: s.title, body: s.body, words: wordCount(s.body) };
+    });
+    var order = ['observar', 'integracion', 'favorece', 'aprovecha', 'desafia', 'sintesis'];
+    var guard = 0;
+    while (sectionsWordTotal(copy) < minTotal && guard < 40) {
+      guard += 1;
+      var remaining = fallbackCap - (stats.interpretationFallbacks || 0);
+      if (remaining <= 0) break;
+      var progressed = false;
+      order.forEach(function (sid) {
+        if (remaining <= 0) return;
+        var sec = copy.find(function (s) { return s.id === sid; });
+        if (!sec) return;
+        var fb = fillFromFallback(sid, pool, ctx, globalSeen, stats, 160, Math.min(3, remaining));
+        if (!fb.text) return;
+        remaining = fallbackCap - (stats.interpretationFallbacks || 0);
+        sec.body = sec.body ? sec.body + '\n\n' + fb.text : fb.text;
+        sec.words = wordCount(sec.body);
+        progressed = true;
+      });
+      if (!progressed) {
+        var integracion = copy.find(function (s) { return s.id === 'integracion'; });
+        if (!integracion) break;
+        var anyFb = fillFromFallbackAny(
+          pool,
+          ctx,
+          globalSeen,
+          stats,
+          minTotal,
+          Math.min(4, fallbackCap - (stats.interpretationFallbacks || 0))
+        );
+        if (!anyFb.text) break;
+        integracion.body = integracion.body ? integracion.body + '\n\n' + anyFb.text : anyFb.text;
+        integracion.words = wordCount(integracion.body);
+        progressed = true;
+      }
+      if (sectionsWordTotal(copy) >= minTotal) break;
+    }
+    return copy;
+  }
+
+  function softFillSections(sections, pool, ctx, globalSeen, stats, minTotal, extraCap) {
+    var total = sectionsWordTotal(sections);
+    if (total >= minTotal) return sections;
+    var copy = sections.slice();
+    var order = ['observar', 'integracion', 'favorece', 'aprovecha', 'desafia'];
+    var remaining = extraCap != null ? extraCap : (MAX_FALLBACK_SENTENCES - (stats.interpretationFallbacks || 0));
+    for (var o = 0; o < order.length && total < minTotal && remaining > 0; o++) {
+      var sid = order[o];
+      var sec = copy.find(function (s) { return s.id === sid; });
+      if (!sec) continue;
+      var need = Math.min(60, minTotal - total);
+      var fb = fillFromFallback(sid, pool, ctx, globalSeen, stats, need, remaining);
+      if (!fb.text) continue;
+      remaining -= fb.text.split(/(?<=[.!?…])\s+/).filter(Boolean).length;
+      sec.body = sec.body ? sec.body + '\n\n' + fb.text : fb.text;
+      sec.words = wordCount(sec.body);
+      total += fb.words;
+    }
+    return copy;
+  }
+
+  function trimToMaxWords(sections, maxTotal) {
+    var total = sections.reduce(function (n, s) { return n + s.words; }, 0);
+    if (total <= maxTotal) return sections;
+    var excess = total - maxTotal;
+    var copy = sections.map(function (s) {
+      return { id: s.id, title: s.title, body: s.body, words: s.words };
+    });
+    for (var i = copy.length - 1; i >= 0 && excess > 0; i--) {
+      if (copy[i].id === 'sintesis') continue;
+      var words = copy[i].body.trim().split(/\s+/);
+      while (words.length > 30 && excess > 0) {
+        words.pop();
+        excess -= 1;
+      }
+      copy[i].body = words.join(' ');
+      copy[i].words = wordCount(copy[i].body);
+    }
+    return copy;
   }
 
   function detectPatterns(influences) {
@@ -233,140 +613,42 @@
       return best;
     }
     var topAngle = topKey(angles);
-    var topPlanet = topKey(planets);
     return {
       dominantAngle: topAngle,
-      dominantPlanet: topPlanet,
-      angleTheme: topAngle ? ANGLE_THEMES[topAngle] : null,
-      planetTheme: topPlanet ? PLANET_THEMES[String(topPlanet).toLowerCase()] : null,
-      repeatedAngle: topAngle && angles[topAngle] >= 2,
       influenceCount: influences.length
     };
   }
 
-  function bridgeWeave(bridgeProfile, goalId, cityName, name) {
-    if (!bridgeProfile) return '';
-    var parts = [];
-    if (bridgeProfile.tensionMode === true) {
-      parts.push(
-        'En tu carta conviven tensiones que aquí pueden volverse más legibles: no como conflicto externo, sino como contraste interno que ' +
-        cityName + ' amplifica con paciencia.'
-      );
-    }
-    var themes = (bridgeProfile.themes || []).slice(0, 2);
-    if (themes.length) {
-      parts.push(
-        'Desde tu perfil, ' + name + ', conviene sostener la lectura junto a ejes como ' +
-        themes.join(' y ') + ' — no como etiqueta, sino como filtro para notar qué te nutre y qué te desgasta en este entorno.'
-      );
-    }
-    if (!parts.length && bridgeProfile.tags && bridgeProfile.tags.length) {
-      parts.push(
-        'Tu mapa natal sugiere prestar atención a cómo ' + cityName + ' activa temas que ya conoces: ' +
-        bridgeProfile.tags.slice(0, 3).join(', ') + '.'
-      );
-    }
-    return parts.join(' ');
+  function finalizeSourceBreakdown(stats, totalWords, usedBlockCount) {
+    var breakdown = {
+      premiumBlocks: stats.premiumBlocks || 0,
+      synthesisBlocks: stats.synthesisBlocks || 0,
+      relocationBlocks: stats.relocationBlocks || 0,
+      interpretationFallbacks: stats.interpretationFallbacks || 0
+    };
+    var wk = stats._wordsByKind || {};
+    var premiumWords = (wk.premiumBlocks || 0) + (wk.synthesisBlocks || 0) + (wk.relocationBlocks || 0);
+    breakdown.premiumBlockUnits = usedBlockCount != null
+      ? usedBlockCount
+      : breakdown.premiumBlocks + breakdown.synthesisBlocks + breakdown.relocationBlocks;
+    breakdown.totalUnits = breakdown.premiumBlockUnits + breakdown.interpretationFallbacks;
+    breakdown.wordSharePremium = totalWords > 0
+      ? Math.round((premiumWords / totalWords) * 1000) / 10
+      : 0;
+    breakdown.wordShareFallback = totalWords > 0
+      ? Math.round(((wk.interpretationFallbacks || 0) / totalWords) * 1000) / 10
+      : 0;
+    return breakdown;
   }
 
-  function composeSection(def, pools, ctx) {
-    var slot = def.slot;
-    var maxW = def.budget[1];
-    var seed = ctx.seed + ':' + slot;
-    var parts = [];
-
-    if (slot === 'favorece' && GOAL_INTROS[ctx.goalId]) {
-      parts.push(
-        replaceCity(GOAL_INTROS[ctx.goalId], ctx.cityName)
-          .replace(/\{nombre\}/g, ctx.name)
-      );
-    }
-
-    if (slot === 'observar' && OBSERVAR_LEADS[ctx.goalId]) {
-      parts.push(replaceCity(OBSERVAR_LEADS[ctx.goalId], ctx.cityName));
-    }
-
-    var pool = pools[slot] || [];
-    if (slot === 'observar') {
-      pool = pool.concat(pools.desafia || []);
-    }
-
-    var picked = pickSentences(pool, maxW, seed, ctx.cityName);
-    if (picked.text) parts.push(picked.text);
-
-    if (slot === 'favorece' && ctx.patterns.repeatedAngle && ctx.patterns.angleTheme) {
-      parts.push(
-        'Varias señales cercanas insisten en ' + ctx.patterns.angleTheme +
-        '. Eso no multiplica el efecto de forma lineal: lo vuelve más coherente — como si el lugar hablara del mismo asunto por distintos tonos.'
-      );
-    }
-
-    if (slot === 'desafia' && ctx.patterns.planetTheme) {
-      parts.push(
-        'Puede aparecer una tensión alrededor de ' + ctx.patterns.planetTheme +
-        '. No es advertencia; es invitación a nombrar qué te activa antes de que el cuerpo lo traduzca en cansancio o irritación.'
-      );
-    }
-
-    if (slot === 'cierre') {
-      var bridge = bridgeWeave(ctx.bridgeProfile, ctx.goalId, ctx.cityName, ctx.name);
-      if (bridge) parts.push(bridge);
-      parts.push(
-        ctx.name + ', ' + ctx.cityName + ' no define tu ' + (GOAL_LABELS[ctx.goalId] || 'proceso') +
-        ' — lo encuadra. La lectura integrada sirve si la usas como espejo práctico: qué probar, qué evitar, qué observar si te quedas.'
-      );
-    }
-
-    var body = parts.filter(Boolean).join('\n\n');
-    return { id: def.id, title: def.title, body: body, words: wordCount(body) };
-  }
-
-  function trimToMaxWords(sections, maxTotal) {
-    var total = sections.reduce(function (n, s) { return n + s.words; }, 0);
-    if (total <= maxTotal) return sections;
-    var excess = total - maxTotal;
-    var copy = sections.map(function (s) {
-      return { id: s.id, title: s.title, body: s.body, words: s.words };
-    });
-    for (var i = copy.length - 1; i >= 0 && excess > 0; i--) {
-      var words = copy[i].body.trim().split(/\s+/);
-      while (words.length > 40 && excess > 0) {
-        words.pop();
-        excess -= 1;
-      }
-      copy[i].body = words.join(' ');
-      copy[i].words = wordCount(copy[i].body);
-    }
-    return copy;
-  }
-
-  function padToMinWords(sections, pools, ctx, minTotal) {
-    var total = sections.reduce(function (n, s) { return n + s.words; }, 0);
-    if (total >= minTotal) return sections;
-    var copy = sections.slice();
-    var need = minTotal - total;
-    var slotOrder = ['favorece', 'desafia', 'aprovecha', 'observar', 'cierre'];
-    var extraPool = [];
-    slotOrder.forEach(function (slot) {
-      (pools[slot] || []).forEach(function (item) {
-        extraPool.push(item);
+  function collectDocuments(blocks) {
+    var docs = {};
+    blocks.forEach(function (b) {
+      (b.sources || []).forEach(function (s) {
+        docs[s.doc] = (docs[s.doc] || 0) + 1;
       });
     });
-    extraPool.sort(function (a, b) { return b.weight - a.weight; });
-    var idx = 0;
-    var sectionIdx = 0;
-    while (need > 0 && idx < extraPool.length) {
-      var target = copy[sectionIdx % copy.length];
-      sectionIdx += 1;
-      var sent = extraPool[idx].text;
-      idx += 1;
-      var norm = normalizeSentence(sent, ctx.cityName);
-      if (target.body.toLowerCase().indexOf(norm.slice(0, 40)) !== -1) continue;
-      target.body = target.body + ' ' + sent;
-      target.words = wordCount(target.body);
-      need -= wordCount(sent);
-    }
-    return copy;
+    return docs;
   }
 
   function containsForbidden(text) {
@@ -377,12 +659,12 @@
     return null;
   }
 
-  function normalizeInfluences(relevantInfluences) {
-    if (!Array.isArray(relevantInfluences)) return [];
-    return relevantInfluences.slice(0, MAX_INFLUENCES).map(function (item) {
-      if (item.line) return item;
-      return { line: item, composite: item.composite || 0, distKm: item.distKm || item.dist || 0, lineId: item.lineId || item.id };
-    });
+  function containsEnglishThemeKeys(text) {
+    var lower = String(text).toLowerCase();
+    for (var i = 0; i < EN_THEME_KEYS.length; i++) {
+      if (lower.indexOf(EN_THEME_KEYS[i]) !== -1) return EN_THEME_KEYS[i];
+    }
+    return null;
   }
 
   function composeCityReading(input) {
@@ -394,12 +676,6 @@
     };
 
     if (!input || !input.city || !input.city.name) return empty;
-
-    var interpretations = window.INTERPRETATIONS;
-    if (!interpretations) {
-      empty.meta.error = 'missing_interpretations';
-      return empty;
-    }
 
     var city = input.city;
     var cityName = city.name;
@@ -414,33 +690,136 @@
     }
 
     var seed = hash32(cityName + '|' + goalId + '|' + aspect + '|' + influences.length);
-    var patterns = detectPatterns(influences);
-    var pools = buildSentencePool(influences, aspect, interpretations, cityName);
-
     var ctx = {
       cityName: cityName,
       name: name,
       goalId: goalId,
       aspect: aspect,
       seed: seed,
-      patterns: patterns,
-      bridgeProfile: input.bridgeProfile || null
+      influences: influences,
+      patterns: detectPatterns(influences)
     };
 
-    var sections = SECTION_DEFS.map(function (def) {
-      return composeSection(def, pools, ctx);
+    var knowledgeWrap = resolveKnowledgeBlocks(input, ctx);
+    var knowledgeBlocks = knowledgeWrap.blocks || [];
+    var bySection = partitionBlocks(knowledgeBlocks);
+    var budgets = sectionBudgets(influences.length);
+    var globalSeen = {};
+    var stats = {
+      premiumBlocks: 0,
+      synthesisBlocks: 0,
+      relocationBlocks: 0,
+      interpretationFallbacks: 0,
+      _wordsByKind: {}
+    };
+    var usedBlockIds = {};
+
+    var sections = [];
+    SECTION_DEFS.forEach(function (def) {
+      var sectionThemes = {};
+      var built = buildSectionFromBlocks(
+        def.id,
+        bySection[def.id] || [],
+        ctx,
+        globalSeen,
+        sectionThemes,
+        stats,
+        budgets[def.id],
+        usedBlockIds
+      );
+      sections.push({
+        id: def.id,
+        title: def.title,
+        body: built.text,
+        words: built.words
+      });
     });
 
-    var padTarget = TARGET_MIN;
-    sections = padToMinWords(sections, pools, ctx, padTarget);
-    if (sections.reduce(function (n, s) { return n + s.words; }, 0) < MIN_WORDS) {
-      sections = padToMinWords(sections, pools, ctx, MIN_WORDS);
+    sections = injectUnusedKnowledgeBlocks(sections, knowledgeBlocks, ctx, globalSeen, stats, usedBlockIds);
+    sections = applySectionFillers(sections, ctx, globalSeen, stats, MIN_WORDS);
+
+    var interpretations = window.INTERPRETATIONS;
+    syncSectionWords(sections);
+    var preTrimWords = sectionsWordTotal(sections);
+    var premiumUnits = Object.keys(usedBlockIds).length;
+    var fallbackCap = MAX_FALLBACK_SENTENCES;
+    if (preTrimWords < MIN_WORDS) {
+      var needWords = MIN_WORDS - preTrimWords;
+      var estSentences = Math.ceil(needWords / 22);
+      fallbackCap = Math.min(12, Math.max(estSentences, 2));
     }
+    if (premiumUnits > 0) {
+      fallbackCap = Math.min(fallbackCap, Math.max(0, premiumUnits - 1));
+    }
+
+    if (interpretations) {
+      var fbPool = buildFallbackPool(influences, aspect, interpretations, cityName);
+      sections = sections.map(function (sec) {
+        if (sec.words >= 35 || (stats.interpretationFallbacks || 0) >= fallbackCap) return sec;
+        var beforeFb = stats.interpretationFallbacks || 0;
+        var fb = fillFromFallback(
+          sec.id,
+          fbPool,
+          ctx,
+          globalSeen,
+          stats,
+          budgets[sec.id] - sec.words,
+          fallbackCap - beforeFb
+        );
+        if (!fb.text) return sec;
+        return {
+          id: sec.id,
+          title: sec.title,
+          body: sec.body ? sec.body + '\n\n' + fb.text : fb.text,
+          words: wordCount(sec.body ? sec.body + '\n\n' + fb.text : fb.text)
+        };
+      });
+      sections = ensureMinWordCount(sections, fbPool, ctx, globalSeen, stats, MIN_WORDS, fallbackCap);
+    }
+
+    sections = applySectionFillers(sections, ctx, globalSeen, stats, MIN_WORDS);
+
+    if (interpretations) {
+      syncSectionWords(sections);
+      var postWords = sectionsWordTotal(sections);
+      if (postWords < MIN_WORDS) {
+        var extraCap = Math.min(8, Math.max(0, premiumUnits - 1) - (stats.interpretationFallbacks || 0));
+        if (extraCap > 0) {
+          var fbPool2 = buildFallbackPool(influences, aspect, interpretations, cityName);
+          sections = ensureMinWordCount(sections, fbPool2, ctx, globalSeen, stats, MIN_WORDS, extraCap);
+        }
+        sections = applySectionFillers(sections, ctx, globalSeen, stats, MIN_WORDS);
+      }
+    }
+
+    syncSectionWords(sections);
+    var preTrimTotal = sectionsWordTotal(sections);
+    if (preTrimTotal < MIN_WORDS) {
+      var integracionSec = sections.find(function (s) { return s.id === 'integracion'; });
+      if (integracionSec) {
+        [MIN_LENGTH_BRIDGE, MIN_LENGTH_TAIL].forEach(function (tpl) {
+          if (sectionsWordTotal(sections) >= MIN_WORDS) return;
+          var bridgeText = replaceCity(tpl, cityName, name);
+          if (!claimText(bridgeText, cityName, globalSeen)) return;
+          integracionSec.body = integracionSec.body
+            ? integracionSec.body + '\n\n' + bridgeText
+            : bridgeText;
+          integracionSec.words = wordCount(integracionSec.body);
+          stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
+          stats._wordsByKind = stats._wordsByKind || {};
+          stats._wordsByKind.synthesisBlocks =
+            (stats._wordsByKind.synthesisBlocks || 0) + wordCount(bridgeText);
+        });
+      }
+    }
+
     sections = trimToMaxWords(sections, MAX_WORDS);
 
     var fullText = sections.map(function (s) { return s.body; }).join('\n\n');
     var totalWords = wordCount(fullText);
     var forbidden = containsForbidden(fullText);
+    var englishTheme = containsEnglishThemeKeys(fullText);
+    var sourceBreakdown = finalizeSourceBreakdown(stats, totalWords, Object.keys(usedBlockIds).length);
 
     var used = influences.map(function (inf, i) {
       var line = inf.line;
@@ -456,11 +835,9 @@
       };
     });
 
-    var title = cityName + ' para ' + name;
-
     return {
-      ok: totalWords >= MIN_WORDS && totalWords <= MAX_WORDS && !forbidden,
-      title: title,
+      ok: totalWords >= MIN_WORDS && totalWords <= MAX_WORDS && !forbidden && !englishTheme,
+      title: cityName + ' para ' + name,
       sections: sections.map(function (s) {
         return { id: s.id, title: s.title, body: s.body };
       }),
@@ -471,12 +848,20 @@
         goalId: goalId,
         aspect: aspect,
         wordCount: totalWords,
-        targetBand: [TARGET_MIN, TARGET_MAX],
+        wordBand: [MIN_WORDS, MAX_WORDS],
         influencesUsed: used,
-        patterns: patterns,
+        patterns: ctx.patterns,
         score: input.score != null ? input.score : null,
         forbiddenHit: forbidden,
-        deterministicSeed: seed
+        englishThemeHit: englishTheme,
+        deterministicSeed: seed,
+        sparseInfluences: influences.length <= 2,
+        knowledgeAutoResolved: knowledgeWrap.autoResolved,
+        knowledgeBlockCount: knowledgeBlocks.length,
+        blocksUsed: Object.keys(usedBlockIds),
+        documentsUsed: collectDocuments(knowledgeBlocks),
+        sourceBreakdown: sourceBreakdown,
+        knowledgeMeta: knowledgeWrap.knowledgeMeta || null
       }
     };
   }
@@ -485,9 +870,13 @@
     SCHEMA_VERSION: SCHEMA_VERSION,
     MIN_WORDS: MIN_WORDS,
     MAX_WORDS: MAX_WORDS,
-    TARGET_MIN: TARGET_MIN,
-    TARGET_MAX: TARGET_MAX,
+    THEME_ES: THEME_ES,
+    EN_THEME_KEYS: EN_THEME_KEYS,
     FORBIDDEN: FORBIDDEN,
-    composeCityReading: composeCityReading
+    composeCityReading: composeCityReading,
+    _dev: {
+      classifyBlockSource: classifyBlockSource,
+      sectionIdForBlock: sectionIdForBlock
+    }
   };
 })();

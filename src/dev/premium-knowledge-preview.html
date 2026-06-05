@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Premium Knowledge Lab (3.8e.3 DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: #0c1018;
+      color: #e5e7eb;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .dev-banner {
+      background: rgba(96, 165, 250, 0.12);
+      border-bottom: 1px solid rgba(96, 165, 250, 0.35);
+      color: #93c5fd;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 1000px; margin: 0 auto; padding: 20px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 18px; color: #93c5fd; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 12px; margin: 0 0 16px; max-width: 800px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    button, select {
+      font: inherit;
+      cursor: pointer;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    button.primary { background: rgba(96, 165, 250, 0.15); border-color: #60a5fa; color: #bfdbfe; }
+    .panel {
+      background: #141a24;
+      border: 1px solid #2a3444;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    .block {
+      border-bottom: 1px solid #2a3444;
+      padding: 10px 0;
+    }
+    .block:last-child { border-bottom: none; }
+    .block-head { color: #93c5fd; font-size: 12px; margin-bottom: 4px; }
+    .block-meta { color: #6b7280; font-size: 11px; margin-bottom: 6px; }
+    .block-text { color: #d1d5db; white-space: pre-wrap; }
+    .tag { display: inline-block; margin-right: 6px; padding: 2px 6px; background: #1f2937; border-radius: 4px; font-size: 10px; }
+    .catalog { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+    .catalog div { font-size: 11px; color: #9ca3af; }
+    .catalog strong { color: #bfdbfe; display: block; }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV ONLY · 3.8e.3 Premium Knowledge Layer · Sin compositor · Sin producto</div>
+  <div class="page">
+    <h1>Premium Knowledge Lab</h1>
+    <p class="sub">
+      Auditar bloques editoriales antes del compositor. Selección determinista vía
+      <code>KairosPremiumKnowledge.getBlocksForContext</code> — no genera lectura.
+    </p>
+
+    <div class="toolbar">
+      <select id="preset">
+        <option value="lisboa-amor">Lisboa · amor (Venus+Saturno AC)</option>
+        <option value="toronto-trabajo">Toronto · trabajo (Marte AC + Saturno IC)</option>
+        <option value="cabo-descanso">Cabo · descanso (Luna IC)</option>
+      </select>
+      <label style="display:flex;align-items:center;gap:6px;color:#9ca3af;font-size:12px">
+        <input type="checkbox" id="tension"> tensionMode
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;color:#9ca3af;font-size:12px">
+        <input type="checkbox" id="reloc"> relocationProfile
+      </label>
+      <button type="button" class="primary" id="btn-run">Seleccionar bloques</button>
+      <button type="button" id="btn-catalog">Ver catálogo completo</button>
+    </div>
+
+    <div id="catalog-panel" class="panel" style="display:none"></div>
+    <div id="meta-panel" class="panel" style="display:none"></div>
+    <div id="blocks-panel" class="panel" style="display:none"></div>
+  </div>
+
+  <script src="../content/premium-blocks.js"></script>
+  <script src="../services/premium-knowledge-service.js"></script>
+  <script>
+(function () {
+  var PRESETS = {
+    'lisboa-amor': {
+      city: { name: 'Lisboa' },
+      goal: 'amor',
+      relevantInfluences: [
+        { line: { id: 'venus-ac', planet: 'venus', planetKey: 'VENUS', angle: 'AC' }, distKm: 431, composite: 0.602 },
+        { line: { id: 'saturno-ac', planet: 'saturno', planetKey: 'SATURNO', angle: 'AC' }, distKm: 210, composite: 0.576 }
+      ]
+    },
+    'toronto-trabajo': {
+      city: { name: 'Toronto' },
+      goal: 'trabajo',
+      relevantInfluences: [
+        { line: { id: 'marte-ac', planet: 'marte', planetKey: 'MARTE', angle: 'AC' }, distKm: 40, composite: 0.652 },
+        { line: { id: 'saturno-ic', planet: 'saturno', planetKey: 'SATURNO', angle: 'IC' }, distKm: 293, composite: 0.517 },
+        { line: { id: 'venus-ic', planet: 'venus', planetKey: 'VENUS', angle: 'IC' }, distKm: 399, composite: 0.367 }
+      ]
+    },
+    'cabo-descanso': {
+      city: { name: 'Ciudad del Cabo' },
+      goal: 'descanso',
+      relevantInfluences: [
+        { line: { id: 'luna-ic', planet: 'luna', planetKey: 'LUNA', angle: 'IC' }, distKm: 180, composite: 0.58 }
+      ]
+    }
+  };
+
+  var bridgeProfile = {
+    tags: ['belonging', 'communication'],
+    themes: ['belonging', 'communication'],
+    tensionMode: false
+  };
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function showCatalog() {
+    var c = KairosPremiumBlocks.catalog();
+    var html = '<p class="panel-title">Catálogo · ' + c.totalBlocks + ' bloques</p><div class="catalog">';
+    Object.keys(c.byDoc).forEach(function (doc) {
+      html += '<div><strong>' + doc + '</strong>' + c.byDoc[doc] + ' bloques</div>';
+    });
+    html += '</div><div class="catalog" style="margin-top:10px">';
+    Object.keys(c.byStage).forEach(function (st) {
+      html += '<div><strong>' + st + '</strong>' + c.byStage[st] + '</div>';
+    });
+    html += '</div>';
+    document.getElementById('catalog-panel').innerHTML = html;
+    document.getElementById('catalog-panel').style.display = 'block';
+  }
+
+  function runSelect() {
+    var key = document.getElementById('preset').value;
+    var preset = PRESETS[key];
+    var bp = {
+      tags: bridgeProfile.tags.slice(),
+      themes: bridgeProfile.themes.slice(),
+      tensionMode: document.getElementById('tension').checked
+    };
+    var reloc = null;
+    if (document.getElementById('reloc').checked) {
+      reloc = { ok: true, angles: ['AC', 'MC'] };
+    }
+    var result = KairosPremiumKnowledge.getBlocksForContext({
+      city: preset.city,
+      goal: preset.goal,
+      relevantInfluences: preset.relevantInfluences,
+      bridgeProfile: bp,
+      relocationProfile: reloc,
+      duration: null
+    });
+
+    var m = result.meta;
+    document.getElementById('meta-panel').innerHTML =
+      '<p class="panel-title">Selección</p>' +
+      '<div class="block-meta">ok=' + result.ok + ' · goal=' + m.goalId +
+      ' · bloques=' + m.selectedCount + ' · seed=' + m.deterministicSeed + '</div>' +
+      '<div class="block-meta">deep: ' + (m.deepInfluenceKeys || []).join(', ') + '</div>' +
+      '<div class="block-meta">coverage stage: ' + escapeHtml(JSON.stringify(m.coverage.byStage)) + '</div>' +
+      '<div class="block-meta">coverage doc: ' + escapeHtml(JSON.stringify(m.coverage.byDoc)) + '</div>';
+    document.getElementById('meta-panel').style.display = 'block';
+
+    var html = '<p class="panel-title">Bloques seleccionados (' + result.blocks.length + ')</p>';
+    var lastStage = '';
+    result.blocks.forEach(function (b) {
+      if (b.stage !== lastStage) {
+        lastStage = b.stage;
+        html += '<div class="block-head" style="margin-top:12px">— ' + escapeHtml(b.stage) + ' —</div>';
+      }
+      var srcs = (b.sources || []).map(function (s) {
+        return s.doc + ' ' + s.section;
+      }).join(' · ');
+      html += '<div class="block">' +
+        '<div class="block-head">' + escapeHtml(b.id) + '</div>' +
+        '<div class="block-meta">' +
+        '<span class="tag">' + escapeHtml(b.slot) + '</span>' +
+        '<span class="tag">' + escapeHtml((b.goals || []).join(',')) + '</span>' +
+        (b.interpKey ? '<span class="tag">' + escapeHtml(b.interpKey) + '</span>' : '') +
+        '</div>' +
+        '<div class="block-meta">' + escapeHtml(srcs) + '</div>' +
+        '<div class="block-meta">themes: ' + escapeHtml((b.themes || []).join(', ')) + '</div>' +
+        '<div class="block-text">' + escapeHtml(b.text) + '</div></div>';
+    });
+    document.getElementById('blocks-panel').innerHTML = html;
+    document.getElementById('blocks-panel').style.display = 'block';
+  }
+
+  document.getElementById('btn-run').addEventListener('click', runSelect);
+  document.getElementById('btn-catalog').addEventListener('click', showCatalog);
+  showCatalog();
+})();
+  </script>
+</body>
+</html>

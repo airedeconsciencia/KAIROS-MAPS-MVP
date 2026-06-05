@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke City Premium Composition (Fase 3.8e DEV)
+# Kairos Maps — Smoke City Premium Composition (Fase 3.8e.4 DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -13,15 +13,17 @@ BRIDGE="$ROOT/src/services/natal-map-bridge-service.js"
 SCORER="$ROOT/src/content/city-scorer.js"
 ASTRO="$ROOT/src/engines/astro.js"
 INTERP="$ROOT/src/content/interpretations.js"
+BLOCKS="$ROOT/src/content/premium-blocks.js"
+KNOWLEDGE="$ROOT/src/services/premium-knowledge-service.js"
 PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — City Premium Composition smoke (Node)"
+echo " KAIROS MAPS — City Premium Composition smoke (3.8e.4)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
-for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$SCORER" "$ASTRO" "$INTERP" "$PREMIUM"; do
+for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$SCORER" "$ASTRO" "$INTERP" "$BLOCKS" "$KNOWLEDGE" "$PREMIUM"; do
   if [[ ! -f "$f" ]]; then
     echo "ERROR: No se encuentra: $f"
     exit 1
@@ -34,7 +36,7 @@ if [[ ! -f "$ASTRONOMY" ]]; then
   curl -fsSL "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" -o "$ASTRONOMY"
 fi
 
-export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE SCORER ASTRO INTERP PREMIUM ASTRONOMY ROOT
+export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE SCORER ASTRO INTERP BLOCKS KNOWLEDGE PREMIUM ASTRONOMY ROOT
 
 node <<'NODE'
 const fs = require('fs');
@@ -57,6 +59,8 @@ if (typeof ctx.Astronomy === 'undefined' && ctx.window && ctx.window.Astronomy) 
   process.env.SCORER,
   process.env.ASTRO,
   process.env.INTERP,
+  process.env.BLOCKS,
+  process.env.KNOWLEDGE,
   process.env.PREMIUM
 ].forEach(function (path) {
   vm.runInContext(fs.readFileSync(path, 'utf8'), ctx, { filename: path });
@@ -68,6 +72,7 @@ const compose = ctx.window.KairosNatalComposition.composeNatalLiteReading;
 const Bridge = ctx.window.KairosNatalMapBridge;
 const Scorer = ctx.window.KairosCityScorer;
 const Premium = ctx.window.KairosCityPremiumComposition;
+const Knowledge = ctx.window.KairosPremiumKnowledge;
 
 const CITIES = [
   { name: 'Lisboa', country: 'Portugal', lat: 38.7223, lon: -9.1393 },
@@ -120,8 +125,18 @@ function buildInput(goalId) {
   };
 }
 
-function wordCount(text) {
-  return String(text).trim().split(/\s+/).filter(Boolean).length;
+function sectionOverlap(a, b) {
+  const sa = a.split(/(?<=[.!?…])\s+/).map(function (s) {
+    return s.trim().toLowerCase().slice(0, 50);
+  }).filter(Boolean);
+  const sb = b.split(/(?<=[.!?…])\s+/).map(function (s) {
+    return s.trim().toLowerCase().slice(0, 50);
+  }).filter(Boolean);
+  let hits = 0;
+  sa.forEach(function (x) {
+    if (sb.indexOf(x) !== -1) hits += 1;
+  });
+  return hits;
 }
 
 let fail = 0;
@@ -134,9 +149,15 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Compositor existe (KairosCityPremiumComposition)',
-  Premium && typeof Premium.composeCityReading === 'function',
+  'Compositor existe (schema 3.8e.4)',
+  Premium && Premium.SCHEMA_VERSION.indexOf('3.8e.4') === 0,
   'schema=' + (Premium && Premium.SCHEMA_VERSION)
+);
+
+assert(
+  'Knowledge layer cargada',
+  Knowledge && typeof Knowledge.getBlocksForContext === 'function',
+  'blocks catalog=' + (ctx.window.KairosPremiumBlocks && ctx.window.KairosPremiumBlocks.BLOCKS.length)
 );
 
 const samples = [];
@@ -157,40 +178,78 @@ GOALS.forEach(function (goalId) {
     });
     const full = reading.sections.map(function (s) { return s.body; }).join('\n\n');
     bodies.push(full);
-    samples.push({
-      city: city.name,
-      goal: goalId,
-      reading: reading
-    });
+    samples.push({ city: city.name, goal: goalId, reading: reading });
   });
 });
 
 const lisboaAmor = samples.find(function (s) { return s.city === 'Lisboa' && s.goal === 'amor'; });
 const torontoTrabajo = samples.find(function (s) { return s.city === 'Toronto' && s.goal === 'trabajo'; });
+const caboDescanso = samples.find(function (s) { return s.city === 'Ciudad del Cabo' && s.goal === 'descanso'; });
 
 assert(
-  'Lectura Lisboa amor ok:true',
+  'Lisboa amor ok:true',
   lisboaAmor && lisboaAmor.reading.ok === true,
-  lisboaAmor ? 'words=' + lisboaAmor.reading.meta.wordCount : 'missing'
+  lisboaAmor ? 'words=' + lisboaAmor.reading.meta.wordCount + ' sparse=' + lisboaAmor.reading.meta.sparseInfluences : 'missing'
 );
 
 assert(
-  'Longitud mínima (≥600) en todas las muestras',
-  samples.every(function (s) { return s.reading.meta.wordCount >= Premium.MIN_WORDS; }),
+  'Longitud 500–1500 en todas las muestras',
+  samples.every(function (s) {
+    const w = s.reading.meta.wordCount;
+    return w >= Premium.MIN_WORDS && w <= Premium.MAX_WORDS;
+  }),
   samples.map(function (s) { return s.city + '/' + s.goal + '=' + s.reading.meta.wordCount; }).join(' · ')
 );
 
 assert(
-  'Longitud máxima (≤1800) en todas las muestras',
-  samples.every(function (s) { return s.reading.meta.wordCount <= Premium.MAX_WORDS; }),
-  null
+  'Mínimo 6 secciones',
+  samples.every(function (s) { return s.reading.sections.length >= 6; }),
+  lisboaAmor ? lisboaAmor.reading.sections.map(function (x) { return x.id; }).join(', ') : null
 );
 
 assert(
-  'Mínimo 5 secciones por lectura',
-  samples.every(function (s) { return s.reading.sections.length >= 5; }),
-  lisboaAmor ? lisboaAmor.reading.sections.map(function (x) { return x.title; }).join(' | ') : null
+  'sourceBreakdown presente',
+  samples.every(function (s) {
+    const sb = s.reading.meta.sourceBreakdown;
+    return sb && typeof sb.premiumBlocks === 'number' && typeof sb.interpretationFallbacks === 'number';
+  }),
+  lisboaAmor ? JSON.stringify(lisboaAmor.reading.meta.sourceBreakdown) : null
 );
+
+assert(
+  'premiumBlocks > interpretationFallbacks (unidades)',
+  samples.every(function (s) {
+    const sb = s.reading.meta.sourceBreakdown;
+    return sb.premiumBlockUnits > sb.interpretationFallbacks;
+  }),
+  samples.map(function (s) {
+    const sb = s.reading.meta.sourceBreakdown;
+    return s.city + '/' + s.goal + ' premium=' + sb.premiumBlockUnits + ' fb=' + sb.interpretationFallbacks +
+      ' wordsPremium=' + sb.wordSharePremium + '%';
+  }).join(' · ')
+);
+
+assert(
+  'knowledgeAutoResolved en todas las muestras',
+  samples.every(function (s) { return s.reading.meta.knowledgeAutoResolved === true; }),
+  'blockCount ejemplo=' + (lisboaAmor && lisboaAmor.reading.meta.knowledgeBlockCount)
+);
+
+let englishFail = false;
+samples.forEach(function (s) {
+  if (s.reading.meta.englishThemeHit) {
+    englishFail = true;
+    console.log('  Theme EN en ' + s.city + '/' + s.goal + ': ' + s.reading.meta.englishThemeHit);
+  }
+  const lower = s.reading.sections.map(function (x) { return x.body; }).join(' ').toLowerCase();
+  (Premium.EN_THEME_KEYS || []).forEach(function (key) {
+    if (lower.indexOf(key) !== -1) {
+      englishFail = true;
+      console.log('  Tag técnico visible: ' + key + ' en ' + s.city + '/' + s.goal);
+    }
+  });
+});
+assert('Sin tags/themes técnicos en inglés visibles', !englishFail, null);
 
 const dup = new Map();
 let dupFail = false;
@@ -217,6 +276,21 @@ samples.forEach(function (s) {
 });
 assert('Sin frases prohibidas (voice_tone)', !forbiddenFail, null);
 
+let overlapFail = false;
+samples.forEach(function (s) {
+  const secs = s.reading.sections;
+  for (let i = 0; i < secs.length; i++) {
+    for (let j = i + 1; j < secs.length; j++) {
+      const hits = sectionOverlap(secs[i].body, secs[j].body);
+      if (hits >= 2) {
+        overlapFail = true;
+        console.log('  Repetición literal ' + hits + ' frases: ' + s.city + '/' + s.goal + ' ' + secs[i].id + '↔' + secs[j].id);
+      }
+    }
+  }
+});
+assert('Sin repetición literal entre secciones (≥2 frases iguales)', !overlapFail, null);
+
 const detInput = buildInput('amor');
 const lisboa = CITIES[0];
 const ranked = Scorer.rankInfluences(lisboa, detInput);
@@ -241,11 +315,14 @@ assert(
 );
 
 console.log('\n' + '═'.repeat(60));
-console.log('Ejemplo Toronto trabajo —', torontoTrabajo.reading.meta.wordCount, 'palabras');
-console.log('Título:', torontoTrabajo.reading.title);
-torontoTrabajo.reading.sections.forEach(function (sec) {
-  console.log('\n## ' + sec.title + ' (' + wordCount(sec.body) + ' palabras)');
-  console.log(sec.body.slice(0, 280) + (sec.body.length > 280 ? '…' : ''));
+console.log('Lab casos — palabras y sourceBreakdown');
+[lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
+  if (!s) return;
+  const sb = s.reading.meta.sourceBreakdown;
+  console.log('  ' + s.city + ' / ' + s.goal + ': ' + s.reading.meta.wordCount + ' palabras · ok=' + s.reading.ok);
+  console.log('    breakdown: premium=' + sb.premiumBlocks + ' synth=' + sb.synthesisBlocks +
+    ' reloc=' + sb.relocationBlocks + ' fb=' + sb.interpretationFallbacks);
+  console.log('    wordSharePremium=' + sb.wordSharePremium + '% · blocks=' + s.reading.meta.knowledgeBlockCount);
 });
 
 console.log('\n' + '═'.repeat(60));
