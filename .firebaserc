@@ -2,6 +2,17 @@
   "projects": {
     "default": "kairos-maps-mvp"
   },
-  "targets": {},
+  "targets": {
+    "kairos-maps-mvp": {
+      "hosting": {
+        "prod": [
+          "kairos-maps-mvp"
+        ],
+        "staging": [
+          "kairos-maps-dev"
+        ]
+      }
+    }
+  },
   "etags": {}
 }
