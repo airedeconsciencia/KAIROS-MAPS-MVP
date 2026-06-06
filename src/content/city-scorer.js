@@ -11,47 +11,13 @@
   var DEFAULT_MAX_SUGGESTIONS = 3;
   var DEFAULT_MIN_SCORE = 0.28;
 
-  var COUNTRY_CODES = {
-    'España': 'es',
-    'Portugal': 'pt',
-    'Francia': 'fr',
-    'Reino Unido': 'uk',
-    'Italia': 'it',
-    'Alemania': 'de',
-    'Países Bajos': 'nl',
-    'Grecia': 'gr',
-    'Suecia': 'se',
-    'Turquía': 'tr',
-    'EE. UU.': 'us',
-    'Canadá': 'ca',
-    'México': 'mx',
-    'Argentina': 'ar',
-    'Brasil': 'br',
-    'Perú': 'pe',
-    'Japón': 'jp',
-    'Corea del Sur': 'kr',
-    'Tailandia': 'th',
-    'Singapur': 'sg',
-    'India': 'in',
-    'Sudáfrica': 'za',
-    'Egipto': 'eg',
-    'Kenia': 'ke',
-    'Australia': 'au',
-    'Nueva Zelanda': 'nz'
-  };
-
-  function slugify(text) {
-    return String(text || '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+  var Catalog = window.KairosCitiesCatalog;
+  if (!Catalog) {
+    throw new Error('KairosCitiesCatalog must load before KairosCityScorer');
   }
 
   function cityIdFromRef(city) {
-    var cc = COUNTRY_CODES[city.country] || slugify(city.country).slice(0, 2) || 'xx';
-    return slugify(city.name) + '-' + cc;
+    return Catalog.cityIdFromRef(city);
   }
 
   function normalizeOptions(input) {

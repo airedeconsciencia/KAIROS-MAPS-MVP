@@ -11,40 +11,7 @@
     : 'amor';
 
   // -------- Cities (predefined gold markers) --------
-  const CITIES = [
-    // Europa
-    { name:'Madrid',          country:'España',         lat:40.4168, lon:-3.7038 },
-    { name:'Lisboa',          country:'Portugal',       lat:38.7223, lon:-9.1393 },
-    { name:'París',           country:'Francia',        lat:48.8566, lon: 2.3522 },
-    { name:'Londres',         country:'Reino Unido',    lat:51.5074, lon:-0.1278 },
-    { name:'Roma',            country:'Italia',         lat:41.9028, lon:12.4964 },
-    { name:'Berlín',          country:'Alemania',       lat:52.5200, lon:13.4050 },
-    { name:'Ámsterdam',       country:'Países Bajos',   lat:52.3676, lon: 4.9041 },
-    { name:'Atenas',          country:'Grecia',         lat:37.9838, lon:23.7275 },
-    { name:'Estocolmo',       country:'Suecia',         lat:59.3293, lon:18.0686 },
-    { name:'Estambul',        country:'Turquía',        lat:41.0082, lon:28.9784 },
-    // América
-    { name:'Nueva York',      country:'EE. UU.',        lat:40.7128, lon:-74.0060 },
-    { name:'Los Ángeles',     country:'EE. UU.',        lat:34.0522, lon:-118.2437 },
-    { name:'Toronto',         country:'Canadá',         lat:43.6532, lon:-79.3832 },
-    { name:'Ciudad de México',country:'México',         lat:19.4326, lon:-99.1332 },
-    { name:'Buenos Aires',    country:'Argentina',      lat:-34.6037,lon:-58.3816 },
-    { name:'Río de Janeiro',  country:'Brasil',         lat:-22.9068,lon:-43.1729 },
-    { name:'Lima',            country:'Perú',           lat:-12.0464,lon:-77.0428 },
-    // Asia
-    { name:'Tokio',           country:'Japón',          lat:35.6762, lon:139.6503 },
-    { name:'Seúl',            country:'Corea del Sur',  lat:37.5665, lon:126.9780 },
-    { name:'Bangkok',         country:'Tailandia',      lat:13.7563, lon:100.5018 },
-    { name:'Singapur',        country:'Singapur',       lat: 1.3521, lon:103.8198 },
-    { name:'Delhi',           country:'India',          lat:28.6139, lon: 77.2090 },
-    // África
-    { name:'Ciudad del Cabo', country:'Sudáfrica',      lat:-33.9249,lon: 18.4241 },
-    { name:'El Cairo',        country:'Egipto',         lat:30.0444, lon: 31.2357 },
-    { name:'Nairobi',         country:'Kenia',          lat:-1.2921, lon: 36.8219 },
-    // Oceanía
-    { name:'Sídney',          country:'Australia',      lat:-33.8688,lon:151.2093 },
-    { name:'Auckland',        country:'Nueva Zelanda',  lat:-36.8485,lon:174.7633 }
-  ];
+  const CITIES = window.KairosCitiesCatalog.CITIES;
 
   // -------- App state --------
   const state = {

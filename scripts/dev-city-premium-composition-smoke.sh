@@ -10,6 +10,7 @@ GOAL_SIGNAL="$ROOT/src/content/goal-signal.js"
 NATAL_LITE="$ROOT/src/content/natal-lite.js"
 COMPOSITION="$ROOT/src/services/natal-composition-service.js"
 BRIDGE="$ROOT/src/services/natal-map-bridge-service.js"
+CATALOG="$ROOT/src/content/cities-catalog.js"
 SCORER="$ROOT/src/content/city-scorer.js"
 ASTRO="$ROOT/src/engines/astro.js"
 INTERP="$ROOT/src/content/interpretations.js"
@@ -24,7 +25,7 @@ echo " KAIROS MAPS — City Premium Composition smoke (3.8e.9d)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
-for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$SCORER" "$ASTRO" "$INTERP" "$BLOCKS" "$KNOWLEDGE" "$NARRATIVE" "$PREMIUM"; do
+for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$CATALOG" "$SCORER" "$ASTRO" "$INTERP" "$BLOCKS" "$KNOWLEDGE" "$NARRATIVE" "$PREMIUM"; do
   if [[ ! -f "$f" ]]; then
     echo "ERROR: No se encuentra: $f"
     exit 1
@@ -37,7 +38,7 @@ if [[ ! -f "$ASTRONOMY" ]]; then
   curl -fsSL "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" -o "$ASTRONOMY"
 fi
 
-export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE SCORER ASTRO INTERP BLOCKS KNOWLEDGE NARRATIVE PREMIUM ASTRONOMY ROOT
+export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE CATALOG SCORER ASTRO INTERP BLOCKS KNOWLEDGE NARRATIVE PREMIUM ASTRONOMY ROOT
 
 node <<'NODE'
 const fs = require('fs');
@@ -57,6 +58,7 @@ if (typeof ctx.Astronomy === 'undefined' && ctx.window && ctx.window.Astronomy) 
   process.env.NATAL_LITE,
   process.env.COMPOSITION,
   process.env.BRIDGE,
+  process.env.CATALOG,
   process.env.SCORER,
   process.env.ASTRO,
   process.env.INTERP,
@@ -77,11 +79,9 @@ const Premium = ctx.window.KairosCityPremiumComposition;
 const Knowledge = ctx.window.KairosPremiumKnowledge;
 const Narrative = ctx.window.KairosNarrativeIntelligence;
 
-const CITIES = [
-  { name: 'Lisboa', country: 'Portugal', lat: 38.7223, lon: -9.1393 },
-  { name: 'Toronto', country: 'Canadá', lat: 43.6532, lon: -79.3832 },
-  { name: 'Ciudad del Cabo', country: 'Sudáfrica', lat: -33.9249, lon: 18.4241 }
-];
+const Catalog = ctx.window.KairosCitiesCatalog;
+if (!Catalog) throw new Error('KairosCitiesCatalog no definido');
+const CITIES = Catalog.getLabCities();
 
 const GOALS = ['amor', 'trabajo', 'descanso'];
 
