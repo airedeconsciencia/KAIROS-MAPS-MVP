@@ -1,5 +1,5 @@
 /**
- * KAIROS MAPS — City Premium Reading composition (Fase 3.8e.9b DEV)
+ * KAIROS MAPS — City Premium Reading composition (Fase 3.8e.9d DEV)
  *
  * Lectura integrada: voz premium cálida + premium-blocks + fallback.
  * Sin IA, sin inventar datos astrológicos.
@@ -9,7 +9,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8e.9b-dev-0.1';
+  var SCHEMA_VERSION = '3.8e.9d-dev-0.1';
   var MAX_ATMOSPHERE_LINES = 3;
   var MIN_WORDS = 500;
   var MAX_WORDS = 900;
@@ -71,16 +71,51 @@
   };
 
   var SPINE_FAVORECE_OPEN = [
-    'Algo se abre con suavidad: ',
-    'Hay una puerta que merece la pena mirar: ',
-    'Se insinúa un gesto posible: '
+    'Quizá notes que se abre algo con suavidad: ',
+    'Puede que descubras una puerta que merece la pena mirar: ',
+    'Tal vez se insinúe un gesto posible: '
   ];
 
   var SPINE_APROVECHA_OPEN = [
     'En {ciudad}, un gesto pequeño puede sostener lo anterior: ',
-    'Para habituar la apertura en {ciudad}, prueba esto: ',
-    'Un paso concreto en {ciudad}: '
+    'Quizá en {ciudad} pruebes esto: ',
+    'Un paso concreto que puede sostenerte en {ciudad}: '
   ];
+
+  var DESCRIPTIVE_PHRASE_MARKERS = [
+    'el lugar favorece',
+    'el entorno activa',
+    'la ciudad ofrece',
+    'la energía impulsa',
+    'lo que activa el lugar'
+  ];
+
+  var NATURAL_CONNECTORS = [
+    'Quizá por eso ',
+    'Y ahí suele aparecer algo interesante: ',
+    'A veces ocurre que ',
+    'Con el tiempo, ',
+    'Curiosamente, ',
+    'Sin darte cuenta, '
+  ];
+
+  var HUMAN_SCENE_POOL = {
+    amor: [
+      'Puede que una conversación dure más de lo previsto y no quieras que termine.',
+      'Tal vez te encuentres volviendo caminando pensando en alguien con más calma de la habitual.',
+      'A veces ocurre que te sientas sin necesidad de impresionar a nadie.'
+    ],
+    trabajo: [
+      'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso.',
+      'Puede que vuelvas caminando repasando una idea que por fin ordena cosas.',
+      'Tal vez te sorprenda sentarte sin necesidad de producir nada durante un rato.'
+    ],
+    descanso: [
+      'Puede que te sorprenda sentarte sin necesidad de rendir nada.',
+      'A veces ocurre que el cuerpo pide pausa antes que la mente lo autorice.',
+      'Quizá descubras que un silencio largo deja de incomodarte.'
+    ]
+  };
 
   var METHODOLOGY_BLOCK_IDS = {
     doc6_jerarquia_natal_linea: true,
@@ -146,8 +181,8 @@
     contradiccion: [
       'La segunda mirada suele ser más honesta que la primera.',
       'Y ahí aparece algo distinto — sin contradecir lo anterior.',
-      'Lo que hoy choca puede ser dos ritmos conviviendo.',
-      'La lectura gana profundidad cuando aceptas la contradicción.',
+      'Quizá por eso notes dos ritmos distintos conviviendo.',
+      'A veces ocurre que dos ritmos chocan sin pedir permiso.',
       'Entre lo que favorece y lo que desafía hay un pasillo estrecho.'
     ],
     capa: [
@@ -174,7 +209,7 @@
     ],
     ciudad: [
       'Hay momentos en que el lugar habla por contraste, no por confirmación.',
-      'Lo que activa el lugar no siempre activa lo mismo en ti.',
+      'Puede que lo que despierta la ciudad no despierte lo mismo en ti.',
       'Hay señales que se entienden mejor en la repetición.'
     ]
   };
@@ -539,6 +574,169 @@
     return { text: t, softened: softened, suppressed: false, hit: hit };
   }
 
+  function lcfirstText(text) {
+    if (!text) return '';
+    return text.charAt(0).toLowerCase() + text.slice(1);
+  }
+
+  function pickExperiential(ctx, key, variants) {
+    return variants[hash32(String(ctx.seed) + ':' + key) % variants.length];
+  }
+
+  function humanizePresenceText(text, ctx) {
+    if (!text) return '';
+    initVoiceContext(ctx);
+    var t = String(text);
+    var before = t;
+    var k = String(ctx._humanPresenceTransforms || 0);
+
+    t = t.replace(/\bPara descanso o amor,\s*/gi, '');
+    t = t.replace(/\bel lugar favorece\b/gi, function () {
+      return pickExperiential(ctx, 'fav:' + k, [
+        'quizá notes que se abre', 'tal vez descubras que se abre', 'puede que notes que se abre'
+      ]);
+    });
+    t = t.replace(/\bel entorno activa\b/gi, function () {
+      return pickExperiential(ctx, 'entA:' + k, [
+        'quizá notes que se activa', 'tal vez sientas que se activa', 'puede que notes que se activa'
+      ]);
+    });
+    t = t.replace(/\bel entorno premia\b/gi, 'tal vez notes que el entorno premia');
+    t = t.replace(/\bel entorno suele\b/gi, 'a veces el entorno suele');
+    t = t.replace(/\bla ciudad ofrece\b/gi, 'quizá te encuentres con');
+    t = t.replace(/\bla energía impulsa\b/gi, 'tal vez notes un impulso');
+    t = t.replace(/\bla energía está disponible\b/gi, 'quizá sientas la energía disponible');
+    t = t.replace(/\blo que activa el lugar no siempre activa lo mismo en ti\b/gi,
+      'quizá lo que despierta la ciudad no despierte lo mismo en ti');
+    t = t.replace(/\bel lugar habla\b/gi, 'tal vez notes que el lugar habla');
+    t = t.replace(/\bel lugar pide\b/gi, 'quizá sientas que pide');
+    t = t.replace(/\bla señal es notable\b/gi, 'tal vez la señal te resulte notable');
+    t = t.replace(/\bpuede activarse\b/gi, 'quizá se active');
+    t = t.replace(/\binvierte primero\b/gi, 'quizá empieces por invertir');
+    t = t.replace(/\bdefine qué\b/gi, 'quizá te ayude definir qué');
+    t = t.replace(/\bel amor en ([^ ]+) no es\b/gi, 'quizá notes que el amor en $1 no es');
+    t = t.replace(/\bel amor en ([^ ]+) no promete\b/gi, 'tal vez el amor en $1 no prometa');
+    t = t.replace(/\ben ([^ ]+) el trabajo avanza\b/gi, 'en $1 quizá notes que tu trabajo avanza');
+    t = t.replace(/\{ciudad\} enseña despacio/gi, 'quizá notes que {ciudad} te enseña despacio');
+
+    if (t !== before) {
+      ctx._humanPresenceTransforms = (ctx._humanPresenceTransforms || 0) + 1;
+    }
+    return t;
+  }
+
+  function filterGoalMismatchBlock(text, goalId) {
+    if (!text) return '';
+    var lower = text.toLowerCase();
+    if (goalId === 'trabajo' && lower.indexOf('para descanso o amor') !== -1) return '';
+    if (goalId === 'amor' && lower.indexOf('favorece trabajo de fondo') !== -1) return '';
+    if (goalId === 'descanso' && lower.indexOf('lanzar, vender, competir') !== -1) return '';
+    return text;
+  }
+
+  function hasNaturalConnector(text) {
+    var lower = String(text || '').toLowerCase();
+    for (var i = 0; i < NATURAL_CONNECTORS.length; i++) {
+      if (lower.indexOf(NATURAL_CONNECTORS[i].toLowerCase().trim()) === 0) return true;
+    }
+    return /^(puede que|quizá|tal vez|a veces ocurre|con el tiempo|curiosamente|sin darte cuenta)/i
+      .test(String(text || '').trim());
+  }
+
+  function paragraphNeedsConnector(paragraph) {
+    var lower = String(paragraph || '').toLowerCase();
+    return lower.indexOf('la señal') === 0 ||
+      lower.indexOf('si lo que buscas') === 0 ||
+      lower.indexOf('si tienes algo') === 0 ||
+      lower.indexOf('energía para') === 0 ||
+      lower.indexOf('favorece ') !== -1 ||
+      lower.indexOf('puede activarse') !== -1 ||
+      lower.indexOf('puede que se active') !== -1;
+  }
+
+  function maybePrependConnector(paragraph, ctx, key) {
+    initVoiceContext(ctx);
+    if (!paragraphNeedsConnector(paragraph)) return paragraph;
+    if (hasNaturalConnector(paragraph)) return paragraph;
+    if ((ctx._connectorsUsed || 0) >= 3) return paragraph;
+    ctx._connectorKeys = ctx._connectorKeys || {};
+    if (ctx._connectorKeys[key]) return paragraph;
+    var idx = hash32(ctx.seed + ':conn:' + key) % NATURAL_CONNECTORS.length;
+    var conn = NATURAL_CONNECTORS[idx];
+    ctx._connectorKeys[key] = true;
+    ctx._connectorsUsed = (ctx._connectorsUsed || 0) + 1;
+    if (conn.indexOf(':') !== -1 || conn.slice(-1) === ' ') {
+      return conn + lcfirstText(paragraph);
+    }
+    return conn + paragraph;
+  }
+
+  function experienceFirstParagraph(text, ctx, paraIndex) {
+    if (!text || paraIndex > 0) return text;
+    if (hasNaturalConnector(text)) return text;
+    var lower = text.toLowerCase();
+    if (lower.indexOf('la señal') === 0) {
+      return 'Sin darte cuenta, ' + lcfirstText(text);
+    }
+    if (lower.indexOf('si lo que buscas') === 0 || lower.indexOf('si tienes algo') === 0) {
+      return 'Quizá por eso ' + lcfirstText(text);
+    }
+    if (lower.indexOf('energía para empezar') === 0) {
+      return 'Tal vez notes ' + lcfirstText(text);
+    }
+    return text;
+  }
+
+  function pickHumanScene(ctx, sectionId) {
+    var pool = HUMAN_SCENE_POOL[ctx.goalId] || HUMAN_SCENE_POOL.amor;
+    if (!pool || !pool.length) return '';
+    initVoiceContext(ctx);
+    ctx._sceneKeys = ctx._sceneKeys || {};
+    var attempts = 0;
+    while (attempts < pool.length) {
+      var idx = hash32(ctx.seed + ':scene:' + sectionId + ':' + attempts) % pool.length;
+      var scene = pool[idx];
+      if (!ctx._sceneKeys[scene]) {
+        ctx._sceneKeys[scene] = true;
+        return scene;
+      }
+      attempts += 1;
+    }
+    return '';
+  }
+
+  function applyHumanPresenceToSections(sections, ctx, narrativeContext) {
+    if (!narrativeContext) return sections;
+    var scenesUsed = 0;
+    return sections.map(function (sec) {
+      var paragraphs = String(sec.body || '').split(/\n\n+/).filter(Boolean);
+      var out = [];
+      paragraphs.forEach(function (para, pi) {
+        var t = humanizePresenceText(para, ctx);
+        t = filterGoalMismatchBlock(t, ctx.goalId);
+        if (!t) return;
+        t = experienceFirstParagraph(t, ctx, out.length);
+        if (out.length > 0) {
+          t = maybePrependConnector(t, ctx, sec.id + ':' + pi);
+        }
+        out.push(t);
+      });
+      if (sec.id === 'observar' && scenesUsed < 1) {
+        var scene = pickHumanScene(ctx, sec.id);
+        if (scene) {
+          var blob = out.join(' ').toLowerCase();
+          if (blob.indexOf(scene.toLowerCase().slice(0, 22)) === -1) {
+            out.splice(Math.min(1, out.length), 0, scene);
+            scenesUsed += 1;
+            ctx._humanScenesUsed = (ctx._humanScenesUsed || 0) + 1;
+          }
+        }
+      }
+      var body = out.join('\n\n');
+      return { id: sec.id, title: sec.title, body: body, words: wordCount(body) };
+    });
+  }
+
   function applyTextPolish(text, ctx, narrativeContext) {
     if (!text) return '';
     var polished = text;
@@ -549,6 +747,7 @@
     } else {
       polished = softenClinicalTerms(replaceCity(text, ctx.cityName, ctx.name), ctx);
     }
+    polished = filterGoalMismatchBlock(polished, ctx.goalId);
     return polished;
   }
 
@@ -902,18 +1101,18 @@
   }
 
   var HUMAN_EDITORIAL_PADS = [
-    'En {ciudad}, lo esencial suele aparecer en gestos pequeños — no en el gran momento.',
-    '{ciudad} enseña despacio, como una habitación que se ordena poco a poco.',
-    'El mapa abre una puerta; caminarla es otra historia — y también la más honesta.',
-    'Algo hermoso vive en la repetición tranquila, no solo en la epifanía.',
-    'Tal vez el lugar no pida prisa: pida presencia.',
+    'Quizá en {ciudad} notes que lo esencial aparece en gestos pequeños — no en el gran momento.',
+    'Puede que {ciudad} te enseñe despacio, sin pedirte prisa.',
+    'Tal vez el mapa abra una puerta y tú decidas si la caminas.',
+    'A veces ocurre que lo hermoso vive en la repetición tranquila, no solo en la epifanía.',
+    'Curiosamente, puede que no necesites prisa: solo presencia.',
     'Cuando algo incomoda, escúchalo como brújula, no como fallo.',
     'Lo contradictorio de hoy puede volverse legible si aflojas la urgencia de resolver.',
-    'Anota una escena concreta — un encuentro, un cansancio — y léela con calma más tarde.',
-    'Un gesto pequeño basta para seguir habitando {ciudad} con verdad.',
-    'Dale tiempo al lugar antes de juzgarlo por un solo día perfecto o un roce incómodo.',
-    'La experiencia cotidiana confirma o matiza la lectura — más que cualquier idea fija.',
-    'Observa si lo que sientes hoy sigue vivo dentro de un mes — sin presión.'
+    'Quizá anotes una escena concreta — un encuentro, un cansancio — y la leas con calma más tarde.',
+    'Un gesto pequeño puede bastarte para seguir habitando {ciudad} con verdad.',
+    'Dale tiempo antes de juzgar un solo día perfecto o un roce incómodo.',
+    'Con el tiempo, la experiencia cotidiana confirma o matiza la lectura.',
+    'Mira si lo que sientes hoy sigue vivo dentro de un mes — sin presión.'
   ];
 
   function narrativeWordPadding(sections, narrativeContext, ctx, globalSeen, stats, minTotal) {
@@ -943,16 +1142,16 @@
   }
 
   var HUMAN_TOPUP_VARIANTS = [
-    '{ciudad} se afina cuando el cuerpo también opina.',
+    'Puede que notes que {ciudad} se afina cuando el cuerpo también opina.',
     'Los ritmos honestos suelen guiar mejor que los planes demasiado pulidos.',
     'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó.',
     'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva cuando el ruido baja.',
     'A veces hay que caminar una escena cotidiana para entender el mapa.',
     'La coherencia no tiene que ser total: basta un hilo que te sostenga.',
-    'Hay lecturas que maduran despacio — como una habitación que se ordena poco a poco.',
-    'El lugar habla en detalles: una mirada, un cansancio, un silencio que pesa distinto.',
+    'Tal vez descubras que algunas lecturas maduran despacio.',
+    'Puede que notes el lugar en detalles: una mirada, un cansancio, un silencio que pesa distinto.',
     'Afloja la prisa de concluir; deja que la experiencia te devuelva su propio ritmo.',
-    'Un hilo vivo basta para seguir caminando {ciudad} con verdad.'
+    'Un hilo vivo puede bastarte para seguir caminando {ciudad} con verdad.'
   ];
 
   function humanEditorialTopUp(sections, ctx, globalSeen, stats, minTotal) {
@@ -1244,7 +1443,10 @@
         moderarExpectativas: 0,
         observarSi: 0,
         enLaPractica: 0
-      }
+      },
+      _humanPresenceTransforms: 0,
+      _connectorsUsed: 0,
+      _humanScenesUsed: 0
     };
 
     var narrativeWrap = resolveNarrativeContext(input, ctx);
@@ -1394,6 +1596,11 @@
       }
     }
 
+    if (narrativeContext) {
+      sections = applyHumanPresenceToSections(sections, ctx, narrativeContext);
+      syncSectionWords(sections);
+    }
+
     sections = trimToMaxWords(sections, MAX_WORDS);
 
     var fullText = sections.map(function (s) { return s.body; }).join('\n\n');
@@ -1463,7 +1670,10 @@
           moderarExpectativas: 0,
           observarSi: 0,
           enLaPractica: 0
-        }
+        },
+        humanPresenceTransforms: ctx._humanPresenceTransforms || 0,
+        connectorsUsed: ctx._connectorsUsed || 0,
+        humanScenesUsed: ctx._humanScenesUsed || 0
       }
     };
   }
@@ -1493,6 +1703,7 @@
     METHODOLOGY_PHRASE_MARKERS: METHODOLOGY_PHRASE_MARKERS,
     METHODOLOGY_SUPPRESS_MARKERS: METHODOLOGY_SUPPRESS_MARKERS,
     PROHIBITED_TRANSITIONS: PROHIBITED_TRANSITIONS,
+    DESCRIPTIVE_PHRASE_MARKERS: DESCRIPTIVE_PHRASE_MARKERS,
     VOICE_TRANSITION_POOL: VOICE_TRANSITION_POOL,
     _dev: {
       classifyBlockSource: classifyBlockSource,
@@ -1500,7 +1711,8 @@
       buildSpineLead: buildSpineLead,
       countMethodologyRepeats: countMethodologyRepeats,
       softenMethodologyText: softenMethodologyText,
-      pickVoiceTransition: pickVoiceTransition
+      pickVoiceTransition: pickVoiceTransition,
+      humanizePresenceText: humanizePresenceText
     }
   };
 })();

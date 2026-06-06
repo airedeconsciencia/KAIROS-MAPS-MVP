@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Kairos Maps — City Premium Reading Lab (3.8e.9b DEV)</title>
+  <title>Kairos Maps — City Premium Reading Lab (3.8e.9d DEV)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -87,7 +87,7 @@
   </style>
 </head>
 <body>
-  <div class="dev-banner">DEV ONLY · 3.8e.9b Voice cleanup · Transiciones + metodología · Sin paywall</div>
+  <div class="dev-banner">DEV ONLY · 3.8e.9d Human Presence · Voz dirigida a ti · Sin paywall</div>
   <div class="page">
     <h1>City Premium Reading Lab</h1>
     <p class="sub">
@@ -200,7 +200,10 @@
 
   function renderVoiceWarnings(reading) {
     var m = reading.meta;
-    var html = '<p class="panel-title">Voice cleanup (3.8e.9b)</p><div class="meta-grid">';
+    var html = '<p class="panel-title">Human presence (3.8e.9d)</p><div class="meta-grid">';
+    html += metaItem('humanPresenceTransforms', String(m.humanPresenceTransforms != null ? m.humanPresenceTransforms : '—'));
+    html += metaItem('humanScenesUsed', String(m.humanScenesUsed != null ? m.humanScenesUsed : '—'));
+    html += metaItem('connectorsUsed', String(m.connectorsUsed != null ? m.connectorsUsed : '—'));
     html += metaItem('methodologyHits', String(m.methodologyHits != null ? m.methodologyHits : '—'));
     html += metaItem('softenedBlocks', String(m.softenedBlocks != null ? m.softenedBlocks : '—'));
     var clinical = m.clinicalTermsCount || {};

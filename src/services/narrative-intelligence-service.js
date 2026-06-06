@@ -1,5 +1,5 @@
 /**
- * KAIROS MAPS — Narrative Intelligence Layer (Fase 3.8e.9a DEV)
+ * KAIROS MAPS — Narrative Intelligence Layer (Fase 3.8e.9d DEV)
  *
  * Deriva hilo narrativo determinista antes de knowledge + composición.
  * Sin IA. Voz premium + atmósfera de ciudad (Lisboa, Toronto, Ciudad del Cabo).
@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8e.9a-dev-0.1';
+  var SCHEMA_VERSION = '3.8e.9d-dev-0.1';
   var MAX_DEEP = 2;
 
   var THEME_ES = {
@@ -127,15 +127,15 @@
   ];
 
   var HUMAN_THEME_BY_GOAL = {
-    amor: 'Hay algo en {ciudad} que toca el encuentro — no el personaje, sino la persona.',
-    trabajo: '{ciudad} pone a prueba tu sentido antes que tu vitrina.',
-    descanso: 'En {ciudad}, el cuerpo puede volver a hablar — si le devuelves el micrófono.'
+    amor: 'Quizá en {ciudad} notes que el encuentro te pide presencia — no personaje, sino persona.',
+    trabajo: 'Puede que en {ciudad} sientas que tu sentido pesa más que tu vitrina.',
+    descanso: 'Tal vez en {ciudad} notes que el cuerpo vuelve a hablar — si le devuelves el micrófono.'
   };
 
   var HUMAN_OBSERVE_BY_GOAL = {
-    amor: 'Con el tiempo, {ciudad} puede mostrarte algo sencillo: si un vínculo necesita demasiado personaje para sostenerse, quizá no era descanso, sino actuación.',
-    trabajo: 'Con el tiempo, {ciudad} revela si tu trabajo pide escenario o sustancia — y cuál de las dos estás alimentando sin darte cuenta.',
-    descanso: 'Con el tiempo, {ciudad} enseña a volver al cuerpo después de mucho ruido — como una habitación que se ordena poco a poco.'
+    amor: 'Con el tiempo, puede que {ciudad} te muestre algo sencillo: si un vínculo necesita demasiado personaje para sostenerse, quizá no era descanso, sino actuación.',
+    trabajo: 'Con el tiempo, quizá {ciudad} te revele si tu trabajo pide escenario o sustancia — y cuál de las dos alimentas sin darte cuenta.',
+    descanso: 'Con el tiempo, puede que {ciudad} te enseñe a volver al cuerpo después de mucho ruido.'
   };
 
   var HUMAN_CLOSING_BY_GOAL = {
@@ -669,8 +669,8 @@
           humanObserve.toLowerCase().indexOf(imgFp) !== -1) {
         return humanObserve;
       }
-      return img.charAt(0).toUpperCase() + img.slice(1) + ' Con el tiempo, ' + cityName +
-        ' confirma o matiza lo que el cuerpo ya intuía.';
+      return img.charAt(0).toUpperCase() + img.slice(1) +
+        ' Con el tiempo, puede que ' + cityName + ' confirme o matice lo que el cuerpo ya intuía.';
     }
     return humanObserve;
   }
@@ -723,6 +723,18 @@
     return withCity(HUMAN_CLOSING_BY_GOAL[goalId] || HUMAN_CLOSING_BY_GOAL.amor, cityName);
   }
 
+  function humanizePresenceSpine(text) {
+    if (!text) return '';
+    var t = String(text);
+    t = t.replace(/\bHay algo en ([^,]+) que toca/gi, 'Quizá en $1 notes algo que toca');
+    t = t.replace(/\bHay algo en ([^,]+) que habla/gi, 'Quizá en $1 notes algo que habla');
+    t = t.replace(/\bel lugar favorece\b/gi, 'puede que notes que se abre');
+    t = t.replace(/\bel entorno activa\b/gi, 'puede que notes que se activa');
+    t = t.replace(/\bla ciudad ofrece\b/gi, 'quizá te encuentres con');
+    t = t.replace(/\bla energía impulsa\b/gi, 'puede que notes un impulso');
+    return t;
+  }
+
   function buildNarrativeSummary(cityName, goalId, humanTheme, rhythmLine) {
     var goalPhrase = {
       amor: 'el amor y el vínculo',
@@ -730,11 +742,17 @@
       descanso: 'el descanso y el cuerpo'
     }[goalId] || goalId;
 
+    var themeCore = humanTheme
+      .replace(/^En [^,]+, /, '')
+      .replace(/^Quizá en [^,]+ notes /, '')
+      .replace(/^Puede que en [^,]+ sientas /, '')
+      .replace(/^Tal vez en [^,]+ notes /, '');
+
     if (rhythmLine) {
-      return rhythmLine + ' Leer ' + cityName + ' desde ' + goalPhrase + ' es leer también esto: ' +
-        lcfirst(humanTheme.replace(/^En [^,]+, /, '').replace(/^Hay algo en [^,]+ que /, ''));
+      return rhythmLine + ' Quizá, leyendo ' + cityName + ' desde ' + goalPhrase + ', notes esto: ' +
+        lcfirst(themeCore);
     }
-    return 'Hay algo en ' + cityName + ' que habla desde ' + goalPhrase + '. ' + humanTheme;
+    return 'Quizá en ' + cityName + ', leyendo desde ' + goalPhrase + ', notes esto: ' + lcfirst(themeCore);
   }
 
   function deriveNarrativeContext(input) {
@@ -796,16 +814,16 @@
       dominantTheme: dominantTheme,
       centralTension: centralTension,
       mainOpportunity: mainOpportunity,
-      humanTheme: humanTheme,
-      humanConflict: humanConflict,
-      humanOpportunity: humanOpportunity,
-      humanOpportunityAction: humanOpportunityAction,
-      humanObserve: humanObserve,
-      humanClosing: humanClosing,
+      humanTheme: humanizePresenceSpine(humanTheme),
+      humanConflict: humanizePresenceSpine(humanConflict),
+      humanOpportunity: humanizePresenceSpine(humanOpportunity),
+      humanOpportunityAction: humanizePresenceSpine(humanOpportunityAction),
+      humanObserve: humanizePresenceSpine(humanObserve),
+      humanClosing: humanizePresenceSpine(humanClosing),
       guidingQuestion: guidingQuestion,
       deepInfluenceKeys: deepKeys,
       echoInfluenceKeys: echoKeys,
-      narrativeSummary: narrativeSummary
+      narrativeSummary: humanizePresenceSpine(narrativeSummary)
     };
 
     if (cityAtm) {
@@ -820,7 +838,8 @@
     var rulesFired = [
       'deep_influences_' + deepKeys.length,
       'editorial_humanization',
-      'voice_beauty_polish'
+      'voice_beauty_polish',
+      'human_presence_spine'
     ];
     if (cityAtm) rulesFired.push('city_atmosphere_' + cityAtm.citySlug);
     rulesFired.push(dominantTheme.sourceDoc, centralTension.sourceDoc, mainOpportunity.sourceDoc);

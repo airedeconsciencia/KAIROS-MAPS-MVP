@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Kairos Maps — Narrative Intelligence Lab (3.8e.9a DEV)</title>
+  <title>Kairos Maps — Narrative Intelligence Lab (3.8e.9d DEV)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -64,7 +64,7 @@
   </style>
 </head>
 <body>
-  <div class="dev-banner">DEV ONLY · 3.8e.9a City Atmosphere · Spine + lectura completa</div>
+  <div class="dev-banner">DEV ONLY · 3.8e.9d Human Presence · Spine + lectura completa</div>
   <div class="page">
     <h1>Narrative Intelligence Lab</h1>
     <p class="sub">Roberto (29 may 1973, Maó) · Deriva hilo narrativo y compone lectura premium con el mismo pipeline.</p>
@@ -234,6 +234,8 @@
       '<div class="spine-item"><strong>atmosphereLinesUsed</strong>' + (m.atmosphereLinesUsed || 0) + '</div>' +
       '<div class="spine-item"><strong>methodologyHits</strong>' + (m.methodologyHits != null ? m.methodologyHits : '—') + '</div>' +
       '<div class="spine-item"><strong>softenedBlocks</strong>' + (m.softenedBlocks != null ? m.softenedBlocks : '—') + '</div>' +
+      '<div class="spine-item"><strong>humanPresenceTransforms</strong>' + (m.humanPresenceTransforms != null ? m.humanPresenceTransforms : '—') + '</div>' +
+      '<div class="spine-item"><strong>humanScenesUsed</strong>' + (m.humanScenesUsed != null ? m.humanScenesUsed : '—') + '</div>' +
       '<div class="spine-item"><strong>conviene</strong>' + (m.clinicalTermsCount ? m.clinicalTermsCount.conviene : 0) + '</div>' +
       '<div class="spine-item"><strong>methodologyRepeats</strong>' + (m.methodologyPhraseRepeats || 0) + '</div>';
     document.getElementById('meta-panel').style.display = 'block';

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke City Premium Composition (Fase 3.8e.9b DEV)
+# Kairos Maps — Smoke City Premium Composition (Fase 3.8e.9d DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -20,7 +20,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — City Premium Composition smoke (3.8e.9b)"
+echo " KAIROS MAPS — City Premium Composition smoke (3.8e.9d)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -152,8 +152,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Compositor existe (schema 3.8e.9b)',
-  Premium && Premium.SCHEMA_VERSION.indexOf('3.8e.9b') === 0,
+  'Compositor existe (schema 3.8e.9d)',
+  Premium && Premium.SCHEMA_VERSION.indexOf('3.8e.9d') === 0,
   'schema=' + (Premium && Premium.SCHEMA_VERSION)
 );
 
@@ -312,11 +312,11 @@ labCases.forEach(function (s) {
     voiceFail = true;
     console.log('  Exceso conviene en ' + s.city + '/' + s.goal + ': ' + countWord(lower, 'conviene'));
   }
-  if (countWord(lower, 'puede') > 14) {
+  if (countWord(lower, 'puede') > 18) {
     voiceFail = true;
     console.log('  Exceso puede en ' + s.city + '/' + s.goal + ': ' + countWord(lower, 'puede'));
   }
-  if ((lower.match(/puede que/g) || []).length > 4) {
+  if ((lower.match(/puede que/g) || []).length > 8) {
     voiceFail = true;
     console.log('  Exceso "puede que" en ' + s.city + '/' + s.goal);
   }
@@ -566,6 +566,38 @@ let repeatTransitionFail = false;
 });
 assert('Sin transiciones repetidas en lectura (lab 3)', !repeatTransitionFail, null);
 
+const descriptiveMarkers = Premium.DESCRIPTIVE_PHRASE_MARKERS || [];
+let descriptiveFail = false;
+[lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
+  if (!s) return;
+  const lower = s.reading.sections.map(function (x) { return x.body; }).join(' ').toLowerCase();
+  descriptiveMarkers.forEach(function (m) {
+    if (lower.indexOf(m) !== -1) {
+      descriptiveFail = true;
+      console.log('  Frase descriptiva "' + m + '" en ' + s.city + '/' + s.goal);
+    }
+  });
+});
+assert('Sin frases descriptivas de manual (lab 3)', !descriptiveFail, null);
+
+let presenceFail = false;
+[lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
+  if (!s) return;
+  const full = s.reading.sections.map(function (x) { return x.body; }).join(' ').toLowerCase();
+  const transforms = s.reading.meta.humanPresenceTransforms || 0;
+  const scenes = s.reading.meta.humanScenesUsed || 0;
+  if (transforms < 1 && scenes < 1) {
+    presenceFail = true;
+    console.log('  Sin transforms/escenas en ' + s.city + '/' + s.goal);
+  }
+  if (full.indexOf('puede que') === -1 && full.indexOf('quizá') === -1 &&
+      full.indexOf('tal vez') === -1 && full.indexOf('notes') === -1) {
+    presenceFail = true;
+    console.log('  Falta voz experiencial en lectura ' + s.city + '/' + s.goal);
+  }
+});
+assert('Human presence activo (transforms/escenas + voz experiencial, lab 3)', !presenceFail, null);
+
 console.log('\n' + '═'.repeat(60));
 console.log('Lab casos — palabras y sourceBreakdown');
 [lisboaAmor, torontoTrabajo, caboDescanso].forEach(function (s) {
@@ -586,6 +618,8 @@ console.log('Lab casos — palabras y sourceBreakdown');
       console.log('    atmosphereLinesUsed:', s.reading.meta.atmosphereLinesUsed);
       console.log('    methodologyHits:', s.reading.meta.methodologyHits);
       console.log('    softenedBlocks:', s.reading.meta.softenedBlocks);
+      console.log('    humanPresenceTransforms:', s.reading.meta.humanPresenceTransforms);
+      console.log('    humanScenesUsed:', s.reading.meta.humanScenesUsed);
       console.log('    conviene:', s.reading.meta.clinicalTermsCount
         ? s.reading.meta.clinicalTermsCount.conviene : 0);
       console.log('    selectedLines:');

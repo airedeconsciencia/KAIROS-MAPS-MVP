@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke Narrative Intelligence (Fase 3.8e.9b DEV)
+# Kairos Maps — Smoke Narrative Intelligence (Fase 3.8e.9d DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -17,7 +17,7 @@ NARRATIVE="$ROOT/src/services/narrative-intelligence-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — Narrative Intelligence smoke (3.8e.9b)"
+echo " KAIROS MAPS — Narrative Intelligence smoke (3.8e.9d)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -100,8 +100,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Servicio existe (schema 3.8e.9a)',
-  Narrative && Narrative.SCHEMA_VERSION.indexOf('3.8e.9a') === 0,
+  'Servicio existe (schema 3.8e.9d)',
+  Narrative && Narrative.SCHEMA_VERSION.indexOf('3.8e.9d') === 0,
   'schema=' + (Narrative && Narrative.SCHEMA_VERSION)
 );
 
@@ -267,6 +267,28 @@ samples.forEach(function (s) {
   });
 });
 assert('Sin tokens turísticos prohibidos (lab 3)', !tourismFail, null);
+
+const DESCRIPTIVE = ['el lugar favorece', 'el entorno activa', 'la ciudad ofrece', 'la energía impulsa'];
+let presenceFail = false;
+samples.forEach(function (s) {
+  var bundle = [
+    s.result.narrativeContext.narrativeSummary,
+    s.result.narrativeContext.humanTheme,
+    s.result.narrativeContext.humanObserve
+  ].join(' ').toLowerCase();
+  DESCRIPTIVE.forEach(function (m) {
+    if (bundle.indexOf(m) !== -1) {
+      presenceFail = true;
+      console.log('  Descriptivo "' + m + '" en spine ' + s.city + '/' + s.goal);
+    }
+  });
+  if (bundle.indexOf('quizá') === -1 && bundle.indexOf('puede que') === -1 &&
+      bundle.indexOf('tal vez') === -1 && bundle.indexOf('notes') === -1) {
+    presenceFail = true;
+    console.log('  Falta voz experiencial en spine ' + s.city + '/' + s.goal);
+  }
+});
+assert('Human presence en spine (sin descriptivos, con voz experiencial)', !presenceFail, null);
 
 console.log('\n' + '═'.repeat(60));
 console.log('Lab — spine por caso');
