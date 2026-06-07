@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke Narrative Intelligence (Fase 3.8e.9d DEV)
+# Kairos Maps — Smoke Narrative Intelligence (Fase 3.8f.3 DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -11,6 +11,8 @@ NATAL_LITE="$ROOT/src/content/natal-lite.js"
 COMPOSITION="$ROOT/src/services/natal-composition-service.js"
 BRIDGE="$ROOT/src/services/natal-map-bridge-service.js"
 CATALOG="$ROOT/src/content/cities-catalog.js"
+ARCHETYPES="$ROOT/src/content/country-archetypes.js"
+COUNTRY_SERVICE="$ROOT/src/services/country-archetype-service.js"
 SCORER="$ROOT/src/content/city-scorer.js"
 ASTRO="$ROOT/src/engines/astro.js"
 BLOCKS="$ROOT/src/content/premium-blocks.js"
@@ -18,11 +20,12 @@ NARRATIVE="$ROOT/src/services/narrative-intelligence-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — Narrative Intelligence smoke (3.8e.9d)"
+echo " KAIROS MAPS — Narrative Intelligence smoke (3.8f.3)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
-for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$CATALOG" "$SCORER" "$ASTRO" "$BLOCKS" "$NARRATIVE"; do
+for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$CATALOG" \
+  "$ARCHETYPES" "$COUNTRY_SERVICE" "$SCORER" "$ASTRO" "$BLOCKS" "$NARRATIVE"; do
   if [[ ! -f "$f" ]]; then
     echo "ERROR: No se encuentra: $f"
     exit 1
@@ -34,7 +37,7 @@ if [[ ! -f "$ASTRONOMY" ]]; then
   curl -fsSL "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" -o "$ASTRONOMY"
 fi
 
-export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE CATALOG SCORER ASTRO BLOCKS NARRATIVE ASTRONOMY ROOT
+export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE CATALOG ARCHETYPES COUNTRY_SERVICE SCORER ASTRO BLOCKS NARRATIVE ASTRONOMY ROOT
 
 node <<'NODE'
 const fs = require('fs');
@@ -47,7 +50,9 @@ if (ctx.window.Astronomy) ctx.Astronomy = ctx.window.Astronomy;
 
 [
   process.env.GOAL_SIGNAL, process.env.NATAL_LITE, process.env.COMPOSITION,
-  process.env.BRIDGE, process.env.CATALOG, process.env.SCORER, process.env.ASTRO, process.env.BLOCKS, process.env.NARRATIVE
+  process.env.BRIDGE, process.env.CATALOG, process.env.ARCHETYPES,
+  process.env.COUNTRY_SERVICE, process.env.SCORER, process.env.ASTRO,
+  process.env.BLOCKS, process.env.NARRATIVE
 ].forEach(function (p) {
   vm.runInContext(fs.readFileSync(p, 'utf8'), ctx, { filename: p });
 });
@@ -99,8 +104,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Servicio existe (schema 3.8e.9d)',
-  Narrative && Narrative.SCHEMA_VERSION.indexOf('3.8e.9d') === 0,
+  'Servicio existe (schema 3.8f.3)',
+  Narrative && Narrative.SCHEMA_VERSION.indexOf('3.8f.3') === 0,
   'schema=' + (Narrative && Narrative.SCHEMA_VERSION)
 );
 
@@ -233,6 +238,35 @@ assert(
   }).join(' · ')
 );
 
+assert(
+  'countryContext presente (Lisboa, Toronto, Cabo — curados)',
+  samples.every(function (s) {
+    var cc = s.result.narrativeContext.countryContext;
+    return cc && cc.ok === true && cc.countryId && cc.lines && cc.lines.length <= 2;
+  }),
+  samples.map(function (s) {
+    var cc = s.result.narrativeContext.countryContext;
+    return s.city + '=' + (cc ? cc.countryId + ' lines=' + cc.lines.length : 'missing');
+  }).join(' · ')
+);
+
+const kenya = Narrative.deriveNarrativeContext({
+  city: { name: 'Nairobi', country: 'Kenia', lat: -1.2921, lon: 36.8219 },
+  goal: 'amor',
+  relevantInfluences: Scorer.rankInfluences(
+    { name: 'Nairobi', country: 'Kenia', lat: -1.2921, lon: 36.8219 },
+    buildInput('amor')
+  ).slice(0, 5),
+  bridgeProfile: bp
+});
+assert(
+  'Fail-soft país no curado (Kenia)',
+  kenya.ok && kenya.narrativeContext.countryContext &&
+    kenya.narrativeContext.countryContext.ok === false &&
+    kenya.narrativeContext.countryContext.lines.length === 0,
+  'reason=' + (kenya.narrativeContext.countryContext.meta && kenya.narrativeContext.countryContext.meta.reason)
+);
+
 const barcelona = Narrative.deriveNarrativeContext({
   city: { name: 'Barcelona', lat: 41.3874, lon: 2.1686 },
   goal: 'amor',
@@ -243,9 +277,11 @@ const barcelona = Narrative.deriveNarrativeContext({
   bridgeProfile: bp
 });
 assert(
-  'Ciudad desconocida fail-soft (sin cityAtmosphere)',
+  'Ciudad desconocida fail-soft (sin cityAtmosphere, sin country ok)',
   barcelona.ok && !barcelona.narrativeContext.cityAtmosphere &&
-    !barcelona.narrativeContext.cityRhythm,
+    !barcelona.narrativeContext.cityRhythm &&
+    barcelona.narrativeContext.countryContext &&
+    barcelona.narrativeContext.countryContext.ok === false,
   'Barcelona citySlug=' + barcelona.meta.citySlug
 );
 
@@ -304,6 +340,12 @@ samples.forEach(function (s) {
     console.log('    selectedLines:');
     nc.cityAtmosphere.selectedLines.forEach(function (line) {
       console.log('      ·', line);
+    });
+  }
+  if (nc.countryContext) {
+    console.log('    country:', nc.countryContext.countryName, 'lines=' + (nc.countryContext.lines || []).length);
+    (nc.countryContext.lines || []).forEach(function (line) {
+      console.log('      [' + line.section + ']', line.text);
     });
   }
 });

@@ -1,14 +1,16 @@
 /**
- * KAIROS MAPS — Narrative Intelligence Layer (Fase 3.8e.9d DEV)
+ * KAIROS MAPS — Narrative Intelligence Layer (Fase 3.8f.3 DEV)
  *
  * Deriva hilo narrativo determinista antes de knowledge + composición.
- * Sin IA. Voz premium + atmósfera de ciudad (Lisboa, Toronto, Ciudad del Cabo).
+ * Sin IA. Voz premium + atmósfera de ciudad + matiz país (piloto 10, fail-soft).
  */
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8e.9d-dev-0.1';
+  var SCHEMA_VERSION = '3.8f.3-dev-0.1';
   var MAX_DEEP = 2;
+  var MAX_COUNTRY_LINES = 2;
+  var COUNTRY_SECTIONS = ['sintesis', 'observar', 'integracion'];
 
   var THEME_ES = {
     belonging: 'pertenencia',
@@ -755,6 +757,182 @@
     return 'Quizá en ' + cityName + ', leyendo desde ' + goalPhrase + ', notes esto: ' + lcfirst(themeCore);
   }
 
+  function mapLinePlanetToCountryKey(planet) {
+    var p = String(planet || '').toLowerCase();
+    if (p === 'luna' || p === 'moon') return 'moon';
+    if (p === 'venus') return 'venus';
+    if (p === 'saturno' || p === 'saturn') return 'saturn';
+    return null;
+  }
+
+  function resolveCountryIdFromCity(city) {
+    if (!city) return null;
+    if (city.countryId) return String(city.countryId).trim() || null;
+    var Catalog = window.KairosCitiesCatalog;
+    if (city.country && Catalog && Catalog.resolveCountryId) {
+      return Catalog.resolveCountryId(city.country);
+    }
+    if (city.name && Catalog && Catalog.findCityByName) {
+      var found = Catalog.findCityByName(city.name);
+      if (found && found.country && Catalog.resolveCountryId) {
+        return Catalog.resolveCountryId(found.country);
+      }
+    }
+    return null;
+  }
+
+  function planetEs(linePlanet) {
+    if (linePlanet === 'moon') return 'la Luna';
+    if (linePlanet === 'venus') return 'Venus';
+    if (linePlanet === 'saturn') return 'Saturno';
+    return '';
+  }
+
+  function isLineModifierRaw(raw) {
+    return /\b(La Luna|Tu Luna|Venus|Saturno)\b/i.test(String(raw || ''));
+  }
+
+  function extractCountryModal(raw) {
+    var source = String(raw || '').trim();
+    var match = source.match(/^(Quizá|Puede que|Tal vez)\s+/i);
+    if (!match) return { modal: '', body: source };
+    return { modal: match[1].toLowerCase(), body: source.slice(match[0].length).trim() };
+  }
+
+  function buildCountryEditorialLine(raw, countryName, linePlanet, section) {
+    var parsed = extractCountryModal(raw);
+    var text = parsed.body;
+    if (!text || !countryName) return '';
+
+    text = text.replace(/aquí/gi, '').replace(/\s{2,}/g, ' ').trim();
+    text = text.replace(/\bTu Luna\b/g, 'La Luna');
+
+    var semi = text.indexOf(';');
+    if (semi !== -1) {
+      text = text.slice(semi + 1).trim();
+    }
+
+    var pEs = planetEs(linePlanet);
+    if (pEs && isLineModifierRaw(raw)) {
+      if (/^(La Luna|Venus|Saturno)\s+puede/i.test(text)) {
+        return 'En ' + countryName + ', ' + lcfirst(text);
+      }
+      return 'En ' + countryName + ', ' + pEs + ' puede ' + lcfirst(text);
+    }
+
+    if (section === 'sintesis') {
+      return 'Quizá en ' + countryName + ', ' + lcfirst(text);
+    }
+
+    var modal = parsed.modal || 'quizá';
+    return 'En ' + countryName + ', ' + modal + ' ' + lcfirst(text);
+  }
+
+  function pickCountryEditorialLines(resolved, countryName, linePlanet, goalId, seed) {
+    var mod = resolved.selectedModifiers || {};
+    var pool = [];
+
+    if (mod.lineLines && mod.lineLines.length) {
+      mod.lineLines.forEach(function (line) {
+        pool.push(line);
+      });
+    }
+    if (mod.goalLines && mod.goalLines.length) {
+      mod.goalLines.forEach(function (line) {
+        pool.push(line);
+      });
+    }
+    if (!pool.length && mod.goalTone) {
+      pool.push(mod.goalTone);
+    }
+    if (!pool.length) return [];
+
+    var count = Math.min(MAX_COUNTRY_LINES, pool.length);
+    var sectionStart = hash32(String(seed) + ':country:sections') % COUNTRY_SECTIONS.length;
+    var out = [];
+
+    for (var i = 0; i < COUNTRY_SECTIONS.length && out.length < count; i += 1) {
+      var section = COUNTRY_SECTIONS[(sectionStart + i) % COUNTRY_SECTIONS.length];
+      var lineIdx = hash32(String(seed) + ':country:line:' + out.length) % pool.length;
+      out.push({
+        section: section,
+        text: buildCountryEditorialLine(pool[lineIdx], countryName, linePlanet, section)
+      });
+    }
+
+    return out.slice(0, MAX_COUNTRY_LINES);
+  }
+
+  function buildCountryContext(input, goalId, primary, seed) {
+    var baseMeta = { weightHint: 'country:15%' };
+    var Svc = window.KairosCountryArchetype;
+
+    if (!Svc || !Svc.resolveCountryArchetype) {
+      return {
+        ok: false,
+        countryId: null,
+        countryName: null,
+        selectedModifiers: null,
+        warnings: ['missing_country_service'],
+        lines: [],
+        meta: baseMeta
+      };
+    }
+
+    var linePlanet = primary ? mapLinePlanetToCountryKey(primary.planet) : null;
+    var resolved = Svc.resolveCountryArchetype({
+      countryId: resolveCountryIdFromCity(input.city),
+      city: input.city,
+      goal: goalId,
+      linePlanet: linePlanet
+    });
+
+    if (!resolved.ok) {
+      return {
+        ok: false,
+        countryId: resolved.countryId,
+        countryName: resolved.archetype && resolved.archetype.name ? resolved.archetype.name : null,
+        selectedModifiers: null,
+        warnings: resolved.warnings || [],
+        lines: [],
+        meta: Object.assign({}, baseMeta, resolved.meta || {}, { reason: resolved.reason })
+      };
+    }
+
+    var countryName = resolved.archetype.name;
+    var lines = pickCountryEditorialLines(resolved, countryName, linePlanet, goalId, seed);
+
+    return {
+      ok: true,
+      countryId: resolved.countryId,
+      countryName: countryName,
+      selectedModifiers: resolved.selectedModifiers,
+      warnings: resolved.warnings || [],
+      lines: lines,
+      meta: Object.assign({}, baseMeta, resolved.meta || {}, {
+        linePlanet: linePlanet,
+        sectionsUsed: lines.map(function (item) { return item.section; })
+      })
+    };
+  }
+
+  function weaveCountryIntoSpine(narrativeContext, countryContext) {
+    if (!countryContext || !countryContext.ok || !countryContext.lines || !countryContext.lines.length) {
+      return;
+    }
+
+    countryContext.lines.forEach(function (item) {
+      var line = humanizePresenceSpine(item.text);
+      if (item.section === 'sintesis' && narrativeContext.narrativeSummary) {
+        narrativeContext.narrativeSummary = narrativeContext.narrativeSummary + '\n\n' + line;
+      } else if (item.section === 'observar' && narrativeContext.humanObserve) {
+        narrativeContext.humanObserve = narrativeContext.humanObserve + '\n\n' + line;
+      } else if (item.section === 'integracion' && narrativeContext.humanClosing) {
+        narrativeContext.humanClosing = narrativeContext.humanClosing + '\n\n' + line;
+      }
+    });
+  }
+
   function deriveNarrativeContext(input) {
     var empty = {
       ok: false,
@@ -835,6 +1013,10 @@
       narrativeContext.atmosphereWarnings = cityAtm.warnings;
     }
 
+    var countryContext = buildCountryContext(input, goalId, primary, seed);
+    weaveCountryIntoSpine(narrativeContext, countryContext);
+    narrativeContext.countryContext = countryContext;
+
     var rulesFired = [
       'deep_influences_' + deepKeys.length,
       'editorial_humanization',
@@ -842,6 +1024,12 @@
       'human_presence_spine'
     ];
     if (cityAtm) rulesFired.push('city_atmosphere_' + cityAtm.citySlug);
+    if (countryContext.ok) {
+      rulesFired.push('country_archetype_' + countryContext.countryId);
+      if (countryContext.lines.length) rulesFired.push('country_lines_' + countryContext.lines.length);
+    } else if (countryContext.meta && countryContext.meta.reason) {
+      rulesFired.push('country_fail_' + countryContext.meta.reason);
+    }
     rulesFired.push(dominantTheme.sourceDoc, centralTension.sourceDoc, mainOpportunity.sourceDoc);
 
     return {
@@ -852,6 +1040,8 @@
         goalId: goalId,
         cityName: cityName,
         citySlug: cityAtm ? cityAtm.citySlug : null,
+        countryId: countryContext.countryId,
+        countryLinesUsed: countryContext.lines ? countryContext.lines.length : 0,
         deterministicSeed: seed,
         primaryInfluenceKey: primaryKey,
         rulesFired: rulesFired
@@ -862,6 +1052,7 @@
   window.KairosNarrativeIntelligence = {
     SCHEMA_VERSION: SCHEMA_VERSION,
     MAX_DEEP: MAX_DEEP,
+    MAX_COUNTRY_LINES: MAX_COUNTRY_LINES,
     THEME_ES: THEME_ES,
     deriveNarrativeContext: deriveNarrativeContext,
     GLOBAL_TOURISM_TOKENS: GLOBAL_TOURISM_TOKENS,
@@ -869,9 +1060,12 @@
       GOAL_OBJECTIVE_IDS: GOAL_OBJECTIVE_IDS,
       GUIDING_QUESTIONS: GUIDING_QUESTIONS,
       CITY_ATMOSPHERE_INDEX: CITY_ATMOSPHERE_INDEX,
+      COUNTRY_SECTIONS: COUNTRY_SECTIONS,
       resolveCitySlug: resolveCitySlug,
       pickAtmosphere: pickAtmosphere,
-      buildCityAtmosphere: buildCityAtmosphere
+      buildCityAtmosphere: buildCityAtmosphere,
+      buildCountryContext: buildCountryContext,
+      weaveCountryIntoSpine: weaveCountryIntoSpine
     }
   };
 })();
