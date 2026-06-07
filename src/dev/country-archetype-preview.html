@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Country Archetype Lab (3.8f.2 DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: #0f1115;
+      color: #e5e7eb;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .dev-banner {
+      background: rgba(167, 139, 250, 0.12);
+      border-bottom: 1px solid rgba(167, 139, 250, 0.35);
+      color: #c4b5fd;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 980px; margin: 0 auto; padding: 20px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 18px; color: #c4b5fd; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 12px; margin: 0 0 16px; max-width: 760px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+    button, select {
+      font: inherit;
+      cursor: pointer;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    button.primary { background: rgba(167, 139, 250, 0.15); border-color: #a78bfa; color: #ddd6fe; }
+    .panel {
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    .meta-item { margin-bottom: 8px; font-size: 12px; color: #d1d5db; }
+    .meta-item strong { color: #c4b5fd; display: block; font-size: 10px; }
+    .ok-tag { color: #86efac; }
+    .fail-tag { color: #fca5a5; }
+    .warn-tag { color: #fcd34d; }
+    pre { margin: 0; white-space: pre-wrap; color: #d1d5db; font-size: 12px; }
+    ul { margin: 4px 0 0; padding-left: 18px; color: #d1d5db; }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV ONLY · 3.8f.2 Country Archetype Pilot · 10 países</div>
+  <div class="page">
+    <h1>Country Archetype Lab</h1>
+    <p class="sub">Matiz nacional prudente · fail-soft · sin integración narrativa/composición aún.</p>
+
+    <div class="toolbar">
+      <select id="city-select">
+        <option value="lisboa">Lisboa · Portugal</option>
+        <option value="toronto">Toronto · Canadá</option>
+        <option value="cabo">Ciudad del Cabo · Sudáfrica</option>
+        <option value="tokio">Tokio · Japón</option>
+        <option value="barcelona">Barcelona · España</option>
+      </select>
+      <select id="goal-select">
+        <option value="amor">Amor</option>
+        <option value="trabajo">Trabajo</option>
+        <option value="descanso">Descanso</option>
+      </select>
+      <select id="line-select">
+        <option value="moon">Luna</option>
+        <option value="venus">Venus</option>
+        <option value="saturn">Saturno</option>
+      </select>
+      <button type="button" class="primary" id="btn-run">Resolver</button>
+      <button type="button" id="btn-all">Probar 5 ciudades</button>
+    </div>
+
+    <div id="result-panel" class="panel" style="display:none"></div>
+    <div id="batch-panel" class="panel" style="display:none"></div>
+  </div>
+
+  <script src="../content/cities-catalog.js"></script>
+  <script src="../content/country-archetypes.js"></script>
+  <script src="../services/country-archetype-service.js"></script>
+
+  <script>
+(function () {
+  'use strict';
+
+  var CASES = {
+    lisboa: { name: 'Lisboa', country: 'Portugal', lat: 38.7223, lon: -9.1393 },
+    toronto: { name: 'Toronto', country: 'Canadá', lat: 43.6532, lon: -79.3832 },
+    cabo: { name: 'Ciudad del Cabo', country: 'Sudáfrica', lat: -33.9249, lon: 18.4241 },
+    tokio: { name: 'Tokio', country: 'Japón', lat: 35.6762, lon: 139.6503 },
+    barcelona: { name: 'Barcelona', country: 'España', lat: 41.3851, lon: 2.1734 }
+  };
+
+  function resolveCase(cityKey, goal, linePlanet) {
+    return KairosCountryArchetype.resolveCountryArchetype({
+      city: CASES[cityKey],
+      goal: goal,
+      linePlanet: linePlanet
+    });
+  }
+
+  function renderResult(r, label) {
+    var okClass = r.ok ? 'ok-tag' : 'fail-tag';
+    var html = '<div class="panel-title">' + label + '</div>';
+    html += '<div class="meta-item"><strong>ok</strong><span class="' + okClass + '">' + r.ok + '</span>';
+    if (r.reason) html += ' · reason: ' + r.reason;
+    html += '</div>';
+    if (r.countryId) {
+      html += '<div class="meta-item"><strong>countryId</strong>' + r.countryId + '</div>';
+    }
+    if (r.archetype) {
+      html += '<div class="meta-item"><strong>archetype</strong>' + r.archetype.name +
+        ' · ' + r.archetype.region + ' · curated=' + r.archetype.curated + '</div>';
+      html += '<div class="meta-item"><strong>emotionalClimate</strong>' + r.archetype.emotionalClimate + '</div>';
+      html += '<div class="meta-item"><strong>avoidCliches</strong>' + (r.archetype.avoidCliches || []).join(', ') + '</div>';
+    }
+    if (r.selectedModifiers) {
+      html += '<div class="meta-item"><strong>goalLines</strong><ul>';
+      (r.selectedModifiers.goalLines || []).forEach(function (l) { html += '<li>' + l + '</li>'; });
+      html += '</ul></div>';
+      html += '<div class="meta-item"><strong>lineLines</strong><ul>';
+      (r.selectedModifiers.lineLines || []).forEach(function (l) { html += '<li>' + l + '</li>'; });
+      html += '</ul></div>';
+    }
+    if (r.warnings && r.warnings.length) {
+      html += '<div class="meta-item"><strong>warnings</strong><span class="warn-tag">' +
+        r.warnings.join(' · ') + '</span></div>';
+    }
+    if (r.exampleSnippet) {
+      html += '<div class="meta-item"><strong>ejemplo breve</strong><pre>' + r.exampleSnippet + '</pre></div>';
+    }
+    if (r.meta) {
+      html += '<div class="meta-item"><strong>meta</strong>seed=' + r.meta.seed +
+        ' · rules=' + (r.meta.rulesFired || []).join(', ') + '</div>';
+    }
+    return html;
+  }
+
+  document.getElementById('btn-run').addEventListener('click', function () {
+    var cityKey = document.getElementById('city-select').value;
+    var goal = document.getElementById('goal-select').value;
+    var line = document.getElementById('line-select').value;
+    var r = resolveCase(cityKey, goal, line);
+    var panel = document.getElementById('result-panel');
+    panel.style.display = 'block';
+    panel.innerHTML = renderResult(r, CASES[cityKey].name + ' · ' + goal + ' · ' + line);
+    document.getElementById('batch-panel').style.display = 'none';
+  });
+
+  document.getElementById('btn-all').addEventListener('click', function () {
+    var goal = document.getElementById('goal-select').value;
+    var line = document.getElementById('line-select').value;
+    var html = '<div class="panel-title">Batch · goal=' + goal + ' · line=' + line + '</div>';
+    Object.keys(CASES).forEach(function (key) {
+      var r = resolveCase(key, goal, line);
+      html += '<hr style="border-color:#2a2f3a;margin:12px 0">';
+      html += renderResult(r, CASES[key].name);
+    });
+    document.getElementById('batch-panel').innerHTML = html;
+    document.getElementById('batch-panel').style.display = 'block';
+    document.getElementById('result-panel').style.display = 'none';
+  });
+})();
+  </script>
+</body>
+</html>
