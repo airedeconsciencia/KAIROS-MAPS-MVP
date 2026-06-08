@@ -1,13 +1,13 @@
 /**
- * KAIROS MAPS — Narrative Intelligence Layer (Fase 3.8f.3 DEV)
+ * KAIROS MAPS — Narrative Intelligence Layer (Fase 3.8f.6 DEV)
  *
  * Deriva hilo narrativo determinista antes de knowledge + composición.
- * Sin IA. Voz premium + atmósfera de ciudad + matiz país (piloto 10, fail-soft).
+ * Sin IA. Voz premium + atmósfera de ciudad (5 piloto) + matiz país (fail-soft).
  */
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.3-dev-0.1';
+  var SCHEMA_VERSION = '3.8f.6-dev-0.1';
   var MAX_DEEP = 2;
   var MAX_COUNTRY_LINES = 2;
   var COUNTRY_SECTIONS = ['sintesis', 'observar', 'integracion'];
@@ -171,7 +171,7 @@
       bond: [
         'Las conversaciones pueden empezar antes que la confianza formal.',
         'El vínculo a menudo pasa por presencia, no por demostración.',
-        'Hay encuentros que se sostienen en gestos pequeños: una mesa compartida, un silencio cómodo.',
+        'Hay encuentros que se sostienen en gestos pequeños: un silencio cómodo, una esquina conocida.',
         'Puede costar menos performar y más mostrarse.',
         'A veces el amor aquí pide honestidad antes que espectáculo.'
       ],
@@ -180,28 +180,40 @@
         'Hay espacio para lo artesanal, lo bien hecho, lo que toma tiempo.',
         'La visibilidad no siempre es el premio: a veces importa más la coherencia interna.',
         'Puede favorecer proyectos con alma más que carreras de vitrina.',
-        'El esfuerzo sostenido vale más que el arranque ruidoso.'
+        'Oficios que importan por cómo se hacen, no por cuánto brillan afuera.'
       ],
       rest: [
         'Descansar puede ser dejar de justificar cada pausa.',
         'Hay permiso implícito para bajar el rendimiento sin desaparecer.',
         'El descanso se parece más a recuperar gusto que a apagar el motor.',
-        'A veces la pausa llega en forma de conversación larga o de mirar el horizonte sin prisa.',
-        'El cuerpo puede volver cuando la agenda deja de mandar.'
+        'A veces la pausa llega en forma de conversación larga o de caminar sin destino.',
+        'Permiso para caminar sin prisa y que eso cuente como descanso real.'
+      ],
+      success: [
+        'El reconocimiento puede llegar por quien te conoce de verdad, no por escaparate.',
+        'La influencia a veces es discreta: red pequeña, obra bien hecha, reputación lenta.',
+        'Puede pesar más ser recordado por coherencia que por visibilidad momentánea.',
+        'El éxito aquí a veces se mide en años, no en titulares.',
+        'Proyectos con alma pueden sostenerse sin convertirte en personaje público.'
       ],
       images: [
         'Pendientes que te hacen llegar un poco más lento a cada encuentro.',
         'Luz oblicua que cambia el tono de la tarde sin avisar.',
         'Barrios donde lo antiguo y lo nuevo conviven sin pelear.',
-        'Mesas que se alargan porque nadie tiene prisa por levantarse.',
+        'Miradores desde los que la ciudad se lee en capas, no en postal.',
         'Silencios entre amigos que no se sienten incómodos.'
       ],
       metaphors: [
         'Como una conversación que empieza antes que la confianza.',
         'Como quitarte un disfraz que ya cansó.',
         'Como dejar de llamar puerta a cualquier espejo.',
-        'Como una habitación que recupera aire después de muchas visitas.',
+        'Como recuperar aire en una habitación después de muchas visitas.',
         'Como un encuentro que no pide personaje.'
+      ],
+      zodiacSignature: [
+        { sign: 'Pisces', weight: 0.4, reason: 'líquido, memoria, melancolía suave' },
+        { sign: 'Taurus', weight: 0.35, reason: 'cuerpo, ritmo lento, arraigo sensorial' },
+        { sign: 'Cancer', weight: 0.25, reason: 'cuidado, pertenencia, hogar emocional' }
       ],
       avoid: ['tranvía', 'tranvia', 'fado', 'azulejo', 'magia portuguesa', 'destino romántico', 'postal']
     },
@@ -232,7 +244,7 @@
         'Hay cultura de mérito, proceso, documentación — sentido antes que aplauso.',
         'La trayectoria pesa: definir qué quieres que se vea antes de exponerte.',
         'Puede activar prisa por mostrar algo que aún estás terminando de entender por dentro.',
-        'El esfuerzo sostenido y el orden reducen ruido interno.'
+        'Proceso creíble y ordenado que reduce ruido interno cuando la mente acelera.'
       ],
       rest: [
         'Descansar puede competir con la sensación de que siempre hay algo pendiente.',
@@ -241,12 +253,19 @@
         'A veces recuperar es ordenar lo heredado, lo pendiente, lo no dicho.',
         'El cuerpo pide descarga cuando la mente no para de calcular.'
       ],
+      success: [
+        'La trayectoria visible puede abrir puertas si es creíble y medible.',
+        'Puede pesar «llegar» profesionalmente sin perder el hilo de quién eres.',
+        'El mérito sostenido a veces vale más que el arranque ruidoso.',
+        'El éxito puede sentirse como escenario que amplifica lo que ya llevas dentro.',
+        'Definir qué quieres que se vea antes de exponerte puede ser parte del crecimiento.'
+      ],
       images: [
-        'Distancias que te hacen planificar el día como pequeña expedición.',
+        'Trayectos largos entre barrios que reorganizan el día en bloques.',
         'Inviernos que enseñan a guardar energía para cuando el calor vuelve.',
         'Barrios donde cada comunidad trae su propio ritmo al conjunto.',
         'Mañanas que empiezan con propósito antes que con contemplación.',
-        'Horizontes amplios que ponen tu historia en perspectiva.'
+        'Tarde corta de sol que compensa meses de contención bajo cero.'
       ],
       metaphors: [
         'Como querer que el mundo vea algo que todavía estás terminando de entender por dentro.',
@@ -255,12 +274,17 @@
         'Como caminar con más filo cuando el frío aprieta.',
         'Como escuchar cuál señal sigue viva cuando el ruido baja.'
       ],
+      zodiacSignature: [
+        { sign: 'Capricorn', weight: 0.4, reason: 'mérito, trayectoria, deber cotidiano' },
+        { sign: 'Virgo', weight: 0.35, reason: 'proceso, documentación, orden interno' },
+        { sign: 'Aquarius', weight: 0.25, reason: 'diversidad urbana, redes, futuro práctico' }
+      ],
       avoid: ['cn tower', 'hockey', 'sueño americano', 'oportunidad infinita', 'multicultural', 'postal', 'rascacielos']
     },
     ciudad_del_cabo: {
       rhythm: [
         'Aquí el ritmo puede ser doble: expansión afuera, recogimiento adentro.',
-        'Hay sensación de borde — tierra que mira al horizonte amplio.',
+        'Hay sensación de borde costero — ciudad que mira al océano y vuelve adentro.',
         'El cuerpo registra el lugar antes que la cabeza lo explique.',
         'A veces el día pide intensidad y la tarde pide bajar el volumen.',
         'Lo geográfico se siente en el pulso: abrir y cerrar, subir y soltar.'
@@ -282,38 +306,206 @@
       work: [
         'El trabajo puede alternar impulso y pausa — no siempre lineal.',
         'Hay espacio para iniciativa, pero también para procesos que maduran despacio.',
-        'La visibilidad puede mezclarse con sensación de exponerse en un escenario amplio.',
+        'La ciudad puede mezclar ambición local con necesidad de sentido personal.',
         'Puede activar ganas de hacer junto con necesidad de recuperar raíz.',
         'El sentido del trabajo a menudo pasa por coherencia personal, no solo por escaparate.'
       ],
       rest: [
-        'Descansar aquí puede ser volver al cuerpo después de mucho ruido.',
+        'La pausa puede empezar cuando el viento te obliga a cerrar un poco el paso.',
         'Hay permiso para bajar exigencia sin convertir la pausa en rendimiento.',
         'El descanso puede ser reentrenarse en recibir — sol, aire, silencio, agua.',
-        'A veces la pausa llega cuando dejas de luchar contra el reloj.',
+        'A veces recuperar es soltar la prisa interna sin huir del contraste.',
         'El cuerpo pide ritmo propio frente a impulso de seguir.'
       ],
+      success: [
+        'El impacto puede pesar más que la visibilidad vacía.',
+        'Puede importar coherencia entre lo que valoras y lo que construyes.',
+        'El éxito a veces se prueba en lo real, no en el escenario idealizado.',
+        'Proyectos con sentido pueden sostenerse sin performar optimismo.',
+        'La escala del lugar puede reordenar qué consideras «haber llegado».'
+      ],
       images: [
-        'Viento que te obliga a ajustar el paso.',
+        'Viento que te obliga a ajustar el paso en la acera.',
         'Luz que cambia el color de la tarde de forma casi física.',
-        'Distancias que mezclan ciudad, colina y horizonte abierto.',
-        'Silencios que pesan distinto según el barrio y la hora.',
-        'Sensación de estar en un borde donde lo grande te pone en proporción.'
+        'Calles donde la pendiente cambia la velocidad del paso.',
+        'Colinas que mezclan barrio, ciudad y cielo abierto en pocos minutos.',
+        'Sensación de borde urbano donde el océano recuerda la escala.'
       ],
       metaphors: [
-        'Como volver al cuerpo después de mucho ruido.',
         'Como bajar el volumen de una música demasiado alta.',
-        'Como una habitación que se ordena poco a poco.',
         'Como guardar un refugio sin disculparte por entrar.',
-        'Como dejar de luchar contra el reloj.'
+        'Como soltar la prisa interna sin negar el contraste.',
+        'Como caminar con el viento en lugar de contra él.',
+        'Como dejar que la escala te devuelva proporción, no consuelo.'
+      ],
+      zodiacSignature: [
+        { sign: 'Taurus', weight: 0.35, reason: 'cuerpo, tierra, ritmo pausado' },
+        { sign: 'Scorpio', weight: 0.35, reason: 'contraste, intensidad, verdad incómoda' },
+        { sign: 'Cancer', weight: 0.3, reason: 'refugio, pertenencia, cuidado del entorno' }
       ],
       avoid: ['table mountain', 'playa', 'paraíso', 'destino exótico', 'exótico', 'colonial', 'postal', 'turística']
+    },
+    barcelona: {
+      rhythm: [
+        'Aquí el ritmo puede ser de calle y estación: oleadas de estímulo y pausas en terraza.',
+        'Hay sensación de densidad mediterránea — manzanas cortas, vida cerca.',
+        'Las tardes pueden alargarse sin siesta cliché: conversación que gana terreno.',
+        'No es solo velocidad: es alternancia entre exposición y recogimiento.',
+        'Lo cotidiano a veces pasa por el paseo, no por la agenda.'
+      ],
+      emotional: [
+        'Sensación de franqueza con calor — ironía que no siempre es distancia.',
+        'Hay energía visible que no exige encogerse para encajar.',
+        'La emoción puede ser directa, social, sin pedir demasiada explicación.',
+        'A veces la intensidad aparece en lo pequeño, no en el gesto grande.',
+        'Hay capas identitarias que piden sutileza, no discurso.'
+      ],
+      bond: [
+        'El vínculo puede ser de amigos y proyecto compartido, no solo de pareja idealizada.',
+        'Hay cercanía que a veces llega antes que la formalidad.',
+        'Puede pedir presencia más que discurso elaborado.',
+        'La química a veces aparece en lo cotidiano: barrio, terraza, camino compartido.',
+        'A veces el amor se prueba en cómo sostienes tu verdad sin teatro.'
+      ],
+      work: [
+        'El trabajo puede mezclar creatividad con presión por mostrarse.',
+        'Hay red profesional densa: diseño, oficio, proyecto propio.',
+        'Puede activar necesidad de coherencia entre imagen y obra.',
+        'La visibilidad a veces pesa: define qué quieres que se vea de tu trabajo.',
+        'Proyectos con alma pueden competir con carreras de vitrina rápida.'
+      ],
+      rest: [
+        'Descansar puede ser bajar el volumen social sin culpa.',
+        'Hay permiso para recuperar ritmo propio entre oleadas de estímulo.',
+        'El descanso a veces pasa por brisa, piedra y sombra breve.',
+        'Puede ser soltar la obligación de estar disponible todo el día.',
+        'La pausa puede ser caminar sin destino en barrio conocido.'
+      ],
+      success: [
+        'La obra puede reconocerse en red creativa más que en status vacío.',
+        'Puede pesar el proyecto propio frente a la carrera de escaparate.',
+        'El éxito a veces se mide en influencia por diseño, no por ruido.',
+        'La coherencia entre lo que muestras y lo que haces puede ser el premio.',
+        'Reputación que crece en comunidad, no solo en titular.'
+      ],
+      images: [
+        'Manzanas donde la vida parece ocurrir a la altura del balcón.',
+        'Brisa que entra sin pedir permiso entre bloques de piedra.',
+        'Barrios donde el paseo es forma de pensar, no de turismo.',
+        'Luces de tarde que cambian el tono de la calle sin espectáculo.',
+        'Esquinas donde el encuentro empieza sin plan.'
+      ],
+      metaphors: [
+        'Como un proyecto que respira en público y se afina en privado.',
+        'Como alternar escena y refugio sin culpa.',
+        'Como diseñar tu ritmo entre oleadas de estímulo.',
+        'Como encontrar tu barrio antes que tu personaje.',
+        'Como dejar que la calle te devuelva presencia, no performance.'
+      ],
+      zodiacSignature: [
+        { sign: 'Aquarius', weight: 0.4, reason: 'innovación, cosmopolitismo, redes y futuro' },
+        { sign: 'Gemini', weight: 0.35, reason: 'movilidad, comunicación, intercambio' },
+        { sign: 'Libra', weight: 0.25, reason: 'arte, diseño, sociabilidad' }
+      ],
+      avoid: ['sagrada familia', 'gaudí', 'gaudi', 'paella', 'fiesta eterna', 'flamenco', 'playa', 'postal']
+    },
+    tokio: {
+      rhythm: [
+        'Aquí el ritmo puede ser de capas: puntualidad del trayecto, quietud del hogar.',
+        'Hay sensación de megaciudad que respira en ciclos — estación, hora, barrio.',
+        'El día puede moverse como secuencia de tramos, no como flujo continuo.',
+        'No es solo velocidad: es precisión en cada tramo del recorrido.',
+        'Lo pequeño puede ordenar lo grande: ritual breve, paso medido.'
+      ],
+      emotional: [
+        'Sensación de reserva cortés con profundidad bajo la forma.',
+        'Hay estímulo sensorial contenido — mucho alrededor, poco ruido innecesario.',
+        'La emoción puede ir por dentro mientras afuera todo sigue funcionando.',
+        'A veces la soledad aparece en densidad: mucha gente, poco contacto.',
+        'Hay honestidad práctica más que dramatismo expresivo.'
+      ],
+      bond: [
+        'El vínculo puede construirse con respeto, tiempo y gestos sostenidos.',
+        'Hay cercanía que a veces no se verbaliza: cuidado en lo repetido.',
+        'Puede pedir paciencia antes que declaración rápida.',
+        'La confianza a menudo se gana en lo cotidiano, no en el gesto teatral.',
+        'A veces el amor se nota en lo cuidado, no en lo ruidoso.'
+      ],
+      work: [
+        'El trabajo puede pedir precisión, constancia y sentido del deber sin espectáculo.',
+        'Hay oficio invisible que sostiene lo visible: servicio, detalle, fiabilidad.',
+        'Puede activar horas largas con sentido de mejora continua.',
+        'La visibilidad a veces pesa menos que la excelencia silenciosa.',
+        'Proyectos que exigen constancia antes que aplauso inmediato.'
+      ],
+      rest: [
+        'Descansar puede ser ordenar el interior antes que exhibir pausa.',
+        'Hay permiso para silencio que no se siente vacío.',
+        'El descanso a veces pasa por ritual breve: transición, no escape.',
+        'Puede ser soltar la urgencia sin abandonar la forma.',
+        'La pausa puede ser hogar quieto después del tramo público.'
+      ],
+      success: [
+        'La maestría y la fiabilidad pueden abrir puertas en sistema grande.',
+        'Puede pesar ser reconocido por constancia, no por espectáculo.',
+        'El éxito a veces se mide en excelencia silenciosa, no en titular.',
+        'Mejora continua puede ser forma de sentido, no solo exigencia.',
+        'Reputación que crece en oficio, no solo en exposición.'
+      ],
+      images: [
+        'Estaciones donde el flujo humano tiene reglas no escritas.',
+        'Barrios residenciales quietos a pocos minutos de cruces densos.',
+        'Pasillos estrechos que enseñan a medir el paso y el gesto.',
+        'Luz de tarde sobre asfalto húmedo que cambia el tono del día.',
+        'Hogar pequeño que ordena el exceso de la calle.'
+      ],
+      metaphors: [
+        'Como moverte en tramos precisos y soltar en casa.',
+        'Como afilar el detalle antes que buscar aplauso.',
+        'Como encontrar quietud dentro de la densidad.',
+        'Como repetir un gesto hasta que se vuelve refugio.',
+        'Como dejar que la forma sostenga lo que la prisa quiere romper.'
+      ],
+      zodiacSignature: [
+        { sign: 'Capricorn', weight: 0.4, reason: 'estructura, exigencia, forma' },
+        { sign: 'Virgo', weight: 0.35, reason: 'precisión, detalle, oficio' },
+        { sign: 'Aquarius', weight: 0.25, reason: 'tecnología, densidad, futuro urbano' }
+      ],
+      avoid: ['sushi', 'samurái', 'samurai', 'anime', 'cerezo', 'neón postal', 'postal']
     }
   };
 
   var GLOBAL_TOURISM_TOKENS = [
     'tranvía', 'tranvia', 'fado', 'azulejo', 'cn tower', 'hockey', 'table mountain',
-    'rascacielos', 'playa', 'postal turística', 'guía de viaje', 'destino exótico'
+    'rascacielos', 'playa', 'postal turística', 'guía de viaje', 'destino exótico',
+    'sagrada familia', 'gaudí', 'gaudi', 'sushi', 'samurái', 'samurai', 'anime'
+  ];
+
+  var CITY_COUNTRY_OVERLAP_FRAGMENTS = [
+    'mesa que se alarga',
+    'mesas que se alargan',
+    'planificar el día como pequeña expedición',
+    'luchar contra el reloj',
+    'volver al cuerpo después de mucho ruido',
+    'habitación que se ordena',
+    'esfuerzo sostenido valga más que el arranque',
+    'horizonte abierto que pone tu historia',
+    'horizontes amplios que ponen tu historia',
+    'silencios que pesan distinto según el barrio'
+  ];
+
+  var ZODIAC_DOGMA_PATTERNS = [
+    /\bes acuario\b/i,
+    /\bes capricornio\b/i,
+    /\bes géminis\b/i,
+    /\bes geminis\b/i,
+    /\bes libra\b/i,
+    /\bes virgo\b/i,
+    /\bes tauro\b/i,
+    /\bes cáncer\b/i,
+    /\bes cancer\b/i,
+    /\bes escorpio\b/i,
+    /\bes piscis\b/i
   ];
 
   var GUIDING_QUESTIONS = {
@@ -576,7 +768,42 @@
     if (n === 'lisboa') return 'lisboa';
     if (n === 'toronto') return 'toronto';
     if (n.indexOf('ciudad del cabo') !== -1 || n === 'cape town') return 'ciudad_del_cabo';
+    if (n === 'barcelona') return 'barcelona';
+    if (n === 'tokio' || n === 'tokyo') return 'tokio';
     return null;
+  }
+
+  function normalizeOverlapText(text) {
+    return String(text || '')
+      .toLowerCase()
+      .replace(/^en [^,]+,\s*/, '')
+      .replace(/^(quizá|puede que|tal vez)\s+/, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function linesOverlapCityCountry(cityLine, countryLine) {
+    var a = normalizeOverlapText(cityLine);
+    var b = normalizeOverlapText(countryLine);
+    if (!a || !b) return false;
+    if (a.length >= 20 && b.indexOf(a.slice(0, 24)) !== -1) return true;
+    if (b.length >= 20 && a.indexOf(b.slice(0, 24)) !== -1) return true;
+    for (var i = 0; i < CITY_COUNTRY_OVERLAP_FRAGMENTS.length; i++) {
+      var frag = CITY_COUNTRY_OVERLAP_FRAGMENTS[i];
+      if (a.indexOf(frag) !== -1 && b.indexOf(frag) !== -1) return true;
+    }
+    return false;
+  }
+
+  function collectCityAtmosphereBundle(cityAtm) {
+    if (!cityAtm) return [];
+    return (cityAtm.selectedLines || []).concat([
+      cityAtm.rhythm,
+      cityAtm.emotionalTexture,
+      cityAtm.goalTone,
+      cityAtm.images,
+      cityAtm.successTone
+    ]).filter(Boolean);
   }
 
   function containsAvoidToken(text, avoidList) {
@@ -639,6 +866,9 @@
     var images = pickAtmosphere({
       citySlug: slug, goal: goalId, slot: 'images', seed: seed + 3, cityName: cityName
     });
+    var successTone = pickAtmosphere({
+      citySlug: slug, goal: goalId, slot: 'success', seed: seed + 4, cityName: cityName
+    });
 
     var selectedLines = [];
     [rhythm, emotional, goalTone, images].forEach(function (line) {
@@ -657,6 +887,8 @@
       emotionalTexture: emotional,
       goalTone: goalTone,
       images: images,
+      successTone: successTone,
+      zodiacSignature: index.zodiacSignature ? index.zodiacSignature.slice() : [],
       warnings: index.avoid.slice(),
       selectedLines: selectedLines
     };
@@ -828,9 +1060,10 @@
     return 'En ' + countryName + ', ' + modal + ' ' + lcfirst(text);
   }
 
-  function pickCountryEditorialLines(resolved, countryName, linePlanet, goalId, seed) {
+  function pickCountryEditorialLines(resolved, countryName, linePlanet, goalId, seed, cityAtm) {
     var mod = resolved.selectedModifiers || {};
     var pool = [];
+    var cityBundle = collectCityAtmosphereBundle(cityAtm);
 
     if (mod.lineLines && mod.lineLines.length) {
       mod.lineLines.forEach(function (line) {
@@ -850,20 +1083,34 @@
     var count = Math.min(MAX_COUNTRY_LINES, pool.length);
     var sectionStart = hash32(String(seed) + ':country:sections') % COUNTRY_SECTIONS.length;
     var out = [];
+    var usedSections = {};
 
-    for (var i = 0; i < COUNTRY_SECTIONS.length && out.length < count; i += 1) {
-      var section = COUNTRY_SECTIONS[(sectionStart + i) % COUNTRY_SECTIONS.length];
-      var lineIdx = hash32(String(seed) + ':country:line:' + out.length) % pool.length;
-      out.push({
-        section: section,
-        text: buildCountryEditorialLine(pool[lineIdx], countryName, linePlanet, section)
-      });
+    for (var attempt = 0; attempt < pool.length * 3 && out.length < count; attempt += 1) {
+      var sectionIdx = (sectionStart + out.length + attempt) % COUNTRY_SECTIONS.length;
+      var section = COUNTRY_SECTIONS[sectionIdx];
+      if (usedSections[section]) continue;
+
+      var lineIdx = hash32(String(seed) + ':country:line:' + attempt) % pool.length;
+      var candidate = buildCountryEditorialLine(pool[lineIdx], countryName, linePlanet, section);
+      if (!candidate) continue;
+
+      var overlaps = false;
+      for (var ci = 0; ci < cityBundle.length; ci++) {
+        if (linesOverlapCityCountry(cityBundle[ci], candidate)) {
+          overlaps = true;
+          break;
+        }
+      }
+      if (overlaps) continue;
+
+      out.push({ section: section, text: candidate });
+      usedSections[section] = true;
     }
 
     return out.slice(0, MAX_COUNTRY_LINES);
   }
 
-  function buildCountryContext(input, goalId, primary, seed) {
+  function buildCountryContext(input, goalId, primary, seed, cityAtm) {
     var baseMeta = { weightHint: 'country:15%' };
     var Svc = window.KairosCountryArchetype;
 
@@ -900,14 +1147,18 @@
     }
 
     var countryName = resolved.archetype.name;
-    var lines = pickCountryEditorialLines(resolved, countryName, linePlanet, goalId, seed);
+    var lines = pickCountryEditorialLines(resolved, countryName, linePlanet, goalId, seed, cityAtm);
+    var dedupWarnings = [];
+    if (resolved.selectedModifiers && lines.length < MAX_COUNTRY_LINES) {
+      dedupWarnings.push('country_lines_deduped_against_city');
+    }
 
     return {
       ok: true,
       countryId: resolved.countryId,
       countryName: countryName,
       selectedModifiers: resolved.selectedModifiers,
-      warnings: resolved.warnings || [],
+      warnings: (resolved.warnings || []).concat(dedupWarnings),
       lines: lines,
       meta: Object.assign({}, baseMeta, resolved.meta || {}, {
         linePlanet: linePlanet,
@@ -1010,10 +1261,11 @@
       narrativeContext.cityEmotionalTexture = cityAtm.emotionalTexture;
       narrativeContext.cityGoalTone = cityAtm.goalTone;
       narrativeContext.cityImages = cityAtm.images;
+      narrativeContext.citySuccessTone = cityAtm.successTone;
       narrativeContext.atmosphereWarnings = cityAtm.warnings;
     }
 
-    var countryContext = buildCountryContext(input, goalId, primary, seed);
+    var countryContext = buildCountryContext(input, goalId, primary, seed, cityAtm);
     weaveCountryIntoSpine(narrativeContext, countryContext);
     narrativeContext.countryContext = countryContext;
 
@@ -1024,6 +1276,9 @@
       'human_presence_spine'
     ];
     if (cityAtm) rulesFired.push('city_atmosphere_' + cityAtm.citySlug);
+    if (cityAtm && cityAtm.zodiacSignature && cityAtm.zodiacSignature.length) {
+      rulesFired.push('zodiac_signature_metadata');
+    }
     if (countryContext.ok) {
       rulesFired.push('country_archetype_' + countryContext.countryId);
       if (countryContext.lines.length) rulesFired.push('country_lines_' + countryContext.lines.length);
@@ -1056,6 +1311,8 @@
     THEME_ES: THEME_ES,
     deriveNarrativeContext: deriveNarrativeContext,
     GLOBAL_TOURISM_TOKENS: GLOBAL_TOURISM_TOKENS,
+    CITY_COUNTRY_OVERLAP_FRAGMENTS: CITY_COUNTRY_OVERLAP_FRAGMENTS,
+    ZODIAC_DOGMA_PATTERNS: ZODIAC_DOGMA_PATTERNS,
     _dev: {
       GOAL_OBJECTIVE_IDS: GOAL_OBJECTIVE_IDS,
       GUIDING_QUESTIONS: GUIDING_QUESTIONS,
@@ -1065,7 +1322,9 @@
       pickAtmosphere: pickAtmosphere,
       buildCityAtmosphere: buildCityAtmosphere,
       buildCountryContext: buildCountryContext,
-      weaveCountryIntoSpine: weaveCountryIntoSpine
+      weaveCountryIntoSpine: weaveCountryIntoSpine,
+      linesOverlapCityCountry: linesOverlapCityCountry,
+      collectCityAtmosphereBundle: collectCityAtmosphereBundle
     }
   };
 })();

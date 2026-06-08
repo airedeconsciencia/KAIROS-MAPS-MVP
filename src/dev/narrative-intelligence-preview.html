@@ -267,6 +267,9 @@
     html += spineRow('cityEmotionalTexture', nc.cityEmotionalTexture);
     html += spineRow('cityGoalTone', nc.cityGoalTone);
     html += spineRow('cityImages', nc.cityImages);
+    html += spineRow('citySuccessTone', nc.citySuccessTone);
+    html += '<div class="spine-item"><strong>zodiacSignature</strong><pre style="margin:4px 0;font-size:11px">' +
+      escapeHtml(JSON.stringify(atm.zodiacSignature || [], null, 2)) + '</pre></div>';
     html += '<div class="spine-item"><strong>selectedLines</strong>';
     (atm.selectedLines || []).forEach(function (line, i) {
       html += '<div style="margin-top:4px">' + (i + 1) + '. ' + escapeHtml(line) + '</div>';

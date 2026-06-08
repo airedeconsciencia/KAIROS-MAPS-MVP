@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke Country Archetype × Narrative Intelligence (Fase 3.8f.3 DEV)
+# Kairos Maps — Smoke Country Archetype × Narrative Intelligence (Fase 3.8f.6 DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -20,7 +20,7 @@ NARRATIVE="$ROOT/src/services/narrative-intelligence-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — Country × Narrative integration (3.8f.3)"
+echo " KAIROS MAPS — Country × Narrative integration (3.8f.6)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -118,9 +118,19 @@ const CURATED_CASES = [
   }
 ];
 
+function schemaOk(version) {
+  if (!version) return false;
+  if (version.indexOf('3.8f.6') === 0) return true;
+  if (version.indexOf('3.8f.') === 0) {
+    var m = version.match(/^3\.8f\.(\d+)/);
+    return m && parseInt(m[1], 10) >= 6;
+  }
+  return false;
+}
+
 assert(
-  'Narrative schema 3.8f.3',
-  Narrative && Narrative.SCHEMA_VERSION.indexOf('3.8f.3') === 0,
+  'Narrative schema 3.8f.6+',
+  schemaOk(Narrative && Narrative.SCHEMA_VERSION),
   'schema=' + (Narrative && Narrative.SCHEMA_VERSION)
 );
 
@@ -184,11 +194,44 @@ assert(
   'reason=' + (kenya.narrativeContext.countryContext.meta && kenya.narrativeContext.countryContext.meta.reason)
 );
 
+assert(
+  'cityAtmosphere presente en 5 ciudades piloto (incl. Barcelona y Tokio)',
+  curatedResults.every(function (s) {
+    var nc = s.result.narrativeContext;
+    return nc.cityAtmosphere && nc.cityAtmosphere.citySlug &&
+      nc.citySuccessTone && nc.cityAtmosphere.zodiacSignature &&
+      nc.cityAtmosphere.zodiacSignature.length >= 2;
+  }),
+  curatedResults.map(function (s) {
+    var atm = s.result.narrativeContext.cityAtmosphere;
+    return s.label.split(' · ')[0] + '=' + (atm ? atm.citySlug : 'missing');
+  }).join(' · ')
+);
+
+let dedupFail = false;
+curatedResults.forEach(function (s) {
+  var nc = s.result.narrativeContext;
+  var cc = nc.countryContext;
+  if (!cc || !cc.ok || !cc.lines || !nc.cityAtmosphere) return;
+  var bundle = Narrative._dev.collectCityAtmosphereBundle(nc.cityAtmosphere);
+  cc.lines.forEach(function (line) {
+    bundle.forEach(function (cityLine) {
+      if (Narrative._dev.linesOverlapCityCountry(cityLine, line.text)) {
+        dedupFail = true;
+        console.log('  Duplicado ciudad-país en ' + s.label + ': ' + line.text.slice(0, 60));
+      }
+    });
+  });
+});
+assert('Sin duplicados exactos ciudad-país en frases usadas', !dedupFail, null);
+
 const noCountry = derive({ name: 'Barcelona', lat: 41.3874, lon: 2.1686 }, 'amor');
 assert(
-  'Fail-soft sin país (Barcelona sin country)',
+  'Fail-soft sin país (Barcelona sin country) + cityAtmosphere presente',
   noCountry.ok && noCountry.narrativeContext.countryContext &&
-    noCountry.narrativeContext.countryContext.ok === false,
+    noCountry.narrativeContext.countryContext.ok === false &&
+    noCountry.narrativeContext.cityAtmosphere &&
+    noCountry.narrativeContext.cityAtmosphere.citySlug === 'barcelona',
   'reason=' + (noCountry.narrativeContext.countryContext.meta && noCountry.narrativeContext.countryContext.meta.reason)
 );
 

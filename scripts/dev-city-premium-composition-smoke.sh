@@ -445,12 +445,14 @@ assert(
 );
 
 assert(
-  'cityAtmosphere en narrativeContext (lab 3)',
+  'cityAtmosphere en narrativeContext (lab 3 + successTone)',
   [lisboaAmor, torontoTrabajo, caboDescanso].every(function (s) {
     if (!s) return false;
     var nc = s.reading.meta.narrativeContext;
     return nc && nc.cityAtmosphere && nc.cityAtmosphere.selectedLines &&
-      nc.cityAtmosphere.selectedLines.length >= 3;
+      nc.cityAtmosphere.selectedLines.length >= 3 &&
+      nc.citySuccessTone && nc.cityAtmosphere.zodiacSignature &&
+      nc.cityAtmosphere.zodiacSignature.length >= 2;
   }),
   [lisboaAmor, torontoTrabajo, caboDescanso].map(function (s) {
     if (!s) return 'missing';
@@ -469,12 +471,25 @@ const barcelonaReading = Premium.composeCityReading({
   bridgeProfile: bridgeProfile,
   profile: { firstName: 'Roberto' }
 });
+const tokioReading = Premium.composeCityReading({
+  city: Catalog.findCityByName('Tokio'),
+  goal: 'trabajo',
+  relevantInfluences: Scorer.rankInfluences(Catalog.findCityByName('Tokio'), buildInput('trabajo')).slice(0, 5),
+  bridgeProfile: bridgeProfile,
+  profile: { firstName: 'Roberto' }
+});
 assert(
-  'Ciudad desconocida fail-soft (sin cityAtmosphere en lectura)',
+  'Barcelona y Tokio tienen cityAtmosphere en lectura',
   barcelonaReading.meta.narrativeContext &&
-    !barcelonaReading.meta.narrativeContext.cityAtmosphere &&
-    !barcelonaReading.meta.narrativeContext.cityRhythm,
-  'ok=' + barcelonaReading.ok + ' citySlug=' + barcelonaReading.meta.citySlug
+    barcelonaReading.meta.narrativeContext.cityAtmosphere &&
+    barcelonaReading.meta.narrativeContext.cityAtmosphere.citySlug === 'barcelona' &&
+    tokioReading.meta.narrativeContext &&
+    tokioReading.meta.narrativeContext.cityAtmosphere &&
+    tokioReading.meta.narrativeContext.cityAtmosphere.citySlug === 'tokio',
+  'bcn=' + (barcelonaReading.meta.narrativeContext && barcelonaReading.meta.narrativeContext.cityAtmosphere
+    ? barcelonaReading.meta.narrativeContext.cityAtmosphere.citySlug : 'none') +
+    ' · tokio=' + (tokioReading.meta.narrativeContext && tokioReading.meta.narrativeContext.cityAtmosphere
+      ? tokioReading.meta.narrativeContext.cityAtmosphere.citySlug : 'none')
 );
 
 function atmosphereFingerprint(line) {

@@ -216,16 +216,18 @@ results.forEach(function (s) {
 assert('Human presence preservado (voz experiencial en lectura)', !presenceFail, null);
 
 let atmosFail = false;
-results.filter(function (s) {
-  return s.label.indexOf('Lisboa') !== -1 || s.label.indexOf('Toronto') !== -1 ||
-    s.label.indexOf('Ciudad del Cabo') !== -1;
-}).forEach(function (s) {
+results.forEach(function (s) {
   if ((s.reading.meta.atmosphereLinesUsed || 0) < 1) {
     atmosFail = true;
     console.log('  Falta atmosphere en ' + s.label);
   }
+  var nc = s.reading.meta.narrativeContext;
+  if (!nc || !nc.cityAtmosphere || !nc.cityAtmosphere.citySlug) {
+    atmosFail = true;
+    console.log('  Sin cityAtmosphere en ' + s.label);
+  }
 });
-assert('City atmosphere preservada (lab Lisboa/Toronto/Cabo)', !atmosFail, null);
+assert('City atmosphere preservada (5 ciudades piloto)', !atmosFail, null);
 
 const kenya = composeReading(
   { name: 'Nairobi', country: 'Kenia', lat: -1.2921, lon: 36.8219 },

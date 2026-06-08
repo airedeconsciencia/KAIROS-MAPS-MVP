@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke Narrative Intelligence (Fase 3.8f.3 DEV)
+# Kairos Maps — Smoke Narrative Intelligence (Fase 3.8f.6 DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -20,7 +20,7 @@ NARRATIVE="$ROOT/src/services/narrative-intelligence-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — Narrative Intelligence smoke (3.8f.3)"
+echo " KAIROS MAPS — Narrative Intelligence smoke (3.8f.6)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -104,8 +104,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Servicio existe (schema 3.8f.3)',
-  Narrative && Narrative.SCHEMA_VERSION.indexOf('3.8f.3') === 0,
+  'Servicio existe (schema 3.8f.6)',
+  Narrative && Narrative.SCHEMA_VERSION.indexOf('3.8f.6') === 0,
   'schema=' + (Narrative && Narrative.SCHEMA_VERSION)
 );
 
@@ -228,7 +228,8 @@ assert(
     var nc = s.result.narrativeContext;
     return nc.cityAtmosphere && nc.cityAtmosphere.citySlug &&
       nc.cityRhythm && nc.cityEmotionalTexture && nc.cityGoalTone &&
-      nc.cityImages && nc.atmosphereWarnings &&
+      nc.cityImages && nc.citySuccessTone && nc.atmosphereWarnings &&
+      nc.cityAtmosphere.zodiacSignature && nc.cityAtmosphere.zodiacSignature.length >= 2 &&
       nc.cityAtmosphere.selectedLines && nc.cityAtmosphere.selectedLines.length >= 3 &&
       nc.cityAtmosphere.selectedLines.length <= 5;
   }),
@@ -237,6 +238,80 @@ assert(
     return s.city + '=' + (atm ? atm.citySlug + ' lines=' + atm.selectedLines.length : 'missing');
   }).join(' · ')
 );
+
+const PILOT_CITIES = [
+  { city: Catalog.findCityByName('Lisboa'), goal: 'amor' },
+  { city: Catalog.findCityByName('Toronto'), goal: 'trabajo' },
+  { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'descanso' },
+  { city: { name: 'Barcelona', country: 'España', lat: 41.3874, lon: 2.1686 }, goal: 'amor' },
+  { city: Catalog.findCityByName('Tokio'), goal: 'trabajo' }
+];
+
+const pilotSamples = PILOT_CITIES.map(function (c) {
+  const input = buildInput(c.goal);
+  const ranked = Scorer.rankInfluences(c.city, input);
+  const r = Narrative.deriveNarrativeContext({
+    city: c.city,
+    goal: c.goal,
+    relevantInfluences: ranked.slice(0, 5),
+    bridgeProfile: bp
+  });
+  return { city: c.city.name, goal: c.goal, result: r };
+});
+
+assert(
+  'cityAtmosphere presente (5 ciudades piloto incl. Barcelona y Tokio)',
+  pilotSamples.every(function (s) {
+    var nc = s.result.narrativeContext;
+    return nc.cityAtmosphere && nc.cityAtmosphere.citySlug &&
+      nc.citySuccessTone && nc.cityAtmosphere.zodiacSignature &&
+      nc.cityAtmosphere.zodiacSignature.length >= 2;
+  }),
+  pilotSamples.map(function (s) {
+    var atm = s.result.narrativeContext.cityAtmosphere;
+    return s.city + '=' + (atm ? atm.citySlug : 'missing');
+  }).join(' · ')
+);
+
+let dedupFail = false;
+pilotSamples.forEach(function (s) {
+  var nc = s.result.narrativeContext;
+  var cc = nc.countryContext;
+  if (!cc || !cc.ok || !cc.lines || !nc.cityAtmosphere) return;
+  var bundle = Narrative._dev.collectCityAtmosphereBundle(nc.cityAtmosphere);
+  cc.lines.forEach(function (line) {
+    bundle.forEach(function (cityLine) {
+      if (Narrative._dev.linesOverlapCityCountry(cityLine, line.text)) {
+        dedupFail = true;
+        console.log('  Duplicado ciudad-país en ' + s.city + ': ' + line.text.slice(0, 60));
+      }
+    });
+  });
+});
+assert('Sin duplicados exactos ciudad-país en frases usadas', !dedupFail, null);
+
+let dogmaFail = false;
+const dogmaPatterns = Narrative.ZODIAC_DOGMA_PATTERNS || [];
+pilotSamples.forEach(function (s) {
+  var bundle = [
+    s.result.narrativeContext.narrativeSummary,
+    s.result.narrativeContext.humanTheme,
+    s.result.narrativeContext.humanObserve,
+    s.result.narrativeContext.humanClosing,
+    (s.result.narrativeContext.cityAtmosphere.selectedLines || []).join(' ')
+  ].join(' ');
+  dogmaPatterns.forEach(function (re) {
+    if (re.test(bundle)) {
+      dogmaFail = true;
+      console.log('  Dogma zodiacal en ' + s.city + ': ' + re);
+    }
+  });
+  if (/barcelona es acuario/i.test(bundle) || /tokio es capricornio/i.test(bundle)) {
+    dogmaFail = true;
+    console.log('  Frase dogmática signo=fijo en ' + s.city);
+  }
+});
+assert('zodiacSignature metadata sin dogma en texto', !dogmaFail, null);
 
 assert(
   'countryContext presente (Lisboa, Toronto, Cabo — curados)',
@@ -268,21 +343,21 @@ assert(
 );
 
 const barcelona = Narrative.deriveNarrativeContext({
-  city: { name: 'Barcelona', lat: 41.3874, lon: 2.1686 },
+  city: { name: 'Barcelona', country: 'España', lat: 41.3874, lon: 2.1686 },
   goal: 'amor',
   relevantInfluences: Scorer.rankInfluences(
-    { name: 'Barcelona', lat: 41.3874, lon: 2.1686 },
+    { name: 'Barcelona', country: 'España', lat: 41.3874, lon: 2.1686 },
     buildInput('amor')
   ).slice(0, 5),
   bridgeProfile: bp
 });
 assert(
-  'Ciudad desconocida fail-soft (sin cityAtmosphere, sin country ok)',
-  barcelona.ok && !barcelona.narrativeContext.cityAtmosphere &&
-    !barcelona.narrativeContext.cityRhythm &&
+  'Barcelona tiene cityAtmosphere + countryContext España',
+  barcelona.ok && barcelona.narrativeContext.cityAtmosphere &&
+    barcelona.narrativeContext.cityAtmosphere.citySlug === 'barcelona' &&
     barcelona.narrativeContext.countryContext &&
-    barcelona.narrativeContext.countryContext.ok === false,
-  'Barcelona citySlug=' + barcelona.meta.citySlug
+    barcelona.narrativeContext.countryContext.ok === true,
+  'citySlug=' + barcelona.meta.citySlug
 );
 
 const tourismTokens = Narrative.GLOBAL_TOURISM_TOKENS || [];
