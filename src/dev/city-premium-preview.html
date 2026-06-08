@@ -87,7 +87,7 @@
   </style>
 </head>
 <body>
-  <div class="dev-banner">DEV ONLY · 3.8e.9d Human Presence · Voz dirigida a ti · Sin paywall</div>
+  <div class="dev-banner">DEV ONLY · 3.8f.4 Country × Premium Composition · Sin paywall</div>
   <div class="page">
     <h1>City Premium Reading Lab</h1>
     <p class="sub">
@@ -97,9 +97,11 @@
 
     <div class="toolbar">
       <select id="city-select" aria-label="Ciudad">
-        <option value="lisboa">Lisboa</option>
-        <option value="toronto">Toronto</option>
-        <option value="cabo">Ciudad del Cabo</option>
+        <option value="lisboa">Lisboa · Portugal</option>
+        <option value="toronto">Toronto · Canadá</option>
+        <option value="cabo">Ciudad del Cabo · Sudáfrica</option>
+        <option value="tokio">Tokio · Japón</option>
+        <option value="barcelona">Barcelona · España</option>
       </select>
       <select id="goal-select" aria-label="Objetivo">
         <option value="amor">amor</option>
@@ -112,6 +114,7 @@
     </div>
 
     <div id="status" class="panel" style="display:none"></div>
+    <div id="country-panel" class="panel" style="display:none"></div>
     <div id="voice-panel" class="panel" style="display:none"></div>
     <div id="meta-panel" class="panel" style="display:none"></div>
     <div id="knowledge-panel" class="panel" style="display:none"></div>
@@ -126,6 +129,9 @@
   <script src="../content/natal-lite.js"></script>
   <script src="../services/natal-composition-service.js"></script>
   <script src="../services/natal-map-bridge-service.js"></script>
+  <script src="../content/cities-catalog.js"></script>
+  <script src="../content/country-archetypes.js"></script>
+  <script src="../services/country-archetype-service.js"></script>
   <script src="../content/interpretations.js"></script>
   <script src="../content/premium-blocks.js"></script>
   <script src="../services/narrative-intelligence-service.js"></script>
@@ -138,9 +144,11 @@
   'use strict';
 
   var CITIES = {
-    lisboa: { name: 'Lisboa', country: 'Portugal', lat: 38.7223, lon: -9.1393 },
-    toronto: { name: 'Toronto', country: 'Canadá', lat: 43.6532, lon: -79.3832 },
-    cabo: { name: 'Ciudad del Cabo', country: 'Sudáfrica', lat: -33.9249, lon: 18.4241 }
+    lisboa: KairosCitiesCatalog.findCityByName('Lisboa'),
+    toronto: KairosCitiesCatalog.findCityByName('Toronto'),
+    cabo: KairosCitiesCatalog.findCityByName('Ciudad del Cabo'),
+    tokio: KairosCitiesCatalog.findCityByName('Tokio'),
+    barcelona: { name: 'Barcelona', country: 'España', lat: 41.3874, lon: 2.1686 }
   };
 
   var GOALS = ['amor', 'trabajo', 'descanso'];
@@ -198,6 +206,41 @@
     });
   }
 
+  function renderCountry(reading) {
+    var m = reading.meta;
+    var cc = m.countryContext;
+    var html = '<p class="panel-title">Country context (composition)</p><div class="meta-grid">';
+    if (!cc) {
+      html += metaItem('countryContext', '—');
+    } else {
+      html += metaItem('ok', cc.ok ? '<span class="ok-tag">true</span>' : '<span class="fail-tag">false</span>');
+      html += metaItem('countryId', escapeHtml(cc.countryId || '—'));
+      html += metaItem('countryName', escapeHtml(cc.countryName || '—'));
+      html += metaItem('linesUsed', String(m.countryLinesUsed != null ? m.countryLinesUsed : 0));
+      html += metaItem('sectionsUsed', escapeHtml((m.countrySectionsUsed || []).join(', ') || '—'));
+      html += metaItem('atmosphereLinesUsed', String(m.atmosphereLinesUsed != null ? m.atmosphereLinesUsed : 0));
+      html += metaItem('humanPresenceTransforms', String(m.humanPresenceTransforms != null ? m.humanPresenceTransforms : 0));
+    }
+    html += '</div>';
+    if (cc && cc.lines && cc.lines.length) {
+      html += '<div class="meta-item" style="margin-top:8px"><strong>country lines</strong>';
+      cc.lines.forEach(function (line, i) {
+        var sec = reading.sections.find(function (s) { return s.id === line.section; });
+        var present = sec && KairosCityPremiumComposition._dev.countryLinePresentIn(sec.body, line.text);
+        html += '<div style="margin-top:4px">' + (i + 1) + '. [' + escapeHtml(line.section) + '] ' +
+          (present ? '<span class="ok-tag">in section</span> ' : '') +
+          escapeHtml(line.text) + '</div>';
+      });
+      html += '</div>';
+    }
+    if (cc && cc.warnings && cc.warnings.length) {
+      html += '<div class="meta-item" style="margin-top:8px"><strong>warnings</strong>' +
+        escapeHtml(cc.warnings.join(' · ')) + '</div>';
+    }
+    document.getElementById('country-panel').innerHTML = html;
+    document.getElementById('country-panel').style.display = 'block';
+  }
+
   function renderVoiceWarnings(reading) {
     var m = reading.meta;
     var html = '<p class="panel-title">Human presence (3.8e.9d)</p><div class="meta-grid">';
@@ -238,6 +281,8 @@
     html += metaItem('Knowledge auto', m.knowledgeAutoResolved ? 'sí' : 'no');
     html += metaItem('Bloques catálogo', String(m.knowledgeBlockCount || 0));
     html += metaItem('Seed', String(m.deterministicSeed));
+    html += metaItem('atmosphereLinesUsed', String(m.atmosphereLinesUsed != null ? m.atmosphereLinesUsed : '—'));
+    html += metaItem('countryLinesUsed', String(m.countryLinesUsed != null ? m.countryLinesUsed : '—'));
     if (m.patterns) {
       html += metaItem('Patrones', JSON.stringify(m.patterns));
     }
@@ -321,6 +366,7 @@
       var reading = runOne(cityKey, goalId);
       document.getElementById('batch-panel').style.display = 'none';
       renderMeta(reading, reading.meta.score);
+      renderCountry(reading);
       renderVoiceWarnings(reading);
       renderKnowledge(reading);
       renderInfluences(reading);
@@ -353,22 +399,23 @@
 
   document.getElementById('btn-lab-cases').addEventListener('click', function () {
     var cases = [
-      { city: 'lisboa', goal: 'amor', label: 'Lisboa · amor' },
-      { city: 'toronto', goal: 'trabajo', label: 'Toronto · trabajo' },
-      { city: 'cabo', goal: 'descanso', label: 'Ciudad del Cabo · descanso' }
+      { city: 'lisboa', goal: 'amor', label: 'Lisboa · Portugal · amor' },
+      { city: 'toronto', goal: 'trabajo', label: 'Toronto · Canadá · trabajo' },
+      { city: 'cabo', goal: 'descanso', label: 'Ciudad del Cabo · Sudáfrica · descanso' },
+      { city: 'tokio', goal: 'trabajo', label: 'Tokio · Japón · trabajo' },
+      { city: 'barcelona', goal: 'amor', label: 'Barcelona · España · amor' }
     ];
     try {
       if (!lines) init();
-      var out = '<p class="panel-title">Casos validación 3.8e.4</p>';
+      var out = '<p class="panel-title">Casos validación 3.8f.4</p>';
       cases.forEach(function (c) {
         var r = runOne(c.city, c.goal);
-        var sb = r.meta.sourceBreakdown || {};
         out += '<div class="influence-row"><strong>' + c.label + '</strong> · ' +
           r.meta.wordCount + ' palabras · ok=' + r.ok +
-          ' · premiumUnits=' + (sb.premiumBlockUnits || 0) +
-          ' · fb=' + (sb.interpretationFallbacks || 0) +
-          ' · wordsPremium=' + (sb.wordSharePremium || 0) + '%' +
-          (r.meta.sparseInfluences ? ' · sparse' : '') + '</div>';
+          ' · countryLines=' + (r.meta.countryLinesUsed || 0) +
+          ' · sections=' + (r.meta.countrySectionsUsed || []).join('/') +
+          ' · atmosphere=' + (r.meta.atmosphereLinesUsed || 0) +
+          ' · presence=' + (r.meta.humanPresenceTransforms || 0) + '</div>';
       });
       document.getElementById('batch-panel').innerHTML = out;
       document.getElementById('batch-panel').style.display = 'block';

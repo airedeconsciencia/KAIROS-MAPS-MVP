@@ -1,7 +1,7 @@
 /**
- * KAIROS MAPS — City Premium Reading composition (Fase 3.8e.9d DEV)
+ * KAIROS MAPS — City Premium Reading composition (Fase 3.8f.4 DEV)
  *
- * Lectura integrada: voz premium cálida + premium-blocks + fallback.
+ * Lectura integrada: voz premium cálida + premium-blocks + fallback + matiz país.
  * Sin IA, sin inventar datos astrológicos.
  *
  * Depende de: KairosNarrativeIntelligence, KairosPremiumKnowledge, KairosPremiumBlocks
@@ -9,8 +9,10 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8e.9d-dev-0.1';
+  var SCHEMA_VERSION = '3.8f.4-dev-0.1';
   var MAX_ATMOSPHERE_LINES = 3;
+  var MAX_COUNTRY_LINES = 2;
+  var COUNTRY_ALLOWED_SECTIONS = { sintesis: true, observar: true, integracion: true };
   var MIN_WORDS = 500;
   var MAX_WORDS = 900;
   var MAX_INFLUENCES = 5;
@@ -865,6 +867,69 @@
     return line;
   }
 
+  function countryLineFingerprint(line) {
+    var s = String(line || '').toLowerCase().trim();
+    var m = s.match(/^quizá en [^,]+,\s*(.+)/);
+    if (m) s = m[1];
+    m = s.match(/^en [^,]+,\s*(.+)/);
+    if (m) s = m[1];
+    return s.slice(0, 40);
+  }
+
+  function countryLinePresentIn(text, lineText) {
+    if (!text || !lineText) return false;
+    if (fragmentAlreadyIn(text, lineText)) return true;
+    var fp = countryLineFingerprint(lineText);
+    return fp.length >= 16 && text.toLowerCase().indexOf(fp) !== -1;
+  }
+
+  function applyCountryContextToSections(sections, narrativeContext, ctx, globalSeen) {
+    ctx._countryLinesUsed = 0;
+    ctx._countrySectionsUsed = ctx._countrySectionsUsed || [];
+
+    if (!narrativeContext || !narrativeContext.countryContext) {
+      return sections;
+    }
+
+    var cc = narrativeContext.countryContext;
+    if (!cc.ok || !cc.lines || !cc.lines.length) {
+      return sections;
+    }
+
+    var copy = sections.map(function (s) {
+      return { id: s.id, title: s.title, body: s.body, words: s.words };
+    });
+
+    cc.lines.slice(0, MAX_COUNTRY_LINES).forEach(function (item) {
+      var sid = item.section;
+      if (!COUNTRY_ALLOWED_SECTIONS[sid]) return;
+
+      var sec = copy.find(function (s) { return s.id === sid; });
+      if (!sec || !item.text) return;
+
+      var text = String(item.text).trim();
+      if (countryLinePresentIn(sec.body, text)) {
+        ctx._countryLinesUsed += 1;
+        if (ctx._countrySectionsUsed.indexOf(sid) === -1) {
+          ctx._countrySectionsUsed.push(sid);
+        }
+        return;
+      }
+
+      if (ctx._countryLinesUsed >= MAX_COUNTRY_LINES) return;
+      if (!claimText(text, ctx.cityName, globalSeen)) return;
+
+      sec.body = sec.body ? sec.body + '\n\n' + text : text;
+      sec.words = wordCount(sec.body);
+      ctx._countryLinesUsed += 1;
+      if (ctx._countrySectionsUsed.indexOf(sid) === -1) {
+        ctx._countrySectionsUsed.push(sid);
+      }
+    });
+
+    return copy;
+  }
+
   function mergeAtmosphereLead(ctx, base, extra) {
     if (!extra || fragmentAlreadyIn(base, extra)) return base || '';
     var line = takeAtmosphereLine(ctx, extra);
@@ -1402,6 +1467,26 @@
     return null;
   }
 
+  function ensureMinWordsAfterCountry(sections, ctx, minTotal) {
+    var copy = sections.map(function (s) {
+      return { id: s.id, title: s.title, body: s.body, words: s.words };
+    });
+    var guard = 0;
+    while (sectionsWordTotal(copy) < minTotal && guard < HUMAN_TOPUP_VARIANTS.length) {
+      var tpl = HUMAN_TOPUP_VARIANTS[
+        (guard + hash32(String(ctx.seed) + ':postcountry')) % HUMAN_TOPUP_VARIANTS.length
+      ];
+      var text = replaceCity(tpl, ctx.cityName, ctx.name);
+      var sec = copy.find(function (s) { return s.id === 'integracion'; }) ||
+        copy.find(function (s) { return s.id === 'observar'; });
+      if (!sec || !text) break;
+      sec.body = sec.body ? sec.body + '\n\n' + text : text;
+      sec.words = wordCount(sec.body);
+      guard += 1;
+    }
+    return copy;
+  }
+
   function composeCityReading(input) {
     var empty = {
       ok: false,
@@ -1446,7 +1531,9 @@
       },
       _humanPresenceTransforms: 0,
       _connectorsUsed: 0,
-      _humanScenesUsed: 0
+      _humanScenesUsed: 0,
+      _countryLinesUsed: 0,
+      _countrySectionsUsed: []
     };
 
     var narrativeWrap = resolveNarrativeContext(input, ctx);
@@ -1599,6 +1686,20 @@
     if (narrativeContext) {
       sections = applyHumanPresenceToSections(sections, ctx, narrativeContext);
       syncSectionWords(sections);
+      sections = applyCountryContextToSections(sections, narrativeContext, ctx, globalSeen);
+      syncSectionWords(sections);
+      if (sectionsWordTotal(sections) < MIN_WORDS) {
+        sections = narrativeWordPadding(sections, narrativeContext, ctx, globalSeen, stats, MIN_WORDS);
+        syncSectionWords(sections);
+      }
+      if (sectionsWordTotal(sections) < MIN_WORDS) {
+        sections = humanEditorialTopUp(sections, ctx, globalSeen, stats, MIN_WORDS);
+        syncSectionWords(sections);
+      }
+      if (sectionsWordTotal(sections) < MIN_WORDS) {
+        sections = ensureMinWordsAfterCountry(sections, ctx, MIN_WORDS);
+        syncSectionWords(sections);
+      }
     }
 
     sections = trimToMaxWords(sections, MAX_WORDS);
@@ -1673,7 +1774,19 @@
         },
         humanPresenceTransforms: ctx._humanPresenceTransforms || 0,
         connectorsUsed: ctx._connectorsUsed || 0,
-        humanScenesUsed: ctx._humanScenesUsed || 0
+        humanScenesUsed: ctx._humanScenesUsed || 0,
+        countryContext: narrativeContext && narrativeContext.countryContext
+          ? {
+            ok: narrativeContext.countryContext.ok,
+            countryId: narrativeContext.countryContext.countryId,
+            countryName: narrativeContext.countryContext.countryName,
+            warnings: narrativeContext.countryContext.warnings || [],
+            lines: narrativeContext.countryContext.lines || [],
+            meta: narrativeContext.countryContext.meta || null
+          }
+          : null,
+        countryLinesUsed: ctx._countryLinesUsed || 0,
+        countrySectionsUsed: ctx._countrySectionsUsed || []
       }
     };
   }
@@ -1695,6 +1808,8 @@
     MIN_WORDS: MIN_WORDS,
     MAX_WORDS: MAX_WORDS,
     MAX_ATMOSPHERE_LINES: MAX_ATMOSPHERE_LINES,
+    MAX_COUNTRY_LINES: MAX_COUNTRY_LINES,
+    COUNTRY_ALLOWED_SECTIONS: COUNTRY_ALLOWED_SECTIONS,
     THEME_ES: THEME_ES,
     EN_THEME_KEYS: EN_THEME_KEYS,
     FORBIDDEN: FORBIDDEN,
@@ -1712,7 +1827,9 @@
       countMethodologyRepeats: countMethodologyRepeats,
       softenMethodologyText: softenMethodologyText,
       pickVoiceTransition: pickVoiceTransition,
-      humanizePresenceText: humanizePresenceText
+      humanizePresenceText: humanizePresenceText,
+      applyCountryContextToSections: applyCountryContextToSections,
+      countryLinePresentIn: countryLinePresentIn
     }
   };
 })();

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke City Premium Composition (Fase 3.8e.9d DEV)
+# Kairos Maps — Smoke City Premium Composition (Fase 3.8f.4 DEV)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -11,6 +11,8 @@ NATAL_LITE="$ROOT/src/content/natal-lite.js"
 COMPOSITION="$ROOT/src/services/natal-composition-service.js"
 BRIDGE="$ROOT/src/services/natal-map-bridge-service.js"
 CATALOG="$ROOT/src/content/cities-catalog.js"
+ARCHETYPES="$ROOT/src/content/country-archetypes.js"
+COUNTRY_SERVICE="$ROOT/src/services/country-archetype-service.js"
 SCORER="$ROOT/src/content/city-scorer.js"
 ASTRO="$ROOT/src/engines/astro.js"
 INTERP="$ROOT/src/content/interpretations.js"
@@ -21,11 +23,12 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — City Premium Composition smoke (3.8e.9d)"
+echo " KAIROS MAPS — City Premium Composition smoke (3.8f.4)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
-for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$CATALOG" "$SCORER" "$ASTRO" "$INTERP" "$BLOCKS" "$KNOWLEDGE" "$NARRATIVE" "$PREMIUM"; do
+for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$CATALOG" \
+  "$ARCHETYPES" "$COUNTRY_SERVICE" "$SCORER" "$ASTRO" "$INTERP" "$BLOCKS" "$KNOWLEDGE" "$NARRATIVE" "$PREMIUM"; do
   if [[ ! -f "$f" ]]; then
     echo "ERROR: No se encuentra: $f"
     exit 1
@@ -38,7 +41,7 @@ if [[ ! -f "$ASTRONOMY" ]]; then
   curl -fsSL "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" -o "$ASTRONOMY"
 fi
 
-export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE CATALOG SCORER ASTRO INTERP BLOCKS KNOWLEDGE NARRATIVE PREMIUM ASTRONOMY ROOT
+export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE CATALOG ARCHETYPES COUNTRY_SERVICE SCORER ASTRO INTERP BLOCKS KNOWLEDGE NARRATIVE PREMIUM ASTRONOMY ROOT
 
 node <<'NODE'
 const fs = require('fs');
@@ -59,6 +62,8 @@ if (typeof ctx.Astronomy === 'undefined' && ctx.window && ctx.window.Astronomy) 
   process.env.COMPOSITION,
   process.env.BRIDGE,
   process.env.CATALOG,
+  process.env.ARCHETYPES,
+  process.env.COUNTRY_SERVICE,
   process.env.SCORER,
   process.env.ASTRO,
   process.env.INTERP,
@@ -152,8 +157,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Compositor existe (schema 3.8e.9d)',
-  Premium && Premium.SCHEMA_VERSION.indexOf('3.8e.9d') === 0,
+  'Compositor existe (schema 3.8f.4)',
+  Premium && Premium.SCHEMA_VERSION.indexOf('3.8f.4') === 0,
   'schema=' + (Premium && Premium.SCHEMA_VERSION)
 );
 
