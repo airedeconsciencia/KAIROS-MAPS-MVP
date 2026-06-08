@@ -3,13 +3,13 @@
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
 **Rama:** `main`  
-**Último commit cerrado:** `0673f46` — `3.8f4 country archetype premium composition dev`
+**Último commit cerrado:** `89028b3` — `3.8f6 city atmosphere expansion p0`
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP es una app de cartografía astrológica (Leaflet + motor `astro.js`) con **lecturas premium DEV completas** bajo `src/`. El **Country Archetype** (piloto 10 países) está integrado en **Narrative Intelligence** y **City Premium Composition** — solo en laboratorio DEV.
+KAIROS MAPS MVP es una app de cartografía astrológica (Leaflet + motor `astro.js`) con **lecturas premium DEV completas** bajo `src/`. El **Country Archetype** (piloto 10 países) está integrado en **Narrative Intelligence** y **City Premium Composition**. La **City Atmosphere** cubre ahora **5 ciudades piloto** con personalidad urbana propia — solo en laboratorio DEV.
 
 El **producto visible** (`src/ui/app.js`, `src/index.html`) **no usa** esta lectura premium. Sigue en Fase 1.x estable (mapa, popup, goals, suggestions). **`app.js` sin cableado premium.**
 
@@ -21,26 +21,35 @@ El trabajo activo vive en **`src/`**. **`dist/`** es artefacto de deploy y **no 
 
 | Campo | Valor |
 |-------|--------|
-| **Hash** | `0673f460861a6d6c68730b35078613ebc2040f58` |
-| **Mensaje** | `3.8f4 country archetype premium composition dev` |
-| **Alcance** | Country Archetype × City Premium Composition (solo DEV) |
+| **Hash** | `89028b389ec4ab6edd14c26e91a9db457292aed5` |
+| **Mensaje** | `3.8f6 city atmosphere expansion p0` |
+| **Alcance** | City Atmosphere Expansion P0 — 5 ciudades, successTone, dedup ciudad↔país |
 
-**Archivos incluidos en 3.8f.4:**
+**Archivos incluidos en 3.8f.6:**
 
-- `src/services/city-premium-composition-service.js` — schema `3.8f.4-dev-0.1`, consume `countryContext.lines`, meta `countryLinesUsed` / `countrySectionsUsed`
-- `src/dev/city-premium-preview.html` — panel country + 5 ciudades piloto
-- `scripts/dev-country-composition-smoke.sh` — smoke regresión composición × país
-- `scripts/dev-city-premium-composition-smoke.sh` — carga country layer, schema 3.8f.4
+- `docs/voice/CITY_ATMOSPHERE_LIBRARY.md` — biblioteca editorial 5 ciudades + éxito + firma zodiacal
+- `src/services/narrative-intelligence-service.js` — schema `3.8f.6-dev-0.1`, `CITY_ATMOSPHERE_INDEX` ampliado, dedup runtime
+- `src/dev/narrative-intelligence-preview.html` — panel `successTone` + `zodiacSignature`
+- `scripts/dev-narrative-intelligence-smoke.sh` — gate 5 ciudades + anti-dogma
+- `scripts/dev-city-premium-composition-smoke.sh` — Barcelona/Tokio atmosphere
+- `scripts/dev-country-composition-smoke.sh` — atmosphere 5 ciudades
+- `scripts/dev-country-archetype-integration-smoke.sh` — schema 3.8f.6+
 
-**Comportamiento clave:** el compositor teje líneas país desde `narrativeContext.countryContext.lines` (generadas por Narrative Intelligence). Máx. 2 líneas, máx. 1 por sección, solo `sintesis` / `observar` / `integracion`. Dedup contra spine. Atmosphere + human presence + goal blocks preservados.
+**Comportamiento clave:**
 
-**Cadena Country Archetype DEV cerrada:**
+- **Barcelona** y **Tokio** tienen `cityAtmosphere` propia (antes solo país + genéricos).
+- **Lisboa**, **Toronto**, **Ciudad del Cabo** mejoradas: dimensión **successTone**, frases deduplicadas respecto a capa país.
+- **`zodiacSignature`** existe como **metadata** en `cityAtmosphere` — **no** se expresa como dogma interpretativo en lectura.
+- **`linesOverlapCityCountry()`** filtra líneas país que repiten fragmentos ciudad activos.
+
+**Cadena 3.8f DEV:**
 
 | Fase | Estado |
 |------|--------|
 | **3.8f.2** — piloto 10 países + service | ✅ Cerrado |
 | **3.8f.3** — Narrative Intelligence | ✅ Cerrado |
 | **3.8f.4** — Premium Composition | ✅ Cerrado |
+| **3.8f.6** — City Atmosphere Expansion P0 | ✅ Cerrado |
 
 ---
 
@@ -48,16 +57,14 @@ El trabajo activo vive en **`src/`**. **`dist/`** es artefacto de deploy y **no 
 
 | Commit | Fase | Qué cerró |
 |--------|------|-----------|
+| `89028b3` | **3.8f.6** | City atmosphere 5 ciudades · successTone · dedup · zodiac metadata |
+| `8f1f489` | doc | Territorial Archetype Layer + City Distinctiveness Audit |
+| `8d6b2a9` | doc | Checkpoint post-3.8f.4 |
 | `0673f46` | **3.8f.4** | Country archetype en City Premium Composition (DEV) |
 | `bddd17a` | doc | MAPS Agent Library |
 | `ae17672` | doc | Master Audit GPT |
-| `8daf99f` | doc | Checkpoint post-3.8f.3 |
 | `025a620` | **3.8f.3** | Country archetype en Narrative Intelligence (DEV) |
 | `aab946d` | **3.8f.2** | Piloto arquetipo país — 10 países curados |
-| `9c0f3fb` | 3.8f.0 | Extracción `cities-catalog.js` |
-| `e84dd55` | 3.8f.1 | Diseño Country Archetype Layer (doc) |
-| `888bb80` | Firebase | Staging + deploy scripts seguros |
-| `2652b64` | 3.8e.9d | Human presence premium voice |
 
 ---
 
@@ -70,45 +77,59 @@ El trabajo activo vive en **`src/`**. **`dist/`** es artefacto de deploy y **no 
 - Motor `astro.js` (40 líneas)
 - **Sin lectura premium compuesta en UI**
 
-### Capas premium DEV (Fase 3.8e)
+### Capas premium DEV (Fase 3.8e + 3.8f)
 
-- **Narrative Intelligence** — spine + atmosphere + countryContext
-- **City atmosphere** — 3 ciudades lab (Lisboa, Toronto, Ciudad del Cabo)
+- **Narrative Intelligence** — schema `3.8f.6-dev-0.1` · spine + atmosphere + countryContext
+- **City atmosphere** — **5 ciudades piloto** (Lisboa, Toronto, Ciudad del Cabo, Barcelona, Tokio)
+- **successTone** — dimensión éxito por ciudad (metadata editorial)
+- **zodiacSignature** — firma zodiacal territorial ponderada (metadata, no dogma)
 - **Human presence** — voz experiencial
 - **City Premium Composition** — lecturas 500–900 palabras + matiz país (3.8f.4)
+- **Country Archetype** — 10 países curados integrados
 - **Premium Knowledge Service** — bloques DOC-17
 - Previews DEV + smokes
 
-### Country Archetype (Fase 3.8f — DEV completo, producto NO)
+### City Atmosphere (Fase 3.8f.6 — cerrada)
+
+| Ciudad | citySlug | Notas |
+|--------|----------|-------|
+| Lisboa | `lisboa` | Mejorada · dedup Portugal · successTone |
+| Toronto | `toronto` | Mejorada · dedup Canadá · successTone |
+| Ciudad del Cabo | `ciudad_del_cabo` | Mejorada · dedup Sudáfrica · successTone |
+| Barcelona | `barcelona` | **Nueva** — atmósfera urbana propia (no solo España) |
+| Tokio | `tokio` | **Nueva** — megaciudad urbana (no solo Japón) |
+
+**Auditoría previa:** `CITY_DISTINCTIVENESS_AUDIT.md` (3.8f.5b doc) · diseño territorial: `TERRITORIAL_ARCHETYPE_LAYER.md` (3.8h.0 doc).
+
+### Country Archetype (producto NO)
 
 | Entregable | Estado |
 |------------|--------|
-| Diseño (`COUNTRY_ARCHETYPE_LAYER.md`) | ✅ 3.8f.1 |
-| `country-archetypes.js` + `country-archetype-service.js` | ✅ 3.8f.2 |
-| Integración **Narrative Intelligence** | ✅ 3.8f.3 |
-| Integración **City Premium Composition** | ✅ 3.8f.4 |
 | Integración **`app.js` / producto visible** | ❌ Pendiente (→ 3.8g) |
 | Ampliación 51 / 195 países | ❌ Fuera de alcance |
-
-**Países piloto curados (10):** Portugal, España, Francia, Reino Unido, Italia, Japón, Brasil, Argentina, Sudáfrica, Canadá.
 
 ---
 
 ## V. Qué está pendiente
 
-### Opciones de siguiente fase (elegir una con aprobación explícita)
+### Siguiente fase recomendada
+
+| Fase | Objetivo | Toca |
+|------|----------|------|
+| **3.8g.1** | **Premium UI Integration Audit** — inventario cableado, gaps UX, riesgos antes de tocar `app.js` | `docs/` + análisis producto |
+
+### Otras opciones (requieren aprobación explícita)
 
 | Fase | Objetivo | Toca |
 |------|----------|------|
 | **3.8f.5b** | Deploy staging de `src/` actual | `dist/` sync, smokes, `deploy-staging.sh` |
-| **3.8f.6** | Revisión editorial 10 países piloto | `country-archetypes.js`, voice review, smokes |
 | **3.8g** | Cableado producto premium en `app.js` | `app.js`, `index.html`, UX lectura al tocar ciudad |
+| **3.8h.1** | Piloto Territorial Archetype (5 territorios) | contenido + service (post-audit UI) |
 
 ### Medio plazo
 
 - Actualizar `KAIROS_CURRENT_CHECKPOINT.md` tras cada cierre (doc-only commit)
-- Actualizar `VERSION.md` (desactualizado vs 3.8x)
-- Ampliar atmósfera urbana más allá de 3 ciudades lab
+- Tejer `successTone` en composición (opcional, post-3.8g)
 - Relocation premium UI (3.9) — congelado hasta aprobación
 
 ### Explícitamente NO iniciado
@@ -141,7 +162,7 @@ El trabajo activo vive en **`src/`**. **`dist/`** es artefacto de deploy y **no 
 | Entorno | URL | Estado |
 |---------|-----|--------|
 | **Producción** | https://kairos-maps-mvp.web.app | **Intacta** — Fase 1.x, sin 3.8e/3.8f |
-| **Staging** | https://kairos-maps-dev.web.app | **Desfasada** respecto a `src/` actual (3.8f.4 no desplegada) |
+| **Staging** | https://kairos-maps-dev.web.app | **Desfasada** respecto a `src/` actual (3.8f.6 no desplegada) |
 
 **Flujo deploy:** `src/` → sync → `dist/` → `firebase deploy` (solo con aprobación).
 
@@ -155,28 +176,26 @@ El trabajo activo vive en **`src/`**. **`dist/`** es artefacto de deploy y **no 
 Pipeline lectura premium DEV (completo):
 
   rankInfluences → deriveNarrativeContext()
-                     ├─ cityAtmosphere (3 ciudades)
-                     └─ countryContext (10 países)     ← 3.8f.3
+                     ├─ cityAtmosphere (5 ciudades)      ← 3.8f.6
+                     │    ├─ successTone (metadata)
+                     │    └─ zodiacSignature (metadata, no dogma)
+                     └─ countryContext (10 países)       ← 3.8f.3 + dedup 3.8f.6
                    → getBlocksForContext()
-                   → composeCityReading()              ← 3.8f.4 teje countryContext.lines
+                   → composeCityReading()                ← 3.8f.4
 
 src/services/
-  narrative-intelligence-service.js   ← 3.8f.3-dev-0.1
+  narrative-intelligence-service.js   ← 3.8f.6-dev-0.1
   city-premium-composition-service.js   ← 3.8f.4-dev-0.1
   country-archetype-service.js
   premium-knowledge-service.js
 
 src/dev/
-  narrative-intelligence-preview.html
-  city-premium-preview.html           ← country panel 3.8f.4
+  narrative-intelligence-preview.html ← successTone + zodiacSignature panel
+  city-premium-preview.html
   country-archetype-preview.html
 
-scripts/ (gate 3.8f)
-  dev-country-archetype-smoke.sh
-  dev-country-archetype-integration-smoke.sh
-  dev-narrative-intelligence-smoke.sh
-  dev-country-composition-smoke.sh      ← nuevo 3.8f.4
-  dev-city-premium-composition-smoke.sh
+docs/voice/
+  CITY_ATMOSPHERE_LIBRARY.md          ← SSOT editorial 5 ciudades
 ```
 
 **Peso editorial:** carta + línea + goal 60% · ciudad 25% · país 15%.
@@ -185,15 +204,22 @@ scripts/ (gate 3.8f)
 
 ## IX. Smokes — estado esperado
 
-Con `0673f46` en `main`, estos scripts deben pasar:
+Con `89028b3` en `main`, estos **4 smokes gate 3.8f.6** deben pasar:
+
+```bash
+./scripts/dev-narrative-intelligence-smoke.sh
+./scripts/dev-city-premium-composition-smoke.sh
+./scripts/dev-country-composition-smoke.sh
+./scripts/dev-country-archetype-integration-smoke.sh
+```
+
+**Gate ampliado (5 smokes 3.8f):**
 
 ```bash
 ./scripts/dev-country-archetype-smoke.sh
-./scripts/dev-country-archetype-integration-smoke.sh
-./scripts/dev-narrative-intelligence-smoke.sh
-./scripts/dev-country-composition-smoke.sh
-./scripts/dev-city-premium-composition-smoke.sh
 ```
+
+**Estado verificado post-3.8f.6:** los 4 smokes gate + country-archetype-smoke → **ALL PASS**.
 
 ---
 
@@ -202,11 +228,11 @@ Con `0673f46` en `main`, estos scripts deben pasar:
 ```
  M .DS_Store
  M dist/* (varios modificados + untracked)
- M docs/architecture/KAIROS_CURRENT_CHECKPOINT.md   ← actualizado 3.8f.5a (sin commit)
+ M docs/architecture/KAIROS_CURRENT_CHECKPOINT.md   ← actualizado 3.8f.6a (sin commit)
 ```
 
-**Rama:** `main` @ `0673f46`  
-**Working tree limpio en `src/`** y `scripts/` para 3.8f.4.  
+**Rama:** `main` @ `89028b3`  
+**Working tree limpio en `src/`** y `scripts/` para 3.8f.6.  
 **Ruido:** `dist/`, `.DS_Store`. **Doc checkpoint:** modificado, pendiente commit doc-only.
 
 ---
@@ -223,30 +249,24 @@ Con `0673f46` en `main`, estos scripts deben pasar:
 
 ## XII. Siguiente fase recomendada
 
-Country Archetype DEV **cerrado** en narrative + composition. Tres caminos posibles:
+City Atmosphere DEV **cerrada** (5 ciudades). Country Archetype DEV **cerrado** en narrative + composition.
 
-### **3.8f.5b — Deploy staging de `src/` actual** (validación externa)
+### **3.8g.1 — Premium UI Integration Audit** (recomendada)
 
-- Sync `src/` → `dist/`
-- Ejecutar smokes + golden si aplica
-- `./scripts/deploy-staging.sh` con aprobación
-- Validar previews DEV en https://kairos-maps-dev.web.app
-- **No tocar producción**
+- Inventario de qué scripts/servicios debe cargar el producto visible
+- Gaps UX: popup vs lectura 500–900 palabras, goals, loading, fail-soft
+- Riesgos antes de tocar `app.js` / `index.html`
+- Entregable doc-only — **sin cableado** hasta aprobación 3.8g
 
-### **3.8f.6 — Revisión editorial 10 países piloto** (contenido)
+### Alternativas
 
-- Revisar `country-archetypes.js` con voice_tone
-- Ajustes menores editorial + smokes
-- Sin ampliar a 51 países
+| Fase | Cuándo |
+|------|--------|
+| **3.8f.5b** | Validar pipeline en staging antes de producto |
+| **3.8g** | Cableado premium en UI (post-audit 3.8g.1) |
+| **3.8h.1** | Piloto Territorial Archetype (doc 3.8h.0 ya existe) |
 
-### **3.8g — Cableado producto premium en `app.js`** (producto visible)
-
-- Invocar `composeCityReading()` al seleccionar ciudad
-- Cargar scripts premium en producto (con aprobación)
-- UX lectura 500–900 palabras en UI
-- **Mayor impacto usuario** — requiere decisión producto explícita
-
-**Recomendación operativa:** **3.8f.5b** (staging) antes de **3.8g** (producto), para validar pipeline completo fuera de localhost sin tocar prod.
+**Recomendación operativa:** **3.8g.1** (audit UI) → **3.8f.5b** (staging opcional) → **3.8g** (producto).
 
 ---
 
@@ -254,11 +274,13 @@ Country Archetype DEV **cerrado** en narrative + composition. Tres caminos posib
 
 | Documento | Contenido |
 |-----------|-----------|
+| `CITY_DISTINCTIVENESS_AUDIT.md` | Auditoría diferenciación urbana (3.8f.5b) |
+| `TERRITORIAL_ARCHETYPE_LAYER.md` | Diseño capa territorial (3.8h.0) |
+| `COUNTRY_ARCHETYPE_LAYER.md` | Diseño capa país |
+| `CITY_ATMOSPHERE_LIBRARY.md` | Biblioteca editorial 5 ciudades |
 | `KAIROS_MASTER_AUDIT.md` | Auditoría total + agentes GPT |
 | `MAPS_AGENT_LIBRARY.md` | Inventario lecturas GPT |
-| `COUNTRY_ARCHETYPE_LAYER.md` | Diseño capa país |
-| `KAIROS_DOC_INDEX.md` | Constitución Viva |
 
 ---
 
-*Checkpoint actualizado Fase 3.8f.5a · Sin commit automático · Sin push · Sin deploy*
+*Checkpoint actualizado Fase 3.8f.6a · Sin commit automático · Sin push · Sin deploy*
