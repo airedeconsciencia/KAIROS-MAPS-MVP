@@ -37,7 +37,8 @@
     goalContext: null,
     cityInfluenceRanking: [],
     citySuggestions: null,
-    workspace: 'map'
+    workspace: 'map',
+    readingMode: 'classic'
   };
 
   const BRIDGE_HIGHLIGHT_MAX = 3;
@@ -157,6 +158,7 @@
   const interpCoords  = $('interp-coords');
   const interpBody    = $('interp-body');
   const interpTabs    = $('interp-tabs');
+  const interpModeToggle = $('interp-mode-toggle');
   const interpFooter  = $('interp-footer-meta');
   const searchInput   = $('search-input');
   const searchResults = $('search-results');
@@ -184,6 +186,7 @@
   const mobileLecturaBtn = $('mobile-lectura-btn');
   const MOBILE_MQ     = window.matchMedia('(max-width: 768px)');
   let mobileMode = 'map';
+  let premiumModeBound = false;
 
   function isMobileLayout() {
     return MOBILE_MQ.matches;
@@ -551,6 +554,7 @@
 
   applyProfile(profile);
   updateMobileLecturaBtn();
+  syncPremiumModeToggle();
 
   if (profileReset) {
     profileReset.addEventListener('click', () => {
@@ -1109,6 +1113,49 @@
     console.info('[KAIROS debug]', label, data);
   }
 
+  function isPremiumBetaEnabled() {
+    try {
+      return localStorage.getItem('kairosPremiumBeta') === '1'
+        || new URLSearchParams(location.search).get('premium') === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function syncPremiumModeButtons() {
+    if (!interpModeToggle) return;
+    interpModeToggle.querySelectorAll('.interp-mode-btn').forEach(function (btn) {
+      btn.classList.toggle('on', btn.dataset.mode === state.readingMode);
+    });
+  }
+
+  function syncPremiumModeToggle() {
+    if (!interpModeToggle) return;
+    const show = isPremiumBetaEnabled();
+    interpModeToggle.hidden = !show;
+    interpModeToggle.setAttribute('aria-hidden', show ? 'false' : 'true');
+    if (!show) {
+      state.readingMode = 'classic';
+      return;
+    }
+    if (!premiumModeBound) {
+      premiumModeBound = true;
+      interpModeToggle.querySelectorAll('.interp-mode-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setReadingMode(btn.dataset.mode);
+        });
+      });
+    }
+    syncPremiumModeButtons();
+  }
+
+  function setReadingMode(mode) {
+    if (mode !== 'classic' && mode !== 'deep') mode = 'classic';
+    state.readingMode = mode;
+    syncPremiumModeButtons();
+    if (state.currentCity) renderInterpretation(state.currentCity);
+  }
+
   function cfgToBirthData(cfg) {
     return {
       date: cfg.dateStr,
@@ -1356,12 +1403,173 @@
     return '<div class="influence-text"></div>';
   }
 
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function bodyToParagraphsHtml(body) {
+    return String(body || '')
+      .split(/\n\n+/)
+      .map(function (p) { return p.trim(); })
+      .filter(Boolean)
+      .map(function (p) {
+        return '<p class="premium-section-body">' + escapeHtml(p) + '</p>';
+      })
+      .join('');
+  }
+
+  function buildPremiumReadingInput(city) {
+    const Scorer = window.KairosCityScorer;
+    const ranked = Scorer
+      ? Scorer.rankInfluences(city, buildCityScorerInput())
+      : [];
+    let bridgeProfile = null;
+    const Panel = window.KairosNatalPanel;
+    if (Panel && state.chart.natal && typeof Panel.composeLiteReading === 'function') {
+      const comp = Panel.composeLiteReading(state.chart.natal);
+      bridgeProfile = comp && comp.meta && comp.meta.bridgeProfile;
+    }
+    const profile = window.KairosProfile.getProfile();
+    const scored = Scorer ? Scorer.scoreCity(city, buildCityScorerInput()) : null;
+    return {
+      city: city,
+      goal: state.activeAspect,
+      relevantInfluences: ranked.slice(0, 5),
+      bridgeProfile: bridgeProfile,
+      profile: { firstName: profile && profile.displayName },
+      score: scored ? scored.score : null
+    };
+  }
+
+  function appendPremiumFallbackNote() {
+    if (!kairosDebugEnabled()) return;
+    const note = document.createElement('div');
+    note.className = 'premium-fallback-note';
+    note.setAttribute('role', 'status');
+    note.textContent = 'La lectura profunda no está disponible; mostramos la lectura por influencias.';
+    interpBody.insertBefore(note, interpBody.firstChild);
+  }
+
+  function renderClassicInterpretationBody(city, influences) {
+    influences.forEach(function ({ line, dist }) {
+      const key = `${line.planetKey}_${line.angle}`;
+      const interp = INTERPRETATIONS[key];
+      if (!interp) return;
+
+      const strength = strengthFromDist(dist);
+      const dots = Array.from({ length: 5 }, (_, i) =>
+        `<span class="strength-dot ${i < strength ? 'on' : ''}"></span>`
+      ).join('');
+
+      const readingHtml = formatCityReadingHtml(interp[state.activeAspect], city.name);
+      const angleName = { AC: 'Ascendente', MC: 'Medio Cielo', IC: 'Fondo Cielo', DC: 'Descendente' }[line.angle];
+
+      const el = document.createElement('div');
+      el.className = 'influence';
+      el.style.borderLeftColor = line.color;
+      el.style.color = line.color;
+      el.innerHTML = `
+        <div class="influence-head">
+          ${window.KairosPlanetGlyphs.html(line.planet, { color: line.color, className: 'influence-glyph' })}
+          <span class="influence-name" style="color: var(--text);">
+            ${line.planetName} · ${angleName}
+          </span>
+          <span class="influence-type">${line.angle} · ${Math.round(dist)} km</span>
+        </div>
+        <div class="influence-strength">${dots}</div>
+        ${readingHtml}
+      `;
+      interpBody.appendChild(el);
+    });
+
+    interpFooter.textContent = `${influences.length} influencia${influences.length === 1 ? '' : 's'} activas`;
+  }
+
+  function renderPremiumReading(city) {
+    const Premium = window.KairosCityPremiumComposition;
+    if (!Premium || typeof Premium.composeCityReading !== 'function') {
+      kairosDebugLog('premium compositor missing', null);
+      return false;
+    }
+
+    let reading;
+    try {
+      reading = Premium.composeCityReading(buildPremiumReadingInput(city));
+    } catch (e) {
+      kairosDebugLog('premium compose error', e.message || String(e));
+      return false;
+    }
+
+    if (!reading || reading.ok !== true || !Array.isArray(reading.sections) || !reading.sections.length) {
+      kairosDebugLog('premium reading not ok', reading && reading.meta ? reading.meta : null);
+      return false;
+    }
+
+    const aspectLabels = { amor: 'amor', trabajo: 'trabajo', descanso: 'descanso' };
+    const aspectLabel = aspectLabels[state.activeAspect] || state.activeAspect;
+    const wrap = document.createElement('div');
+    wrap.className = 'premium-reading';
+    if (reading.meta && reading.meta.wordCount != null) {
+      wrap.dataset.wordCount = String(reading.meta.wordCount);
+    }
+
+    const head = document.createElement('header');
+    head.className = 'premium-reading-head';
+    head.innerHTML =
+      '<p class="premium-reading-eyebrow">Lectura profunda · orientada a ' +
+      escapeHtml(aspectLabel) +
+      ' <span class="premium-beta-badge">beta</span></p>' +
+      (reading.title
+        ? '<h3 class="premium-reading-title">' + escapeHtml(reading.title) + '</h3>'
+        : '');
+    wrap.appendChild(head);
+
+    reading.sections.forEach(function (sec) {
+      const article = document.createElement('article');
+      let cls = 'premium-section';
+      if (sec.id === 'sintesis') cls += ' premium-section--lead';
+      else if (sec.id === 'integracion') cls += ' premium-section--close';
+      else cls += ' premium-section--' + sec.id;
+      article.className = cls;
+      article.id = 'premium-' + sec.id;
+      article.innerHTML =
+        '<h4 class="premium-section-title">' + escapeHtml(sec.title || sec.id) + '</h4>' +
+        '<div class="premium-section-content">' + bodyToParagraphsHtml(sec.body) + '</div>';
+      wrap.appendChild(article);
+    });
+
+    interpBody.appendChild(wrap);
+
+    const words = reading.meta && reading.meta.wordCount != null ? reading.meta.wordCount : '—';
+    const inflCount = reading.meta && reading.meta.influencesUsed
+      ? reading.meta.influencesUsed.length
+      : 0;
+    interpFooter.textContent = 'Lectura profunda · ' + words + ' palabras · ' +
+      inflCount + ' influencia' + (inflCount === 1 ? '' : 's');
+
+    if (kairosDebugEnabled()) {
+      console.info('[Kairos Premium]', {
+        ok: reading.ok,
+        wordCount: reading.meta && reading.meta.wordCount,
+        atmosphereLinesUsed: reading.meta && reading.meta.atmosphereLinesUsed,
+        countryLinesUsed: reading.meta && reading.meta.countryLinesUsed
+      });
+    }
+
+    return true;
+  }
+
   function renderInterpretation(city) {
     interpCity.textContent = city.name;
     const latStr = `${Math.abs(city.lat).toFixed(4)}° ${city.lat >= 0 ? 'N' : 'S'}`;
     const lonStr = `${Math.abs(city.lon).toFixed(4)}° ${city.lon >= 0 ? 'E' : 'W'}`;
     interpCoords.textContent = `${latStr}  ·  ${lonStr}${city.country ? '  ·  ' + city.country : ''}`;
 
+    syncPremiumModeToggle();
     interpBody.innerHTML = '';
 
     if (!state.lines.length) {
@@ -1406,38 +1614,14 @@
       return;
     }
 
-    influences.forEach(({ line, dist }) => {
-      const key = `${line.planetKey}_${line.angle}`;
-      const interp = INTERPRETATIONS[key];
-      if (!interp) return;
+    if (isPremiumBetaEnabled() && state.readingMode === 'deep') {
+      if (renderPremiumReading(city)) return;
+      state.readingMode = 'classic';
+      syncPremiumModeButtons();
+      appendPremiumFallbackNote();
+    }
 
-      const strength = strengthFromDist(dist);
-      const dots = Array.from({ length: 5 }, (_, i) =>
-        `<span class="strength-dot ${i < strength ? 'on' : ''}"></span>`
-      ).join('');
-
-      const readingHtml = formatCityReadingHtml(interp[state.activeAspect], city.name);
-      const angleName = { AC: 'Ascendente', MC: 'Medio Cielo', IC: 'Fondo Cielo', DC: 'Descendente' }[line.angle];
-
-      const el = document.createElement('div');
-      el.className = 'influence';
-      el.style.borderLeftColor = line.color;
-      el.style.color = line.color;
-      el.innerHTML = `
-        <div class="influence-head">
-          ${window.KairosPlanetGlyphs.html(line.planet, { color: line.color, className: 'influence-glyph' })}
-          <span class="influence-name" style="color: var(--text);">
-            ${line.planetName} · ${angleName}
-          </span>
-          <span class="influence-type">${line.angle} · ${Math.round(dist)} km</span>
-        </div>
-        <div class="influence-strength">${dots}</div>
-        ${readingHtml}
-      `;
-      interpBody.appendChild(el);
-    });
-
-    interpFooter.textContent = `${influences.length} influencia${influences.length === 1 ? '' : 's'} activas`;
+    renderClassicInterpretationBody(city, influences);
   }
 
   function openInterpretation(city) {

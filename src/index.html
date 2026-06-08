@@ -363,6 +363,12 @@
         <div class="interp-tab" data-aspect="trabajo">◆ Trabajo</div>
         <div class="interp-tab" data-aspect="descanso">☾ Descanso</div>
       </div>
+      <div class="interp-mode-toggle" id="interp-mode-toggle" hidden aria-hidden="true">
+        <button type="button" class="interp-mode-btn on" data-mode="classic">Por influencias</button>
+        <button type="button" class="interp-mode-btn" data-mode="deep">
+          Lectura profunda <span class="premium-beta-badge">beta</span>
+        </button>
+      </div>
       <div class="interp-body" id="interp-body"></div>
       <div class="interp-footer">
         <span id="interp-footer-meta">Generado para tu carta</span>
@@ -394,12 +400,19 @@
 <script src="content/city-summary-templates.js"></script>
 <script src="content/city-scorer.js"></script>
 <script src="services/natal-map-bridge-service.js"></script>
+<!-- Fase 3.8g.2 — premium pipeline (beta oculta; sync IIFE) -->
+<script src="content/country-archetypes.js?v=3.8g2"></script>
+<script src="services/country-archetype-service.js?v=3.8g2"></script>
+<script src="content/premium-blocks.js?v=3.8g2"></script>
+<script src="services/narrative-intelligence-service.js?v=3.8g2"></script>
+<script src="services/premium-knowledge-service.js?v=3.8g2"></script>
+<script src="services/city-premium-composition-service.js?v=3.8g2"></script>
 <script src="engines/astro.js"></script>
 <script src="ui/places.js"></script>
 <script src="ui/profile.js"></script>
 <script src="ui/onboarding.js"></script>
 <script src="ui/planet-glyphs.js"></script>
 <script src="ui/natal-panel.js"></script>
-<script src="ui/app.js?v=3.8d1"></script>
+<script src="ui/app.js?v=3.8g2"></script>
 </body>
 </html>
