@@ -3,15 +3,17 @@
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
 **Rama:** `main`  
-**Último commit cerrado:** `025a620c` — `3.8f3 country archetype narrative integration dev`
+**Último commit cerrado:** `0673f46` — `3.8f4 country archetype premium composition dev`
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP es una app de cartografía astrológica (Leaflet + motor `astro.js`) con lecturas premium en desarrollo paralelo bajo `src/`. El producto visible (`src/ui/app.js`, `src/index.html`) permanece en Fase 1.x estable. Las fases 3.8e–3.8f avanzan **capas DEV** (narrative intelligence, atmósfera urbana, catálogo de ciudades, arquetipo país) sin cablearlas aún en la UI de producción.
+KAIROS MAPS MVP es una app de cartografía astrológica (Leaflet + motor `astro.js`) con **lecturas premium DEV completas** bajo `src/`. El **Country Archetype** (piloto 10 países) está integrado en **Narrative Intelligence** y **City Premium Composition** — solo en laboratorio DEV.
 
-El trabajo activo vive en **`src/`**. La carpeta **`dist/`** es artefacto de deploy (copia/espejo hacia Firebase Hosting) y **no refleja el estado DEV actual** del repositorio.
+El **producto visible** (`src/ui/app.js`, `src/index.html`) **no usa** esta lectura premium. Sigue en Fase 1.x estable (mapa, popup, goals, suggestions). **`app.js` sin cableado premium.**
+
+El trabajo activo vive en **`src/`**. **`dist/`** es artefacto de deploy y **no refleja** el estado DEV actual. **Staging desfasado** respecto a `src/`. **Producción intacta** (sin capas 3.8e/3.8f).
 
 ---
 
@@ -19,18 +21,26 @@ El trabajo activo vive en **`src/`**. La carpeta **`dist/`** es artefacto de dep
 
 | Campo | Valor |
 |-------|--------|
-| **Hash** | `025a620cbf123579be73d1e52c073224e33b34cb` |
-| **Mensaje** | `3.8f3 country archetype narrative integration dev` |
-| **Alcance** | Integración Country Archetype × Narrative Intelligence (solo DEV) |
+| **Hash** | `0673f460861a6d6c68730b35078613ebc2040f58` |
+| **Mensaje** | `3.8f4 country archetype premium composition dev` |
+| **Alcance** | Country Archetype × City Premium Composition (solo DEV) |
 
-**Archivos incluidos en 3.8f.3:**
+**Archivos incluidos en 3.8f.4:**
 
-- `src/services/narrative-intelligence-service.js` — schema `3.8f.3-dev-0.1`, `countryContext`, tejido editorial (máx. 2 líneas país, máx. 1 por sección)
-- `src/dev/narrative-intelligence-preview.html` — preview con 5 casos piloto + panel country
-- `scripts/dev-narrative-intelligence-smoke.sh` — asserts country layer
-- `scripts/dev-country-archetype-integration-smoke.sh` — smoke dedicado integración
+- `src/services/city-premium-composition-service.js` — schema `3.8f.4-dev-0.1`, consume `countryContext.lines`, meta `countryLinesUsed` / `countrySectionsUsed`
+- `src/dev/city-premium-preview.html` — panel country + 5 ciudades piloto
+- `scripts/dev-country-composition-smoke.sh` — smoke regresión composición × país
+- `scripts/dev-city-premium-composition-smoke.sh` — carga country layer, schema 3.8f.4
 
-**Comportamiento clave:** `deriveNarrativeContext()` llama a `KairosCountryArchetype.resolveCountryArchetype()` con fail-soft. El país matiza (≈15% editorial), no manda. Prioridad: carta/línea/goal → ciudad → país.
+**Comportamiento clave:** el compositor teje líneas país desde `narrativeContext.countryContext.lines` (generadas por Narrative Intelligence). Máx. 2 líneas, máx. 1 por sección, solo `sintesis` / `observar` / `integracion`. Dedup contra spine. Atmosphere + human presence + goal blocks preservados.
+
+**Cadena Country Archetype DEV cerrada:**
+
+| Fase | Estado |
+|------|--------|
+| **3.8f.2** — piloto 10 países + service | ✅ Cerrado |
+| **3.8f.3** — Narrative Intelligence | ✅ Cerrado |
+| **3.8f.4** — Premium Composition | ✅ Cerrado |
 
 ---
 
@@ -38,46 +48,47 @@ El trabajo activo vive en **`src/`**. La carpeta **`dist/`** es artefacto de dep
 
 | Commit | Fase | Qué cerró |
 |--------|------|-----------|
+| `0673f46` | **3.8f.4** | Country archetype en City Premium Composition (DEV) |
+| `bddd17a` | doc | MAPS Agent Library |
+| `ae17672` | doc | Master Audit GPT |
+| `8daf99f` | doc | Checkpoint post-3.8f.3 |
 | `025a620` | **3.8f.3** | Country archetype en Narrative Intelligence (DEV) |
-| `aab946d` | 3.8f.2 | Piloto arquetipo país — 10 países curados, service + preview + smoke |
-| `9c0f3fb` | 3.8f.0 | Extracción `cities-catalog.js`, scorer consume catálogo |
-| `e84dd55` | 3.8f.1 | Diseño arquitectónico Country Archetype Layer (doc) |
-| `888bb80` | Firebase | `firebase.json`, `.firebaserc`, `deploy-staging.sh`, `deploy-prod.sh` |
-| `2652b64` | 3.8e.9d | Human presence premium voice en spine + composición DEV |
-| `e48a512` | 3.8e.9a | City atmosphere (Lisboa, Toronto, Ciudad del Cabo) |
+| `aab946d` | **3.8f.2** | Piloto arquetipo país — 10 países curados |
+| `9c0f3fb` | 3.8f.0 | Extracción `cities-catalog.js` |
+| `e84dd55` | 3.8f.1 | Diseño Country Archetype Layer (doc) |
+| `888bb80` | Firebase | Staging + deploy scripts seguros |
+| `2652b64` | 3.8e.9d | Human presence premium voice |
 
 ---
 
 ## IV. Qué está cerrado
 
-### Producto base (Fase 1.x)
+### Producto base (Fase 1.x) — visible en app.js
 
-- Mapa Leaflet, 27 ciudades oro, scorer, interpretaciones, onboarding perfil
-- Motor `astro.js` (40 líneas, astronomy-engine)
-- Firebase Hosting configurado (prod + staging targets)
+- Mapa Leaflet, 27 ciudades oro, scorer, interpretaciones popup, onboarding perfil
+- Goals Layer visible, Cities suggestions top-3
+- Motor `astro.js` (40 líneas)
+- **Sin lectura premium compuesta en UI**
 
 ### Capas premium DEV (Fase 3.8e)
 
-- **Narrative Intelligence** — hilo narrativo determinista antes de composición
+- **Narrative Intelligence** — spine + atmosphere + countryContext
 - **City atmosphere** — 3 ciudades lab (Lisboa, Toronto, Ciudad del Cabo)
-- **Human presence** — voz experiencial en spine y lectura compuesta
-- **City Premium Composition** — lecturas 500–900 palabras con knowledge layer
-- **Premium Knowledge Service** — resolución de bloques premium
-- Previews DEV en `src/dev/` + smokes en `scripts/dev-*-smoke.sh`
+- **Human presence** — voz experiencial
+- **City Premium Composition** — lecturas 500–900 palabras + matiz país (3.8f.4)
+- **Premium Knowledge Service** — bloques DOC-17
+- Previews DEV + smokes
 
-### Country Archetype (Fase 3.8f — parcial)
+### Country Archetype (Fase 3.8f — DEV completo, producto NO)
 
 | Entregable | Estado |
 |------------|--------|
-| Diseño (`COUNTRY_ARCHETYPE_LAYER.md`) | ✅ Cerrado (3.8f.1) |
-| `src/content/country-archetypes.js` — 10 países piloto | ✅ Cerrado (3.8f.2) |
-| `src/services/country-archetype-service.js` | ✅ Cerrado (3.8f.2) |
-| Preview + smoke piloto | ✅ Cerrado (3.8f.2) |
-| `src/content/cities-catalog.js` — 27 ciudades / 26 países | ✅ Cerrado (3.8f.0) |
-| Integración en **Narrative Intelligence** | ✅ Cerrado (3.8f.3) |
-| Integración en **City Premium Composition** | ❌ Pendiente (3.8f.4) |
-| Integración en **app.js / producto visible** | ❌ Pendiente |
-| Ampliación 51 / 195 países | ❌ Fuera de alcance actual |
+| Diseño (`COUNTRY_ARCHETYPE_LAYER.md`) | ✅ 3.8f.1 |
+| `country-archetypes.js` + `country-archetype-service.js` | ✅ 3.8f.2 |
+| Integración **Narrative Intelligence** | ✅ 3.8f.3 |
+| Integración **City Premium Composition** | ✅ 3.8f.4 |
+| Integración **`app.js` / producto visible** | ❌ Pendiente (→ 3.8g) |
+| Ampliación 51 / 195 países | ❌ Fuera de alcance |
 
 **Países piloto curados (10):** Portugal, España, Francia, Reino Unido, Italia, Japón, Brasil, Argentina, Sudáfrica, Canadá.
 
@@ -85,29 +96,27 @@ El trabajo activo vive en **`src/`**. La carpeta **`dist/`** es artefacto de dep
 
 ## V. Qué está pendiente
 
-### Inmediato — Fase 3.8f.4 (recomendada)
+### Opciones de siguiente fase (elegir una con aprobación explícita)
 
-Integrar `countryContext` (ya generado por Narrative Intelligence) en `city-premium-composition-service.js`:
-
-- Mismo presupuesto editorial: máx. 2 líneas país, máx. 1 por sección
-- Secciones permitidas: síntesis, observar, integración final
-- Fail-soft si país no curado
-- Preview DEV de composición + smoke de regresión
-- **Sin tocar** `app.js`, `index.html`, Firebase, motores
+| Fase | Objetivo | Toca |
+|------|----------|------|
+| **3.8f.5b** | Deploy staging de `src/` actual | `dist/` sync, smokes, `deploy-staging.sh` |
+| **3.8f.6** | Revisión editorial 10 países piloto | `country-archetypes.js`, voice review, smokes |
+| **3.8g** | Cableado producto premium en `app.js` | `app.js`, `index.html`, UX lectura al tocar ciudad |
 
 ### Medio plazo
 
-- Cablear capas DEV al producto visible (`app.js`, `index.html`) — solo con aprobación explícita
-- Sincronizar `dist/` desde `src/` antes de cualquier deploy staging
-- Actualizar `VERSION.md` (desactualizado respecto a commits 3.8x)
-- Ampliar arquetipos país más allá del piloto 10
+- Actualizar `KAIROS_CURRENT_CHECKPOINT.md` tras cada cierre (doc-only commit)
+- Actualizar `VERSION.md` (desactualizado vs 3.8x)
 - Ampliar atmósfera urbana más allá de 3 ciudades lab
+- Relocation premium UI (3.9) — congelado hasta aprobación
 
 ### Explícitamente NO iniciado
 
 - Ampliación a 51 o 195 países
-- Cambios en motores WASM / `astro.js` / scorer de producto
+- Motores WASM / `astro.js` / scorer core
 - Firestore / Auth
+- Deploy producción con capas 3.8f
 - Deploy automático
 
 ---
@@ -116,79 +125,73 @@ Integrar `countryContext` (ya generado por Narrative Intelligence) en `city-prem
 
 | Área | Motivo |
 |------|--------|
-| **`src/ui/app.js`** | Producto visible estable; capas DEV aún no cableadas |
-| **`src/index.html`** (producto) | Idem; previews DEV viven en `src/dev/` |
-| **`dist/`** | Artefacto de deploy, no fuente de verdad; working tree sucio |
-| **`.DS_Store`** | Basura de sistema; nunca commitear |
-| **`src/engines/astro.js`** | Motor estable; fuera de alcance capas editoriales |
-| **`src/content/city-scorer.js`** | Scorer producto; no mezclar con experimentos narrativos |
-| **Firebase / `.firebaserc`** | Sin deploy sin aprobación |
-| **`country-archetypes.js`** | Piloto cerrado; solo correcciones menores si smoke lo exige |
-| **Motores / WASM** | Fuera de alcance fases 3.8e–3.8f |
+| **`src/ui/app.js`** | Producto visible; premium DEV no cableado (hasta 3.8g) |
+| **`src/index.html`** (producto) | Idem; previews en `src/dev/` |
+| **`dist/`** | Artefacto deploy; desincronizado; no es SSOT |
+| **`.DS_Store`** | Nunca commitear |
+| **`src/engines/astro.js`** | Motor congelado |
+| **`src/content/city-scorer.js`** | Scorer producto |
+| **Firebase / deploy** | Sin aprobación explícita |
+| **Motores / WASM** | Golden gate obligatorio |
 
 ---
 
 ## VII. Staging / producción
 
-| Entorno | Target Firebase | URL | Estado respecto a DEV |
-|---------|-----------------|-----|------------------------|
-| **Producción** | `hosting:prod` → `kairos-maps-mvp` | https://kairos-maps-mvp.web.app | **No actualizada** con capas 3.8e/3.8f |
-| **Staging** | `hosting:staging` → `kairos-maps-dev` | https://kairos-maps-dev.web.app | Puede estar desfasada; `dist/` local no sincronizado con `src/` |
+| Entorno | URL | Estado |
+|---------|-----|--------|
+| **Producción** | https://kairos-maps-mvp.web.app | **Intacta** — Fase 1.x, sin 3.8e/3.8f |
+| **Staging** | https://kairos-maps-dev.web.app | **Desfasada** respecto a `src/` actual (3.8f.4 no desplegada) |
 
-**Scripts de deploy (requieren aprobación explícita):**
+**Flujo deploy:** `src/` → sync → `dist/` → `firebase deploy` (solo con aprobación).
 
-- `./scripts/deploy-staging.sh` → solo `hosting:staging`
-- `./scripts/deploy-prod.sh` → solo `hosting:prod`
-
-**Flujo canónico de deploy:** `src/` → copia/rsync → `dist/` → `firebase deploy`. Hoy **`dist/` no está al día** con Narrative Intelligence 3.8f.3 ni Country Archetype.
-
-**Firebase:** solo Hosting estático. Sin Auth ni Firestore activos.
+**Firebase:** Hosting estático. Sin Auth/Firestore.
 
 ---
 
-## VIII. Arquitectura DEV activa (referencia rápida)
+## VIII. Arquitectura DEV activa
 
 ```
-src/content/
-  cities-catalog.js          ← 27 ciudades, resolveCountryId
-  country-archetypes.js      ← 10 países piloto
-  premium-blocks.js          ← catálogo bloques premium
-  city-scorer.js             ← rankInfluences (producto)
+Pipeline lectura premium DEV (completo):
+
+  rankInfluences → deriveNarrativeContext()
+                     ├─ cityAtmosphere (3 ciudades)
+                     └─ countryContext (10 países)     ← 3.8f.3
+                   → getBlocksForContext()
+                   → composeCityReading()              ← 3.8f.4 teje countryContext.lines
 
 src/services/
-  narrative-intelligence-service.js   ← 3.8f.3 · countryContext
-  country-archetype-service.js          ← resolveCountryArchetype
-  city-premium-composition-service.js   ← lectura premium (sin país aún)
+  narrative-intelligence-service.js   ← 3.8f.3-dev-0.1
+  city-premium-composition-service.js   ← 3.8f.4-dev-0.1
+  country-archetype-service.js
   premium-knowledge-service.js
-  natal-composition-service.js
-  natal-map-bridge-service.js
 
 src/dev/
   narrative-intelligence-preview.html
+  city-premium-preview.html           ← country panel 3.8f.4
   country-archetype-preview.html
-  city-premium-preview.html
-  …
 
-scripts/
-  dev-narrative-intelligence-smoke.sh
+scripts/ (gate 3.8f)
   dev-country-archetype-smoke.sh
   dev-country-archetype-integration-smoke.sh
+  dev-narrative-intelligence-smoke.sh
+  dev-country-composition-smoke.sh      ← nuevo 3.8f.4
   dev-city-premium-composition-smoke.sh
-  deploy-staging.sh / deploy-prod.sh
 ```
 
-**Peso editorial recomendado (3.8f):** carta + línea + goal 60% · ciudad 25% · país 15%.
+**Peso editorial:** carta + línea + goal 60% · ciudad 25% · país 15%.
 
 ---
 
 ## IX. Smokes — estado esperado
 
-Con `025a620` en `main`, estos scripts deben pasar:
+Con `0673f46` en `main`, estos scripts deben pasar:
 
 ```bash
 ./scripts/dev-country-archetype-smoke.sh
 ./scripts/dev-country-archetype-integration-smoke.sh
 ./scripts/dev-narrative-intelligence-smoke.sh
+./scripts/dev-country-composition-smoke.sh
 ./scripts/dev-city-premium-composition-smoke.sh
 ```
 
@@ -198,30 +201,13 @@ Con `025a620` en `main`, estos scripts deben pasar:
 
 ```
  M .DS_Store
- M dist/content/interpretations.js
- M dist/index.html
- M dist/services/natal-composition-service.js
- M dist/ui/app.js
- M dist/ui/profile.js
- M dist/ui/styles.css
-?? dist/content/city-scorer.js
-?? dist/content/city-summary-templates.js
-?? dist/content/goal-signal.js
-?? dist/content/premium-blocks.js
-?? dist/content/reloc-lite.js
-?? dist/services/city-premium-composition-service.js
-?? dist/services/narrative-intelligence-service.js
-?? dist/services/natal-map-bridge-service.js
-?? dist/services/premium-knowledge-service.js
-?? dist/services/reloc-chart-adapter.js
-?? dist/services/reloc-composition-service.js
-?? dist/services/relocation-profile-service.js
-?? docs/architecture/KAIROS_CURRENT_CHECKPOINT.md   ← este documento (sin commit)
+ M dist/* (varios modificados + untracked)
+ M docs/architecture/KAIROS_CURRENT_CHECKPOINT.md   ← actualizado 3.8f.5a (sin commit)
 ```
 
-**Rama:** `main` @ `025a620`  
-**Working tree limpio en `src/`** para lo commiteado en 3.8f.3.  
-**Ruido activo:** `dist/` (modificados + untracked) y `.DS_Store`.
+**Rama:** `main` @ `0673f46`  
+**Working tree limpio en `src/`** y `scripts/` para 3.8f.4.  
+**Ruido:** `dist/`, `.DS_Store`. **Doc checkpoint:** modificado, pendiente commit doc-only.
 
 ---
 
@@ -229,30 +215,38 @@ Con `025a620` en `main`, estos scripts deben pasar:
 
 > **`dist/` y `.DS_Store` no forman parte del desarrollo activo.**
 
-- **`src/`** es la fuente de verdad del código en evolución.
-- **`dist/`** es salida de build/copia para Firebase Hosting. Los cambios locales en `dist/` **no implican** que el producto DEV esté integrado ni que staging/prod estén actualizados.
-- **No commitear** `dist/` salvo flujo de release explícito acordado.
-- **No commitear** `.DS_Store` — añadir/verificar en `.gitignore` si reaparece con frecuencia.
-
-Antes de cualquier deploy, regenerar `dist/` desde `src/` de forma consciente, ejecutar smokes, y obtener aprobación explícita.
+- **`src/`** es la fuente de verdad.
+- **`dist/`** no implica producto integrado ni staging actualizado.
+- Antes de **3.8f.5b** (deploy staging): sync consciente `src/` → `dist/`, smokes PASS, aprobación explícita.
 
 ---
 
 ## XII. Siguiente fase recomendada
 
-### **FASE 3.8f.4 — Country Archetype × City Premium Composition (DEV)**
+Country Archetype DEV **cerrado** en narrative + composition. Tres caminos posibles:
 
-**Objetivo:** que la lectura premium compuesta (500–900 palabras) reciba el matiz país ya resuelto en `narrativeContext.countryContext`, con el mismo presupuesto editorial (máx. 2 líneas, no en todas las secciones).
+### **3.8f.5b — Deploy staging de `src/` actual** (validación externa)
 
-**Alcance esperado:**
+- Sync `src/` → `dist/`
+- Ejecutar smokes + golden si aplica
+- `./scripts/deploy-staging.sh` con aprobación
+- Validar previews DEV en https://kairos-maps-dev.web.app
+- **No tocar producción**
 
-1. Modificar `city-premium-composition-service.js` para consumir `countryContext.lines`
-2. Actualizar `src/dev/city-premium-preview.html` + smoke de composición
-3. Verificar que smokes 3.8e + 3.8f siguen pasando
-4. **No** cablear en `app.js` todavía
-5. **No** deploy staging sin aprobación
+### **3.8f.6 — Revisión editorial 10 países piloto** (contenido)
 
-**Después de 3.8f.4 (opcional):** deploy staging manual con sync `src/` → `dist/` para validar previews en https://kairos-maps-dev.web.app.
+- Revisar `country-archetypes.js` con voice_tone
+- Ajustes menores editorial + smokes
+- Sin ampliar a 51 países
+
+### **3.8g — Cableado producto premium en `app.js`** (producto visible)
+
+- Invocar `composeCityReading()` al seleccionar ciudad
+- Cargar scripts premium en producto (con aprobación)
+- UX lectura 500–900 palabras en UI
+- **Mayor impacto usuario** — requiere decisión producto explícita
+
+**Recomendación operativa:** **3.8f.5b** (staging) antes de **3.8g** (producto), para validar pipeline completo fuera de localhost sin tocar prod.
 
 ---
 
@@ -260,11 +254,11 @@ Antes de cualquier deploy, regenerar `dist/` desde `src/` de forma consciente, e
 
 | Documento | Contenido |
 |-----------|-----------|
-| `docs/architecture/COUNTRY_ARCHETYPE_LAYER.md` | Diseño capa país (3.8f.1) |
-| `docs/architecture/KAIROS_PRODUCT_ARCHITECTURE.md` | Arquitectura producto |
-| `docs/architecture/KAIROS_DOC_INDEX.md` | Índice documentación |
-| `VERSION.md` | Versiones Fase 1.x (**desactualizado** vs. 3.8x) |
+| `KAIROS_MASTER_AUDIT.md` | Auditoría total + agentes GPT |
+| `MAPS_AGENT_LIBRARY.md` | Inventario lecturas GPT |
+| `COUNTRY_ARCHETYPE_LAYER.md` | Diseño capa país |
+| `KAIROS_DOC_INDEX.md` | Constitución Viva |
 
 ---
 
-*Checkpoint generado manualmente. No implica commit, push ni deploy.*
+*Checkpoint actualizado Fase 3.8f.5a · Sin commit automático · Sin push · Sin deploy*
