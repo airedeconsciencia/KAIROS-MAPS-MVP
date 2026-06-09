@@ -1165,20 +1165,58 @@
     return { sintesis: 160, favorece: 200, desafia: 170, aprovecha: 160, observar: 120, integracion: 140 };
   }
 
-  var HUMAN_EDITORIAL_PADS = [
-    'Quizá en {ciudad} notes que lo esencial aparece en gestos pequeños — no en el gran momento.',
-    'Puede que {ciudad} te enseñe despacio, sin pedirte prisa.',
-    'Tal vez el mapa abra una puerta y tú decidas si la caminas.',
-    'A veces ocurre que lo hermoso vive en la repetición tranquila, no solo en la epifanía.',
-    'Curiosamente, puede que no necesites prisa: solo presencia.',
-    'Cuando algo incomoda, escúchalo como brújula, no como fallo.',
-    'Lo contradictorio de hoy puede volverse legible si aflojas la urgencia de resolver.',
-    'Quizá anotes una escena concreta — un encuentro, un cansancio — y la leas con calma más tarde.',
-    'Un gesto pequeño puede bastarte para seguir habitando {ciudad} con verdad.',
-    'Dale tiempo antes de juzgar un solo día perfecto o un roce incómodo.',
-    'Con el tiempo, la experiencia cotidiana confirma o matiza la lectura.',
-    'Mira si lo que sientes hoy sigue vivo dentro de un mes — sin presión.'
-  ];
+  var HUMAN_EDITORIAL_PADS_BY_GOAL = {
+    amor: [
+      'En {ciudad}, el vínculo se afina en gestos pequeños — una mirada, un silencio cómodo.',
+      'Anota una escena concreta del encuentro y vuelve a ella con calma más tarde.',
+      'El amor aquí no pide escena: pide presencia sostenida un poco más de lo cómodo.',
+      'Si algo incomoda en el vínculo, escúchalo como brújula — no como fallo personal.',
+      'Los ritmos honestos del encuentro suelen guiar mejor que los planes demasiado pulidos.',
+      'Una conversación breve y real vale más que una noche perfecta para contar.',
+      'Mira si la cercanía aguanta cuando baja el impulso de impresionar.',
+      'Lo contradictorio de hoy puede volverse legible si aflojas la urgencia de resolver el vínculo.'
+    ],
+    trabajo: [
+      'En {ciudad}, el sentido del trabajo se prueba en lo cotidiano — no en la vitrina.',
+      'Escribe en privado qué parte de tu obra sigue viva cuando nadie te evalúa.',
+      'Una tarea pequeña de fondo puede sostener más que una exposición brillante.',
+      'Si algo incomoda en la trayectoria, escúchalo como brújula — no como fracaso.',
+      'Los ritmos honestos del trabajo suelen guiar mejor que los planes demasiado pulidos.',
+      'Contrastar impulso y propósito antes de decir que sí a lo urgente.',
+      'Mira si el cansancio es de obra o de postureo — la diferencia importa.',
+      'Lo contradictorio de hoy puede volverse legible si aflojas la urgencia de demostrar.'
+    ],
+    descanso: [
+      'En {ciudad}, el cuerpo recupera en detalles: un paso lento, una tarde sin prisa.',
+      'Anota un momento de calma real — no el que suena bien contarlo.',
+      'El descanso aquí no pide disculpa: pide permiso sostenido un poco más de lo cómodo.',
+      'Si algo incomoda en la pausa, escúchalo como brújula — no como pereza.',
+      'Los ritmos honestos del cuerpo suelen guiar mejor que los planes demasiado pulidos.',
+      'Un bloque breve y real vale más que una semana de descanso performativo.',
+      'Mira si la calma aguanta cuando vuelves a acelerar — ahí está la prueba.',
+      'Lo contradictorio de hoy puede volverse legible si aflojas la urgencia de rendir incluso en la pausa.'
+    ],
+    universal: [
+      'A veces lo esencial aparece en gestos pequeños — no en el gran momento.',
+      '{ciudad} enseña despacio, sin pedirte prisa.',
+      'El mapa abre una puerta y tú decides si la caminas.',
+      'Lo hermoso vive en la repetición tranquila, no solo en la epifanía.',
+      'No necesitas prisa: solo presencia.',
+      'Cuando algo incomoda, escúchalo como brújula, no como fallo.',
+      'Afloja la prisa de concluir; deja que la experiencia te devuelva su propio ritmo.',
+      'Un hilo vivo puede bastarte para seguir habitando {ciudad} con verdad.'
+    ]
+  };
+
+  function editorialPadPool(ctx) {
+    var goalPool = HUMAN_EDITORIAL_PADS_BY_GOAL[ctx.goalId] || HUMAN_EDITORIAL_PADS_BY_GOAL.amor;
+    return goalPool.concat(HUMAN_EDITORIAL_PADS_BY_GOAL.universal);
+  }
+
+  function pickEditorialPad(ctx, guard, idx) {
+    var pool = editorialPadPool(ctx);
+    return pool[(idx + hash32(ctx.seed + ':pad:' + guard)) % pool.length];
+  }
 
   function narrativeWordPadding(sections, narrativeContext, ctx, globalSeen, stats, minTotal) {
     if (!narrativeContext) return sections;
@@ -1189,7 +1227,7 @@
     var idx = 0;
     var guard = 0;
     while (sectionsWordTotal(copy) < minTotal && guard < 36) {
-      var tpl = HUMAN_EDITORIAL_PADS[(idx + hash32(ctx.seed + ':pad:' + guard)) % HUMAN_EDITORIAL_PADS.length];
+      var tpl = pickEditorialPad(ctx, guard, idx);
       idx += 1;
       guard += 1;
       var text = applyTextPolish(tpl, ctx, true);

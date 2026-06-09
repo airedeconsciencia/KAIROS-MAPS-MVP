@@ -135,15 +135,75 @@
   };
 
   var HUMAN_OBSERVE_BY_GOAL = {
-    amor: 'Con el tiempo, puede que {ciudad} te muestre algo sencillo: si un vínculo necesita demasiado personaje para sostenerse, quizá no era descanso, sino actuación.',
-    trabajo: 'Con el tiempo, quizá {ciudad} te revele si tu trabajo pide escenario o sustancia — y cuál de las dos alimentas sin darte cuenta.',
-    descanso: 'Con el tiempo, puede que {ciudad} te enseñe a volver al cuerpo después de mucho ruido.'
+    amor: [
+      'Si te quedas en {ciudad}, mira si el vínculo se sostiene en gestos pequeños — no en la escena que contarías después.',
+      'Habitar {ciudad} es ver si la cercanía aguanta cuando baja el impulso de impresionar.',
+      'Los días en {ciudad} suelen mostrar si el encuentro pide presencia o performance — y cuál alimentas sin nombrarlo.',
+      'En {ciudad}, anota una escena concreta del vínculo: una conversación, un silencio — y vuelve a ella con calma.',
+      'Quedarte en {ciudad} afina lo que la primera impresión prometió sobre el amor.',
+      'Si repites el mismo encuentro en {ciudad}, verás si la ternura es hábito o excepción.',
+      'Lo cotidiano en {ciudad} enseña si el vínculo respira o solo brilla cuando hay público.',
+      'Después de unas semanas en {ciudad}, la pregunta útil es simple: ¿te sientes más tú o más escena?'
+    ],
+    trabajo: [
+      'Si te quedas en {ciudad}, mira si tu trabajo pide sustancia o escenario — y cuál alimentas sin darte cuenta.',
+      'Habitar {ciudad} es contrastar el sentido que traías con el ritmo que el lugar impone.',
+      'Los días en {ciudad} suelen revelar si la trayectoria se mide por obra o por vitrina.',
+      'En {ciudad}, anota qué parte de tu trabajo sigue viva cuando nadie te evalúa.',
+      'Quedarte en {ciudad} afina la diferencia entre impulso y propósito.',
+      'Si repites la misma semana laboral en {ciudad}, verás si el cansancio es de fondo o de postureo.',
+      'Lo cotidiano en {ciudad} enseña si el trabajo te sostiene o solo te acelera.',
+      'Después de unas semanas en {ciudad}, la pregunta útil es: ¿para quién trabajas cuando el ruido baja?'
+    ],
+    descanso: [
+      'Si te quedas en {ciudad}, mira si el cuerpo recupera o solo cambia de exigencia.',
+      'Habitar {ciudad} es ver si la pausa es refugio o otra forma de competir.',
+      'Los días en {ciudad} suelen enseñar qué ritmo corporal vuelve cuando aflojas la prisa.',
+      'En {ciudad}, anota un momento de calma real — no el que suena bien contarlo.',
+      'Quedarte en {ciudad} afina la diferencia entre descanso y simple cambio de escena.',
+      'Si repites la misma semana lenta en {ciudad}, verás si el alivio es profundo o cosmético.',
+      'Lo cotidiano en {ciudad} devuelve al cuerpo lo que la cabeza había acelerado.',
+      'Después de unas semanas en {ciudad}, la pregunta útil es: ¿dónde se queda la calma cuando vuelves a acelerar?'
+    ]
   };
 
+  var HUMAN_ATMO_OBSERVE_TAIL = [
+    ' {ciudad} irá confirmando lo que ya llevabas encima — no como prueba, sino como contraste.',
+    ' Los días en {ciudad} suelen afinar lo que intuías antes de nombrarlo.',
+    ' {ciudad} devuelve en lo cotidiano lo que la cabeza aún debate.',
+    ' Habitar {ciudad} es ver si la primera impresión aguanta cuando el cuerpo se queda.',
+    ' Lo que {ciudad} abre hoy se lee distinto cuando dejas de tener prisa por decidir.',
+    ' {ciudad} no responde de golpe: va matizando lo que sentías al llegar.',
+    ' Con semanas de presencia, {ciudad} enseña matices que la primera lectura no alcanzaba.',
+    ' Lo vivido en {ciudad} tenderá a confirmar o rebajar lo que ya traías — sin juicio.',
+    ' Si te quedas un poco, {ciudad} dibuja contornos que la intuición apenas insinuaba.'
+  ];
+
   var HUMAN_CLOSING_BY_GOAL = {
-    amor: 'Si algo queda contigo de {ciudad}, que sea esto: atreverte a ser más verdadero antes que más visible.',
-    trabajo: 'Quizá la clave no sea hacer más. Quizá sea dejar de perseguir todas las señales y escuchar cuál sigue viva cuando el ruido baja.',
-    descanso: 'Si algo queda contigo, que sea esto: permiso para bajar el ritmo sin sentir que desapareces.'
+    amor: [
+      'Si algo queda contigo de {ciudad}, que sea esto: atreverte a ser más verdadero antes que más visible.',
+      'Llévate de {ciudad} una pregunta simple: ¿qué cambia cuando dejas de actuar el vínculo?',
+      'Si {ciudad} te deja una huella, que no sea la escena perfecta — sino el momento en que te mostraste sin coreografías.',
+      'Lo que importa no es lo que impresionó en {ciudad}, sino lo que sigue preguntándote cuando nadie mira.',
+      'De {ciudad} quédate con una escena concreta: una conversación donde no tuviste que ganar nada.',
+      'Si algo permanece, que sea la certeza de que el vínculo puede ser pequeño y aún así ser real.'
+    ],
+    trabajo: [
+      'Quizá la clave no sea hacer más. Quizá sea dejar de perseguir todas las señales y escuchar cuál sigue viva cuando el ruido baja.',
+      'De {ciudad} llévate esto: el sentido no tiene que demostrarse cada mañana.',
+      'Si algo queda, que sea la diferencia entre hacer ruido y hacer obra.',
+      'Una sola pregunta puede bastarte: ¿para quién trabajas cuando nadie te evalúa?',
+      'No necesitas más señales — solo escuchar cuál sigue viva cuando el ruido baja.',
+      'Si {ciudad} te enseña algo, que sea a medir el trabajo por lo que sostiene, no por lo que brilla.'
+    ],
+    descanso: [
+      'Si algo queda contigo, que sea esto: permiso para bajar el ritmo sin sentir que desapareces.',
+      'De {ciudad} quédate con el cuerpo que volvió a sentirse habitado.',
+      'Llévate una escena lenta: un momento donde no tuviste que justificar la pausa.',
+      'Si algo permanece, que sea la certeza de que descansar no te quita lugar — te lo devuelve.',
+      'Una sola frase puede bastarte: aquí también puedo aflojar sin desaparecer.',
+      'Lo que importa no es la productividad del descanso, sino la calma que se quedó contigo.'
+    ]
   };
 
   var GOAL_ATMOSPHERE_FIELD = {
@@ -894,7 +954,14 @@
     };
   }
 
-  function weaveAtmosphereObserve(humanObserve, cityAtm, goalId, cityName) {
+  function pickHumanVariant(pool, seed, slot) {
+    if (!pool) return '';
+    if (typeof pool === 'string') return pool;
+    if (!pool.length) return '';
+    return pool[hash32(String(seed) + ':' + slot) % pool.length];
+  }
+
+  function weaveAtmosphereObserve(humanObserve, cityAtm, goalId, cityName, seed) {
     if (!cityAtm) return humanObserve;
     if (cityAtm.images) {
       var img = cityAtm.images;
@@ -903,8 +970,11 @@
           humanObserve.toLowerCase().indexOf(imgFp) !== -1) {
         return humanObserve;
       }
-      return img.charAt(0).toUpperCase() + img.slice(1) +
-        ' Con el tiempo, puede que ' + cityName + ' confirme o matice lo que el cuerpo ya intuía.';
+      var tail = withCity(
+        pickHumanVariant(HUMAN_ATMO_OBSERVE_TAIL, seed, 'atmo-observe-tail'),
+        cityName
+      );
+      return img.charAt(0).toUpperCase() + img.slice(1) + tail;
     }
     return humanObserve;
   }
@@ -940,21 +1010,55 @@
   }
 
   var HUMAN_ACTION_BY_GOAL = {
-    amor: 'esta semana, atrévete a un encuentro sin disfraz — una conversación donde no tengas que causar buena impresión.',
-    trabajo: 'esta semana, escribe en privado qué sentido tiene tu trabajo antes de volver a exponerlo al mundo.',
-    descanso: 'esta semana, guarda un bloque de descanso como quien guarda un refugio — sin disculparte por entrar.'
+    amor: [
+      'esta semana, elige una conversación donde puedas hablar despacio, sin necesidad de brillar.',
+      'esta semana, queda con alguien en un sitio sencillo — sin escena, solo presencia.',
+      'esta semana, di una verdad pequeña antes de intentar ser interesante.',
+      'esta semana, prueba a escuchar más de lo que expones.',
+      'esta semana, escribe un mensaje honesto antes de enviar el que suena impecable.',
+      'esta semana, guarda un rato para el vínculo sin teléfono ni narrativa perfecta.',
+      'esta semana, nota si te relajas cuando no tienes que ganar la atención del otro.',
+      'esta semana, invita a alguien a caminar sin agenda — solo compañía.',
+      'esta semana, elige un encuentro corto donde importe más la escucha que la respuesta brillante.'
+    ],
+    trabajo: [
+      'esta semana, escribe en privado qué sentido tiene tu trabajo antes de volver a exponerlo al mundo.',
+      'esta semana, guarda una hora sin pantallas para pensar el propósito — no la vitrina.',
+      'esta semana, elige una tarea pequeña que sostenga sentido aunque nadie la vea.',
+      'esta semana, anota qué parte de tu trabajo sigue viva cuando nadie te evalúa.',
+      'esta semana, di no a una exposición innecesaria y sí a una obra de fondo.',
+      'esta semana, contrasta impulso y propósito antes de decir que sí a lo urgente.'
+    ],
+    descanso: [
+      'esta semana, guarda un bloque de descanso como quien guarda un refugio — sin disculparte por entrar.',
+      'esta semana, elige una pausa breve y real — no la que suena bien contarla.',
+      'esta semana, camina despacio un tramo sin objetivo — solo cuerpo presente.',
+      'esta semana, apaga una hora de ruido y mira qué ritmo pide el cuerpo.',
+      'esta semana, duerme una noche sin convertir el descanso en tarea cumplida.',
+      'esta semana, deja una tarde sin rendir — solo habitar el lugar con calma.'
+    ]
   };
 
-  function humanizeOpportunityAction(mainOpportunity, goalId) {
-    return HUMAN_ACTION_BY_GOAL[goalId] || HUMAN_ACTION_BY_GOAL.amor;
+  function humanizeOpportunityAction(mainOpportunity, goalId, seed) {
+    return pickHumanVariant(
+      HUMAN_ACTION_BY_GOAL[goalId] || HUMAN_ACTION_BY_GOAL.amor,
+      seed,
+      'human-action:' + goalId
+    );
   }
 
-  function humanizeObserve(goalId, cityName) {
-    return withCity(HUMAN_OBSERVE_BY_GOAL[goalId] || HUMAN_OBSERVE_BY_GOAL.amor, cityName);
+  function humanizeObserve(goalId, cityName, seed) {
+    return withCity(
+      pickHumanVariant(HUMAN_OBSERVE_BY_GOAL[goalId] || HUMAN_OBSERVE_BY_GOAL.amor, seed, 'human-observe:' + goalId),
+      cityName
+    );
   }
 
-  function humanizeClosing(goalId, cityName) {
-    return withCity(HUMAN_CLOSING_BY_GOAL[goalId] || HUMAN_CLOSING_BY_GOAL.amor, cityName);
+  function humanizeClosing(goalId, cityName, seed) {
+    return withCity(
+      pickHumanVariant(HUMAN_CLOSING_BY_GOAL[goalId] || HUMAN_CLOSING_BY_GOAL.amor, seed, 'human-closing:' + goalId),
+      cityName
+    );
   }
 
   function humanizePresenceSpine(text) {
@@ -1232,9 +1336,11 @@
     }
     var humanConflict = humanizeConflict(centralTension, goalId, cityName);
     var humanOpportunity = humanizeOpportunity(mainOpportunity, goalId);
-    var humanOpportunityAction = humanizeOpportunityAction(mainOpportunity, goalId);
-    var humanObserve = weaveAtmosphereObserve(humanizeObserve(goalId, cityName), cityAtm, goalId, cityName);
-    var humanClosing = humanizeClosing(goalId, cityName);
+    var humanOpportunityAction = humanizeOpportunityAction(mainOpportunity, goalId, seed);
+    var humanObserve = weaveAtmosphereObserve(
+      humanizeObserve(goalId, cityName, seed), cityAtm, goalId, cityName, seed
+    );
+    var humanClosing = humanizeClosing(goalId, cityName, seed);
     var narrativeSummary = buildNarrativeSummary(
       cityName, goalId, humanTheme, cityAtm ? cityAtm.rhythm : ''
     );
