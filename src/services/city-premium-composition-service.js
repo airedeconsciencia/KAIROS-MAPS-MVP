@@ -167,7 +167,6 @@
   var VOICE_METAPHOR_MARKERS = [
     'habitación que se ordena',
     'escena cotidiana',
-    'como brújula',
     'pequeña expedición'
   ];
 
@@ -753,8 +752,11 @@
     return polished;
   }
 
-  function metaphorFingerprint(text) {
+function metaphorFingerprint(text) {
     var lower = String(text || '').toLowerCase();
+    if (lower.indexOf('brújula') !== -1) return 'brújula';
+    if (lower.indexOf('hilo') !== -1) return 'hilo';
+    if (lower.indexOf('puerta') !== -1) return 'puerta';
     for (var i = 0; i < VOICE_METAPHOR_MARKERS.length; i++) {
       if (lower.indexOf(VOICE_METAPHOR_MARKERS[i]) !== -1) {
         return VOICE_METAPHOR_MARKERS[i];
@@ -917,7 +919,7 @@
       }
 
       if (ctx._countryLinesUsed >= MAX_COUNTRY_LINES) return;
-      if (!claimText(text, ctx.cityName, globalSeen)) return;
+      if (!claimMetaphor(text, ctx) || !claimText(text, ctx.cityName, globalSeen)) return;
 
       sec.body = sec.body ? sec.body + '\n\n' + text : text;
       sec.words = wordCount(sec.body);
@@ -983,13 +985,19 @@
   function appendSpineLead(parts, sectionId, narrativeContext, ctx, globalSeen, stats) {
     var lead = buildSpineLead(sectionId, narrativeContext, ctx);
     if (!lead) return 0;
-    var text = replaceCity(lead, ctx.cityName, ctx.name);
-    if (!claimText(text, ctx.cityName, globalSeen)) return 0;
-    parts.push(text);
-    stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
-    stats._wordsByKind = stats._wordsByKind || {};
-    stats._wordsByKind.synthesisBlocks = (stats._wordsByKind.synthesisBlocks || 0) + wordCount(text);
-    return wordCount(text);
+    var paragraphs = String(lead).split(/\n\n+/).filter(Boolean);
+    var words = 0;
+    paragraphs.forEach(function (para) {
+      var text = replaceCity(para, ctx.cityName, ctx.name);
+      // Spine narrativo: siempre entra; claimMetaphor solo aplica a pads/topups/blocks.
+      if (!claimText(text, ctx.cityName, globalSeen)) return;
+      parts.push(text);
+      stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
+      stats._wordsByKind = stats._wordsByKind || {};
+      stats._wordsByKind.synthesisBlocks = (stats._wordsByKind.synthesisBlocks || 0) + wordCount(text);
+      words += wordCount(text);
+    });
+    return words;
   }
 
   function buildSectionFromBlocks(sectionId, blockList, ctx, globalSeen, sectionThemes, stats, maxWords, usedBlockIds, narrativeContext, methodologyBudget) {
@@ -1196,26 +1204,197 @@
       'Mira si la calma aguanta cuando vuelves a acelerar — ahí está la prueba.',
       'Lo contradictorio de hoy puede volverse legible si aflojas la urgencia de rendir incluso en la pausa.'
     ],
-    universal: [
-      'A veces lo esencial aparece en gestos pequeños — no en el gran momento.',
-      '{ciudad} enseña despacio, sin pedirte prisa.',
-      'El mapa abre una puerta y tú decides si la caminas.',
-      'Lo hermoso vive en la repetición tranquila, no solo en la epifanía.',
-      'No necesitas prisa: solo presencia.',
-      'Cuando algo incomoda, escúchalo como brújula, no como fallo.',
-      'Afloja la prisa de concluir; deja que la experiencia te devuelva su propio ritmo.',
-      'Un hilo vivo puede bastarte para seguir habitando {ciudad} con verdad.'
+  };
+
+  var REGIONAL_EDITORIAL_PADS = {
+    IBERIAN: [
+      'A veces lo esencial aparece en la plaza — una conversación larga que no pide conclusión.',
+      '{ciudad} enseña en el barrio, sin pedirte prisa de entenderlo todo.',
+      'La compañía cotidiana puede bastarte para seguir habitando {ciudad} con verdad.',
+      'Lo hermoso vive en la sobremesa tranquila, no solo en el gran gesto.',
+      'No necesitas resolver la escena: basta cercanía sostenida un poco más.',
+      'Cuando algo incomoda, obsérvalo en gestos pequeños — no en el juicio rápido.',
+      'Afloja la urgencia de concluir; deja que la escena del barrio te devuelva su ritmo.',
+      'Un gesto de compañía puede bastarte para seguir caminando {ciudad} con calma.'
+    ],
+    MEDITERRANEAN: [
+      'A veces lo esencial aparece en el paseo — una calle viva que no pide prisa.',
+      '{ciudad} enseña en la proximidad urbana, sin pedirte conclusión inmediata.',
+      'La densidad humana puede bastarte para seguir habitando {ciudad} con verdad.',
+      'Lo hermoso vive en el ritmo urbano tranquilo, no solo en la epifanía.',
+      'No hace falta resolver la escena: basta presencia en la calle que caminas.',
+      'Cuando algo incomoda, obsérvalo en el tránsito cotidiano — no como fallo.',
+      'Afloja la prisa de concluir; deja que el paseo te devuelva su propio ritmo.',
+      'Un gesto de proximidad puede bastarte para seguir caminando {ciudad} con calma.'
+    ],
+    ANGLO: [
+      'A veces lo esencial aparece en el trayecto — un bloque del día que no pide prisa.',
+      '{ciudad} enseña en el proceso, sin pedirte conclusión inmediata.',
+      'La planificación honesta puede bastarte para seguir habitando {ciudad} con verdad.',
+      'Lo hermoso vive en la repetición del calendario, no solo en la epifanía.',
+      'No hace falta apresurar el día: basta presencia en el bloque que estás viviendo.',
+      'Cuando algo incomoda, obsérvalo en el proceso — no como fallo del plan.',
+      'Afloja la prisa de concluir; deja que el trayecto te devuelva su propio ritmo.',
+      'Un bloque bien habitado puede bastarte para seguir caminando {ciudad} con calma.'
+    ],
+    EAST_ASIAN: [
+      'A veces lo esencial aparece en la secuencia — un detalle que no pide prisa.',
+      '{ciudad} enseña en la rutina precisa, sin pedirte conclusión inmediata.',
+      'La precisión cotidiana puede bastarte para seguir habitando {ciudad} con verdad.',
+      'Lo hermoso vive en el tránsito tranquilo, no solo en la epifanía.',
+      'No hace falta apresurar el gesto: basta presencia en el detalle que estás viviendo.',
+      'Cuando algo incomoda, obsérvalo en la secuencia — no como fallo.',
+      'Afloja la prisa de concluir; deja que la rutina te devuelva su propio ritmo.',
+      'Un tramo bien transitado puede bastarte para seguir caminando {ciudad} con calma.'
+    ],
+    AFRICAN_COASTAL: [
+      'A veces lo esencial aparece en el horizonte — una amplitud que no pide prisa.',
+      '{ciudad} enseña con el viento, sin pedirte conclusión inmediata.',
+      'El contraste del paisaje vivo puede bastarte para seguir habitando {ciudad} con verdad.',
+      'Lo hermoso vive en la amplitud tranquila, no solo en la epifanía.',
+      'No hace falta apresurar la mirada: basta presencia ante el horizonte que abres.',
+      'Cuando algo incomoda, obsérvalo en el contraste — no como fallo.',
+      'Afloja la prisa de concluir; deja que el paisaje te devuelva su propio ritmo.',
+      'Un gesto de amplitud puede bastarte para seguir caminando {ciudad} con calma.'
     ]
   };
 
+  var REGIONAL_TOPUP_VARIANTS = {
+    IBERIAN: [
+      'Puede que notes que {ciudad} se afina cuando la compañía también opina.',
+      'Los gestos del barrio suelen guiar mejor que los planes demasiado pulidos.',
+      'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en tu día a día.',
+      'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en la plaza.',
+      'A veces hay que caminar una escena de barrio para entender el mapa.',
+      'La coherencia no tiene que ser total: basta una conversación que te sostenga.',
+      'Tal vez descubras que algunas lecturas maduran despacio, como una sobremesa.',
+      'Puede que notes el lugar en detalles: una mirada en la plaza, un silencio cómodo.',
+      'Afloja la prisa de concluir; deja que la cercanía cotidiana te devuelva su ritmo.',
+      'Un gesto de compañía puede bastarte para seguir explorando {ciudad} con verdad.'
+    ],
+    MEDITERRANEAN: [
+      'Puede que notes que {ciudad} se afina cuando el paseo también opina.',
+      'Los ritmos de la calle viva suelen guiar mejor que los planes demasiado pulidos.',
+      'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó al caminar.',
+      'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en la proximidad.',
+      'A veces hay que recorrer una calle cotidiana para entender el mapa.',
+      'La coherencia no tiene que ser total: basta un paseo que te sostenga.',
+      'Tal vez descubras que algunas lecturas maduran despacio, como un giro urbano.',
+      'Puede que notes el lugar en detalles: un cruce, un murmullo, una densidad distinta.',
+      'Afloja la prisa de concluir; deja que el ritmo urbano te devuelva su calma.',
+      'Un gesto de proximidad puede bastarte para seguir explorando {ciudad} con verdad.'
+    ],
+    ANGLO: [
+      'Puede que notes que {ciudad} se afina cuando el calendario también opina.',
+      'Los bloques honestos del día suelen guiar mejor que los planes demasiado pulidos.',
+      'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en tu proceso.',
+      'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en el trayecto.',
+      'A veces hay que transitar una escena cotidiana para entender el mapa.',
+      'La coherencia no tiene que ser total: basta un bloque que te sostenga.',
+      'Tal vez descubras que algunas lecturas maduran despacio, como un plan revisado.',
+      'Puede que notes el lugar en detalles: un retraso, un cansancio, un silencio útil.',
+      'Afloja la prisa de concluir; deja que la planificación te devuelva su ritmo.',
+      'Un trayecto bien habitado puede bastarte para seguir explorando {ciudad} con verdad.'
+    ],
+    EAST_ASIAN: [
+      'Puede que notes que {ciudad} se afina cuando la rutina también opina.',
+      'Las secuencias honestas suelen guiar mejor que los planes demasiado pulidos.',
+      'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en el detalle.',
+      'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en la precisión cotidiana.',
+      'A veces hay que transitar una escena precisa para entender el mapa.',
+      'La coherencia no tiene que ser total: basta una secuencia que te sostenga.',
+      'Tal vez descubras que algunas lecturas maduran despacio, como un tramo repetido.',
+      'Puede que notes el lugar en detalles: un gesto mínimo, un cansancio, un orden distinto.',
+      'Afloja la prisa de concluir; deja que el tránsito te devuelva su ritmo.',
+      'Un detalle bien transitado puede bastarte para seguir explorando {ciudad} con verdad.'
+    ],
+    AFRICAN_COASTAL: [
+      'Puede que notes que {ciudad} se afina cuando el horizonte también opina.',
+      'Los contrastes del paisaje vivo suelen guiar mejor que los planes demasiado pulidos.',
+      'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en la amplitud.',
+      'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva con el viento.',
+      'A veces hay que mirar una escena amplia para entender el mapa.',
+      'La coherencia no tiene que ser total: basta una amplitud que te sostenga.',
+      'Tal vez descubras que algunas lecturas maduran despacio, como un contraste leve.',
+      'Puede que notes el lugar en detalles: una brisa, un cansancio, un silencio distinto.',
+      'Afloja la prisa de concluir; deja que el paisaje te devuelva su ritmo.',
+      'Un gesto de amplitud puede bastarte para seguir explorando {ciudad} con verdad.'
+    ]
+  };
+
+  function normalizeRegionKey(value) {
+    return String(value || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
+  }
+
+  function resolveRegionFamily(cityId, countryId) {
+    var city = normalizeRegionKey(cityId);
+    var country = normalizeRegionKey(countryId);
+
+    if (city === 'lisboa') return 'IBERIAN';
+    if (city === 'barcelona') return 'MEDITERRANEAN';
+    if (city === 'toronto') return 'ANGLO';
+    if (city === 'tokio') return 'EAST_ASIAN';
+    if (city.indexOf('ciudad del cabo') !== -1 || city === 'cape town') return 'AFRICAN_COASTAL';
+
+    if (country === 'pt' || country === 'portugal') return 'IBERIAN';
+    if (country === 'es' || country === 'espana' || country === 'spain') return 'MEDITERRANEAN';
+    if (country === 'it' || country === 'italia' || country === 'italy' ||
+        country === 'gr' || country === 'grecia' || country === 'turquia' ||
+        country === 'tr' || country === 'turkey') return 'MEDITERRANEAN';
+    if (country === 'ca' || country === 'canada' || country === 'gb' ||
+        country === 'uk' || country === 'reino unido' || country === 'us' ||
+        country === 'ee. uu.' || country === 'eeuu') return 'ANGLO';
+    if (country === 'jp' || country === 'japon' || country === 'japan' ||
+        country === 'kr' || country === 'corea del sur') return 'EAST_ASIAN';
+    if (country === 'za' || country === 'sudafrica' || country === 'eg' ||
+        country === 'egipto' || country === 'ke' || country === 'kenia') return 'AFRICAN_COASTAL';
+
+    return 'IBERIAN';
+  }
+
   function editorialPadPool(ctx) {
     var goalPool = HUMAN_EDITORIAL_PADS_BY_GOAL[ctx.goalId] || HUMAN_EDITORIAL_PADS_BY_GOAL.amor;
-    return goalPool.concat(HUMAN_EDITORIAL_PADS_BY_GOAL.universal);
+    var region = ctx.regionFamily || 'IBERIAN';
+    var regional = REGIONAL_EDITORIAL_PADS[region] || REGIONAL_EDITORIAL_PADS.IBERIAN;
+    return goalPool.concat(regional);
+  }
+
+  function metaphorWouldClaim(text, ctx) {
+    var fp = metaphorFingerprint(text);
+    if (!fp) return true;
+    initVoiceContext(ctx);
+    return !ctx._usedMetaphors[fp];
   }
 
   function pickEditorialPad(ctx, guard, idx) {
     var pool = editorialPadPool(ctx);
-    return pool[(idx + hash32(ctx.seed + ':pad:' + guard)) % pool.length];
+    var key = ctx.seed + ':pad:' + guard + ':' + (ctx.regionFamily || '') + ':' + ctx.goalId;
+    var start = (idx + hash32(key)) % pool.length;
+    for (var attempt = 0; attempt < pool.length; attempt += 1) {
+      var candidate = pool[(start + attempt) % pool.length];
+      if (metaphorWouldClaim(candidate, ctx)) return candidate;
+    }
+    return pool[start];
+  }
+
+  function regionalTopupPool(ctx) {
+    var region = ctx.regionFamily || 'IBERIAN';
+    return REGIONAL_TOPUP_VARIANTS[region] || REGIONAL_TOPUP_VARIANTS.IBERIAN;
+  }
+
+  function pickTopupVariant(ctx, guard, salt) {
+    var pool = regionalTopupPool(ctx);
+    var key = ctx.seed + ':top:' + guard + ':' + salt + ':' + (ctx.regionFamily || '') + ':' + ctx.goalId;
+    var start = (guard + hash32(key)) % pool.length;
+    for (var attempt = 0; attempt < pool.length; attempt += 1) {
+      var candidate = pool[(start + attempt) % pool.length];
+      if (metaphorWouldClaim(candidate, ctx)) return candidate;
+    }
+    return pool[start];
   }
 
   function narrativeWordPadding(sections, narrativeContext, ctx, globalSeen, stats, minTotal) {
@@ -1233,8 +1412,7 @@
       var text = applyTextPolish(tpl, ctx, true);
       var sec = copy.find(function (s) { return s.id === targets[guard % targets.length]; });
       if (!sec) break;
-      var needFill = sectionsWordTotal(copy) < minTotal;
-      if (!text || (!needFill && !claimMetaphor(text, ctx)) || !claimText(text, ctx.cityName, globalSeen)) continue;
+      if (!text || !claimMetaphor(text, ctx) || !claimText(text, ctx.cityName, globalSeen)) continue;
       sec.body = sec.body ? sec.body + '\n\n' + text : text;
       sec.words = wordCount(sec.body);
       stats.synthesisBlocks = (stats.synthesisBlocks || 0) + 1;
@@ -1244,19 +1422,6 @@
     return copy;
   }
 
-  var HUMAN_TOPUP_VARIANTS = [
-    'Puede que notes que {ciudad} se afina cuando el cuerpo también opina.',
-    'Los ritmos honestos suelen guiar mejor que los planes demasiado pulidos.',
-    'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó.',
-    'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva cuando el ruido baja.',
-    'A veces hay que caminar una escena cotidiana para entender el mapa.',
-    'La coherencia no tiene que ser total: basta un hilo que te sostenga.',
-    'Tal vez descubras que algunas lecturas maduran despacio.',
-    'Puede que notes el lugar en detalles: una mirada, un cansancio, un silencio que pesa distinto.',
-    'Afloja la prisa de concluir; deja que la experiencia te devuelva su propio ritmo.',
-    'Un hilo vivo puede bastarte para seguir caminando {ciudad} con verdad.'
-  ];
-
   function humanEditorialTopUp(sections, ctx, globalSeen, stats, minTotal) {
     var copy = sections.map(function (s) {
       return { id: s.id, title: s.title, body: s.body, words: s.words };
@@ -1264,12 +1429,11 @@
     var targets = ['observar', 'integracion', 'favorece', 'aprovecha', 'desafia'];
     var guard = 0;
     while (sectionsWordTotal(copy) < minTotal && guard < 48) {
-      var tpl = HUMAN_TOPUP_VARIANTS[(guard + hash32(ctx.seed + ':top:' + guard)) % HUMAN_TOPUP_VARIANTS.length];
+      var tpl = pickTopupVariant(ctx, guard, 'main');
       guard += 1;
       var text = applyTextPolish(tpl, ctx, true);
       var sec = copy.find(function (s) { return s.id === targets[guard % targets.length]; });
-      var needFill = sectionsWordTotal(copy) < minTotal;
-      if (!sec || !text || (!needFill && !claimMetaphor(text, ctx)) ||
+      if (!sec || !text || !claimMetaphor(text, ctx) ||
           !claimText(text, ctx.cityName, globalSeen)) continue;
       sec.body = sec.body ? sec.body + '\n\n' + text : text;
       sec.words = wordCount(sec.body);
@@ -1292,7 +1456,7 @@
         var obsText = narrativeContext.humanObserve ||
           ('Si permaneces en ' + ctx.cityName +
             ', mira cada pocas semanas si lo vivido aquí sigue teniendo latido en tu experiencia.');
-        if (claimText(obsText, ctx.cityName, globalSeen)) {
+        if (claimMetaphor(obsText, ctx) && claimText(obsText, ctx.cityName, globalSeen)) {
           observar.body = observar.body ? observar.body + '\n\n' + obsText : obsText;
           observar.words = wordCount(observar.body);
         }
@@ -1510,14 +1674,13 @@
       return { id: s.id, title: s.title, body: s.body, words: s.words };
     });
     var guard = 0;
-    while (sectionsWordTotal(copy) < minTotal && guard < HUMAN_TOPUP_VARIANTS.length) {
-      var tpl = HUMAN_TOPUP_VARIANTS[
-        (guard + hash32(String(ctx.seed) + ':postcountry')) % HUMAN_TOPUP_VARIANTS.length
-      ];
+    var poolLen = regionalTopupPool(ctx).length;
+    while (sectionsWordTotal(copy) < minTotal && guard < poolLen) {
+      var tpl = pickTopupVariant(ctx, guard, 'postcountry');
       var text = replaceCity(tpl, ctx.cityName, ctx.name);
       var sec = copy.find(function (s) { return s.id === 'integracion'; }) ||
         copy.find(function (s) { return s.id === 'observar'; });
-      if (!sec || !text) break;
+      if (!sec || !text || !claimMetaphor(text, ctx)) break;
       sec.body = sec.body ? sec.body + '\n\n' + text : text;
       sec.words = wordCount(sec.body);
       guard += 1;
@@ -1576,6 +1739,10 @@
 
     var narrativeWrap = resolveNarrativeContext(input, ctx);
     var narrativeContext = narrativeWrap.narrativeContext;
+    var countryId = narrativeContext && narrativeContext.countryContext
+      ? narrativeContext.countryContext.countryId
+      : (city.country || null);
+    ctx.regionFamily = resolveRegionFamily(cityName, countryId);
     ctx._atmosphereLinesUsed = countEmbeddedAtmosphere(narrativeContext);
 
     var knowledgeWrap = resolveKnowledgeBlocks(input, ctx, narrativeContext);
@@ -1711,7 +1878,7 @@
           var closeText = narrativeContext.humanClosing;
           var hasClose = integracionSec.body &&
             integracionSec.body.indexOf(closeText.slice(0, 24)) !== -1;
-          if (!hasClose && claimText(closeText, cityName, globalSeen)) {
+          if (!hasClose && claimMetaphor(closeText, ctx) && claimText(closeText, cityName, globalSeen)) {
             integracionSec.body = integracionSec.body
               ? integracionSec.body + '\n\n' + closeText
               : closeText;
@@ -1852,6 +2019,9 @@
     EN_THEME_KEYS: EN_THEME_KEYS,
     FORBIDDEN: FORBIDDEN,
     composeCityReading: composeCityReading,
+    resolveRegionFamily: resolveRegionFamily,
+    REGIONAL_EDITORIAL_PADS: REGIONAL_EDITORIAL_PADS,
+    REGIONAL_TOPUP_VARIANTS: REGIONAL_TOPUP_VARIANTS,
     METHODOLOGY_BLOCK_IDS: METHODOLOGY_BLOCK_IDS,
     METHODOLOGY_PHRASE_MARKERS: METHODOLOGY_PHRASE_MARKERS,
     METHODOLOGY_SUPPRESS_MARKERS: METHODOLOGY_SUPPRESS_MARKERS,
