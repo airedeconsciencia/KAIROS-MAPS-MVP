@@ -29,6 +29,14 @@
     descanso: 'doc6_objetivo_descanso_ic'
   };
 
+  /** Con narrativeContext el compositor usa human spine — no reservar cupo */
+  var NARRATIVE_GHOST_BLOCK_IDS = {
+    doc6_integrado_sobre_sombra: true,
+    doc6_objetivo_amor_dc_venus: true,
+    doc6_objetivo_trabajo_mc: true,
+    doc6_objetivo_descanso_ic: true
+  };
+
   var THEME_ES = {
     belonging: 'pertenencia',
     communication: 'comunicación',
@@ -170,6 +178,31 @@
     });
   }
 
+  function pickBlockVariant(blockOrPool, ctx, slotKey) {
+    if (!blockOrPool) return '';
+    if (typeof blockOrPool === 'string') return blockOrPool;
+
+    var block = blockOrPool;
+    var goalId = (ctx && ctx.goalId) || 'amor';
+    var seed = (ctx && ctx.seed) != null ? ctx.seed : 0;
+    var slot = slotKey || 'variant';
+
+    if (block.variantsByGoal) {
+      var goalPool = block.variantsByGoal[goalId];
+      if (!goalPool && block.variantsByGoal.amor) goalPool = block.variantsByGoal.amor;
+      if (typeof goalPool === 'string') return goalPool;
+      if (Array.isArray(goalPool) && goalPool.length) {
+        return goalPool[hash32(String(seed) + ':' + slot + ':' + (block.id || '')) % goalPool.length];
+      }
+    }
+
+    if (Array.isArray(block.variants) && block.variants.length) {
+      return block.variants[hash32(String(seed) + ':' + slot + ':' + (block.id || '')) % block.variants.length];
+    }
+
+    return block.text || '';
+  }
+
   function selectSynthesisBlocks(ctx, catalog, selectedIds) {
     var narrative = ctx.narrativeContext;
     var methodologyUsed = 0;
@@ -179,6 +212,19 @@
 
     var priorityIds = [];
     if (narrative) {
+      if (ctx.influences.length >= 2) {
+        priorityIds.push('doc6_marte_jupiter_friccion');
+      }
+      var best = ctx.influences[0];
+      if (best && best.distKm != null && best.distKm <= 80) {
+        priorityIds.push('doc6_intensidad_linea_exacta');
+      } else if (best && best.distKm != null && best.distKm >= 200) {
+        priorityIds.push('doc6_intensidad_linea_cercana');
+      }
+      if (ctx.relocationProfile && ctx.relocationProfile.ok) {
+        priorityIds.push('doc7_linea_vs_reloc');
+      }
+    } else {
       var objId = GOAL_OBJECTIVE_IDS[ctx.goalId];
       if (objId) priorityIds.push(objId);
       if (ctx.bridgeProfile && ctx.bridgeProfile.tensionMode) {
@@ -187,10 +233,10 @@
       if (ctx.influences.length >= 2) {
         priorityIds.push('doc6_marte_jupiter_friccion');
       }
-      var best = ctx.influences[0];
-      if (best && best.distKm != null && best.distKm <= 80) {
+      var bestNoNarr = ctx.influences[0];
+      if (bestNoNarr && bestNoNarr.distKm != null && bestNoNarr.distKm <= 80) {
         priorityIds.push('doc6_intensidad_linea_exacta');
-      } else if (best && best.distKm != null && best.distKm >= 200) {
+      } else if (bestNoNarr && bestNoNarr.distKm != null && bestNoNarr.distKm >= 200) {
         priorityIds.push('doc6_intensidad_linea_cercana');
       }
       if (ctx.relocationProfile && ctx.relocationProfile.ok) {
@@ -213,6 +259,7 @@
       if (!matchSpec(block, ctx)) return false;
       if (selectedIds[block.id]) return false;
       if (narrative && METHODOLOGY_BLOCK_IDS[block.id]) return false;
+      if (narrative && NARRATIVE_GHOST_BLOCK_IDS[block.id]) return false;
       return true;
     });
 
@@ -231,7 +278,8 @@
     });
   }
 
-  function blocksFromIds(catalog, selectedIds, seed) {
+  function blocksFromIds(catalog, selectedIds, seed, goalId) {
+    var pickCtx = { seed: seed, goalId: goalId || 'amor' };
     var ids = Object.keys(selectedIds);
     ids.sort(function (a, b) {
       var ba = catalog.INDEX.byId[a];
@@ -243,7 +291,8 @@
     });
     return ids.map(function (id) {
       var b = catalog.INDEX.byId[id];
-      return b ? {
+      if (!b) return null;
+      return {
         id: b.id,
         slot: b.slot,
         stage: b.stage,
@@ -255,8 +304,8 @@
         planet: b.planet || null,
         angle: b.angle || null,
         integration: b.integration || null,
-        text: b.text
-      } : null;
+        text: pickBlockVariant(b, pickCtx, 'block:' + id)
+      };
     }).filter(Boolean);
   }
 
@@ -316,7 +365,7 @@
     selectSynthesisBlocks(ctx, catalog, selectedIds);
     selectDoc17Blocks(ctx, catalog, selectedIds);
 
-    var blocks = blocksFromIds(catalog, selectedIds, seed);
+    var blocks = blocksFromIds(catalog, selectedIds, seed, goalId);
 
     return {
       ok: blocks.length > 0,
@@ -345,6 +394,7 @@
     STAGE_ORDER: STAGE_ORDER,
     THEME_ES: THEME_ES,
     getBlocksForContext: getBlocksForContext,
+    pickBlockVariant: pickBlockVariant,
     catalog: function () {
       return window.KairosPremiumBlocks
         ? window.KairosPremiumBlocks.catalog()

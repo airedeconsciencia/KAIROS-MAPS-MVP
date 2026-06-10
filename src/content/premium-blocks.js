@@ -92,7 +92,12 @@
       factors: ['intensidad'],
       match: { maxDistKm: 80 },
       sources: [src('DOC-6', '§1.5 Línea exacta / Fase 3 escala')],
-      text: 'Muy cerca del trazo la experiencia puede ser intensa y poco filtrada — útil si ya sabes canalizar esa energía; si no, conviene moderar expectativas y ritmo.'
+      text: 'Muy cerca del trazo la experiencia puede ser intensa y poco filtrada — útil si ya sabes canalizar esa energía; si no, conviene moderar expectativas y ritmo.',
+      variantsByGoal: {
+        amor: 'Muy cerca del trazo el vínculo puede sentirse sin filtro — presencia intensa en el encuentro; conviene ir despacio si la cercanía te desborda.',
+        trabajo: 'Muy cerca del trazo la trayectoria puede sentirse sin filtro — impulso y visibilidad al máximo; útil si ya canalizas esa energía, si no, modera ritmo y expectativas.',
+        descanso: 'Muy cerca del trazo el cuerpo puede registrar la señal sin filtro — ritmo y sistema nervioso al máximo volumen; conviene moderar expectativas si la intensidad te agota.'
+      }
     },
     {
       id: 'doc6_intensidad_linea_cercana',
@@ -103,7 +108,12 @@
       factors: ['intensidad'],
       match: { minDistKm: 200 },
       sources: [src('DOC-6', '§1.2 Línea cercana sostenible')],
-      text: 'La señal es notable pero no máxima: el lugar habla claro sin exigir dominar la energía al primer día — más sostenible para una estancia media.'
+      text: 'La señal es notable pero no máxima: el lugar habla claro sin exigir dominar la energía al primer día — más sostenible para una estancia media.',
+      variantsByGoal: {
+        amor: 'La cercanía de esta línea puede sentirse en la forma de vincular — facilidad o fricción con que una relación toma cuerpo, notable sin exigir dominar el encuentro al primer día.',
+        trabajo: 'La cercanía de esta línea puede sentirse como presión profesional, foco u exposición — señal clara sin la exigencia de la línea exacta, más sostenible para ordenar prioridades.',
+        descanso: 'La cercanía de esta línea puede sentirse en el sistema nervioso y el ritmo diario — capacidad de habitar el lugar sin sobreexigencia, más sostenible para una estancia media.'
+      }
     },
     {
       id: 'doc6_objetivo_amor_dc_venus',
