@@ -589,6 +589,402 @@
     }
   };
 
+  var NARRATIVE_SPINE_BY_REGION = {
+    IBERIAN: {
+      conflictByGoal: {
+        amor: 'La pregunta en {ciudad} no es brillar en la plaza. Es si el vínculo aguanta cuando la conversación se alarga sin escena.',
+        trabajo: 'En {ciudad}, el trabajo compite con la sobremesa: quieres mostrar avance cuando lo vivo aún pide compañía y silencio.',
+        descanso: 'En {ciudad}, descansar puede sentirse como faltar a la mesa — aunque el cuerpo pida quedarse un rato más sin explicar.'
+      },
+      opportunityByGoal: {
+        amor: 'sostener el vínculo en conversación larga — sin convertir la cercanía en escena.',
+        trabajo: 'trabajar el sentido en privado antes de volver a la plaza profesional.',
+        descanso: 'quedarte en la pausa sin pedir permiso a cada rincón de la casa.'
+      },
+      summaryFrame: {
+        amor: 'En la cercanía de {ciudad}, con {goalPhrase} como hilo, quizá notes en el vínculo cotidiano:',
+        trabajo: 'En la sobremesa de {ciudad}, leyendo {goalPhrase}, quizá notes en la obra silenciosa:',
+        descanso: 'En el barrio de {ciudad}, con {goalPhrase}, quizá notes en el cuerpo que vuelve:'
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando la conversación no necesita ganar?',
+          DC: '¿Qué verdad compartes en {ciudad} antes de pedirle al otro que encaje?',
+          MC: '¿Qué historia del vínculo quieres que {ciudad} sostenga en voz baja?',
+          default: '¿Qué te pide {ciudad} en amor si sueltas la escena perfecta?'
+        },
+        trabajo: {
+          IC: '¿Qué parte de tu obra en {ciudad} sigue viva cuando nadie te mira?',
+          MC: '¿Tu trabajo en {ciudad} busca compañía o sentido?',
+          AC: '¿Cómo te presentarías en {ciudad} si tu obra no necesitara aplauso?',
+          default: '¿Qué sentido sostendrías en {ciudad} antes de volver a la vitrina?'
+        },
+        descanso: {
+          AC: '¿Puedes quedarte en {ciudad} sin sentir que abandonas la mesa?',
+          MC: '¿Tu descanso en {ciudad} es refugio o excusa social?',
+          IC: '¿Qué calma te pide {ciudad} en la casa y en la plaza?',
+          default: '¿Qué ritmo corporal te devuelve {ciudad} si aflojas la sobremesa interior?'
+        }
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea una conversación donde no tuviste que ganar la escena.',
+          'De {ciudad} llévate la compañía que no necesitó teatro para ser verdadera.',
+          'Si el vínculo permanece, que sea en gestos pequeños — no en la foto que contarías.'
+        ],
+        trabajo: [
+          'De {ciudad} llévate esto: el sentido puede madurar en privado antes de volver a la plaza.',
+          'Si algo queda, que sea la obra que aguanta cuando baja el aplauso.',
+          'Una pregunta basta: ¿para quién trabajas cuando la sobremesa termina?'
+        ],
+        descanso: [
+          'De {ciudad} quédate con el cuerpo que volvió a la mesa sin disculparse.',
+          'Si algo permanece, que sea permiso para quedarte un poco más sin rendir.',
+          'Llévate un silencio cómodo: la pausa que no pidió explicación.'
+        ]
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, elige una conversación larga donde puedas hablar despacio, sin necesidad de brillar.',
+          'esta semana, queda con alguien en un sitio sencillo — la compañía importa más que la escena.',
+          'esta semana, di una verdad pequeña antes de intentar ser interesante.'
+        ],
+        trabajo: [
+          'esta semana, escribe en privado qué sentido tiene tu trabajo antes de volver a la plaza.',
+          'esta semana, guarda una hora sin pantallas para pensar el propósito — no la vitrina.',
+          'esta semana, elige una tarea pequeña que sostenga sentido aunque nadie la vea.'
+        ],
+        descanso: [
+          'esta semana, guarda un bloque de descanso como quien guarda un refugio — sin disculparte por entrar.',
+          'esta semana, elige una pausa breve y real — no la que suena bien contarla.',
+          'esta semana, deja una tarde sin rendir — solo habitar el lugar con calma.'
+        ]
+      }
+    },
+    MEDITERRANEAN: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, el encuentro suele pasar en la calle antes que en la declaración — y ahí aparece si el vínculo tiene densidad o solo tránsito.',
+        trabajo: '{ciudad} empuja hacia la vitrina urbana: a veces confundes visibilidad en la acera con claridad de obra.',
+        descanso: 'El cuerpo en {ciudad} pide pausa entre idas y vueltas; la ciudad sigue andando y tú miden si parar es permiso o retraso.'
+      },
+      opportunityByGoal: {
+        amor: 'habitar el encuentro en proximidad — sin convertir la calle en escenario.',
+        trabajo: 'contrastar impulso y propósito antes de exponer la trayectoria en público.',
+        descanso: 'bajar el paso en medio del bullicio sin desaparecer del mapa urbano.'
+      },
+      summaryFrame: {
+        amor: 'En el ritmo urbano de {ciudad}, con {goalPhrase} en primer plano, puede que notes en el paseo:',
+        trabajo: 'En la densidad de {ciudad}, leyendo {goalPhrase}, puede que notes en la calle viva:',
+        descanso: 'En el tránsito de {ciudad}, con {goalPhrase}, puede que notes en el cuerpo que camina:'
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando el encuentro no necesita escena?',
+          DC: '¿Qué acuerdo sostienes en {ciudad} antes de medir el vínculo en público?',
+          MC: '¿Qué parte del amor quieres que {ciudad} haga visible en la calle?',
+          default: '¿Qué te pide {ciudad} en amor si sueltas la necesidad de impresionar?'
+        },
+        trabajo: {
+          IC: '¿Qué quieres que {ciudad} haga visible de tu trabajo — y qué guardas al doblar la esquina?',
+          MC: '¿Tu impulso en {ciudad} busca obra o escaparate urbano?',
+          AC: '¿Cómo te presentarías en {ciudad} si tu trabajo no necesitara vitrina?',
+          default: '¿Qué propósito sostendrías en {ciudad} antes de volver a la acera?'
+        },
+        descanso: {
+          AC: '¿Puedes aflojar el paso en {ciudad} sin sentir que pierdes el ritmo del día?',
+          MC: '¿Tu descanso en {ciudad} es pausa o solo cambio de calle?',
+          IC: '¿Qué refugio te pide {ciudad} entre un paseo y otro?',
+          default: '¿Qué ritmo corporal te devuelve {ciudad} si dejas de perseguir el tránsito?'
+        }
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea un encuentro en la calle — no la escena que repetirías.',
+          'De {ciudad} llévate la proximidad que no necesitó prisa para ser real.',
+          'Si el vínculo permanece, que sea en el paseo compartido — no en la foto del momento.'
+        ],
+        trabajo: [
+          'De {ciudad} llévate esto: la obra puede respirar antes de volver a la acera.',
+          'Si algo queda, que sea claridad en medio del bullicio — no ruido de vitrina.',
+          'Una pregunta basta: ¿para quién trabajas cuando la calle se vacía?'
+        ],
+        descanso: [
+          'De {ciudad} quédate con el cuerpo que aprendió a bajar el paso sin desaparecer.',
+          'Si algo permanece, que sea una pausa tomada en medio del tránsito.',
+          'Llévate un ritmo urbano más lento: el que no compitió con la ciudad.'
+        ]
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, camina un tramo con alguien — la proximidad en la calle importa más que la escena.',
+          'esta semana, elige un encuentro breve en un sitio vivo — presencia antes que performance.',
+          'esta semana, nota si el vínculo aguanta cuando bajas el paso en el paseo.'
+        ],
+        trabajo: [
+          'esta semana, contrasta impulso y propósito antes de exponer la trayectoria en público.',
+          'esta semana, guarda una hora en la calle para pensar la obra — no la vitrina.',
+          'esta semana, elige una tarea pequeña que respire antes de volver a la acera.'
+        ],
+        descanso: [
+          'esta semana, baja el paso un tramo urbano sin objetivo — solo cuerpo en el tránsito.',
+          'esta semana, elige una pausa breve en medio del día — no la que suena bien contarla.',
+          'esta semana, deja una tarde sin perseguir el ritmo de la ciudad.'
+        ]
+      }
+    },
+    ANGLO: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, el vínculo se prueba en acuerdos pequeños: ¿sostienes la verdad cuando nadie te lo pide por escrito?',
+        trabajo: '{ciudad} premia la dirección visible — la tensión está en decidir qué parte de tu obra necesita calendario y cuál necesita silencio.',
+        descanso: 'En {ciudad}, calendarizar el descanso puede volverse otra tarea; el cuerpo pregunta si la pausa es elección o rendimiento programado.'
+      },
+      opportunityByGoal: {
+        amor: 'elegir presencia antes que performance en el vínculo — con claridad y sin disculpa.',
+        trabajo: 'recuperar dirección interna antes de volver a medirte por resultados visibles.',
+        descanso: 'reservar bloques de pausa con la misma seriedad que reservas obligaciones.'
+      },
+      summaryFrame: {
+        amor: 'Si ordenas la semana en {ciudad} desde {goalPhrase}, quizá notes en tu decisión:',
+        trabajo: 'Si trazas el calendario en {ciudad} desde {goalPhrase}, quizá notes en tu dirección:',
+        descanso: 'Si bloqueas tiempo en {ciudad} para {goalPhrase}, quizá notes en tu cuerpo:'
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando no necesitas aprobación para ser tú?',
+          DC: '¿Qué límite claro necesitas en {ciudad} antes de abrir el vínculo?',
+          MC: '¿Qué parte de tu historia quieres que {ciudad} haga visible en el amor?',
+          default: '¿Qué te pide {ciudad} en amor si eliges verdad antes que escena?'
+        },
+        trabajo: {
+          IC: '¿Qué quieres que {ciudad} haga visible de tu trabajo — y qué prefieres mantener en reserva?',
+          MC: '¿Tu impulso en {ciudad} busca sentido o escaparate?',
+          AC: '¿Cómo te presentarías en {ciudad} si tu trabajo no necesitara prueba constante?',
+          default: '¿Qué propósito sostendrías en {ciudad} antes de medir el éxito?'
+        },
+        descanso: {
+          AC: '¿Puedes soltar en {ciudad} sin sentir que pierdes terreno?',
+          MC: '¿Tu descanso en {ciudad} es pausa o otra forma de competir?',
+          IC: '¿Qué bloque de calma te pide {ciudad} para recuperar de verdad?',
+          default: '¿Qué ritmo corporal eliges en {ciudad} si dejas de rendir?'
+        }
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea una decisión honesta — no una escena bien ejecutada.',
+          'De {ciudad} llévate la claridad que no necesitó aplauso para sostenerse.',
+          'Si el vínculo permanece, que sea en un acuerdo pequeño y verdadero.'
+        ],
+        trabajo: [
+          'De {ciudad} llévate esto: la dirección puede ser interna antes de volver al calendario.',
+          'Si algo queda, que sea obra con sentido — no solo resultado visible.',
+          'Una pregunta basta: ¿para quién trabajas cuando cierras la agenda?'
+        ],
+        descanso: [
+          'De {ciudad} quédate con el bloque de calma que no fue otra tarea cumplida.',
+          'Si algo permanece, que sea permiso explícito para bajar exigencia.',
+          'Llévate un ritmo elegido: la pausa que no compitió con la productividad.'
+        ]
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, elige una conversación directa donde puedas decir la verdad sin adornarla.',
+          'esta semana, marca un bloque para el vínculo — con la misma seriedad que marcas obligaciones.',
+          'esta semana, di un límite claro antes de abrir una escena que no necesitas.'
+        ],
+        trabajo: [
+          'esta semana, elige la dirección interna antes de aceptar lo urgente del calendario.',
+          'esta semana, escribe en privado qué dirección sostienes antes de volver al calendario.',
+          'esta semana, elige una tarea que sostenga sentido aunque nadie la evalúe.'
+        ],
+        descanso: [
+          'esta semana, reserva un bloque de descanso en el calendario — sin convertirlo en otra tarea.',
+          'esta semana, elige una pausa breve y real — no la que suena bien contarla.',
+          'esta semana, baja exigencia un bloque sin desaparecer del mapa.'
+        ]
+      }
+    },
+    EAST_ASIAN: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, el vínculo se afina en detalles repetidos — no en la declaración amplia, sino en el gesto que vuelve cada día.',
+        trabajo: '{ciudad} ordena la trayectoria en pasos: la fricción surge cuando quieres resultado visible antes de que madure el proceso interno.',
+        descanso: 'En {ciudad}, el ritmo cotidiano puede absorber la pausa; conviene notar si el cuerpo recupera o solo cambia de secuencia.'
+      },
+      opportunityByGoal: {
+        amor: 'cuidar el vínculo en gestos repetidos — sin forzar una escena que acelere lo que aún madura.',
+        trabajo: 'sostener el proceso en privado antes de exponer la trayectoria.',
+        descanso: 'dejar que el cuerpo marque el ritmo sin convertir la pausa en otro tramo urgente.'
+      },
+      summaryFrame: {
+        amor: 'En la secuencia de {ciudad}, con {goalPhrase}, tal vez notes en el detalle:',
+        trabajo: 'En el proceso de {ciudad}, leyendo {goalPhrase}, tal vez notes en cada paso:',
+        descanso: 'En la rutina de {ciudad}, con {goalPhrase}, tal vez notes en el cuerpo que repite:'
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando el vínculo se afina en lo pequeño?',
+          DC: '¿Qué gesto cotidiano sostienes en {ciudad} antes de pedir una gran declaración?',
+          MC: '¿Qué parte del amor quieres que {ciudad} revele con calma?',
+          default: '¿Qué te pide {ciudad} en amor si observas antes de concluir?'
+        },
+        trabajo: {
+          IC: '¿Qué paso de tu obra en {ciudad} sigue vivo cuando nadie lo evalúa?',
+          MC: '¿Tu impulso en {ciudad} busca proceso o vitrina inmediata?',
+          AC: '¿Cómo te presentarías en {ciudad} si tu trabajo pudiera madurar en silencio?',
+          default: '¿Qué sentido sostendrías en {ciudad} antes de medir el resultado?'
+        },
+        descanso: {
+          AC: '¿Puedes aflojar en {ciudad} sin romper la secuencia que te sostiene?',
+          MC: '¿Tu descanso en {ciudad} es pausa o solo otro tramo del día?',
+          IC: '¿Qué ritmo íntimo te pide {ciudad} para recuperar de verdad?',
+          default: '¿Qué señal corporal te devuelve {ciudad} si dejas de acelerar?'
+        }
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea un gesto repetido — no una escena que apresuraste.',
+          'De {ciudad} llévate el detalle que sostuvo el vínculo sin ruido.',
+          'Si el amor permanece, que sea en la secuencia tranquila de los días.'
+        ],
+        trabajo: [
+          'De {ciudad} llévate esto: el proceso puede madurar antes de volver a medirse.',
+          'Si algo queda, que sea obra paciente — no resultado apresurado.',
+          'Una pregunta basta: ¿para quién trabajas cuando el ruido baja?'
+        ],
+        descanso: [
+          'De {ciudad} quédate con el cuerpo que encontró ritmo sin otra exigencia.',
+          'Si algo permanece, que sea una pausa observada — no un tramo disfrazado.',
+          'Llévate un detalle de calma: el que no compitió con la secuencia.'
+        ]
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, repite un gesto pequeño de cuidado — sin forzar una escena amplia.',
+          'esta semana, observa el vínculo en el detalle antes de pedir una gran declaración.',
+          'esta semana, deja que el encuentro madure en silencio un poco más de lo cómodo.'
+        ],
+        trabajo: [
+          'esta semana, sostén un paso de la obra en privado antes de exponer la trayectoria.',
+          'esta semana, anota qué parte del proceso sigue viva cuando nadie te evalúa.',
+          'esta semana, elige una tarea pequeña que madure sin prisa de vitrina.'
+        ],
+        descanso: [
+          'esta semana, deja que el cuerpo marque el ritmo sin convertir la pausa en otro tramo.',
+          'esta semana, observa qué señal corporal pide calma antes de acelerar de nuevo.',
+          'esta semana, guarda un bloque breve de descanso en la secuencia del día.'
+        ]
+      }
+    },
+    AFRICAN_COASTAL: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, el vínculo se mide en amplitud: ¿aguanta la cercanía cuando abre el horizonte y el viento cambia el ánimo del día?',
+        trabajo: '{ciudad} mezcla obra y paisaje — a veces confundes el impulso del entorno con una dirección que aún no habitas por dentro.',
+        descanso: 'El cuerpo en {ciudad} recupera cuando el horizonte afloja la prisa; la mente, sin embargo, sigue midiendo terreno.'
+      },
+      opportunityByGoal: {
+        amor: 'dejar que el vínculo respire con amplitud — sin encerrarlo en una escena pequeña.',
+        trabajo: 'contrastar impulso del entorno y propósito interno antes de decidir el siguiente paso.',
+        descanso: 'habitar la pausa con el cuerpo abierto al viento y al contraste del lugar.'
+      },
+      summaryFrame: {
+        amor: 'Ante la amplitud de {ciudad}, leyendo {goalPhrase}, quizá notes en el horizonte:',
+        trabajo: 'Con el contraste de {ciudad} y {goalPhrase}, quizá notes en la obra que abres:',
+        descanso: 'Con el viento de {ciudad} y {goalPhrase}, quizá notes en el cuerpo que afloja:'
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando el horizonte te devuelve al vínculo sin escena?',
+          DC: '¿Qué verdad sostienes en {ciudad} antes de medir el amor por su brillo?',
+          MC: '¿Qué parte del vínculo quieres que {ciudad} abra con amplitud?',
+          default: '¿Qué te pide {ciudad} en amor si miras lejos antes de concluir?'
+        },
+        trabajo: {
+          IC: '¿Qué parte de tu obra en {ciudad} resiste el viento del entorno?',
+          MC: '¿Tu impulso en {ciudad} busca paisaje o dirección interna?',
+          AC: '¿Cómo te presentarías en {ciudad} si tu trabajo no dependiera del contraste exterior?',
+          default: '¿Qué propósito sostendrías en {ciudad} antes de seguir el horizonte?'
+        },
+        descanso: {
+          AC: '¿Puedes soltar en {ciudad} sin sentir que el horizonte te exige rendir?',
+          MC: '¿Tu descanso en {ciudad} es amplitud o otra forma de medir terreno?',
+          IC: '¿Qué calma te pide {ciudad} cuando el cuerpo mira lejos?',
+          default: '¿Qué ritmo corporal te devuelve {ciudad} si dejas de competir con el paisaje?'
+        }
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea un vínculo que respiró con amplitud — no una escena cerrada.',
+          'De {ciudad} llévate la cercanía que no temió al horizonte.',
+          'Si el amor permanece, que sea en la calma que devolvió el viento.'
+        ],
+        trabajo: [
+          'De {ciudad} llévate esto: la dirección puede ser tuya aunque el paisaje empuje.',
+          'Si algo queda, que sea obra habitada — no impulso del entorno.',
+          'Una pregunta basta: ¿para quién trabajas cuando el horizonte se aquieta?'
+        ],
+        descanso: [
+          'De {ciudad} quédate con el cuerpo que volvió a sentir amplitud.',
+          'Si algo permanece, que sea una pausa que no compitió con el viento.',
+          'Llévate un contraste sereno: el que aflojó la prisa sin borrarte.'
+        ]
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, deja que el vínculo respire con amplitud — sin encerrarlo en una escena pequeña.',
+          'esta semana, camina un tramo con horizonte abierto y nota si la cercanía aguanta.',
+          'esta semana, elige un encuentro donde importe más la calma que el brillo del momento.'
+        ],
+        trabajo: [
+          'esta semana, contrasta impulso del entorno y propósito interno antes de decidir el siguiente paso.',
+          'esta semana, escribe en privado qué dirección es tuya antes de seguir el paisaje.',
+          'esta semana, elige una tarea que resista el viento del entorno sin perder sentido.'
+        ],
+        descanso: [
+          'esta semana, habita la pausa con el cuerpo abierto al contraste del lugar.',
+          'esta semana, deja una tarde sin competir con el horizonte — solo cuerpo presente.',
+          'esta semana, guarda un bloque de calma donde el viento afloje la prisa.'
+        ]
+      }
+    }
+  };
+
+  function normalizeRegionKey(value) {
+    return String(value || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
+  }
+
+  function resolveRegionFamily(cityId, countryId) {
+    var city = normalizeRegionKey(cityId);
+    var country = normalizeRegionKey(countryId);
+
+    if (city === 'lisboa') return 'IBERIAN';
+    if (city === 'barcelona') return 'MEDITERRANEAN';
+    if (city === 'toronto') return 'ANGLO';
+    if (city === 'tokio') return 'EAST_ASIAN';
+    if (city.indexOf('ciudad del cabo') !== -1 || city === 'cape town') return 'AFRICAN_COASTAL';
+
+    if (country === 'pt' || country === 'portugal') return 'IBERIAN';
+    if (country === 'es' || country === 'espana' || country === 'spain') return 'MEDITERRANEAN';
+    if (country === 'it' || country === 'italia' || country === 'italy' ||
+        country === 'gr' || country === 'grecia' || country === 'turquia' ||
+        country === 'tr' || country === 'turkey') return 'MEDITERRANEAN';
+    if (country === 'ca' || country === 'canada' || country === 'gb' ||
+        country === 'uk' || country === 'reino unido' || country === 'us' ||
+        country === 'ee. uu.' || country === 'eeuu') return 'ANGLO';
+    if (country === 'jp' || country === 'japon' || country === 'japan' ||
+        country === 'kr' || country === 'corea del sur') return 'EAST_ASIAN';
+    if (country === 'za' || country === 'sudafrica' || country === 'eg' ||
+        country === 'egipto' || country === 'ke' || country === 'kenia') return 'AFRICAN_COASTAL';
+
+    return 'IBERIAN';
+  }
+
+  function regionalSpine(regionFamily) {
+    return NARRATIVE_SPINE_BY_REGION[regionFamily] || null;
+  }
+
   function hash32(str) {
     var h = 2166136261;
     var s = String(str);
@@ -681,8 +1077,11 @@
     return t.slice(idx).replace(/^[^:]*:\s*/i, '').replace(/\.$/, '').trim();
   }
 
-  function pickGuidingQuestion(goalId, angle, cityName) {
-    var map = GUIDING_QUESTIONS[goalId] || GUIDING_QUESTIONS.amor;
+  function pickGuidingQuestion(goalId, angle, cityName, regionFamily) {
+    var regional = regionalSpine(regionFamily);
+    var map = (regional && regional.guiding && regional.guiding[goalId])
+      ? regional.guiding[goalId]
+      : (GUIDING_QUESTIONS[goalId] || GUIDING_QUESTIONS.amor);
     var q = (angle && map[angle]) ? map[angle] : map.default;
     return q.replace(/\{ciudad\}/g, cityName);
   }
@@ -985,13 +1384,21 @@
     return withCity(HUMAN_THEME_BY_GOAL[goalId] || HUMAN_THEME_BY_GOAL.amor, cityName);
   }
 
-  function humanizeConflict(centralTension, goalId, cityName) {
+  function humanizeConflict(centralTension, goalId, cityName, regionFamily) {
+    var regional = regionalSpine(regionFamily);
+    if (regional && regional.conflictByGoal && regional.conflictByGoal[goalId]) {
+      return withCity(regional.conflictByGoal[goalId], cityName);
+    }
     var key = normalizeLookupKey(centralTension.label);
     if (HUMAN_CONFLICT_BY_LABEL[key]) return withCity(HUMAN_CONFLICT_BY_LABEL[key], cityName);
     return withCity(HUMAN_CONFLICT_BY_GOAL[goalId] || HUMAN_CONFLICT_BY_GOAL.amor, cityName);
   }
 
-  function humanizeOpportunity(mainOpportunity, goalId) {
+  function humanizeOpportunity(mainOpportunity, goalId, regionFamily) {
+    var regional = regionalSpine(regionFamily);
+    if (regional && regional.opportunityByGoal && regional.opportunityByGoal[goalId]) {
+      return regional.opportunityByGoal[goalId];
+    }
     var hit = matchPattern(HUMAN_OPPORTUNITY_PATTERNS, mainOpportunity.label);
     if (hit) return hit;
     if (mainOpportunity.condition) {
@@ -1039,11 +1446,15 @@
     ]
   };
 
-  function humanizeOpportunityAction(mainOpportunity, goalId, seed) {
+  function humanizeOpportunityAction(mainOpportunity, goalId, seed, regionFamily) {
+    var regional = regionalSpine(regionFamily);
+    var pool = (regional && regional.actionByGoal && regional.actionByGoal[goalId])
+      ? regional.actionByGoal[goalId]
+      : (HUMAN_ACTION_BY_GOAL[goalId] || HUMAN_ACTION_BY_GOAL.amor);
     return pickHumanVariant(
-      HUMAN_ACTION_BY_GOAL[goalId] || HUMAN_ACTION_BY_GOAL.amor,
+      pool,
       seed,
-      'human-action:' + goalId
+      'human-action:' + goalId + ':' + (regionFamily || 'global')
     );
   }
 
@@ -1054,9 +1465,13 @@
     );
   }
 
-  function humanizeClosing(goalId, cityName, seed) {
+  function humanizeClosing(goalId, cityName, seed, regionFamily) {
+    var regional = regionalSpine(regionFamily);
+    var pool = (regional && regional.closingByGoal && regional.closingByGoal[goalId])
+      ? regional.closingByGoal[goalId]
+      : (HUMAN_CLOSING_BY_GOAL[goalId] || HUMAN_CLOSING_BY_GOAL.amor);
     return withCity(
-      pickHumanVariant(HUMAN_CLOSING_BY_GOAL[goalId] || HUMAN_CLOSING_BY_GOAL.amor, seed, 'human-closing:' + goalId),
+      pickHumanVariant(pool, seed, 'human-closing:' + goalId + ':' + (regionFamily || 'global')),
       cityName
     );
   }
@@ -1073,7 +1488,7 @@
     return t;
   }
 
-  function buildNarrativeSummary(cityName, goalId, humanTheme, rhythmLine) {
+  function buildNarrativeSummary(cityName, goalId, humanTheme, rhythmLine, regionFamily) {
     var goalPhrase = {
       amor: 'el amor y el vínculo',
       trabajo: 'el trabajo y el propósito',
@@ -1086,11 +1501,17 @@
       .replace(/^Puede que en [^,]+ sientas /, '')
       .replace(/^Tal vez en [^,]+ notes /, '');
 
+    var regional = regionalSpine(regionFamily);
+    var frame = (regional && regional.summaryFrame && regional.summaryFrame[goalId])
+      ? regional.summaryFrame[goalId]
+          .replace(/\{ciudad\}/g, cityName)
+          .replace(/\{goalPhrase\}/g, goalPhrase)
+      : ('Quizá en ' + cityName + ', leyendo desde ' + goalPhrase + ', notes esto:');
+
     if (rhythmLine) {
-      return rhythmLine + ' Quizá, leyendo ' + cityName + ' desde ' + goalPhrase + ', notes esto: ' +
-        lcfirst(themeCore);
+      return rhythmLine + ' ' + frame + ' ' + lcfirst(themeCore);
     }
-    return 'Quizá en ' + cityName + ', leyendo desde ' + goalPhrase + ', notes esto: ' + lcfirst(themeCore);
+    return frame + ' ' + lcfirst(themeCore);
   }
 
   function mapLinePlanetToCountryKey(planet) {
@@ -1322,7 +1743,9 @@
     var dominantTheme = deriveDominantTheme(catalog, goalId, primaryKey, primary, bridgeProfile);
     var centralTension = deriveCentralTension(catalog, goalId, primaryKey, bridgeProfile);
     var mainOpportunity = deriveMainOpportunity(catalog, goalId, primaryKey, bridgeProfile);
-    var guidingQuestion = pickGuidingQuestion(goalId, primary && primary.angle, cityName);
+    var countryId = resolveCountryIdFromCity(input.city);
+    var regionFamily = resolveRegionFamily(cityName, countryId);
+    var guidingQuestion = pickGuidingQuestion(goalId, primary && primary.angle, cityName, regionFamily);
 
     var seed = hash32(
       cityName + '|' + goalId + '|' + deepKeys.join(',') + '|' + echoKeys.join(',')
@@ -1334,18 +1757,19 @@
     if (cityAtm && cityAtm.goalTone) {
       humanTheme = cityAtm.goalTone;
     }
-    var humanConflict = humanizeConflict(centralTension, goalId, cityName);
-    var humanOpportunity = humanizeOpportunity(mainOpportunity, goalId);
-    var humanOpportunityAction = humanizeOpportunityAction(mainOpportunity, goalId, seed);
+    var humanConflict = humanizeConflict(centralTension, goalId, cityName, regionFamily);
+    var humanOpportunity = humanizeOpportunity(mainOpportunity, goalId, regionFamily);
+    var humanOpportunityAction = humanizeOpportunityAction(mainOpportunity, goalId, seed, regionFamily);
     var humanObserve = weaveAtmosphereObserve(
       humanizeObserve(goalId, cityName, seed), cityAtm, goalId, cityName, seed
     );
-    var humanClosing = humanizeClosing(goalId, cityName, seed);
+    var humanClosing = humanizeClosing(goalId, cityName, seed, regionFamily);
     var narrativeSummary = buildNarrativeSummary(
-      cityName, goalId, humanTheme, cityAtm ? cityAtm.rhythm : ''
+      cityName, goalId, humanTheme, cityAtm ? cityAtm.rhythm : '', regionFamily
     );
 
     var narrativeContext = {
+      regionFamily: regionFamily,
       dominantTheme: dominantTheme,
       centralTension: centralTension,
       mainOpportunity: mainOpportunity,
@@ -1379,7 +1803,8 @@
       'deep_influences_' + deepKeys.length,
       'editorial_humanization',
       'voice_beauty_polish',
-      'human_presence_spine'
+      'human_presence_spine',
+      'narrative_spine_region_' + regionFamily
     ];
     if (cityAtm) rulesFired.push('city_atmosphere_' + cityAtm.citySlug);
     if (cityAtm && cityAtm.zodiacSignature && cityAtm.zodiacSignature.length) {
@@ -1402,6 +1827,7 @@
         cityName: cityName,
         citySlug: cityAtm ? cityAtm.citySlug : null,
         countryId: countryContext.countryId,
+        regionFamily: regionFamily,
         countryLinesUsed: countryContext.lines ? countryContext.lines.length : 0,
         deterministicSeed: seed,
         primaryInfluenceKey: primaryKey,
@@ -1416,6 +1842,8 @@
     MAX_COUNTRY_LINES: MAX_COUNTRY_LINES,
     THEME_ES: THEME_ES,
     deriveNarrativeContext: deriveNarrativeContext,
+    resolveRegionFamily: resolveRegionFamily,
+    NARRATIVE_SPINE_BY_REGION: NARRATIVE_SPINE_BY_REGION,
     GLOBAL_TOURISM_TOKENS: GLOBAL_TOURISM_TOKENS,
     CITY_COUNTRY_OVERLAP_FRAGMENTS: CITY_COUNTRY_OVERLAP_FRAGMENTS,
     ZODIAC_DOGMA_PATTERNS: ZODIAC_DOGMA_PATTERNS,
