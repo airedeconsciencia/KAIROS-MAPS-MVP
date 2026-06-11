@@ -1173,6 +1173,170 @@ function metaphorFingerprint(text) {
     return { sintesis: 160, favorece: 200, desafia: 170, aprovecha: 160, observar: 120, integracion: 140 };
   }
 
+  var GOAL_PADS_BY_REGION = {
+    IBERIAN: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en la conversación larga — una mirada que no pide conclusión.',
+        'Anota una escena de compañía y vuelve a ella en la sobremesa tranquila.',
+        'El amor aquí no pide teatro: pide verdad sostenida un poco más de lo cómodo.',
+        'Si algo incomoda en el vínculo, obsérvalo en la plaza — no como fallo personal.',
+        'La compañía cotidiana suele guiar mejor que los planes demasiado pulidos.',
+        'Una verdad pequeña vale más que una noche perfecta para contar.',
+        'Mira si la cercanía aguanta cuando baja la necesidad de impresionar.',
+        'Lo que hoy tensa el vínculo puede aclararse si alargas la conversación sin resolverla.'
+      ],
+      trabajo: [
+        'En {ciudad}, el sentido del trabajo se prueba en la sobremesa — no en la vitrina.',
+        'Escribe en privado qué parte de tu obra sigue viva cuando nadie te evalúa.',
+        'Una tarea pequeña en el barrio puede sostener más que una exposición brillante.',
+        'Si algo incomoda en la trayectoria, obsérvalo en lo cotidiano — no como fracaso.',
+        'La compañía honesta del proceso suele guiar mejor que los planes demasiado pulidos.',
+        'Contrasta impulso y sentido antes de volver a la plaza profesional.',
+        'Mira si el cansancio es de obra o de postureo — la diferencia importa en el barrio.',
+        'Lo que hoy confunde la trayectoria puede aclararse si aflojas la prisa de demostrar.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo recupera en la mesa: un paso lento, una tarde sin prisa.',
+        'Anota un momento de calma en la sobremesa — no el que suena bien contarlo.',
+        'El descanso aquí no pide disculpa: pide permiso sostenido un poco más de lo cómodo.',
+        'Si algo incomoda en la pausa, obsérvalo en el gesto cotidiano — no como pereza.',
+        'El ritmo del cuerpo en compañía suele guiar mejor que los planes demasiado pulidos.',
+        'Un rato breve y real vale más que una semana de descanso performativo.',
+        'Mira si la calma aguanta cuando vuelves a la plaza — ahí está la prueba.',
+        'Lo que hoy acelera el cuerpo puede aflojarse si te quedas un poco más sin rendir.'
+      ]
+    },
+    MEDITERRANEAN: {
+      amor: [
+        'En {ciudad}, el vínculo se prueba en la calle — proximidad antes que declaración.',
+        'Anota un encuentro en el paseo y vuelve a él al caminar.',
+        'El amor aquí no pide escena: pide presencia en la densidad del día.',
+        'Si algo incomoda en el vínculo, obsérvalo en el tránsito — no como fallo personal.',
+        'El ritmo urbano del encuentro suele orientar mejor que los planes demasiado cerrados.',
+        'Un cruce breve y real vale más que una noche perfecta para contar.',
+        'Mira si la cercanía aguanta cuando baja el impulso de impresionar en público.',
+        'Lo que hoy acelera el vínculo puede aclararse si bajas el paso en la calle.'
+      ],
+      trabajo: [
+        'En {ciudad}, el sentido del trabajo se prueba en la acera — no en la vitrina.',
+        'Guarda en privado qué dirección sostienes antes de volver a la calle viva.',
+        'Una tarea de fondo en la ciudad puede sostener más que una exposición brillante.',
+        'Si algo incomoda en la trayectoria, obsérvalo en el bullicio — no como fracaso.',
+        'El ritmo honesto de la calle suele orientar mejor que los planes demasiado cerrados.',
+        'Contrasta impulso y propósito antes de exponer la trayectoria en público.',
+        'Mira si el cansancio es de obra o de postureo — la diferencia importa al doblar la esquina.',
+        'Lo que hoy confunde la trayectoria puede aclararse si aflojas la prisa de la vitrina.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo recupera en el paseo: un paso lento, una tarde sin prisa.',
+        'Anota un momento de calma en la calle — no el que suena bien contarlo.',
+        'El descanso aquí no pide disculpa: pide permiso en medio del tránsito.',
+        'Si algo incomoda en la pausa, obsérvalo en el ritmo urbano — no como pereza.',
+        'El paso lento entre calles suele orientar mejor que los planes demasiado cerrados.',
+        'Un tramo breve y real vale más que una semana de descanso performativo.',
+        'Mira si la calma aguanta cuando vuelves a acelerar — ahí está la prueba en la calle.',
+        'Lo que hoy acelera el cuerpo puede aflojarse si bajas el paso sin desaparecer.'
+      ]
+    },
+    ANGLO: {
+      amor: [
+        'En {ciudad}, el vínculo se prueba en acuerdos pequeños — claridad antes que escena.',
+        'Anota una conversación directa y vuelve a ella con honestidad más tarde.',
+        'El amor aquí no pide performance: pide presencia con límites claros.',
+        'Si algo incomoda en el vínculo, nómbralo en privado — no como fallo personal.',
+        'Los acuerdos honestos suelen orientar mejor que los planes demasiado rígidos.',
+        'Una verdad breve vale más que una noche perfecta para contar.',
+        'Mira si la cercanía aguanta cuando baja la necesidad de aprobación.',
+        'Lo que hoy tensa el vínculo puede aclararse si eliges verdad antes que impresionar.'
+      ],
+      trabajo: [
+        'En {ciudad}, el sentido del trabajo se prueba en el calendario — no en la vitrina.',
+        'Registra en privado qué dirección sostienes antes de volver a medir resultados.',
+        'Una tarea de fondo en el bloque del día puede sostener más que una exposición brillante.',
+        'Si algo incomoda en la trayectoria, revísalo en el plan — no como fracaso.',
+        'Los bloques honestos del día suelen orientar mejor que los planes demasiado rígidos.',
+        'Elige dirección interna antes de aceptar lo urgente del calendario.',
+        'Mira si el cansancio es de obra o de postureo — la diferencia importa en la agenda.',
+        'Lo que hoy confunde la trayectoria puede aclararse si aflojas la prisa de demostrar.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo recupera en bloques: un tramo lento, una tarde reservada.',
+        'Anota un momento de calma reservado — no el que suena bien contarlo.',
+        'El descanso aquí no pide disculpa: pide permiso explícito en el calendario.',
+        'Si algo incomoda en la pausa, revísalo como señal — no como pereza.',
+        'Los bloques de calma suelen orientar mejor que los planes demasiado rígidos.',
+        'Un bloque breve y real vale más que una semana de descanso teatral.',
+        'Mira si la calma aguanta cuando vuelves a la agenda — ahí está la prueba.',
+        'Lo que hoy acelera el cuerpo puede aflojarse si reservas pausa con la misma seriedad.'
+      ]
+    },
+    EAST_ASIAN: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en gestos repetidos — detalle antes que declaración.',
+        'Anota un gesto mínimo del encuentro y vuelve a él con calma más tarde.',
+        'El amor aquí no pide escena: pide cuidado sostenido en lo pequeño.',
+        'Si algo incomoda en el vínculo, obsérvalo en la secuencia — no como fallo personal.',
+        'Los gestos cotidianos suelen orientar mejor que los planes demasiado apresurados.',
+        'Un detalle breve y real vale más que una noche perfecta para contar.',
+        'Mira si la cercanía aguanta cuando baja la prisa de concluir.',
+        'Lo que hoy tensa el vínculo puede aclararse si observas antes de responder.'
+      ],
+      trabajo: [
+        'En {ciudad}, el sentido del trabajo madura en pasos — no en la vitrina.',
+        'Anota en privado qué paso del proceso sigue vivo cuando nadie te evalúa.',
+        'Una tarea mínima de fondo puede sostener más que una exposición brillante.',
+        'Si algo incomoda en la trayectoria, obsérvalo en la secuencia — no como fracaso.',
+        'El proceso honesto suele orientar mejor que los planes demasiado apresurados.',
+        'Sostén un paso interno antes de exponer la trayectoria.',
+        'Mira si el cansancio es de obra o de postureo — la diferencia importa en el detalle.',
+        'Lo que hoy confunde la trayectoria puede aclararse si dejas madurar en silencio.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo recupera en tramos: un paso lento, una pausa observada.',
+        'Anota un momento de calma en la secuencia — no el que suena bien contarlo.',
+        'El descanso aquí no pide disculpa: pide permiso en la secuencia del día.',
+        'Si algo incomoda en la pausa, obsérvalo en el ritmo — no como pereza.',
+        'El tramo lento del cuerpo suele orientar mejor que los planes demasiado apresurados.',
+        'Un tramo breve y real vale más que una semana de descanso teatral.',
+        'Mira si la calma aguanta cuando vuelves a acelerar — ahí está la prueba en el detalle.',
+        'Lo que hoy acelera el cuerpo puede aflojarse si dejas que marque el ritmo.'
+      ]
+    },
+    AFRICAN_COASTAL: {
+      amor: [
+        'En {ciudad}, el vínculo respira con amplitud — cercanía antes que escena cerrada.',
+        'Anota un encuentro con horizonte abierto y vuelve a él con calma más tarde.',
+        'El amor aquí no pide prisa: pide presencia que no tema la distancia.',
+        'Si algo incomoda en el vínculo, obsérvalo en el contraste — no como fallo personal.',
+        'La calma del horizonte suele orientar mejor que los planes demasiado estrechos.',
+        'Un gesto amplio y real vale más que una noche perfecta para contar.',
+        'Mira si la cercanía aguanta cuando abre el viento y el día cambia.',
+        'Lo que hoy tensa el vínculo puede aclararse si dejas respirar la escena.'
+      ],
+      trabajo: [
+        'En {ciudad}, el sentido del trabajo se prueba ante el paisaje — no en la vitrina.',
+        'Escribe en privado qué dirección es tuya antes de seguir el impulso del entorno.',
+        'Una tarea de fondo con horizonte puede sostener más que una exposición brillante.',
+        'Si algo incomoda en la trayectoria, obsérvalo en el contraste — no como fracaso.',
+        'El contraste del entorno suele orientar mejor que los planes demasiado estrechos.',
+        'Contrasta impulso del paisaje y propósito interno antes del siguiente paso.',
+        'Mira si el cansancio es de obra o de postureo — la diferencia importa con el horizonte.',
+        'Lo que hoy confunde la trayectoria puede aclararse si aflojas la prisa del entorno.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo recupera con amplitud: un paso lento, una tarde al viento.',
+        'Anota un momento de calma con horizonte — no el que suena bien contarlo.',
+        'El descanso aquí no pide disculpa: pide permiso ante el horizonte abierto.',
+        'Si algo incomoda en la pausa, obsérvalo en el cuerpo — no como pereza.',
+        'La respiración del paisaje suele orientar mejor que los planes demasiado estrechos.',
+        'Un respiro breve y real vale más que una semana de descanso teatral.',
+        'Mira si la calma aguanta cuando vuelves a acelerar — ahí está la prueba en la amplitud.',
+        'Lo que hoy acelera el cuerpo puede aflojarse si habitas la pausa con el viento.'
+      ]
+    }
+  };
+
+  /** Fallback global (regiones no mapeadas). */
   var HUMAN_EDITORIAL_PADS_BY_GOAL = {
     amor: [
       'En {ciudad}, el vínculo se afina en gestos pequeños — una mirada, un silencio cómodo.',
@@ -1356,8 +1520,14 @@ function metaphorFingerprint(text) {
     return 'IBERIAN';
   }
 
+  function goalPadPool(ctx) {
+    var region = ctx.regionFamily || 'IBERIAN';
+    var pack = GOAL_PADS_BY_REGION[region] || GOAL_PADS_BY_REGION.IBERIAN;
+    return pack[ctx.goalId] || pack.amor;
+  }
+
   function editorialPadPool(ctx) {
-    var goalPool = HUMAN_EDITORIAL_PADS_BY_GOAL[ctx.goalId] || HUMAN_EDITORIAL_PADS_BY_GOAL.amor;
+    var goalPool = goalPadPool(ctx);
     var region = ctx.regionFamily || 'IBERIAN';
     var regional = REGIONAL_EDITORIAL_PADS[region] || REGIONAL_EDITORIAL_PADS.IBERIAN;
     return goalPool.concat(regional);
@@ -2020,6 +2190,7 @@ function metaphorFingerprint(text) {
     FORBIDDEN: FORBIDDEN,
     composeCityReading: composeCityReading,
     resolveRegionFamily: resolveRegionFamily,
+    GOAL_PADS_BY_REGION: GOAL_PADS_BY_REGION,
     REGIONAL_EDITORIAL_PADS: REGIONAL_EDITORIAL_PADS,
     REGIONAL_TOPUP_VARIANTS: REGIONAL_TOPUP_VARIANTS,
     METHODOLOGY_BLOCK_IDS: METHODOLOGY_BLOCK_IDS,
