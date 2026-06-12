@@ -134,6 +134,142 @@
     descanso: 'Tal vez en {ciudad} notes que el cuerpo vuelve a hablar — si le devuelves el micrófono.'
   };
 
+  var HUMAN_THEME_PATTERNS_BY_REGION = {
+    IBERIAN: {
+      descanso: [
+        'En {ciudad}, el cuerpo vuelve a la mesa antes que la mente — sin prisa de explicar.',
+        'En {ciudad}, la pausa se afina en la sobremesa tranquila — no en el plan perfecto.',
+        'En {ciudad}, el descanso pide permiso en la plaza antes que disculpa.'
+      ],
+      trabajo: [
+        'En {ciudad}, la obra silenciosa pesa más que la vitrina de la plaza.',
+        'En {ciudad}, el sentido madura en privado antes de volver a la sobremesa profesional.',
+        'En {ciudad}, conviene contrastar impulso y compañía antes de medir la trayectoria.'
+      ]
+    },
+    MEDITERRANEAN: {
+      descanso: [
+        'En {ciudad}, el cuerpo baja el paso en la calle — sin perseguir el tránsito.',
+        'En {ciudad}, la pausa respira entre idas y vueltas urbanas.',
+        'En {ciudad}, el descanso se prueba al doblar la esquina — no al acelerar.'
+      ],
+      trabajo: [
+        'En {ciudad}, la obra respira en la acera antes de volver a la vitrina.',
+        'En {ciudad}, el propósito madura en la calle viva — no en el escaparate.',
+        'En {ciudad}, conviene contrastar bullicio y dirección antes de exponer la trayectoria.'
+      ]
+    },
+    ANGLO: {
+      descanso: [
+        'En {ciudad}, el cuerpo reclama un bloque de calma — no otra tarea cumplida.',
+        'En {ciudad}, la pausa se reserva con la misma claridad que una obligación.',
+        'En {ciudad}, el descanso vuelve al trayecto cuando bajas la exigencia.'
+      ],
+      trabajo: [
+        'En {ciudad}, la dirección interna pesa más que el resultado visible del calendario.',
+        'En {ciudad}, el sentido se escribe en privado antes de volver al plan.',
+        'En {ciudad}, conviene separar urgencia y propósito antes de medir la trayectoria.'
+      ]
+    },
+    EAST_ASIAN: {
+      descanso: [
+        'En {ciudad}, el cuerpo marca el ritmo en la rutina — sin convertir la pausa en otro tramo.',
+        'En {ciudad}, la calma se observa en el detalle antes de acelerar de nuevo.',
+        'En {ciudad}, el descanso madura en la secuencia lenta del día.'
+      ],
+      trabajo: [
+        'En {ciudad}, el proceso callado pesa más que la vitrina inmediata.',
+        'En {ciudad}, la obra madura en la secuencia antes de exponer el resultado.',
+        'En {ciudad}, conviene observar el tramo interno antes de medir la trayectoria.'
+      ]
+    },
+    AFRICAN_COASTAL: {
+      descanso: [
+        'En {ciudad}, el cuerpo afloja con el viento — sin competir con la amplitud.',
+        'En {ciudad}, la pausa respira con el horizonte abierto.',
+        'En {ciudad}, el descanso se prueba en la calma del contraste, no en la prisa.'
+      ],
+      trabajo: [
+        'En {ciudad}, la dirección interna resiste el impulso del paisaje.',
+        'En {ciudad}, el propósito contrasta con el entorno antes del siguiente paso.',
+        'En {ciudad}, conviene leer la obra en amplitud — no solo en el impulso del lugar.'
+      ]
+    }
+  };
+
+  var SUMMARY_FRAME_POOL_BY_REGION = {
+    IBERIAN: {
+      amor: [
+        'En la cercanía de {ciudad}, con {goalPhrase} como hilo, conviene mirar el vínculo cotidiano:',
+        'Desde la conversación larga en {ciudad}, leyendo {goalPhrase}, aparece esto en el vínculo:'
+      ],
+      trabajo: [
+        'En la sobremesa de {ciudad}, leyendo {goalPhrase}, la obra silenciosa dice:',
+        'En la plaza profesional de {ciudad}, con {goalPhrase}, conviene leer la dirección interna:'
+      ],
+      descanso: [
+        'En el barrio de {ciudad}, con {goalPhrase}, el cuerpo que vuelve marca:',
+        'Desde la mesa tranquila en {ciudad}, con {goalPhrase}, el cuerpo advierte:'
+      ]
+    },
+    MEDITERRANEAN: {
+      amor: [
+        'En el ritmo urbano de {ciudad}, con {goalPhrase} en primer plano, conviene mirar el paseo:',
+        'Desde la acera de {ciudad}, leyendo {goalPhrase}, el encuentro dice:'
+      ],
+      trabajo: [
+        'En la densidad de {ciudad}, leyendo {goalPhrase}, la calle viva muestra:',
+        'Al doblar la esquina en {ciudad}, con {goalPhrase}, conviene leer la dirección:'
+      ],
+      descanso: [
+        'En el tránsito de {ciudad}, con {goalPhrase}, el cuerpo que camina responde:',
+        'En el paseo lento de {ciudad}, leyendo {goalPhrase}, la pausa advierte:'
+      ]
+    },
+    ANGLO: {
+      amor: [
+        'Si ordenas la semana en {ciudad} desde {goalPhrase}, mira tu decisión:',
+        'En el trayecto de {ciudad}, con {goalPhrase}, conviene leer el vínculo:'
+      ],
+      trabajo: [
+        'Si trazas el calendario en {ciudad} desde {goalPhrase}, mira tu dirección:',
+        'En el bloque reservado de {ciudad}, con {goalPhrase}, la dirección interna dice:'
+      ],
+      descanso: [
+        'Si bloqueas tiempo en {ciudad} para {goalPhrase}, mira tu cuerpo:',
+        'Con el bloque de calma en {ciudad}, leyendo {goalPhrase}, el cuerpo responde:'
+      ]
+    },
+    EAST_ASIAN: {
+      amor: [
+        'En la secuencia de {ciudad}, con {goalPhrase}, el detalle muestra:',
+        'En el gesto repetido de {ciudad}, leyendo {goalPhrase}, el vínculo dice:'
+      ],
+      trabajo: [
+        'En el proceso de {ciudad}, leyendo {goalPhrase}, cada paso revela:',
+        'En la rutina laboral de {ciudad}, con {goalPhrase}, conviene leer la dirección:'
+      ],
+      descanso: [
+        'En la rutina de {ciudad}, con {goalPhrase}, el cuerpo que repite advierte:',
+        'En el tramo lento de {ciudad}, leyendo {goalPhrase}, la pausa responde:'
+      ]
+    },
+    AFRICAN_COASTAL: {
+      amor: [
+        'Ante la amplitud de {ciudad}, leyendo {goalPhrase}, el horizonte marca:',
+        'Con el viento de {ciudad} y {goalPhrase}, el vínculo respira:'
+      ],
+      trabajo: [
+        'Con el contraste de {ciudad} y {goalPhrase}, la obra abierta dice:',
+        'Ante el horizonte de {ciudad}, leyendo {goalPhrase}, conviene leer la dirección:'
+      ],
+      descanso: [
+        'Con el viento de {ciudad} y {goalPhrase}, el cuerpo que afloja responde:',
+        'En la amplitud de {ciudad}, leyendo {goalPhrase}, la pausa advierte:'
+      ]
+    }
+  };
+
   var HUMAN_OBSERVE_BY_GOAL = {
     amor: [
       'Si te quedas en {ciudad}, mira si el vínculo se sostiene en gestos pequeños — no en la escena que contarías después.',
@@ -1438,7 +1574,14 @@
     return humanObserve;
   }
 
-  function humanizeTheme(dominantTheme, goalId, cityName) {
+  function humanizeTheme(dominantTheme, goalId, cityName, regionFamily) {
+    var regionalThemes = HUMAN_THEME_PATTERNS_BY_REGION[regionFamily || 'IBERIAN'];
+    if ((goalId === 'descanso' || goalId === 'trabajo') &&
+        regionalThemes && regionalThemes[goalId] && regionalThemes[goalId].length) {
+      var tIdx = hash32(cityName + '|' + goalId + '|' + (regionFamily || '')) %
+        regionalThemes[goalId].length;
+      return withCity(regionalThemes[goalId][tIdx], cityName);
+    }
     var hit = matchPattern(HUMAN_THEME_PATTERNS, dominantTheme.label);
     if (hit) return withCity(hit, cityName);
     return withCity(HUMAN_THEME_BY_GOAL[goalId] || HUMAN_THEME_BY_GOAL.amor, cityName);
@@ -1562,11 +1705,19 @@
       .replace(/^Tal vez en [^,]+ notes /, '');
 
     var regional = regionalSpine(regionFamily);
-    var frame = (regional && regional.summaryFrame && regional.summaryFrame[goalId])
-      ? regional.summaryFrame[goalId]
-          .replace(/\{ciudad\}/g, cityName)
-          .replace(/\{goalPhrase\}/g, goalPhrase)
-      : ('Quizá en ' + cityName + ', leyendo desde ' + goalPhrase + ', notes esto:');
+    var framePool = SUMMARY_FRAME_POOL_BY_REGION[regionFamily || 'IBERIAN'];
+    var pool = framePool && framePool[goalId];
+    var frame;
+    if (pool && pool.length) {
+      frame = pool[hash32(cityName + '|' + goalId + '|' + (regionFamily || '') + '|frame') % pool.length];
+    } else if (regional && regional.summaryFrame && regional.summaryFrame[goalId]) {
+      frame = regional.summaryFrame[goalId];
+    } else {
+      frame = 'En ' + cityName + ', leyendo desde ' + goalPhrase + ', conviene mirar esto:';
+    }
+    frame = frame
+      .replace(/\{ciudad\}/g, cityName)
+      .replace(/\{goalPhrase\}/g, goalPhrase);
 
     if (rhythmLine) {
       return rhythmLine + ' ' + frame + ' ' + lcfirst(themeCore);
@@ -1813,7 +1964,7 @@
 
     var cityAtm = buildCityAtmosphere(cityName, goalId, seed);
 
-    var humanTheme = humanizeTheme(dominantTheme, goalId, cityName);
+    var humanTheme = humanizeTheme(dominantTheme, goalId, cityName, regionFamily);
     if (cityAtm && cityAtm.goalTone) {
       humanTheme = cityAtm.goalTone;
     }

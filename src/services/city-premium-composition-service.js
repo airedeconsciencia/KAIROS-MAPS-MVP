@@ -72,10 +72,53 @@
     descanso: 'descanso y bienestar'
   };
 
-  var SPINE_FAVORECE_OPEN = [
-    'Quizá notes que se abre algo con suavidad: ',
-    'Puede que descubras una puerta que merece la pena mirar: ',
-    'Tal vez se insinúe un gesto posible: '
+  var SPINE_FAVORECE_OPEN_BY_REGION = {
+    IBERIAN: [
+      'En la plaza, conviene leer la oportunidad así: ',
+      'Desde la sobremesa, la oportunidad se presenta en voz baja: ',
+      'En la conversación larga, puede abrirse esto: ',
+      'En el barrio, la oportunidad aparece sin escena: ',
+      'Con la compañía cotidiana, conviene mirar esto: ',
+      'En voz baja, la oportunidad se deja leer así: '
+    ],
+    MEDITERRANEAN: [
+      'En el paseo, conviene leer la oportunidad así: ',
+      'Desde la acera, la oportunidad se presenta en proximidad: ',
+      'En la calle viva, puede abrirse esto: ',
+      'Al doblar la esquina, la oportunidad aparece sin vitrina: ',
+      'Con el tránsito urbano, conviene mirar esto: ',
+      'En el cruce tranquilo, la oportunidad se deja leer así: '
+    ],
+    ANGLO: [
+      'En el calendario, la oportunidad toma forma así: ',
+      'Con el bloque reservado, conviene leer la oportunidad: ',
+      'En el trayecto, puede abrirse esto: ',
+      'En privado, la oportunidad aparece con claridad: ',
+      'Desde la dirección interna, conviene mirar esto: ',
+      'En el plan silencioso, la oportunidad se deja leer así: '
+    ],
+    EAST_ASIAN: [
+      'En la secuencia, la oportunidad toma forma así: ',
+      'Con el detalle observado, conviene leer la oportunidad: ',
+      'En el tramo lento, puede abrirse esto: ',
+      'En la rutina, la oportunidad aparece sin prisa: ',
+      'Desde el gesto mínimo, conviene mirar esto: ',
+      'En el proceso callado, la oportunidad se deja leer así: '
+    ],
+    AFRICAN_COASTAL: [
+      'Ante el horizonte, la oportunidad toma forma así: ',
+      'Con la amplitud del lugar, conviene leer la oportunidad: ',
+      'En el contraste del paisaje, puede abrirse esto: ',
+      'Con el viento, la oportunidad aparece sin prisa: ',
+      'Desde la respiración abierta, conviene mirar esto: ',
+      'En la escena amplia, la oportunidad se deja leer así: '
+    ]
+  };
+
+  var LEGACY_FAVORECE_OPEN_MARKERS = [
+    'puede que descubras una puerta',
+    'quizá notes que se abre algo con suavidad',
+    'tal vez se insinúe un gesto posible'
   ];
 
   var SPINE_APROVECHA_OPEN = [
@@ -336,7 +379,7 @@
       matiz: [
         'Detrás de la conversación hay otra textura, más silenciosa.',
         'Con el tiempo, la compañía aclara lo que la escena no decía.',
-        'Lo que sigue no corrige: completa la sobremesa interior.',
+        'Lo que sigue completa la sobremesa interior.',
         'Hay un matiz en la plaza que no es oposición: es compañía.'
       ],
       contradiccion: [
@@ -377,7 +420,7 @@
       matiz: [
         'Detrás del paseo hay otra textura, más silenciosa.',
         'Con el tiempo, la calle aclara lo que la primera vuelta no decía.',
-        'Lo que sigue no corrige: completa la proximidad urbana.',
+        'En el paseo, lo vivido completa la proximidad urbana.',
         'Hay un matiz en el cruce que no es oposición: es densidad humana.'
       ],
       contradiccion: [
@@ -418,7 +461,7 @@
       matiz: [
         'Detrás del bloque hay otra textura, más silenciosa.',
         'Con el tiempo, el proceso aclara lo que la primera lectura no decía.',
-        'Lo que sigue no corrige: completa la dirección interna.',
+        'En el bloque reservado, lo siguiente completa la dirección interna.',
         'Hay un matiz en el trayecto que no es oposición: es claridad.'
       ],
       contradiccion: [
@@ -459,7 +502,7 @@
       matiz: [
         'Detrás del detalle hay otra textura, más silenciosa.',
         'Con el tiempo, la secuencia aclara lo que la primera pasada no decía.',
-        'Lo que sigue no corrige: completa el proceso observado.',
+        'En la secuencia, lo observado completa el proceso.',
         'Hay un matiz en el tramo que no es oposición: es precisión.'
       ],
       contradiccion: [
@@ -500,7 +543,7 @@
       matiz: [
         'Detrás del horizonte hay otra textura, más silenciosa.',
         'Con el tiempo, la amplitud aclara lo que la primera mirada no decía.',
-        'Lo que sigue no corrige: completa el contraste del lugar.',
+        'Ante el horizonte, lo vivido completa el contraste del lugar.',
         'Hay un matiz en el viento que no es oposición: es respiración.'
       ],
       contradiccion: [
@@ -1336,6 +1379,25 @@ function metaphorFingerprint(text) {
     return base ? base + '\n\n' + line : line;
   }
 
+  function pickFavoreceOpen(ctx) {
+    var region = ctx.regionFamily || 'IBERIAN';
+    var pack = SPINE_FAVORECE_OPEN_BY_REGION[region] || SPINE_FAVORECE_OPEN_BY_REGION.IBERIAN;
+    var seed = ctx.seed || '';
+    var start = hash32(seed + ':fav') % pack.length;
+    ctx._usedFavoreceOpen = ctx._usedFavoreceOpen || {};
+    var i;
+    for (i = 0; i < pack.length; i++) {
+      var open = pack[(start + i) % pack.length];
+      var legacy = LEGACY_FAVORECE_OPEN_MARKERS.some(function (m) {
+        return open.toLowerCase().indexOf(m) !== -1;
+      });
+      if (legacy || ctx._usedFavoreceOpen[open]) continue;
+      ctx._usedFavoreceOpen[open] = true;
+      return open;
+    }
+    return pack[start];
+  }
+
   function buildSpineLead(sectionId, narrativeContext, ctx) {
     if (!narrativeContext) return '';
     var nc = narrativeContext;
@@ -1350,7 +1412,7 @@ function metaphorFingerprint(text) {
         return syn;
       }
       case 'favorece':
-        return SPINE_FAVORECE_OPEN[hash32(seed + ':fav') % SPINE_FAVORECE_OPEN.length] +
+        return pickFavoreceOpen(ctx) +
           spineField(nc, 'humanOpportunity', 'mainOpportunity.label');
       case 'desafia':
         return spineField(nc, 'humanConflict', 'centralTension.label');
@@ -2696,6 +2758,7 @@ function metaphorFingerprint(text) {
     FORBIDDEN: FORBIDDEN,
     composeCityReading: composeCityReading,
     resolveRegionFamily: resolveRegionFamily,
+    SPINE_FAVORECE_OPEN_BY_REGION: SPINE_FAVORECE_OPEN_BY_REGION,
     GOAL_PADS_BY_REGION: GOAL_PADS_BY_REGION,
     REGIONAL_EDITORIAL_MICRO_BY_GOAL: REGIONAL_EDITORIAL_MICRO_BY_GOAL,
     VOICE_TRANSITION_BY_REGION: VOICE_TRANSITION_BY_REGION,
