@@ -11,6 +11,7 @@ NATAL_LITE="$ROOT/src/content/natal-lite.js"
 COMPOSITION="$ROOT/src/services/natal-composition-service.js"
 BRIDGE="$ROOT/src/services/natal-map-bridge-service.js"
 CATALOG="$ROOT/src/content/cities-catalog.js"
+RESOLVER="$ROOT/src/services/editorial-family-resolver.js"
 ARCHETYPES="$ROOT/src/content/country-archetypes.js"
 COUNTRY_SERVICE="$ROOT/src/services/country-archetype-service.js"
 SCORER="$ROOT/src/content/city-scorer.js"
@@ -24,7 +25,7 @@ echo " KAIROS MAPS — Narrative Intelligence smoke (3.8f.6)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
-for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$CATALOG" \
+for f in "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$CATALOG" "$RESOLVER" \
   "$ARCHETYPES" "$COUNTRY_SERVICE" "$SCORER" "$ASTRO" "$BLOCKS" "$NARRATIVE"; do
   if [[ ! -f "$f" ]]; then
     echo "ERROR: No se encuentra: $f"
@@ -37,7 +38,7 @@ if [[ ! -f "$ASTRONOMY" ]]; then
   curl -fsSL "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" -o "$ASTRONOMY"
 fi
 
-export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE CATALOG ARCHETYPES COUNTRY_SERVICE SCORER ASTRO BLOCKS NARRATIVE ASTRONOMY ROOT
+export GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE CATALOG RESOLVER ARCHETYPES COUNTRY_SERVICE SCORER ASTRO BLOCKS NARRATIVE ASTRONOMY ROOT
 
 node <<'NODE'
 const fs = require('fs');
@@ -50,7 +51,7 @@ if (ctx.window.Astronomy) ctx.Astronomy = ctx.window.Astronomy;
 
 [
   process.env.GOAL_SIGNAL, process.env.NATAL_LITE, process.env.COMPOSITION,
-  process.env.BRIDGE, process.env.CATALOG, process.env.ARCHETYPES,
+  process.env.BRIDGE, process.env.CATALOG, process.env.RESOLVER, process.env.ARCHETYPES,
   process.env.COUNTRY_SERVICE, process.env.SCORER, process.env.ASTRO,
   process.env.BLOCKS, process.env.NARRATIVE
 ].forEach(function (p) {

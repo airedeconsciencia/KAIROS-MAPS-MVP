@@ -170,14 +170,91 @@
   var HUMAN_ATMO_OBSERVE_TAIL = [
     ' {ciudad} irá confirmando lo que ya llevabas encima — no como prueba, sino como contraste.',
     ' Los días en {ciudad} suelen afinar lo que intuías antes de nombrarlo.',
-    ' {ciudad} devuelve en lo cotidiano lo que la cabeza aún debate.',
-    ' Habitar {ciudad} es ver si la primera impresión aguanta cuando el cuerpo se queda.',
     ' Lo que {ciudad} abre hoy se lee distinto cuando dejas de tener prisa por decidir.',
     ' {ciudad} no responde de golpe: va matizando lo que sentías al llegar.',
     ' Con semanas de presencia, {ciudad} enseña matices que la primera lectura no alcanzaba.',
     ' Lo vivido en {ciudad} tenderá a confirmar o rebajar lo que ya traías — sin juicio.',
     ' Si te quedas un poco, {ciudad} dibuja contornos que la intuición apenas insinuaba.'
   ];
+
+  var OBSERVE_TAIL_BY_REGION = {
+    IBERIAN: {
+      amor: [
+        ' La conversación en {ciudad} suele afinar lo que la cabeza aún no ha dicho.',
+        ' En la compañía cotidiana, {ciudad} devuelve matices que la primera escena no mostró.'
+      ],
+      trabajo: [
+        ' La sobremesa en {ciudad} suele afinar lo que la obra aún no ha nombrado.',
+        ' En lo cotidiano, {ciudad} devuelve sentido que la vitrina no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' La mesa en {ciudad} suele afinar lo que el cuerpo pide sin disculpa.',
+        ' En la calma compartida, {ciudad} devuelve ritmo que la prisa no alcanza a nombrar.'
+      ]
+    },
+    MEDITERRANEAN: {
+      amor: [
+        ' El paseo en {ciudad} suele afinar lo que el encuentro aún no ha dicho.',
+        ' En la proximidad urbana, {ciudad} devuelve matices que la primera calle no mostró.'
+      ],
+      trabajo: [
+        ' La acera en {ciudad} suele afinar lo que la trayectoria aún no ha nombrado.',
+        ' En el tránsito, {ciudad} devuelve dirección que la vitrina no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' El paso lento en {ciudad} suele afinar lo que el cuerpo pide en medio del bullicio.',
+        ' En la calle viva, {ciudad} devuelve pausa que la prisa no alcanza a nombrar.'
+      ]
+    },
+    ANGLO: {
+      amor: [
+        ' El acuerdo en {ciudad} suele afinar lo que el vínculo aún no ha nombrado.',
+        ' En el bloque que habitas, {ciudad} devuelve claridad que la escena no alcanza a mostrar.'
+      ],
+      trabajo: [
+        ' El calendario en {ciudad} suele afinar lo que la dirección aún no ha nombrado.',
+        ' En el proceso, {ciudad} devuelve sentido que la vitrina no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' El bloque reservado en {ciudad} suele afinar lo que el cuerpo pide sin rendir.',
+        ' En la pausa elegida, {ciudad} devuelve calma que la agenda no alcanza a nombrar.'
+      ]
+    },
+    EAST_ASIAN: {
+      amor: [
+        ' El detalle en {ciudad} suele afinar lo que el vínculo aún no ha nombrado.',
+        ' En la secuencia cotidiana, {ciudad} devuelve matices que la primera impresión no mostró.'
+      ],
+      trabajo: [
+        ' El paso en {ciudad} suele afinar lo que el proceso aún no ha nombrado.',
+        ' En la rutina precisa, {ciudad} devuelve sentido que la vitrina no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' El tramo lento en {ciudad} suele afinar lo que el cuerpo pide sin otra exigencia.',
+        ' En la secuencia del día, {ciudad} devuelve ritmo que la prisa no alcanza a nombrar.'
+      ]
+    },
+    AFRICAN_COASTAL: {
+      amor: [
+        ' La amplitud en {ciudad} suele afinar lo que el vínculo aún no ha nombrado.',
+        ' Ante el horizonte, {ciudad} devuelve matices que la primera mirada no mostró.'
+      ],
+      trabajo: [
+        ' El contraste en {ciudad} suele afinar lo que la dirección aún no ha nombrado.',
+        ' Con el viento abierto, {ciudad} devuelve sentido que el impulso no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' La respiración en {ciudad} suele afinar lo que el cuerpo pide sin competir.',
+        ' En la amplitud del día, {ciudad} devuelve calma que la prisa no alcanza a nombrar.'
+      ]
+    }
+  };
+
+  function observeTailPool(regionFamily, goalId) {
+    var region = regionFamily || 'IBERIAN';
+    var pack = OBSERVE_TAIL_BY_REGION[region] || OBSERVE_TAIL_BY_REGION.IBERIAN;
+    return pack[goalId] || pack.amor || HUMAN_ATMO_OBSERVE_TAIL;
+  }
 
   var HUMAN_CLOSING_BY_GOAL = {
     amor: [
@@ -947,37 +1024,11 @@
     }
   };
 
-  function normalizeRegionKey(value) {
-    return String(value || '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .trim();
-  }
-
   function resolveRegionFamily(cityId, countryId) {
-    var city = normalizeRegionKey(cityId);
-    var country = normalizeRegionKey(countryId);
-
-    if (city === 'lisboa') return 'IBERIAN';
-    if (city === 'barcelona') return 'MEDITERRANEAN';
-    if (city === 'toronto') return 'ANGLO';
-    if (city === 'tokio') return 'EAST_ASIAN';
-    if (city.indexOf('ciudad del cabo') !== -1 || city === 'cape town') return 'AFRICAN_COASTAL';
-
-    if (country === 'pt' || country === 'portugal') return 'IBERIAN';
-    if (country === 'es' || country === 'espana' || country === 'spain') return 'MEDITERRANEAN';
-    if (country === 'it' || country === 'italia' || country === 'italy' ||
-        country === 'gr' || country === 'grecia' || country === 'turquia' ||
-        country === 'tr' || country === 'turkey') return 'MEDITERRANEAN';
-    if (country === 'ca' || country === 'canada' || country === 'gb' ||
-        country === 'uk' || country === 'reino unido' || country === 'us' ||
-        country === 'ee. uu.' || country === 'eeuu') return 'ANGLO';
-    if (country === 'jp' || country === 'japon' || country === 'japan' ||
-        country === 'kr' || country === 'corea del sur') return 'EAST_ASIAN';
-    if (country === 'za' || country === 'sudafrica' || country === 'eg' ||
-        country === 'egipto' || country === 'ke' || country === 'kenia') return 'AFRICAN_COASTAL';
-
+    var EFR = window.KairosEditorialFamily;
+    if (EFR && typeof EFR.resolveEditorialFamily === 'function') {
+      return EFR.resolveEditorialFamily({ cityName: cityId, countryId: countryId });
+    }
     return 'IBERIAN';
   }
 
@@ -1301,6 +1352,11 @@
       var idx = hash32(
         String(opts.seed) + ':' + slug + ':' + opts.goal + ':' + opts.slot + ':' + guard
       ) % pool.length;
+      if (opts.slot === 'images') {
+        var goalIdx = opts.goal === 'trabajo' ? 1 : (opts.goal === 'descanso' ? 2 : 0);
+        var band = Math.max(1, Math.floor(pool.length / 3));
+        idx = (goalIdx * band + hash32(String(opts.seed) + ':' + slug + ':img:' + guard) % band) % pool.length;
+      }
       var line = pool[idx];
       if (!containsAvoidToken(line, index.avoid)) {
         return localizeAtmosphereLine(line, opts.cityName || '');
@@ -1360,7 +1416,7 @@
     return pool[hash32(String(seed) + ':' + slot) % pool.length];
   }
 
-  function weaveAtmosphereObserve(humanObserve, cityAtm, goalId, cityName, seed) {
+  function weaveAtmosphereObserve(humanObserve, cityAtm, goalId, cityName, seed, regionFamily) {
     if (!cityAtm) return humanObserve;
     if (cityAtm.images) {
       var img = cityAtm.images;
@@ -1370,7 +1426,11 @@
         return humanObserve;
       }
       var tail = withCity(
-        pickHumanVariant(HUMAN_ATMO_OBSERVE_TAIL, seed, 'atmo-observe-tail'),
+        pickHumanVariant(
+          observeTailPool(regionFamily, goalId),
+          seed,
+          'atmo-observe-tail:' + (regionFamily || 'global') + ':' + goalId
+        ),
         cityName
       );
       return img.charAt(0).toUpperCase() + img.slice(1) + tail;
@@ -1761,7 +1821,7 @@
     var humanOpportunity = humanizeOpportunity(mainOpportunity, goalId, regionFamily);
     var humanOpportunityAction = humanizeOpportunityAction(mainOpportunity, goalId, seed, regionFamily);
     var humanObserve = weaveAtmosphereObserve(
-      humanizeObserve(goalId, cityName, seed), cityAtm, goalId, cityName, seed
+      humanizeObserve(goalId, cityName, seed), cityAtm, goalId, cityName, seed, regionFamily
     );
     var humanClosing = humanizeClosing(goalId, cityName, seed, regionFamily);
     var narrativeSummary = buildNarrativeSummary(
@@ -1843,6 +1903,7 @@
     THEME_ES: THEME_ES,
     deriveNarrativeContext: deriveNarrativeContext,
     resolveRegionFamily: resolveRegionFamily,
+    OBSERVE_TAIL_BY_REGION: OBSERVE_TAIL_BY_REGION,
     NARRATIVE_SPINE_BY_REGION: NARRATIVE_SPINE_BY_REGION,
     GLOBAL_TOURISM_TOKENS: GLOBAL_TOURISM_TOKENS,
     CITY_COUNTRY_OVERLAP_FRAGMENTS: CITY_COUNTRY_OVERLAP_FRAGMENTS,

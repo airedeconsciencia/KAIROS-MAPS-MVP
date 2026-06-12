@@ -3,6 +3,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+CATALOG="$ROOT/src/content/cities-catalog.js"
+RESOLVER="$ROOT/src/services/editorial-family-resolver.js"
 BLOCKS="$ROOT/src/content/premium-blocks.js"
 KNOWLEDGE="$ROOT/src/services/premium-knowledge-service.js"
 
@@ -12,20 +14,22 @@ echo " KAIROS MAPS — Premium Knowledge smoke (3.8e.3)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
-for f in "$BLOCKS" "$KNOWLEDGE"; do
+for f in "$CATALOG" "$RESOLVER" "$BLOCKS" "$KNOWLEDGE"; do
   if [[ ! -f "$f" ]]; then
     echo "ERROR: No se encuentra: $f"
     exit 1
   fi
 done
 
-export BLOCKS KNOWLEDGE
+export CATALOG RESOLVER BLOCKS KNOWLEDGE
 node <<'NODE'
 const fs = require('fs');
 const vm = require('vm');
 
 const ctx = { window: {}, console: console };
 vm.createContext(ctx);
+vm.runInContext(fs.readFileSync(process.env.CATALOG, 'utf8'), ctx, { filename: process.env.CATALOG });
+vm.runInContext(fs.readFileSync(process.env.RESOLVER, 'utf8'), ctx, { filename: process.env.RESOLVER });
 vm.runInContext(fs.readFileSync(process.env.BLOCKS, 'utf8'), ctx, { filename: process.env.BLOCKS });
 vm.runInContext(fs.readFileSync(process.env.KNOWLEDGE, 'utf8'), ctx, { filename: process.env.KNOWLEDGE });
 

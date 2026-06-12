@@ -9,8 +9,220 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8e.5-0.1';
+  var SCHEMA_VERSION = '3.8f.7f-0.1';
   var STAGE_ORDER = ['integrar', 'favorece', 'desafia', 'aprovechar', 'observar'];
+
+  var PREMIUM_BLOCK_VARIATIONS_BY_REGION = {
+    IBERIAN: {
+      doc17: {
+        t1: {
+          amor: 'En {ciudad}, la conversación puede abrir antes que la escena — te encuentran en la compañía, no en el personaje.',
+          trabajo: 'En {ciudad}, la sobremesa puede hacer visible tu obra — te encuentran en el sentido, no solo en la vitrina.',
+          descanso: 'En {ciudad}, la mesa puede devolver calma — el cuerpo se encuentra en la compañía, no en la prisa.'
+        },
+        t2: {
+          amor: 'El vínculo puede pedir verdad incómoda en la plaza — no fracaso, sino conversación que aún no ha encontrado tono.',
+          trabajo: 'El trabajo puede pedir sentido en privado antes de la plaza — no fracaso, sino obra que aún no ha encontrado voz.',
+          descanso: 'El descanso puede chocar con la costumbre de no parar — no pereza, sino cuerpo que pide quedarse un poco más.'
+        },
+        t3: {
+          amor: 'Puede abrirse un vínculo más honesto si sostienes conversación larga — la condición es compañía antes que escena.',
+          trabajo: 'Puede abrirse sentido si trabajas la obra en privado — la condición es sustancia antes que aplauso.',
+          descanso: 'Puede abrirse calma si te quedas en la pausa sin disculparte — la condición es permiso antes que rendimiento.'
+        },
+        t4: {
+          amor: 'Esta semana, elige una conversación donde importe más escuchar que brillar — pequeña y real.',
+          trabajo: 'Esta semana, escribe en privado qué parte de tu obra sigue viva — pequeña y real.',
+          descanso: 'Esta semana, quédate un rato más en la calma sin explicarte — pequeño y real.'
+        }
+      },
+      byBlockId: {
+        doc6_intensidad_linea_cercana: {
+          amor: 'La cercanía de esta línea puede sentirse en la conversación del vínculo — notable sin exigir dominar el encuentro al primer día.',
+          trabajo: 'La cercanía de esta línea puede sentirse en la obra cotidiana — señal clara sin la exigencia de la vitrina, más sostenible para ordenar sentido.',
+          descanso: 'La cercanía de esta línea puede sentirse en el cuerpo en compañía — habitar el lugar sin sobreexigencia, más sostenible para una estancia media.'
+        },
+        doc6_intensidad_linea_exacta: {
+          amor: 'Muy cerca del trazo el vínculo puede sentirse sin filtro — conversación intensa; conviene ir despacio si la cercanía te desborda.',
+          trabajo: 'Muy cerca del trazo la obra puede sentirse sin filtro — impulso y visibilidad al máximo; modera ritmo si la exposición te agota.',
+          descanso: 'Muy cerca del trazo el cuerpo puede registrar la señal sin filtro — ritmo al máximo volumen; conviene moderar si la intensidad te agota.'
+        }
+      }
+    },
+    MEDITERRANEAN: {
+      doc17: {
+        t1: {
+          amor: 'En {ciudad}, la proximidad urbana puede hacer visible el vínculo — te encuentran en la calle antes que en la declaración.',
+          trabajo: 'En {ciudad}, la acera puede hacer visible tu trayectoria — te encuentran en el paso, no solo en la vitrina.',
+          descanso: 'En {ciudad}, el paseo puede devolver calma — el cuerpo se encuentra en el tránsito, no en la prisa.'
+        },
+        t2: {
+          amor: 'El encuentro puede acelerarse en la calle — no fallo, sino proximidad que aún no ha encontrado ritmo.',
+          trabajo: 'La vitrina urbana puede confundir obra con exposición — no fracaso, sino impulso que aún no ha encontrado dirección.',
+          descanso: 'La ciudad sigue andando mientras paras — no pereza, sino cuerpo que pide bajar el paso sin desaparecer.'
+        },
+        t3: {
+          amor: 'Puede abrirse un vínculo más honesto si habitas la proximidad — la condición es presencia en la calle, no escena.',
+          trabajo: 'Puede abrirse dirección si contrastas impulso y propósito en público — la condición es obra antes que escaparate.',
+          descanso: 'Puede abrirse calma si bajas el paso en medio del bullicio — la condición es pausa sin desaparecer del mapa.'
+        },
+        t4: {
+          amor: 'Esta semana, camina un tramo con alguien sin agenda — presencia en la calle, pequeña y real.',
+          trabajo: 'Esta semana, guarda una hora en la calle para pensar la obra — pequeña y real.',
+          descanso: 'Esta semana, baja el paso un tramo urbano sin objetivo — pequeño y real.'
+        }
+      },
+      byBlockId: {
+        doc6_intensidad_linea_cercana: {
+          amor: 'La cercanía de esta línea puede sentirse en la proximidad del encuentro — notable sin exigir dominar la calle al primer día.',
+          trabajo: 'La cercanía de esta línea puede sentirse como presión en la acera — señal clara sin la exigencia de la línea exacta, más sostenible para ordenar prioridades.',
+          descanso: 'La cercanía de esta línea puede sentirse en el paso y el ritmo urbano — habitar el tránsito sin sobreexigencia, más sostenible para una estancia media.'
+        },
+        doc6_intensidad_linea_exacta: {
+          amor: 'Muy cerca del trazo el encuentro puede sentirse sin filtro — proximidad intensa; conviene ir despacio si la calle te desborda.',
+          trabajo: 'Muy cerca del trazo la trayectoria puede sentirse sin filtro — impulso y visibilidad al máximo; modera ritmo si la acera te agota.',
+          descanso: 'Muy cerca del trazo el cuerpo puede registrar el tránsito sin filtro — ritmo al máximo; conviene moderar si la densidad te agota.'
+        }
+      }
+    },
+    ANGLO: {
+      doc17: {
+        t1: {
+          amor: 'En {ciudad}, tu presencia puede pedir claridad antes que escena — te encuentran en lo que sostienes, no en lo que performas.',
+          trabajo: 'En {ciudad}, tu dirección puede pesar más en el calendario — te evalúan en lo que decides, no solo en lo que muestras.',
+          descanso: 'En {ciudad}, el bloque reservado puede devolver calma — el cuerpo se encuentra en la elección, no en la prisa.'
+        },
+        t2: {
+          amor: 'El vínculo puede probarse en acuerdos pequeños — no fallo, sino claridad que aún no ha encontrado palabras.',
+          trabajo: 'La agenda puede empujar lo urgente sobre lo importante — no fracaso, sino dirección que aún no ha encontrado límite.',
+          descanso: 'Calendarizar la pausa puede volverla otra tarea — no pereza, sino cuerpo que pide permiso explícito.'
+        },
+        t3: {
+          amor: 'Puede abrirse un vínculo más honesto si eliges verdad antes que performance — la condición es acuerdo, no escena.',
+          trabajo: 'Puede abrirse dirección si eliges sentido antes que resultado visible — la condición es coherencia, no vitrina.',
+          descanso: 'Puede abrirse calma si reservas bloques con la misma seriedad — la condición es permiso, no rendimiento.'
+        },
+        t4: {
+          amor: 'Esta semana, marca un límite claro antes de abrir una escena — pequeño y real.',
+          trabajo: 'Esta semana, elige la dirección interna antes de aceptar lo urgente — pequeña y real.',
+          descanso: 'Esta semana, reserva un bloque de descanso en el calendario — pequeño y real.'
+        }
+      },
+      byBlockId: {
+        doc6_intensidad_linea_cercana: {
+          amor: 'La cercanía de esta línea puede sentirse en acuerdos del vínculo — notable sin exigir dominar la escena al primer día.',
+          trabajo: 'La cercanía de esta línea puede sentirse como presión profesional en el calendario — señal clara sin la exigencia de la línea exacta, más sostenible para ordenar prioridades.',
+          descanso: 'La cercanía de esta línea puede sentirse en el ritmo reservado del cuerpo — habitar el bloque sin sobreexigencia, más sostenible para una estancia media.'
+        },
+        doc6_intensidad_linea_exacta: {
+          amor: 'Muy cerca del trazo el vínculo puede sentirse sin filtro — claridad intensa; conviene ir despacio si la exposición te desborda.',
+          trabajo: 'Muy cerca del trazo la trayectoria puede sentirse sin filtro — impulso y visibilidad al máximo; modera ritmo si el calendario te agota.',
+          descanso: 'Muy cerca del trazo el cuerpo puede registrar la exigencia sin filtro — ritmo al máximo; conviene moderar si la intensidad te agota.'
+        }
+      }
+    },
+    EAST_ASIAN: {
+      doc17: {
+        t1: {
+          amor: 'En {ciudad}, el detalle del encuentro puede pesar más que la declaración — te encuentran en lo que repites, no en lo que anuncias.',
+          trabajo: 'En {ciudad}, el paso de la obra puede hacerse visible — te encuentran en el proceso, no solo en el resultado.',
+          descanso: 'En {ciudad}, el tramo lento puede devolver calma — el cuerpo se encuentra en la secuencia, no en la prisa.'
+        },
+        t2: {
+          amor: 'El vínculo puede pedir paciencia en gestos pequeños — no fallo, sino detalle que aún no ha madurado.',
+          trabajo: 'La vitrina puede apresurar lo que aún madura en privado — no fracaso, sino proceso que aún no ha encontrado silencio.',
+          descanso: 'La secuencia del día puede absorber la pausa — no pereza, sino cuerpo que pide observar antes de acelerar.'
+        },
+        t3: {
+          amor: 'Puede abrirse un vínculo más honesto si cuidas gestos repetidos — la condición es detalle, no declaración amplia.',
+          trabajo: 'Puede abrirse sentido si sostienes el proceso en privado — la condición es paso firme, no exposición.',
+          descanso: 'Puede abrirse calma si dejas que el cuerpo marque el ritmo — la condición es observación, no otro tramo urgente.'
+        },
+        t4: {
+          amor: 'Esta semana, repite un gesto pequeño de cuidado — sin forzar escena amplia.',
+          trabajo: 'Esta semana, sostén un paso de la obra en privado — pequeño y real.',
+          descanso: 'Esta semana, observa qué señal corporal pide calma — pequeña y real.'
+        }
+      },
+      byBlockId: {
+        doc6_intensidad_linea_cercana: {
+          amor: 'La cercanía de esta línea puede sentirse en gestos mínimos del vínculo — notable sin exigir dominar el detalle al primer día.',
+          trabajo: 'La cercanía de esta línea puede sentirse en el proceso de la trayectoria — señal clara sin la exigencia de la línea exacta, más sostenible para ordenar pasos.',
+          descanso: 'La cercanía de esta línea puede sentirse en el tramo corporal del día — habitar la secuencia sin sobreexigencia, más sostenible para una estancia media.'
+        },
+        doc6_intensidad_linea_exacta: {
+          amor: 'Muy cerca del trazo el vínculo puede sentirse sin filtro — detalle intenso; conviene ir despacio si la precisión te desborda.',
+          trabajo: 'Muy cerca del trazo el proceso puede sentirse sin filtro — impulso al máximo; modera ritmo si la exposición te agota.',
+          descanso: 'Muy cerca del trazo el cuerpo puede registrar la secuencia sin filtro — ritmo al máximo; conviene moderar si la intensidad te agota.'
+        }
+      }
+    },
+    AFRICAN_COASTAL: {
+      doc17: {
+        t1: {
+          amor: 'En {ciudad}, la amplitud del día puede hacer visible el vínculo — te encuentran en la calma, no en el brillo momentáneo.',
+          trabajo: 'En {ciudad}, el horizonte puede ampliar lo que parecía posible — te encuentran en la dirección, no solo en la vitrina.',
+          descanso: 'En {ciudad}, el viento puede devolver respiración — el cuerpo se encuentra en la amplitud, no en la prisa.'
+        },
+        t2: {
+          amor: 'El vínculo puede medirse en amplitud — no fallo, sino cercanía que aún no ha probado el horizonte.',
+          trabajo: 'El paisaje puede empujar impulso antes que sentido — no fracaso, sino dirección que aún no ha encontrado raíz.',
+          descanso: 'El contraste del entorno puede acelerar la mente — no pereza, sino cuerpo que pide respirar con espacio.'
+        },
+        t3: {
+          amor: 'Puede abrirse un vínculo más honesto si dejas respirar la escena — la condición es amplitud, no cierre.',
+          trabajo: 'Puede abrirse dirección si contrastas impulso del entorno y propósito interno — la condición es elección, no paisaje.',
+          descanso: 'Puede abrirse calma si habitas la pausa con el cuerpo abierto — la condición es respiración, no rendimiento.'
+        },
+        t4: {
+          amor: 'Esta semana, elige un encuentro donde importe más la calma que el brillo — pequeño y real.',
+          trabajo: 'Esta semana, escribe qué dirección es tuya antes de seguir el impulso del entorno — pequeña y real.',
+          descanso: 'Esta semana, deja una tarde sin competir con el horizonte — pequeña y real.'
+        }
+      },
+      byBlockId: {
+        doc6_intensidad_linea_cercana: {
+          amor: 'La cercanía de esta línea puede sentirse en la amplitud del vínculo — notable sin exigir dominar el horizonte al primer día.',
+          trabajo: 'La cercanía de esta línea puede sentirse en el contraste de la trayectoria — señal clara sin la exigencia de la línea exacta, más sostenible para ordenar pasos.',
+          descanso: 'La cercanía de esta línea puede sentirse en la respiración del cuerpo — habitar el contraste sin sobreexigencia, más sostenible para una estancia media.'
+        },
+        doc6_intensidad_linea_exacta: {
+          amor: 'Muy cerca del trazo el vínculo puede sentirse sin filtro — intensidad amplia; conviene ir despacio si el horizonte te desborda.',
+          trabajo: 'Muy cerca del trazo la obra puede sentirse sin filtro — impulso del entorno al máximo; modera ritmo si el contraste te agota.',
+          descanso: 'Muy cerca del trazo el cuerpo puede registrar la amplitud sin filtro — ritmo al máximo; conviene moderar si la intensidad te agota.'
+        }
+      }
+    }
+  };
+
+  function resolveRegionFamily(cityId, countryId) {
+    var EFR = window.KairosEditorialFamily;
+    if (EFR && typeof EFR.resolveEditorialFamily === 'function') {
+      return EFR.resolveEditorialFamily({ cityName: cityId, countryId: countryId });
+    }
+    return 'IBERIAN';
+  }
+
+  function applyRegionalBlockVariation(text, block, ctx) {
+    if (!block || !ctx || !ctx.regionFamily) return text;
+    var region = ctx.regionFamily;
+    var pack = PREMIUM_BLOCK_VARIATIONS_BY_REGION[region];
+    if (!pack) return text;
+    var goalId = ctx.goalId || 'amor';
+    var slot = block.slot;
+
+    if (pack.byBlockId && pack.byBlockId[block.id]) {
+      var byId = pack.byBlockId[block.id][goalId] || pack.byBlockId[block.id].any;
+      if (typeof byId === 'string') return byId;
+    }
+
+    if (block.interpKey && pack.doc17 && pack.doc17[slot]) {
+      var slotText = pack.doc17[slot][goalId] || pack.doc17[slot].any;
+      if (typeof slotText === 'string') return slotText;
+    }
+
+    return text;
+  }
 
   /** Bloques metodológicos — máximo uno por lectura con narrativeContext */
   var METHODOLOGY_BLOCK_IDS = {
@@ -190,17 +402,25 @@
     if (block.variantsByGoal) {
       var goalPool = block.variantsByGoal[goalId];
       if (!goalPool && block.variantsByGoal.amor) goalPool = block.variantsByGoal.amor;
-      if (typeof goalPool === 'string') return goalPool;
+      if (typeof goalPool === 'string') return applyRegionalBlockVariation(goalPool, block, ctx);
       if (Array.isArray(goalPool) && goalPool.length) {
-        return goalPool[hash32(String(seed) + ':' + slot + ':' + (block.id || '')) % goalPool.length];
+        return applyRegionalBlockVariation(
+          goalPool[hash32(String(seed) + ':' + slot + ':' + (block.id || '')) % goalPool.length],
+          block,
+          ctx
+        );
       }
     }
 
     if (Array.isArray(block.variants) && block.variants.length) {
-      return block.variants[hash32(String(seed) + ':' + slot + ':' + (block.id || '')) % block.variants.length];
+      return applyRegionalBlockVariation(
+        block.variants[hash32(String(seed) + ':' + slot + ':' + (block.id || '')) % block.variants.length],
+        block,
+        ctx
+      );
     }
 
-    return block.text || '';
+    return applyRegionalBlockVariation(block.text || '', block, ctx);
   }
 
   function selectSynthesisBlocks(ctx, catalog, selectedIds) {
@@ -278,8 +498,14 @@
     });
   }
 
-  function blocksFromIds(catalog, selectedIds, seed, goalId) {
-    var pickCtx = { seed: seed, goalId: goalId || 'amor' };
+  function blocksFromIds(catalog, selectedIds, seed, goalId, regionFamily, cityName, countryId) {
+    var pickCtx = {
+      seed: seed,
+      goalId: goalId || 'amor',
+      regionFamily: regionFamily,
+      cityName: cityName || '',
+      countryId: countryId || ''
+    };
     var ids = Object.keys(selectedIds);
     ids.sort(function (a, b) {
       var ba = catalog.INDEX.byId[a];
@@ -341,13 +567,27 @@
       return empty;
     }
 
+    var cityName = input.city && input.city.name ? input.city.name : '';
+    var countryDisplay = input.city && input.city.country ? input.city.country : '';
+    var EFR = window.KairosEditorialFamily;
+    var canonicalCountryId = EFR && typeof EFR.coerceCountryId === 'function'
+      ? EFR.coerceCountryId(countryDisplay)
+      : (window.KairosCitiesCatalog && typeof window.KairosCitiesCatalog.resolveCountryId === 'function'
+        ? window.KairosCitiesCatalog.resolveCountryId(countryDisplay)
+        : null);
+    var regionFamily = input.narrativeContext && input.narrativeContext.regionFamily
+      ? input.narrativeContext.regionFamily
+      : resolveRegionFamily(cityName, canonicalCountryId);
+
     var ctx = {
       goalId: goalId,
       influences: influences,
       bridgeProfile: input.bridgeProfile || null,
       relocationProfile: input.relocationProfile || null,
       duration: input.duration || null,
-      cityName: input.city && input.city.name ? input.city.name : '',
+      cityName: cityName,
+      countryId: canonicalCountryId || '',
+      regionFamily: regionFamily,
       narrativeContext: input.narrativeContext || null
     };
 
@@ -365,7 +605,7 @@
     selectSynthesisBlocks(ctx, catalog, selectedIds);
     selectDoc17Blocks(ctx, catalog, selectedIds);
 
-    var blocks = blocksFromIds(catalog, selectedIds, seed, goalId);
+    var blocks = blocksFromIds(catalog, selectedIds, seed, goalId, ctx.regionFamily, ctx.cityName, ctx.countryId);
 
     return {
       ok: blocks.length > 0,
@@ -384,6 +624,7 @@
         bridgeThemesEs: (ctx.bridgeProfile && ctx.bridgeProfile.themes)
           ? ctx.bridgeProfile.themes.map(function (t) { return THEME_ES[t] || t; })
           : [],
+        regionFamily: ctx.regionFamily,
         narrativeContextUsed: !!(input && input.narrativeContext)
       }
     };
@@ -393,6 +634,8 @@
     SCHEMA_VERSION: SCHEMA_VERSION,
     STAGE_ORDER: STAGE_ORDER,
     THEME_ES: THEME_ES,
+    PREMIUM_BLOCK_VARIATIONS_BY_REGION: PREMIUM_BLOCK_VARIATIONS_BY_REGION,
+    resolveRegionFamily: resolveRegionFamily,
     getBlocksForContext: getBlocksForContext,
     pickBlockVariant: pickBlockVariant,
     catalog: function () {

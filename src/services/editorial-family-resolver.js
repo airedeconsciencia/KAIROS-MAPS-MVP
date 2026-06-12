@@ -1,0 +1,221 @@
+/**
+ * KAIROS MAPS — Unified Editorial Family Resolver (Fase 3.8h.2)
+ *
+ * Fuente canónica única para familias editoriales regionales.
+ * Sin DOM, sin UI, sin contenido editorial nuevo.
+ */
+(function () {
+  'use strict';
+
+  var SCHEMA_VERSION = '3.8h.2-0.1';
+  var DEFAULT_FAMILY = 'IBERIAN';
+
+  /** @type {Record<string, string>} slug canónico → familia (26 países) */
+  var COUNTRY_EDITORIAL_FAMILY = {
+    portugal: 'IBERIAN',
+    france: 'IBERIAN',
+    germany: 'IBERIAN',
+    netherlands: 'IBERIAN',
+    sweden: 'IBERIAN',
+    mexico: 'IBERIAN',
+    argentina: 'IBERIAN',
+    brazil: 'IBERIAN',
+    peru: 'IBERIAN',
+    thailand: 'IBERIAN',
+    singapore: 'IBERIAN',
+    india: 'IBERIAN',
+    spain: 'MEDITERRANEAN',
+    italy: 'MEDITERRANEAN',
+    greece: 'MEDITERRANEAN',
+    turkey: 'MEDITERRANEAN',
+    united_kingdom: 'ANGLO',
+    united_states: 'ANGLO',
+    canada: 'ANGLO',
+    australia: 'ANGLO',
+    new_zealand: 'ANGLO',
+    japan: 'EAST_ASIAN',
+    south_korea: 'EAST_ASIAN',
+    south_africa: 'AFRICAN_COASTAL',
+    egypt: 'AFRICAN_COASTAL',
+    kenya: 'AFRICAN_COASTAL'
+  };
+
+  /** @type {Record<string, string>} slug de ciudad → familia (overrides) */
+  var CITY_EDITORIAL_FAMILY = {
+    lisboa: 'IBERIAN',
+    barcelona: 'MEDITERRANEAN',
+    toronto: 'ANGLO',
+    tokio: 'EAST_ASIAN',
+    ciudad_del_cabo: 'AFRICAN_COASTAL'
+  };
+
+  var LEGACY_COUNTRY_TO_SLUG = {
+    pt: 'portugal',
+    portugal: 'portugal',
+    fr: 'france',
+    france: 'france',
+    francia: 'france',
+    de: 'germany',
+    germany: 'germany',
+    alemania: 'germany',
+    nl: 'netherlands',
+    netherlands: 'netherlands',
+    paises_bajos: 'netherlands',
+    se: 'sweden',
+    sweden: 'sweden',
+    suecia: 'sweden',
+    mx: 'mexico',
+    mexico: 'mexico',
+    ar: 'argentina',
+    argentina: 'argentina',
+    br: 'brazil',
+    brazil: 'brazil',
+    brasil: 'brazil',
+    pe: 'peru',
+    peru: 'peru',
+    th: 'thailand',
+    thailand: 'thailand',
+    tailandia: 'thailand',
+    sg: 'singapore',
+    singapore: 'singapore',
+    singapur: 'singapore',
+    in: 'india',
+    india: 'india',
+    es: 'spain',
+    spain: 'spain',
+    espana: 'spain',
+    it: 'italy',
+    italy: 'italy',
+    italia: 'italy',
+    gr: 'greece',
+    greece: 'greece',
+    grecia: 'greece',
+    tr: 'turkey',
+    turkey: 'turkey',
+    turquia: 'turkey',
+    gb: 'united_kingdom',
+    uk: 'united_kingdom',
+    united_kingdom: 'united_kingdom',
+    reino_unido: 'united_kingdom',
+    us: 'united_states',
+    united_states: 'united_states',
+    ee_uu: 'united_states',
+    ee_uu_: 'united_states',
+    eeuu: 'united_states',
+    ca: 'canada',
+    canada: 'canada',
+    au: 'australia',
+    australia: 'australia',
+    nz: 'new_zealand',
+    new_zealand: 'new_zealand',
+    nueva_zelandia: 'new_zealand',
+    jp: 'japan',
+    japan: 'japan',
+    japon: 'japan',
+    kr: 'south_korea',
+    south_korea: 'south_korea',
+    corea_del_sur: 'south_korea',
+    za: 'south_africa',
+    south_africa: 'south_africa',
+    sudafrica: 'south_africa',
+    eg: 'egypt',
+    egypt: 'egypt',
+    egipto: 'egypt',
+    ke: 'kenya',
+    kenya: 'kenya',
+    kenia: 'kenya'
+  };
+
+  function normalizeKey(value) {
+    return String(value || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .replace(/[.\s]+/g, '_')
+      .replace(/-/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_|_$/g, '');
+  }
+
+  function normalizeCityKey(value) {
+    return String(value || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
+  }
+
+  function citySlugFromName(cityName) {
+    var key = normalizeCityKey(cityName);
+    if (key.indexOf('ciudad del cabo') !== -1 || key === 'cape town') {
+      return 'ciudad_del_cabo';
+    }
+    return key.replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+  }
+
+  function isCanonicalCountrySlug(value) {
+    return !!(value && Object.prototype.hasOwnProperty.call(COUNTRY_EDITORIAL_FAMILY, value));
+  }
+
+  function coerceCountryId(raw) {
+    if (raw == null || raw === '') return null;
+
+    var normalized = normalizeKey(raw);
+    if (isCanonicalCountrySlug(normalized)) return normalized;
+
+    if (LEGACY_COUNTRY_TO_SLUG[normalized]) {
+      return LEGACY_COUNTRY_TO_SLUG[normalized];
+    }
+
+    var Catalog = window.KairosCitiesCatalog;
+    if (Catalog) {
+      if (Catalog.COUNTRY_IDS && Catalog.COUNTRY_IDS[raw]) {
+        return Catalog.COUNTRY_IDS[raw];
+      }
+      if (typeof Catalog.resolveCountryId === 'function') {
+        var fromCatalog = Catalog.resolveCountryId(raw);
+        if (fromCatalog && isCanonicalCountrySlug(fromCatalog)) {
+          return fromCatalog;
+        }
+      }
+    }
+
+    var legacySlug = normalized.replace(/-/g, '_');
+    if (isCanonicalCountrySlug(legacySlug)) return legacySlug;
+
+    return null;
+  }
+
+  function resolveEditorialFamily(opts) {
+    opts = opts || {};
+
+    var citySlug = citySlugFromName(opts.cityName);
+    if (citySlug && CITY_EDITORIAL_FAMILY[citySlug]) {
+      return CITY_EDITORIAL_FAMILY[citySlug];
+    }
+
+    var countryRaw = opts.countryId != null && opts.countryId !== ''
+      ? opts.countryId
+      : (opts.countryDisplay != null ? opts.countryDisplay : opts.country);
+    var countryId = coerceCountryId(countryRaw);
+
+    if (countryId && COUNTRY_EDITORIAL_FAMILY[countryId]) {
+      return COUNTRY_EDITORIAL_FAMILY[countryId];
+    }
+
+    return DEFAULT_FAMILY;
+  }
+
+  window.KairosEditorialFamily = {
+    SCHEMA_VERSION: SCHEMA_VERSION,
+    DEFAULT_FAMILY: DEFAULT_FAMILY,
+    COUNTRY_EDITORIAL_FAMILY: COUNTRY_EDITORIAL_FAMILY,
+    CITY_EDITORIAL_FAMILY: CITY_EDITORIAL_FAMILY,
+    coerceCountryId: coerceCountryId,
+    resolveEditorialFamily: resolveEditorialFamily,
+    resolveRegionFamily: function (cityName, countryId) {
+      return resolveEditorialFamily({ cityName: cityName, countryId: countryId });
+    }
+  };
+})();

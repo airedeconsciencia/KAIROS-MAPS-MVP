@@ -119,6 +119,167 @@
     ]
   };
 
+  var HUMAN_SCENE_BY_REGION = {
+    IBERIAN: {
+      amor: [
+        'Puede que una conversación en la plaza dure más de lo previsto y no quieras que termine.',
+        'Tal vez te encuentres volviendo caminando pensando en alguien con más calma de la habitual.',
+        'A veces ocurre que te sientas sin necesidad de impresionar en la sobremesa.'
+      ],
+      trabajo: [
+        'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso en voz baja.',
+        'Puede que vuelvas caminando repasando una idea que por fin ordena cosas.',
+        'Tal vez te sorprenda sentarte sin necesidad de producir nada durante un rato.'
+      ],
+      descanso: [
+        'Puede que te sorprenda quedarte en silencio sin disculparte ante la mesa.',
+        'A veces ocurre que el cuerpo pide pausa antes que la mente lo autorice en la plaza.',
+        'Quizá descubras que un silencio largo deja de incomodarte en compañía.'
+      ]
+    },
+    MEDITERRANEAN: {
+      amor: [
+        'Puede que una conversación en la acera dure más de lo previsto y no quieras que termine.',
+        'Tal vez te encuentres volviendo caminando pensando en alguien con más calma que en casa.',
+        'A veces ocurre que te sientas sin necesidad de impresionar en el paseo.'
+      ],
+      trabajo: [
+        'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso al doblar la esquina.',
+        'Puede que vuelvas caminando repasando una idea que por fin ordena cosas.',
+        'Tal vez te sorprenda sentarte sin necesidad de producir nada en un cruce tranquilo.'
+      ],
+      descanso: [
+        'Puede que te sorprenda bajar el paso sin sentir que pierdes el día.',
+        'A veces ocurre que el cuerpo pide pausa antes que la mente lo autorice en la calle.',
+        'Quizá descubras que un silencio largo deja de incomodarte en el tránsito.'
+      ]
+    },
+    ANGLO: {
+      amor: [
+        'Puede que una conversación en el trayecto dure más de lo previsto y no quieras que termine.',
+        'Tal vez te encuentres volviendo caminando pensando en alguien con más calma que de costumbre.',
+        'A veces ocurre que te sientas sin necesidad de impresionar en el bloque reservado.'
+      ],
+      trabajo: [
+        'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso en el calendario.',
+        'Puede que vuelvas caminando repasando una idea que por fin ordena cosas.',
+        'Tal vez te sorprenda sentarte sin necesidad de producir nada durante un bloque libre.'
+      ],
+      descanso: [
+        'Puede que te sorprenda reservar pausa sin sentir que debes justificarla.',
+        'A veces ocurre que el cuerpo pide pausa antes que la mente lo autorice en el día.',
+        'Quizá descubras que un silencio largo deja de incomodarte en privado.'
+      ]
+    },
+    EAST_ASIAN: {
+      amor: [
+        'Puede que una conversación en el tramo dure más de lo previsto y no quieras que termine.',
+        'Tal vez te encuentres volviendo caminando pensando en alguien con más calma en la rutina.',
+        'A veces ocurre que te sientas sin necesidad de impresionar en el gesto mínimo.'
+      ],
+      trabajo: [
+        'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso en la secuencia.',
+        'Puede que vuelvas caminando repasando una idea que por fin ordena cosas.',
+        'Tal vez te sorprenda sentarte sin necesidad de producir nada en un tramo lento.'
+      ],
+      descanso: [
+        'Puede que te sorprenda observar el cuerpo antes de acelerar la rutina.',
+        'A veces ocurre que el cuerpo pide pausa antes que la mente lo autorice en el detalle.',
+        'Quizá descubras que un silencio largo deja de incomodarte en la secuencia.'
+      ]
+    },
+    AFRICAN_COASTAL: {
+      amor: [
+        'Puede que una conversación ante el horizonte dure más de lo previsto y no quieras que termine.',
+        'Tal vez te encuentres volviendo caminando pensando en alguien con más calma que el impulso del entorno.',
+        'A veces ocurre que te sientas sin necesidad de impresionar ante la amplitud.'
+      ],
+      trabajo: [
+        'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso con el viento.',
+        'Puede que vuelvas caminando repasando una idea que por fin ordena cosas.',
+        'Tal vez te sorprenda sentarte sin necesidad de producir nada ante el contraste.'
+      ],
+      descanso: [
+        'Puede que te sorprenda habitar la pausa sin competir con el paisaje.',
+        'A veces ocurre que el cuerpo pide pausa antes que la mente lo autorice ante el horizonte.',
+        'Quizá descubras que un silencio largo deja de incomodarte en la amplitud.'
+      ]
+    }
+  };
+
+  var OBSERVE_ENTERO_TAIL_BY_REGION = {
+    IBERIAN: {
+      amor: [
+        'Mira si te sientes más entero o más expuesto en la conversación; ambas respuestas informan.',
+        'Fíjate si la cercanía te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      trabajo: [
+        'Mira si te sientes más entero o más expuesto en el trabajo; ambas respuestas informan.',
+        'Fíjate si la dirección te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      descanso: [
+        'Mira si te sientes más entero o más expuesto en la pausa; ambas respuestas informan.',
+        'Fíjate si el cuerpo te sostiene o te desnuda; las dos lecturas valen.'
+      ]
+    },
+    MEDITERRANEAN: {
+      amor: [
+        'Mira si te sientes más entero o más expuesto en el paseo; ambas respuestas informan.',
+        'Fíjate si la proximidad te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      trabajo: [
+        'Mira si te sientes más entero o más expuesto en la calle; ambas respuestas informan.',
+        'Fíjate si el tránsito te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      descanso: [
+        'Mira si te sientes más entero o más expuesto en el ritmo urbano; ambas respuestas informan.',
+        'Fíjate si la calma te sostiene o te desnuda; las dos lecturas valen.'
+      ]
+    },
+    ANGLO: {
+      amor: [
+        'Mira si te sientes más entero o más expuesto en el vínculo; ambas respuestas informan.',
+        'Fíjate si el acuerdo te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      trabajo: [
+        'Mira si te sientes más entero o más expuesto en el plan; ambas respuestas informan.',
+        'Fíjate si la dirección te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      descanso: [
+        'Mira si te sientes más entero o más expuesto en la pausa reservada; ambas respuestas informan.',
+        'Fíjate si el bloque de calma te sostiene o te desnuda; las dos lecturas valen.'
+      ]
+    },
+    EAST_ASIAN: {
+      amor: [
+        'Mira si te sientes más entero o más expuesto en el detalle; ambas respuestas informan.',
+        'Fíjate si la secuencia te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      trabajo: [
+        'Mira si te sientes más entero o más expuesto en el tramo; ambas respuestas informan.',
+        'Fíjate si el proceso te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      descanso: [
+        'Mira si te sientes más entero o más expuesto en la rutina; ambas respuestas informan.',
+        'Fíjate si el tramo lento te sostiene o te desnuda; las dos lecturas valen.'
+      ]
+    },
+    AFRICAN_COASTAL: {
+      amor: [
+        'Mira si te sientes más entero o más expuesto ante el horizonte; ambas respuestas informan.',
+        'Fíjate si la amplitud te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      trabajo: [
+        'Mira si te sientes más entero o más expuesto en el contraste; ambas respuestas informan.',
+        'Fíjate si la dirección te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      descanso: [
+        'Mira si te sientes más entero o más expuesto con el viento; ambas respuestas informan.',
+        'Fíjate si la respiración te sostiene o te desnuda; las dos lecturas valen.'
+      ]
+    }
+  };
+
   var METHODOLOGY_BLOCK_IDS = {
     doc6_jerarquia_natal_linea: true,
     doc5_metodologia_promesa_natal: true,
@@ -169,6 +330,214 @@
     'escena cotidiana',
     'pequeña expedición'
   ];
+
+  var VOICE_TRANSITION_BY_REGION = {
+    IBERIAN: {
+      matiz: [
+        'Detrás de la conversación hay otra textura, más silenciosa.',
+        'Con el tiempo, la compañía aclara lo que la escena no decía.',
+        'Lo que sigue no corrige: completa la sobremesa interior.',
+        'Hay un matiz en la plaza que no es oposición: es compañía.'
+      ],
+      contradiccion: [
+        'La segunda mirada en el barrio suele ser más honesta que la primera.',
+        'Entre lo vivido y lo esperado hay un pasillo estrecho — no contradicción, tensión.',
+        'Quizá notes dos ritmos en la conversación conviviendo sin pedir permiso.',
+        'A veces la cercanía choca con la prisa de concluir — ahí está la fricción.'
+      ],
+      capa: [
+        'Hay una capa que solo aparece cuando aflojas la urgencia de concluir.',
+        'Lo que sigue no es anexo: es otra cara de la compañía cotidiana.',
+        'Detrás del impulso hay una pregunta más lenta — casi de sobremesa.',
+        'Hay un hilo que conecta lo visible con lo no dicho en voz baja.'
+      ],
+      advertencia: [
+        'Si te quedas un poco más en la plaza, el tono cambia.',
+        'Algo se mueve cuando dejas de exigirte respuesta inmediata en la conversación.',
+        'Detrás de la urgencia hay algo que pide compañía, no conclusión.',
+        'La escena del barrio cambia cuando dejas de medirla con prisa.'
+      ],
+      cierre: [
+        'Entre una señal y otra hay espacio para elegir cómo habitar la compañía.',
+        'La conversación cotidiana confirma o matiza lo que intuías.',
+        'Hay un giro pequeño en la plaza que altera el sentido de todo.'
+      ],
+      cuerpo: [
+        'La lectura se afina cuando el cuerpo también opina en la mesa.',
+        'Algo se revela cuando sueltas la necesidad de ganar la escena.',
+        'No todo lo que se activa en el vínculo apunta al mismo norte.'
+      ],
+      ciudad: [
+        'Hay momentos en que el barrio habla por contraste, no por confirmación.',
+        'Puede que lo que despierta la plaza no despierte lo mismo en ti.',
+        'Hay señales que se entienden mejor en la conversación repetida.'
+      ]
+    },
+    MEDITERRANEAN: {
+      matiz: [
+        'Detrás del paseo hay otra textura, más silenciosa.',
+        'Con el tiempo, la calle aclara lo que la primera vuelta no decía.',
+        'Lo que sigue no corrige: completa la proximidad urbana.',
+        'Hay un matiz en el cruce que no es oposición: es densidad humana.'
+      ],
+      contradiccion: [
+        'La segunda mirada en la acera suele ser más honesta que la primera.',
+        'Entre lo vivido y lo esperado hay un pasillo estrecho — no contradicción, tránsito.',
+        'Quizá notes dos ritmos en la calle conviviendo sin pedir permiso.',
+        'A veces la proximidad choca con la prisa de concluir — ahí está la fricción.'
+      ],
+      capa: [
+        'Hay una capa que solo aparece cuando bajas el paso en el paseo.',
+        'Lo que sigue no es anexo: es otra cara del ritmo urbano.',
+        'Detrás del impulso hay una pregunta más lenta — casi de calle.',
+        'Hay un hilo que conecta lo visible con lo no dicho al doblar la esquina.'
+      ],
+      advertencia: [
+        'Si te quedas un poco más en el tránsito, el tono cambia.',
+        'Algo se mueve cuando dejas de exigirte respuesta inmediata en la calle.',
+        'Detrás de la urgencia hay algo que pide presencia, no conclusión.',
+        'La escena urbana cambia cuando dejas de medirla con prisa.'
+      ],
+      cierre: [
+        'Entre una señal y otra hay espacio para elegir cómo habitar la calle.',
+        'El paseo cotidiano confirma o matiza lo que intuías.',
+        'Hay un giro pequeño en la esquina que altera el sentido de todo.'
+      ],
+      cuerpo: [
+        'La lectura se afina cuando el cuerpo también opina al caminar.',
+        'Algo se revela cuando sueltas la necesidad de impresionar en público.',
+        'No todo lo que se activa en el tránsito apunta al mismo norte.'
+      ],
+      ciudad: [
+        'Hay momentos en que la calle habla por contraste, no por confirmación.',
+        'Puede que lo que despierta el paseo no despierte lo mismo en ti.',
+        'Hay señales que se entienden mejor en la proximidad repetida.'
+      ]
+    },
+    ANGLO: {
+      matiz: [
+        'Detrás del bloque hay otra textura, más silenciosa.',
+        'Con el tiempo, el proceso aclara lo que la primera lectura no decía.',
+        'Lo que sigue no corrige: completa la dirección interna.',
+        'Hay un matiz en el trayecto que no es oposición: es claridad.'
+      ],
+      contradiccion: [
+        'La segunda mirada en el calendario suele ser más honesta que la primera.',
+        'Entre lo vivido y lo esperado hay un pasillo estrecho — no contradicción, elección.',
+        'Quizá notes dos ritmos en el calendario conviviendo sin pedir permiso.',
+        'A veces la claridad choca con lo urgente — ahí está la fricción.'
+      ],
+      capa: [
+        'Hay una capa que solo aparece cuando reservas espacio para pensar.',
+        'Lo que sigue no es anexo: es otra cara del bloque que habitas.',
+        'Detrás del impulso hay una pregunta más lenta — casi de agenda.',
+        'Hay un hilo que conecta lo visible con lo no dicho en privado.'
+      ],
+      advertencia: [
+        'Si te quedas un poco más en el proceso, el tono cambia.',
+        'Algo se mueve cuando dejas de exigirte respuesta inmediata en el plan.',
+        'Detrás de la urgencia hay algo que pide límite, no conclusión.',
+        'El bloque cambia cuando dejas de medirlo con prisa.'
+      ],
+      cierre: [
+        'Entre una señal y otra hay espacio para elegir cómo habitas el día.',
+        'El trayecto cotidiano confirma o matiza lo que intuías.',
+        'Hay un giro pequeño en el calendario que altera el sentido de todo.'
+      ],
+      cuerpo: [
+        'La lectura se afina cuando el cuerpo también opina en la pausa reservada.',
+        'Algo se revela cuando sueltas la necesidad de aprobación constante.',
+        'No todo lo que se activa en el plan apunta al mismo norte.'
+      ],
+      ciudad: [
+        'Hay momentos en que el trayecto habla por contraste, no por confirmación.',
+        'Puede que lo que despierta el bloque no despierte lo mismo en ti.',
+        'Hay señales que se entienden mejor en la repetición del calendario.'
+      ]
+    },
+    EAST_ASIAN: {
+      matiz: [
+        'Detrás del detalle hay otra textura, más silenciosa.',
+        'Con el tiempo, la secuencia aclara lo que la primera pasada no decía.',
+        'Lo que sigue no corrige: completa el proceso observado.',
+        'Hay un matiz en el tramo que no es oposición: es precisión.'
+      ],
+      contradiccion: [
+        'La segunda mirada en la rutina suele ser más honesta que la primera.',
+        'Entre lo vivido y lo esperado hay un pasillo estrecho — no contradicción, secuencia.',
+        'Quizá notes dos ritmos en la secuencia conviviendo sin pedir permiso.',
+        'A veces el detalle choca con la prisa de concluir — ahí está la fricción.'
+      ],
+      capa: [
+        'Hay una capa que solo aparece cuando observas antes de responder.',
+        'Lo que sigue no es anexo: es otra cara del tramo que transitas.',
+        'Detrás del impulso hay una pregunta más lenta — casi de ritual cotidiano.',
+        'Hay un hilo que conecta lo visible con lo no dicho en el gesto mínimo.'
+      ],
+      advertencia: [
+        'Si te quedas un poco más en la secuencia, el tono cambia.',
+        'Algo se mueve cuando dejas de exigirte respuesta inmediata en el detalle.',
+        'Detrás de la urgencia hay algo que pide observación, no conclusión.',
+        'El tramo cambia cuando dejas de medirlo con prisa.'
+      ],
+      cierre: [
+        'Entre una señal y otra hay espacio para elegir cómo habitas la secuencia.',
+        'El detalle cotidiano confirma o matiza lo que intuías.',
+        'Hay un giro pequeño en la rutina que altera el sentido de todo.'
+      ],
+      cuerpo: [
+        'La lectura se afina cuando el cuerpo también opina en el tramo lento.',
+        'Algo se revela cuando sueltas la necesidad de concluir de inmediato.',
+        'No todo lo que se activa en la secuencia apunta al mismo norte.'
+      ],
+      ciudad: [
+        'Hay momentos en que la rutina habla por contraste, no por confirmación.',
+        'Puede que lo que despierta el detalle no despierte lo mismo en ti.',
+        'Hay señales que se entienden mejor en la repetición precisa.'
+      ]
+    },
+    AFRICAN_COASTAL: {
+      matiz: [
+        'Detrás del horizonte hay otra textura, más silenciosa.',
+        'Con el tiempo, la amplitud aclara lo que la primera mirada no decía.',
+        'Lo que sigue no corrige: completa el contraste del lugar.',
+        'Hay un matiz en el viento que no es oposición: es respiración.'
+      ],
+      contradiccion: [
+        'La segunda mirada ante el horizonte suele ser más honesta que la primera.',
+        'Entre lo vivido y lo esperado hay un pasillo estrecho — no contradicción, amplitud.',
+        'Quizá notes dos ritmos ante el horizonte conviviendo sin pedir permiso.',
+        'A veces la calma choca con el impulso del entorno — ahí está la fricción.'
+      ],
+      capa: [
+        'Hay una capa que solo aparece cuando aflojas la prisa interna.',
+        'Lo que sigue no es anexo: es otra cara del paisaje que abres.',
+        'Detrás del impulso hay una pregunta más lenta — casi de horizonte.',
+        'Hay un hilo que conecta lo visible con lo no dicho en la amplitud.'
+      ],
+      advertencia: [
+        'Si te quedas un poco más ante el contraste, el tono cambia.',
+        'Algo se mueve cuando dejas de exigirte respuesta inmediata al viento.',
+        'Detrás de la urgencia hay algo que pide espacio, no conclusión.',
+        'La escena amplia cambia cuando dejas de medirla con prisa.'
+      ],
+      cierre: [
+        'Entre una señal y otra hay espacio para elegir cómo habitas la amplitud.',
+        'El contraste cotidiano confirma o matiza lo que intuías.',
+        'Hay un giro pequeño en el horizonte que altera el sentido de todo.'
+      ],
+      cuerpo: [
+        'La lectura se afina cuando el cuerpo también opina ante el viento.',
+        'Algo se revela cuando sueltas la necesidad de competir con el paisaje.',
+        'No todo lo que se activa en el entorno apunta al mismo norte.'
+      ],
+      ciudad: [
+        'Hay momentos en que el horizonte habla por contraste, no por confirmación.',
+        'Puede que lo que despierta la amplitud no despierte lo mismo en ti.',
+        'Hay señales que se entienden mejor en la respiración repetida.'
+      ]
+    }
+  };
 
   var VOICE_TRANSITION_POOL = {
     matiz: [
@@ -471,6 +840,18 @@
     };
   }
 
+  function regionalizeInterpretationTail(text, ctx) {
+    if (!text) return '';
+    var marker = /observa si te sientes m[aá]s entero o m[aá]s expuesto[^.!?]*[.!?]?/gi;
+    if (!marker.test(text)) return text;
+    var region = ctx.regionFamily || 'IBERIAN';
+    var goal = ctx.goalId || 'amor';
+    var pack = OBSERVE_ENTERO_TAIL_BY_REGION[region] || OBSERVE_ENTERO_TAIL_BY_REGION.IBERIAN;
+    var pool = pack[goal] || pack.amor;
+    var variant = pool[hash32(String(ctx.seed) + ':entero-tail') % pool.length];
+    return text.replace(marker, variant);
+  }
+
   function softenClinicalTerms(text, ctx) {
     if (!text) return '';
     initVoiceContext(ctx);
@@ -499,6 +880,7 @@
       ctx._clinicalTerms.conviene += convMatches.length;
     }
 
+    out = regionalizeInterpretationTail(out, ctx);
     return out;
   }
 
@@ -689,8 +1071,12 @@
   }
 
   function pickHumanScene(ctx, sectionId) {
-    var pool = HUMAN_SCENE_POOL[ctx.goalId] || HUMAN_SCENE_POOL.amor;
-    if (!pool || !pool.length) return '';
+    var region = ctx.regionFamily || 'IBERIAN';
+    var regionalPack = HUMAN_SCENE_BY_REGION[region] || HUMAN_SCENE_BY_REGION.IBERIAN;
+    var pool = regionalPack[ctx.goalId] || regionalPack.amor;
+    if (!pool || !pool.length) {
+      pool = HUMAN_SCENE_POOL[ctx.goalId] || HUMAN_SCENE_POOL.amor;
+    }
     initVoiceContext(ctx);
     ctx._sceneKeys = ctx._sceneKeys || {};
     var attempts = 0;
@@ -774,6 +1160,15 @@ function metaphorFingerprint(text) {
     return true;
   }
 
+  function transitionPoolFor(ctx, cat) {
+    var region = ctx.regionFamily || 'IBERIAN';
+    var regional = VOICE_TRANSITION_BY_REGION[region];
+    if (regional && regional[cat] && regional[cat].length) {
+      return regional[cat];
+    }
+    return VOICE_TRANSITION_POOL[cat] || VOICE_TRANSITION_POOL.matiz;
+  }
+
   function pickVoiceTransition(ctx, sectionId, blockKey, rank) {
     initVoiceContext(ctx);
     var cats = SECTION_TRANSITION_CATS[sectionId] || ['matiz', 'contradiccion'];
@@ -782,8 +1177,10 @@ function metaphorFingerprint(text) {
 
     while (attempts < maxAttempts) {
       var cat = cats[(rank + attempts) % cats.length];
-      var pool = VOICE_TRANSITION_POOL[cat] || VOICE_TRANSITION_POOL.matiz;
-      var idx = hash32(ctx.seed + ':' + sectionId + ':' + blockKey + ':' + attempts) % pool.length;
+      var pool = transitionPoolFor(ctx, cat);
+      var idx = hash32(
+        ctx.seed + ':' + sectionId + ':' + blockKey + ':' + (ctx.regionFamily || '') + ':' + attempts
+      ) % pool.length;
       var line = pool[idx];
       var banned = false;
       var lowerLine = line.toLowerCase();
@@ -1153,8 +1550,8 @@ function metaphorFingerprint(text) {
       });
     var cap = fallbackBudget != null ? fallbackBudget : MAX_FALLBACK_SENTENCES;
     for (var i = 0; i < candidates.length && words < maxWords && used < cap; i++) {
-      var sent = candidates[i].text;
-      if (!claimText(sent, ctx.cityName, globalSeen)) continue;
+      var sent = applyTextPolish(candidates[i].text, ctx, true);
+      if (!sent || !claimText(sent, ctx.cityName, globalSeen)) continue;
       parts.push(sent);
       words += wordCount(sent);
       used += 1;
@@ -1370,6 +1767,79 @@ function metaphorFingerprint(text) {
     ],
   };
 
+  var REGIONAL_EDITORIAL_MICRO_BY_GOAL = {
+    IBERIAN: {
+      amor: [
+        'En la conversación de {ciudad}, a veces basta alargar la escena sin concluirla.',
+        'La compañía cotidiana puede sostener lo anterior un poco más.'
+      ],
+      trabajo: [
+        'En la sobremesa de {ciudad}, a veces basta guardar silencio antes de volver a la plaza.',
+        'La obra silenciosa puede sostener lo anterior un poco más.'
+      ],
+      descanso: [
+        'En la mesa de {ciudad}, a veces basta quedarte sin explicarte.',
+        'El cuerpo en compañía puede sostener lo anterior un poco más.'
+      ]
+    },
+    MEDITERRANEAN: {
+      amor: [
+        'En el paseo de {ciudad}, a veces basta bajar el paso sin concluir la escena.',
+        'La proximidad en la calle puede sostener lo anterior un poco más.'
+      ],
+      trabajo: [
+        'En la acera de {ciudad}, a veces basta respirar antes de volver a la vitrina.',
+        'El paso urbano puede sostener lo anterior un poco más.'
+      ],
+      descanso: [
+        'En el tránsito de {ciudad}, a veces basta parar sin desaparecer.',
+        'El cuerpo en movimiento lento puede sostener lo anterior un poco más.'
+      ]
+    },
+    ANGLO: {
+      amor: [
+        'En el acuerdo de {ciudad}, a veces basta nombrar un límite antes de abrir la escena.',
+        'La claridad del vínculo puede sostener lo anterior un poco más.'
+      ],
+      trabajo: [
+        'En el calendario de {ciudad}, a veces basta elegir dirección antes de lo urgente.',
+        'El bloque de sentido puede sostener lo anterior un poco más.'
+      ],
+      descanso: [
+        'En la pausa reservada de {ciudad}, a veces basta bajar exigencia sin rendir.',
+        'El bloque de calma puede sostener lo anterior un poco más.'
+      ]
+    },
+    EAST_ASIAN: {
+      amor: [
+        'En el detalle de {ciudad}, a veces basta repetir un gesto sin forzar la escena.',
+        'La secuencia del encuentro puede sostener lo anterior un poco más.'
+      ],
+      trabajo: [
+        'En el paso de {ciudad}, a veces basta sostener el proceso antes de la vitrina.',
+        'El tramo silencioso puede sostener lo anterior un poco más.'
+      ],
+      descanso: [
+        'En la rutina de {ciudad}, a veces basta observar el cuerpo antes de acelerar.',
+        'El tramo lento puede sostener lo anterior un poco más.'
+      ]
+    },
+    AFRICAN_COASTAL: {
+      amor: [
+        'Ante el horizonte de {ciudad}, a veces basta dejar respirar la escena.',
+        'La amplitud del vínculo puede sostener lo anterior un poco más.'
+      ],
+      trabajo: [
+        'Con el contraste de {ciudad}, a veces basta elegir dirección antes del impulso.',
+        'El sentido habitado puede sostener lo anterior un poco más.'
+      ],
+      descanso: [
+        'Con el viento de {ciudad}, a veces basta habitar la pausa sin competir.',
+        'La respiración abierta puede sostener lo anterior un poco más.'
+      ]
+    }
+  };
+
   var REGIONAL_EDITORIAL_PADS = {
     IBERIAN: [
       'A veces lo esencial aparece en la plaza — una conversación larga que no pide conclusión.',
@@ -1378,7 +1848,7 @@ function metaphorFingerprint(text) {
       'Lo hermoso vive en la sobremesa tranquila, no solo en el gran gesto.',
       'No necesitas resolver la escena: basta cercanía sostenida un poco más.',
       'Cuando algo incomoda, obsérvalo en gestos pequeños — no en el juicio rápido.',
-      'Afloja la urgencia de concluir; deja que la escena del barrio te devuelva su ritmo.',
+      'Deja que la escena del barrio te devuelva su ritmo — sin prisa de concluir.',
       'Un gesto de compañía puede bastarte para seguir caminando {ciudad} con calma.'
     ],
     MEDITERRANEAN: [
@@ -1388,7 +1858,7 @@ function metaphorFingerprint(text) {
       'Lo hermoso vive en el ritmo urbano tranquilo, no solo en la epifanía.',
       'No hace falta resolver la escena: basta presencia en la calle que caminas.',
       'Cuando algo incomoda, obsérvalo en el tránsito cotidiano — no como fallo.',
-      'Afloja la prisa de concluir; deja que el paseo te devuelva su propio ritmo.',
+      'Deja que el paseo te devuelva su propio ritmo — sin prisa de concluir.',
       'Un gesto de proximidad puede bastarte para seguir caminando {ciudad} con calma.'
     ],
     ANGLO: [
@@ -1396,10 +1866,10 @@ function metaphorFingerprint(text) {
       '{ciudad} enseña en el proceso, sin pedirte conclusión inmediata.',
       'La planificación honesta puede bastarte para seguir habitando {ciudad} con verdad.',
       'Lo hermoso vive en la repetición del calendario, no solo en la epifanía.',
-      'No hace falta apresurar el día: basta presencia en el bloque que estás viviendo.',
+      'No hace falta resolver la escena: basta presencia en el bloque que estás viviendo.',
       'Cuando algo incomoda, obsérvalo en el proceso — no como fallo del plan.',
-      'Afloja la prisa de concluir; deja que el trayecto te devuelva su propio ritmo.',
-      'Un bloque bien habitado puede bastarte para seguir caminando {ciudad} con calma.'
+      'Deja que el trayecto te devuelva su propio ritmo — sin prisa de concluir.',
+      'Un acuerdo pequeño puede bastarte para seguir caminando {ciudad} con calma.'
     ],
     EAST_ASIAN: [
       'A veces lo esencial aparece en la secuencia — un detalle que no pide prisa.',
@@ -1408,7 +1878,7 @@ function metaphorFingerprint(text) {
       'Lo hermoso vive en el tránsito tranquilo, no solo en la epifanía.',
       'No hace falta apresurar el gesto: basta presencia en el detalle que estás viviendo.',
       'Cuando algo incomoda, obsérvalo en la secuencia — no como fallo.',
-      'Afloja la prisa de concluir; deja que la rutina te devuelva su propio ritmo.',
+      'Deja que la rutina te devuelva su propio ritmo — sin prisa de concluir.',
       'Un tramo bien transitado puede bastarte para seguir caminando {ciudad} con calma.'
     ],
     AFRICAN_COASTAL: [
@@ -1418,7 +1888,7 @@ function metaphorFingerprint(text) {
       'Lo hermoso vive en la amplitud tranquila, no solo en la epifanía.',
       'No hace falta apresurar la mirada: basta presencia ante el horizonte que abres.',
       'Cuando algo incomoda, obsérvalo en el contraste — no como fallo.',
-      'Afloja la prisa de concluir; deja que el paisaje te devuelva su propio ritmo.',
+      'Deja que el paisaje te devuelva su propio ritmo — sin prisa de concluir.',
       'Un gesto de amplitud puede bastarte para seguir caminando {ciudad} con calma.'
     ]
   };
@@ -1433,7 +1903,7 @@ function metaphorFingerprint(text) {
       'La coherencia no tiene que ser total: basta una conversación que te sostenga.',
       'Tal vez descubras que algunas lecturas maduran despacio, como una sobremesa.',
       'Puede que notes el lugar en detalles: una mirada en la plaza, un silencio cómodo.',
-      'Afloja la prisa de concluir; deja que la cercanía cotidiana te devuelva su ritmo.',
+      'Deja que la cercanía cotidiana te devuelva su ritmo — sin prisa de concluir.',
       'Un gesto de compañía puede bastarte para seguir explorando {ciudad} con verdad.'
     ],
     MEDITERRANEAN: [
@@ -1445,7 +1915,7 @@ function metaphorFingerprint(text) {
       'La coherencia no tiene que ser total: basta un paseo que te sostenga.',
       'Tal vez descubras que algunas lecturas maduran despacio, como un giro urbano.',
       'Puede que notes el lugar en detalles: un cruce, un murmullo, una densidad distinta.',
-      'Afloja la prisa de concluir; deja que el ritmo urbano te devuelva su calma.',
+      'Deja que el ritmo urbano te devuelva su calma — sin prisa de concluir.',
       'Un gesto de proximidad puede bastarte para seguir explorando {ciudad} con verdad.'
     ],
     ANGLO: [
@@ -1457,7 +1927,7 @@ function metaphorFingerprint(text) {
       'La coherencia no tiene que ser total: basta un bloque que te sostenga.',
       'Tal vez descubras que algunas lecturas maduran despacio, como un plan revisado.',
       'Puede que notes el lugar en detalles: un retraso, un cansancio, un silencio útil.',
-      'Afloja la prisa de concluir; deja que la planificación te devuelva su ritmo.',
+      'Deja que la planificación te devuelva su ritmo — sin prisa de concluir.',
       'Un trayecto bien habitado puede bastarte para seguir explorando {ciudad} con verdad.'
     ],
     EAST_ASIAN: [
@@ -1469,7 +1939,7 @@ function metaphorFingerprint(text) {
       'La coherencia no tiene que ser total: basta una secuencia que te sostenga.',
       'Tal vez descubras que algunas lecturas maduran despacio, como un tramo repetido.',
       'Puede que notes el lugar en detalles: un gesto mínimo, un cansancio, un orden distinto.',
-      'Afloja la prisa de concluir; deja que el tránsito te devuelva su ritmo.',
+      'Deja que el tránsito te devuelva su ritmo — sin prisa de concluir.',
       'Un detalle bien transitado puede bastarte para seguir explorando {ciudad} con verdad.'
     ],
     AFRICAN_COASTAL: [
@@ -1481,42 +1951,58 @@ function metaphorFingerprint(text) {
       'La coherencia no tiene que ser total: basta una amplitud que te sostenga.',
       'Tal vez descubras que algunas lecturas maduran despacio, como un contraste leve.',
       'Puede que notes el lugar en detalles: una brisa, un cansancio, un silencio distinto.',
-      'Afloja la prisa de concluir; deja que el paisaje te devuelva su ritmo.',
+      'Deja que el paisaje te devuelva su ritmo — sin prisa de concluir.',
       'Un gesto de amplitud puede bastarte para seguir explorando {ciudad} con verdad.'
     ]
   };
 
-  function normalizeRegionKey(value) {
-    return String(value || '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .trim();
+  function topupSlotTwist(base, goal, slot) {
+    if (goal === 'amor') return base;
+    if (goal === 'trabajo') {
+      switch (slot) {
+        case 0: return base.replace('también opina', 'también orienta el sentido del trabajo');
+        case 1: return base.replace(/suelen guiar/i, 'del proceso suelen guiar');
+        case 2: return base.replace('esta lectura', 'esta trayectoria').replace(/notar qué mudó [^.]+\./, 'notar qué mudó en el sentido del trabajo.');
+        case 3: return base.replace('hacer más', 'producir más').replace('señal', 'dirección');
+        case 4: return base.replace('entender el mapa', 'entender el mapa en el trabajo');
+        case 5: return base.replace(/basta [^.]+\./, 'basta un paso de sentido que te sostenga.');
+        case 6: return base.replace('lecturas', 'decisiones');
+        case 7: return base.replace(/detalles: .+/, 'detalles: una entrega, un límite, un cansancio útil.');
+        case 8: return base.replace(/Deja que [^—]+—/, 'Deja que el proceso te devuelva su ritmo —');
+        case 9: return base.replace(/Un [^ ]+ [^ ]+/, 'Un paso bien habitado').replace('explorando', 'habitando');
+        default: return base;
+      }
+    }
+    switch (slot) {
+      case 0: return base.replace('también opina', 'también habla en el cuerpo');
+      case 1: return base.replace(/suelen guiar/i, 'del descanso suelen guiar');
+      case 2: return base.replace('esta lectura', 'esta pausa');
+      case 3: return base.replace('hacer más', 'llenar más').replace('señal', 'calma');
+      case 4: return base.replace('entender el mapa', 'entender el mapa en la pausa');
+      case 5: return base.replace(/basta [^.]+\./, 'basta una pausa real que te sostenga.');
+      case 6: return base.replace('lecturas', 'pausas');
+      case 7: return base.replace(/detalles: .+/, 'detalles: un silencio, un respiro, un cansancio distinto.');
+      case 8: return base.replace(/Deja que [^—]+—/, 'Deja que el cuerpo te devuelva su ritmo —');
+      case 9: return base.replace(/Un [^ ]+ [^ ]+/, 'Un respiro bien habitado').replace('explorando', 'descansando en');
+      default: return base;
+    }
   }
 
+  var REGIONAL_TOPUP_BY_GOAL = {};
+  Object.keys(REGIONAL_TOPUP_VARIANTS).forEach(function (region) {
+    var base = REGIONAL_TOPUP_VARIANTS[region];
+    REGIONAL_TOPUP_BY_GOAL[region] = {
+      amor: base.slice(),
+      trabajo: base.map(function (line, i) { return topupSlotTwist(line, 'trabajo', i); }),
+      descanso: base.map(function (line, i) { return topupSlotTwist(line, 'descanso', i); })
+    };
+  });
+
   function resolveRegionFamily(cityId, countryId) {
-    var city = normalizeRegionKey(cityId);
-    var country = normalizeRegionKey(countryId);
-
-    if (city === 'lisboa') return 'IBERIAN';
-    if (city === 'barcelona') return 'MEDITERRANEAN';
-    if (city === 'toronto') return 'ANGLO';
-    if (city === 'tokio') return 'EAST_ASIAN';
-    if (city.indexOf('ciudad del cabo') !== -1 || city === 'cape town') return 'AFRICAN_COASTAL';
-
-    if (country === 'pt' || country === 'portugal') return 'IBERIAN';
-    if (country === 'es' || country === 'espana' || country === 'spain') return 'MEDITERRANEAN';
-    if (country === 'it' || country === 'italia' || country === 'italy' ||
-        country === 'gr' || country === 'grecia' || country === 'turquia' ||
-        country === 'tr' || country === 'turkey') return 'MEDITERRANEAN';
-    if (country === 'ca' || country === 'canada' || country === 'gb' ||
-        country === 'uk' || country === 'reino unido' || country === 'us' ||
-        country === 'ee. uu.' || country === 'eeuu') return 'ANGLO';
-    if (country === 'jp' || country === 'japon' || country === 'japan' ||
-        country === 'kr' || country === 'corea del sur') return 'EAST_ASIAN';
-    if (country === 'za' || country === 'sudafrica' || country === 'eg' ||
-        country === 'egipto' || country === 'ke' || country === 'kenia') return 'AFRICAN_COASTAL';
-
+    var EFR = window.KairosEditorialFamily;
+    if (EFR && typeof EFR.resolveEditorialFamily === 'function') {
+      return EFR.resolveEditorialFamily({ cityName: cityId, countryId: countryId });
+    }
     return 'IBERIAN';
   }
 
@@ -1526,11 +2012,23 @@ function metaphorFingerprint(text) {
     return pack[ctx.goalId] || pack.amor;
   }
 
+  function regionalPadsForGoal(ctx) {
+    var region = ctx.regionFamily || 'IBERIAN';
+    var regional = REGIONAL_EDITORIAL_PADS[region] || REGIONAL_EDITORIAL_PADS.IBERIAN;
+    var goalIdx = ctx.goalId === 'trabajo' ? 1 : (ctx.goalId === 'descanso' ? 2 : 0);
+    var out = [];
+    for (var i = 0; i < regional.length; i += 1) {
+      if (i % 3 === goalIdx) out.push(regional[i]);
+    }
+    return out;
+  }
+
   function editorialPadPool(ctx) {
     var goalPool = goalPadPool(ctx);
     var region = ctx.regionFamily || 'IBERIAN';
-    var regional = REGIONAL_EDITORIAL_PADS[region] || REGIONAL_EDITORIAL_PADS.IBERIAN;
-    return goalPool.concat(regional);
+    var microPack = REGIONAL_EDITORIAL_MICRO_BY_GOAL[region] || REGIONAL_EDITORIAL_MICRO_BY_GOAL.IBERIAN;
+    var micro = microPack[ctx.goalId] || microPack.amor || [];
+    return goalPool.concat(micro).concat(regionalPadsForGoal(ctx));
   }
 
   function metaphorWouldClaim(text, ctx) {
@@ -1553,7 +2051,8 @@ function metaphorFingerprint(text) {
 
   function regionalTopupPool(ctx) {
     var region = ctx.regionFamily || 'IBERIAN';
-    return REGIONAL_TOPUP_VARIANTS[region] || REGIONAL_TOPUP_VARIANTS.IBERIAN;
+    var pack = REGIONAL_TOPUP_BY_GOAL[region] || REGIONAL_TOPUP_BY_GOAL.IBERIAN;
+    return pack[ctx.goalId] || pack.amor;
   }
 
   function pickTopupVariant(ctx, guard, salt) {
@@ -1669,8 +2168,8 @@ function metaphorFingerprint(text) {
       return hash32(ctx.seed + 'any' + a.text) - hash32(ctx.seed + 'any' + b.text);
     });
     for (var i = 0; i < candidates.length && words < maxWords && used < cap; i++) {
-      var sent = candidates[i].text;
-      if (!claimText(sent, ctx.cityName, globalSeen)) continue;
+      var sent = applyTextPolish(candidates[i].text, ctx, true);
+      if (!sent || !claimText(sent, ctx.cityName, globalSeen)) continue;
       parts.push(sent);
       words += wordCount(sent);
       used += 1;
@@ -1909,10 +2408,17 @@ function metaphorFingerprint(text) {
 
     var narrativeWrap = resolveNarrativeContext(input, ctx);
     var narrativeContext = narrativeWrap.narrativeContext;
+    var EFR = window.KairosEditorialFamily;
     var countryId = narrativeContext && narrativeContext.countryContext
       ? narrativeContext.countryContext.countryId
-      : (city.country || null);
-    ctx.regionFamily = resolveRegionFamily(cityName, countryId);
+      : (EFR && typeof EFR.coerceCountryId === 'function'
+        ? EFR.coerceCountryId(city.country)
+        : (window.KairosCitiesCatalog && typeof window.KairosCitiesCatalog.resolveCountryId === 'function'
+          ? window.KairosCitiesCatalog.resolveCountryId(city.country)
+          : null));
+    ctx.regionFamily = narrativeContext && narrativeContext.regionFamily
+      ? narrativeContext.regionFamily
+      : resolveRegionFamily(cityName, countryId);
     ctx._atmosphereLinesUsed = countEmbeddedAtmosphere(narrativeContext);
 
     var knowledgeWrap = resolveKnowledgeBlocks(input, ctx, narrativeContext);
@@ -2191,6 +2697,8 @@ function metaphorFingerprint(text) {
     composeCityReading: composeCityReading,
     resolveRegionFamily: resolveRegionFamily,
     GOAL_PADS_BY_REGION: GOAL_PADS_BY_REGION,
+    REGIONAL_EDITORIAL_MICRO_BY_GOAL: REGIONAL_EDITORIAL_MICRO_BY_GOAL,
+    VOICE_TRANSITION_BY_REGION: VOICE_TRANSITION_BY_REGION,
     REGIONAL_EDITORIAL_PADS: REGIONAL_EDITORIAL_PADS,
     REGIONAL_TOPUP_VARIANTS: REGIONAL_TOPUP_VARIANTS,
     METHODOLOGY_BLOCK_IDS: METHODOLOGY_BLOCK_IDS,

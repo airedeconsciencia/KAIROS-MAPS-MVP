@@ -13,6 +13,7 @@ NATAL_LITE="$ROOT/src/content/natal-lite.js"
 COMPOSITION="$ROOT/src/services/natal-composition-service.js"
 BRIDGE="$ROOT/src/services/natal-map-bridge-service.js"
 CATALOG="$ROOT/src/content/cities-catalog.js"
+RESOLVER="$ROOT/src/services/editorial-family-resolver.js"
 ARCHETYPES="$ROOT/src/content/country-archetypes.js"
 COUNTRY_SERVICE="$ROOT/src/services/country-archetype-service.js"
 SCORER="$ROOT/src/content/city-scorer.js"
@@ -25,11 +26,11 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — Premium UI Beta smoke (3.8g.2)"
+echo " KAIROS MAPS — Premium UI Beta smoke (3.8h.2b)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
-for f in "$INDEX" "$APP" "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$CATALOG" \
+for f in "$INDEX" "$APP" "$GOAL_SIGNAL" "$NATAL_LITE" "$COMPOSITION" "$BRIDGE" "$CATALOG" "$RESOLVER" \
   "$ARCHETYPES" "$COUNTRY_SERVICE" "$SCORER" "$ASTRO" "$INTERP" "$BLOCKS" "$KNOWLEDGE" "$NARRATIVE" "$PREMIUM"; do
   if [[ ! -f "$f" ]]; then
     echo "ERROR: No se encuentra: $f"
@@ -42,7 +43,7 @@ if [[ ! -f "$ASTRONOMY" ]]; then
   curl -fsSL "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" -o "$ASTRONOMY"
 fi
 
-export INDEX APP GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE CATALOG ARCHETYPES COUNTRY_SERVICE \
+export INDEX APP GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE CATALOG RESOLVER ARCHETYPES COUNTRY_SERVICE \
   SCORER ASTRO INTERP BLOCKS KNOWLEDGE NARRATIVE PREMIUM ASTRONOMY ROOT
 
 node <<'NODE'
@@ -65,6 +66,7 @@ const scriptOrder = [
   'content/country-archetypes.js',
   'services/country-archetype-service.js',
   'content/premium-blocks.js',
+  'services/editorial-family-resolver.js',
   'services/narrative-intelligence-service.js',
   'services/premium-knowledge-service.js',
   'services/city-premium-composition-service.js'
@@ -80,10 +82,16 @@ scriptOrder.forEach(function (needle) {
   lastIdx = idx;
 });
 assert(
-  'index.html carga 6 scripts premium en orden',
+  'index.html carga 7 scripts premium en orden',
   lastIdx > indexHtml.indexOf('natal-map-bridge-service.js') &&
     lastIdx < indexHtml.indexOf('engines/astro.js'),
   'premium block entre bridge y astro.js'
+);
+
+assert(
+  'index.html cache-bust editorial-family-resolver (3.8h2)',
+  indexHtml.indexOf('services/editorial-family-resolver.js?v=3.8h2') !== -1,
+  null
 );
 
 assert(
@@ -126,7 +134,7 @@ if (ctx.window.Astronomy) ctx.Astronomy = ctx.window.Astronomy;
 
 [
   process.env.GOAL_SIGNAL, process.env.NATAL_LITE, process.env.COMPOSITION,
-  process.env.BRIDGE, process.env.CATALOG, process.env.ARCHETYPES,
+  process.env.BRIDGE, process.env.CATALOG, process.env.RESOLVER, process.env.ARCHETYPES,
   process.env.COUNTRY_SERVICE, process.env.SCORER, process.env.ASTRO,
   process.env.INTERP, process.env.BLOCKS, process.env.KNOWLEDGE,
   process.env.NARRATIVE, process.env.PREMIUM
@@ -141,6 +149,35 @@ const Bridge = ctx.window.KairosNatalMapBridge;
 const Scorer = ctx.window.KairosCityScorer;
 const Premium = ctx.window.KairosCityPremiumComposition;
 const Catalog = ctx.window.KairosCitiesCatalog;
+const EFR = ctx.window.KairosEditorialFamily;
+const Narrative = ctx.window.KairosNarrativeIntelligence;
+const Knowledge = ctx.window.KairosPremiumKnowledge;
+
+assert(
+  'window.KairosEditorialFamily existe (carga app simulada)',
+  !!EFR && typeof EFR.resolveEditorialFamily === 'function',
+  'schema=' + (EFR && EFR.SCHEMA_VERSION)
+);
+
+const nySlug = 'united_states';
+const nyNarrative = Narrative.resolveRegionFamily('Nueva York', nySlug);
+const nyPremium = Premium.resolveRegionFamily('Nueva York', nySlug);
+const nyKnowledge = Knowledge.resolveRegionFamily('Nueva York', nySlug);
+assert(
+  'Narrative.resolveRegionFamily(Nueva York, united_states) → ANGLO',
+  nyNarrative === 'ANGLO',
+  'got=' + nyNarrative
+);
+assert(
+  'Premium.resolveRegionFamily(Nueva York, united_states) → ANGLO',
+  nyPremium === 'ANGLO',
+  'got=' + nyPremium
+);
+assert(
+  'Knowledge.resolveRegionFamily(Nueva York, united_states) → ANGLO',
+  nyKnowledge === 'ANGLO',
+  'got=' + nyKnowledge
+);
 
 const utc = vm.runInContext("new Date('1973-05-29T05:30:00.000Z')", ctx);
 const lines = Astro.computeAllLines(utc);
@@ -237,6 +274,6 @@ if (fail) {
   console.log(' FAIL — ' + fail + ' assertion(s)');
   process.exit(1);
 }
-console.log(' ALL PASS — Premium UI Beta smoke (3.8g.2)');
+console.log(' ALL PASS — Premium UI Beta smoke (3.8h.2b)');
 console.log('══════════════════════════════════════════════════════════');
 NODE
