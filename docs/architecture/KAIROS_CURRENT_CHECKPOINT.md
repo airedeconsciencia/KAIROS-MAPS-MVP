@@ -3,142 +3,105 @@
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
 **Rama:** `main`  
-**Último commit cerrado:** `89028b3` — `3.8f6 city atmosphere expansion p0`
+**Último commit cerrado:** `cbcd1f0` — `3.8h5b editorial dedup p1 hotfix`
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP es una app de cartografía astrológica (Leaflet + motor `astro.js`) con **lecturas premium DEV completas** bajo `src/`. El **Country Archetype** (piloto 10 países) está integrado en **Narrative Intelligence** y **City Premium Composition**. La **City Atmosphere** cubre ahora **5 ciudades piloto** con personalidad urbana propia — solo en laboratorio DEV.
+KAIROS MAPS MVP incluye **lectura premium beta** cableada en producto (`?premium=1`) con **resolver editorial unificado** (26 países, 5 familias) y **deduplicación editorial P0+P1** cerrada en `src/` y **desplegada en staging**.
 
-El **producto visible** (`src/ui/app.js`, `src/index.html`) **no usa** esta lectura premium. Sigue en Fase 1.x estable (mapa, popup, goals, suggestions). **`app.js` sin cableado premium.**
+**Staging** (https://kairos-maps-dev.web.app) refleja `db04480` + `cbcd1f0` tras deploy 3.8h.5c. **Producción** (https://kairos-maps-mvp.web.app) **intacta** — sin resolver, sin dedup, sin premium beta.
 
-El trabajo activo vive en **`src/`**. **`dist/`** es artefacto de deploy y **no refleja** el estado DEV actual. **Staging desfasado** respecto a `src/`. **Producción intacta** (sin capas 3.8e/3.8f).
+**QA manual staging (3.8h.5d):** score **8.0/10** · PASS **10** · WATCH **5** · FAIL **0**. Staging **OK** para beta editorial con `?premium=1`.
 
----
-
-## II. Último commit cerrado
-
-| Campo | Valor |
-|-------|--------|
-| **Hash** | `89028b389ec4ab6edd14c26e91a9db457292aed5` |
-| **Mensaje** | `3.8f6 city atmosphere expansion p0` |
-| **Alcance** | City Atmosphere Expansion P0 — 5 ciudades, successTone, dedup ciudad↔país |
-
-**Archivos incluidos en 3.8f.6:**
-
-- `docs/voice/CITY_ATMOSPHERE_LIBRARY.md` — biblioteca editorial 5 ciudades + éxito + firma zodiacal
-- `src/services/narrative-intelligence-service.js` — schema `3.8f.6-dev-0.1`, `CITY_ATMOSPHERE_INDEX` ampliado, dedup runtime
-- `src/dev/narrative-intelligence-preview.html` — panel `successTone` + `zodiacSignature`
-- `scripts/dev-narrative-intelligence-smoke.sh` — gate 5 ciudades + anti-dogma
-- `scripts/dev-city-premium-composition-smoke.sh` — Barcelona/Tokio atmosphere
-- `scripts/dev-country-composition-smoke.sh` — atmosphere 5 ciudades
-- `scripts/dev-country-archetype-integration-smoke.sh` — schema 3.8f.6+
-
-**Comportamiento clave:**
-
-- **Barcelona** y **Tokio** tienen `cityAtmosphere` propia (antes solo país + genéricos).
-- **Lisboa**, **Toronto**, **Ciudad del Cabo** mejoradas: dimensión **successTone**, frases deduplicadas respecto a capa país.
-- **`zodiacSignature`** existe como **metadata** en `cityAtmosphere` — **no** se expresa como dogma interpretativo en lectura.
-- **`linesOverlapCityCountry()`** filtra líneas país que repiten fragmentos ciudad activos.
-
-**Cadena 3.8f DEV:**
-
-| Fase | Estado |
-|------|--------|
-| **3.8f.2** — piloto 10 países + service | ✅ Cerrado |
-| **3.8f.3** — Narrative Intelligence | ✅ Cerrado |
-| **3.8f.4** — Premium Composition | ✅ Cerrado |
-| **3.8f.6** — City Atmosphere Expansion P0 | ✅ Cerrado |
+**Deuda P2** documentada (no bloqueante para staging beta). **`dist/`** modificado localmente por deploy — **no commitear** fuera de release explícito.
 
 ---
 
-## III. Historial reciente (commits cerrados)
+## II. Serie 3.8h — cerrada hasta 3.8h.5d
 
-| Commit | Fase | Qué cerró |
-|--------|------|-----------|
-| `89028b3` | **3.8f.6** | City atmosphere 5 ciudades · successTone · dedup · zodiac metadata |
-| `8f1f489` | doc | Territorial Archetype Layer + City Distinctiveness Audit |
-| `8d6b2a9` | doc | Checkpoint post-3.8f.4 |
-| `0673f46` | **3.8f.4** | Country archetype en City Premium Composition (DEV) |
-| `bddd17a` | doc | MAPS Agent Library |
-| `ae17672` | doc | Master Audit GPT |
-| `025a620` | **3.8f.3** | Country archetype en Narrative Intelligence (DEV) |
-| `aab946d` | **3.8f.2** | Piloto arquetipo país — 10 países curados |
+| Fase | Estado | Commit / evidencia | Qué cerró |
+|------|--------|-------------------|-----------|
+| **3.8h.2** — Unified Editorial Family Resolver | ✅ Cerrado | `67d9b83` | `editorial-family-resolver.js` · 26 países · split-brain 0 · delegación 3 servicios |
+| **3.8h.2a** — Smoke gates variación | ✅ Cerrado | `8005358` | `dev-microtransition-variation-smoke.sh` · `dev-premium-block-variation-smoke.sh` |
+| **3.8h.2b** — Premium UI beta | ✅ Cerrado | (staging previo) | `app.js` + `index.html` · `?premium=1` · badge beta |
+| **3.8h.3** — Staging post-resolver | ✅ Cerrado | deploy 3.8h.3c | 12/12 smokes pre-deploy PASS · browser 15/15 familyOk · avg ~8.37/10 |
+| **3.8h.5** — Editorial dedup P0 | ✅ Cerrado | `db04480` | P03/P06/P10 eliminados · pools regionales · `dev-editorial-dedup-smoke.sh` |
+| **3.8h.5b** — Editorial dedup P1 hotfix | ✅ Cerrado | `cbcd1f0` | N01 cola amor · N02 bloque reservado · N03 anti-eco dirección interna |
+| **3.8h.5c** — Staging deploy post-dedup | ✅ Cerrado | deploy local (sin commit dist) | `src/` → `dist/` → `hosting:staging` · 5/5 smokes PASS |
+| **3.8h.5d** — Manual QA staging | ✅ Cerrado | auditoría browser | Score 8.0 · PASS 10 / WATCH 5 / FAIL 0 · producción intacta |
+| **3.8h.5e** — Checkpoint | ✅ Este doc | — | Cierre operativo serie dedup |
 
----
-
-## IV. Qué está cerrado
-
-### Producto base (Fase 1.x) — visible en app.js
-
-- Mapa Leaflet, 27 ciudades oro, scorer, interpretaciones popup, onboarding perfil
-- Goals Layer visible, Cities suggestions top-3
-- Motor `astro.js` (40 líneas)
-- **Sin lectura premium compuesta en UI**
-
-### Capas premium DEV (Fase 3.8e + 3.8f)
-
-- **Narrative Intelligence** — schema `3.8f.6-dev-0.1` · spine + atmosphere + countryContext
-- **City atmosphere** — **5 ciudades piloto** (Lisboa, Toronto, Ciudad del Cabo, Barcelona, Tokio)
-- **successTone** — dimensión éxito por ciudad (metadata editorial)
-- **zodiacSignature** — firma zodiacal territorial ponderada (metadata, no dogma)
-- **Human presence** — voz experiencial
-- **City Premium Composition** — lecturas 500–900 palabras + matiz país (3.8f.4)
-- **Country Archetype** — 10 países curados integrados
-- **Premium Knowledge Service** — bloques DOC-17
-- Previews DEV + smokes
-
-### City Atmosphere (Fase 3.8f.6 — cerrada)
-
-| Ciudad | citySlug | Notas |
-|--------|----------|-------|
-| Lisboa | `lisboa` | Mejorada · dedup Portugal · successTone |
-| Toronto | `toronto` | Mejorada · dedup Canadá · successTone |
-| Ciudad del Cabo | `ciudad_del_cabo` | Mejorada · dedup Sudáfrica · successTone |
-| Barcelona | `barcelona` | **Nueva** — atmósfera urbana propia (no solo España) |
-| Tokio | `tokio` | **Nueva** — megaciudad urbana (no solo Japón) |
-
-**Auditoría previa:** `CITY_DISTINCTIVENESS_AUDIT.md` (3.8f.5b doc) · diseño territorial: `TERRITORIAL_ARCHETYPE_LAYER.md` (3.8h.0 doc).
-
-### Country Archetype (producto NO)
-
-| Entregable | Estado |
-|------------|--------|
-| Integración **`app.js` / producto visible** | ❌ Pendiente (→ 3.8g) |
-| Ampliación 51 / 195 países | ❌ Fuera de alcance |
+**Auditorías doc-only (sin commit código):** 3.8h.3a/3.8h.3b (técnica + editorial) · 3.8h.4 (dedup design) · 3.8h.5a (post-dedup Node QA).
 
 ---
 
-## V. Qué está pendiente
+## III. Métricas registradas (3.8h.5 staging)
 
-### Siguiente fase recomendada
+### Smokes
 
-| Fase | Objetivo | Toca |
-|------|----------|------|
-| **3.8g.1** | **Premium UI Integration Audit** — inventario cableado, gaps UX, riesgos antes de tocar `app.js` | `docs/` + análisis producto |
+| Gate | Resultado |
+|------|-----------|
+| **12/12 smokes pre-resolver staging** (3.8h.3c) | **PASS** |
+| **5/5 smokes post-dedup staging** (3.8h.5c) | **PASS** — dedup · resolver · composition · narrative · premium-ui-beta |
 
-### Otras opciones (requieren aprobación explícita)
+### Editorial / arquitectura
 
-| Fase | Objetivo | Toca |
-|------|----------|------|
-| **3.8f.5b** | Deploy staging de `src/` actual | `dist/` sync, smokes, `deploy-staging.sh` |
-| **3.8g** | Cableado producto premium en `app.js` | `app.js`, `index.html`, UX lectura al tocar ciudad |
-| **3.8h.1** | Piloto Territorial Archetype (5 territorios) | contenido + service (post-audit UI) |
+| Métrica | Valor |
+|---------|-------|
+| **Staging** | **OK** — https://kairos-maps-dev.web.app/?premium=1 |
+| **Producción** | **Intacta** — sin `editorial-family-resolver.js` (404) |
+| **split-brain** | **0** |
+| **IBERIAN leak** (sobremesa/plaza en no-IBERIAN) | **0** |
+| **P03** («puede que descubras una puerta») | **0** |
+| **P06** («el ritmo del cuerpo vuelve a importar») | **0** |
+| **P10** («lo que sigue no corrige») | **0** |
+| **«bloque reservado»** (QA piloto) | **0** |
+| **Cola amor universal** (5/5 amor) | **0** |
+| **Score QA manual staging** (3.8h.5d) | **8.0/10** |
+| **Veredictos QA manual** | **PASS 10 · WATCH 5 · FAIL 0** |
 
-### Medio plazo
+### Comparación scores
 
-- Actualizar `KAIROS_CURRENT_CHECKPOINT.md` tras cada cierre (doc-only commit)
-- Tejer `successTone` en composición (opcional, post-3.8g)
-- Relocation premium UI (3.9) — congelado hasta aprobación
+| Momento | Score | Notas |
+|---------|-------|-------|
+| 3.8h.3c browser (pre-dedup) | ~8.37/10 | Con P03/P06/P10 presentes |
+| 3.8h.5a Node (post-P0) | 7.63/10 | Artefactos N01–N03 |
+| 3.8h.5b Node (post-P1) | 8.07/10 | P1 corregido |
+| 3.8h.5d manual staging | **8.0/10** | Paridad producto staging |
 
-### Explícitamente NO iniciado
+---
 
-- Ampliación a 51 o 195 países
-- Motores WASM / `astro.js` / scorer core
-- Firestore / Auth
-- Deploy producción con capas 3.8f
-- Deploy automático
+## IV. Deuda pendiente P2 (no bloqueante staging beta)
+
+| ID | Descripción | Origen |
+|----|-------------|--------|
+| **P2-1** | **Nueva York sin influencias ranked** puede no renderizar panel premium UI (fallback clásico) | 3.8h.5d manual QA |
+| **P2-2** | Cierre compartido «La coherencia no tiene que ser total: basta una pausa real que te sostenga.» (descanso ANGLO/EAST_ASIAN) | 3.8h.5d |
+| **P2-3** | Duplicidad editorial **Cairo/Nairobi** amor (favorece) y trabajo (conflicto) | 3.8h.5d |
+| **P2-4** | Eco semántico «tu sentido» en **Londres/trabajo** (síntesis) | 3.8h.5b residual |
+| **P2-5** | **`dist/`** modificado por deploy 3.8h.5c — **no commitear** fuera de release explícito | Operativo |
+
+---
+
+## V. Qué está cerrado (runtime `src/` @ `cbcd1f0`)
+
+### Resolver + regionalización (3.8h.2 + 3.8f.7)
+
+- `editorial-family-resolver.js` — SSOT familias (IBERIAN · MEDITERRANEAN · ANGLO · EAST_ASIAN · AFRICAN_COASTAL)
+- Regionalización knowledge · narrative spine · goal pads · micro-transitions (smokes 7c–7e PASS)
+
+### Editorial deduplication (3.8h.5 + 3.8h.5b)
+
+- `SPINE_FAVORECE_OPEN_BY_REGION` · `HUMAN_THEME_PATTERNS_BY_REGION` (amor/trabajo/descanso)
+- `SUMMARY_FRAME_POOL_BY_REGION` · `applyPhraseEchoControl()` · ban `bloque reservado`
+- Smoke: `dev-editorial-dedup-smoke.sh` (P0 + P1 gates)
+
+### Premium beta UI (3.8h.2b)
+
+- `app.js` — `isPremiumBetaEnabled()` · `renderPremiumReading()` · toggle profundo/clásico
+- `index.html` — carga resolver + servicios premium · cache-bust `3.8h2`
 
 ---
 
@@ -146,14 +109,12 @@ El trabajo activo vive en **`src/`**. **`dist/`** es artefacto de deploy y **no 
 
 | Área | Motivo |
 |------|--------|
-| **`src/ui/app.js`** | Producto visible; premium DEV no cableado (hasta 3.8g) |
-| **`src/index.html`** (producto) | Idem; previews en `src/dev/` |
-| **`dist/`** | Artefacto deploy; desincronizado; no es SSOT |
-| **`.DS_Store`** | Nunca commitear |
 | **`src/engines/astro.js`** | Motor congelado |
-| **`src/content/city-scorer.js`** | Scorer producto |
-| **Firebase / deploy** | Sin aprobación explícita |
-| **Motores / WASM** | Golden gate obligatorio |
+| **`dist/`** | Artefacto deploy; no SSOT; no commitear salvo release |
+| **`.DS_Store`** | Nunca commitear |
+| **Deploy producción** | Sin aprobación explícita post-QA |
+| **Firebase prod** | Staging OK ≠ prod release |
+| **Ampliación ciudades/países** | Fuera de scope 3.8h |
 
 ---
 
@@ -161,126 +122,81 @@ El trabajo activo vive en **`src/`**. **`dist/`** es artefacto de deploy y **no 
 
 | Entorno | URL | Estado |
 |---------|-----|--------|
-| **Producción** | https://kairos-maps-mvp.web.app | **Intacta** — Fase 1.x, sin 3.8e/3.8f |
-| **Staging** | https://kairos-maps-dev.web.app | **Desfasada** respecto a `src/` actual (3.8f.6 no desplegada) |
+| **Staging** | https://kairos-maps-dev.web.app | **OK** — resolver + dedup P0/P1 · `?premium=1` |
+| **Staging premium** | https://kairos-maps-dev.web.app/?premium=1 | Beta badge · `KairosEditorialFamily` presente |
+| **Producción** | https://kairos-maps-mvp.web.app | **Intacta** — Fase 1.x · sin 3.8h |
 
-**Flujo deploy:** `src/` → sync → `dist/` → `firebase deploy` (solo con aprobación).
-
-**Firebase:** Hosting estático. Sin Auth/Firestore.
-
----
-
-## VIII. Arquitectura DEV activa
-
-```
-Pipeline lectura premium DEV (completo):
-
-  rankInfluences → deriveNarrativeContext()
-                     ├─ cityAtmosphere (5 ciudades)      ← 3.8f.6
-                     │    ├─ successTone (metadata)
-                     │    └─ zodiacSignature (metadata, no dogma)
-                     └─ countryContext (10 países)       ← 3.8f.3 + dedup 3.8f.6
-                   → getBlocksForContext()
-                   → composeCityReading()                ← 3.8f.4
-
-src/services/
-  narrative-intelligence-service.js   ← 3.8f.6-dev-0.1
-  city-premium-composition-service.js   ← 3.8f.4-dev-0.1
-  country-archetype-service.js
-  premium-knowledge-service.js
-
-src/dev/
-  narrative-intelligence-preview.html ← successTone + zodiacSignature panel
-  city-premium-preview.html
-  country-archetype-preview.html
-
-docs/voice/
-  CITY_ATMOSPHERE_LIBRARY.md          ← SSOT editorial 5 ciudades
-```
-
-**Peso editorial:** carta + línea + goal 60% · ciudad 25% · país 15%.
+**Deploy staging (3.8h.5c):** `./scripts/deploy-staging.sh` — sync `src/` → `dist/` · `hosting:staging` only.
 
 ---
 
-## IX. Smokes — estado esperado
-
-Con `89028b3` en `main`, estos **4 smokes gate 3.8f.6** deben pasar:
+## VIII. Smokes gate actuales (post-dedup)
 
 ```bash
-./scripts/dev-narrative-intelligence-smoke.sh
+# Gate editorial dedup (P0 + P1)
+./scripts/dev-editorial-dedup-smoke.sh
+
+# Gate resolver + composición
+./scripts/dev-editorial-family-resolver-smoke.sh
 ./scripts/dev-city-premium-composition-smoke.sh
-./scripts/dev-country-composition-smoke.sh
-./scripts/dev-country-archetype-integration-smoke.sh
+./scripts/dev-narrative-intelligence-smoke.sh
+./scripts/dev-premium-ui-beta-smoke.sh
 ```
 
-**Gate ampliado (5 smokes 3.8f):**
-
-```bash
-./scripts/dev-country-archetype-smoke.sh
-```
-
-**Estado verificado post-3.8f.6:** los 4 smokes gate + country-archetype-smoke → **ALL PASS**.
+**Estado verificado 3.8h.5c/5d:** **5/5 PASS** (post-dedup staging).
 
 ---
 
-## X. Git status actual (26 mayo 2026)
+## IX. Git status (26 mayo 2026, post-3.8h.5e doc)
 
 ```
- M .DS_Store
- M dist/* (varios modificados + untracked)
- M docs/architecture/KAIROS_CURRENT_CHECKPOINT.md   ← actualizado 3.8f.6a (sin commit)
-```
+HEAD: cbcd1f0 — 3.8h5b editorial dedup p1 hotfix
+      db04480 — 3.8h5 editorial deduplication p0
+      8005358 — 3.8h2a commit pending premium variation smoke gates
+      67d9b83 — 3.8h2 unified editorial family resolver
 
-**Rama:** `main` @ `89028b3`  
-**Working tree limpio en `src/`** y `scripts/` para 3.8f.6.  
-**Ruido:** `dist/`, `.DS_Store`. **Doc checkpoint:** modificado, pendiente commit doc-only.
+Rama: main
+src/: limpio @ cbcd1f0
+dist/: modificado por deploy 3.8h.5c (NO commiteado)
+.DS_Store: modificado (NO commitear)
+docs/architecture/KAIROS_CURRENT_CHECKPOINT.md: actualizado 3.8h.5e
+```
 
 ---
 
-## XI. Advertencia — `dist/` y `.DS_Store`
+## X. Siguiente fase recomendada
 
-> **`dist/` y `.DS_Store` no forman parte del desarrollo activo.**
+### **3.8h.6 — Editorial P2 polish** (recomendada)
 
-- **`src/`** es la fuente de verdad.
-- **`dist/`** no implica producto integrado ni staging actualizado.
-- Antes de **3.8f.5b** (deploy staging): sync consciente `src/` → `dist/`, smokes PASS, aprobación explícita.
+Quirúrgica sobre deuda P2-1…P2-4 sin reabrir resolver ni familias:
 
----
+1. Path NY sin influencias → premium fail-soft o mínimo viable
+2. Rotar cierre descanso compartido
+3. Diferenciar favorece/conflicto Cairo vs Nairobi
+4. Anti-eco fino «tu sentido» Londres/trabajo
 
-## XII. Siguiente fase recomendada
+**Gate:** smokes 3.8h.5 + QA manual 15 lecturas · score ≥ 8.0 · WATCH ≤ 3.
 
-City Atmosphere DEV **cerrada** (5 ciudades). Country Archetype DEV **cerrado** en narrative + composition.
-
-### **3.8g.1 — Premium UI Integration Audit** (recomendada)
-
-- Inventario de qué scripts/servicios debe cargar el producto visible
-- Gaps UX: popup vs lectura 500–900 palabras, goals, loading, fail-soft
-- Riesgos antes de tocar `app.js` / `index.html`
-- Entregable doc-only — **sin cableado** hasta aprobación 3.8g
-
-### Alternativas
+### Alternativas (requieren aprobación explícita)
 
 | Fase | Cuándo |
 |------|--------|
-| **3.8f.5b** | Validar pipeline en staging antes de producto |
-| **3.8g** | Cableado premium en UI (post-audit 3.8g.1) |
-| **3.8h.1** | Piloto Territorial Archetype (doc 3.8h.0 ya existe) |
+| **3.8h.7** | Deploy producción premium beta (post-P2 o aceptando WATCH) |
+| **3.8i** | Ampliación territorial / ciudades (fuera dedup) |
 
-**Recomendación operativa:** **3.8g.1** (audit UI) → **3.8f.5b** (staging opcional) → **3.8g** (producto).
+**Recomendación operativa:** **3.8h.6 P2** → re-QA staging → decisión prod **3.8h.7**.
 
 ---
 
-## XIII. Documentos relacionados
+## XI. Documentos relacionados
 
 | Documento | Contenido |
 |-----------|-----------|
-| `CITY_DISTINCTIVENESS_AUDIT.md` | Auditoría diferenciación urbana (3.8f.5b) |
 | `TERRITORIAL_ARCHETYPE_LAYER.md` | Diseño capa territorial (3.8h.0) |
-| `COUNTRY_ARCHETYPE_LAYER.md` | Diseño capa país |
 | `CITY_ATMOSPHERE_LIBRARY.md` | Biblioteca editorial 5 ciudades |
-| `KAIROS_MASTER_AUDIT.md` | Auditoría total + agentes GPT |
-| `MAPS_AGENT_LIBRARY.md` | Inventario lecturas GPT |
+| `KAIROS_MASTER_AUDIT.md` | Auditoría total |
+| `MAPS_AGENT_LIBRARY.md` | Inventario agentes GPT |
 
 ---
 
-*Checkpoint actualizado Fase 3.8f.6a · Sin commit automático · Sin push · Sin deploy*
+*Checkpoint actualizado Fase 3.8h.5e · Commit doc-only · Sin push · Sin deploy*
