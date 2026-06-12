@@ -91,10 +91,10 @@
     ],
     ANGLO: [
       'En el calendario, la oportunidad toma forma así: ',
-      'Con el bloque reservado, conviene leer la oportunidad: ',
+      'Con tiempo aparte, conviene leer la oportunidad: ',
       'En el trayecto, puede abrirse esto: ',
       'En privado, la oportunidad aparece con claridad: ',
-      'Desde la dirección interna, conviene mirar esto: ',
+      'Con claridad privada, conviene mirar esto: ',
       'En el plan silencioso, la oportunidad se deja leer así: '
     ],
     EAST_ASIAN: [
@@ -119,6 +119,18 @@
     'puede que descubras una puerta',
     'quizá notes que se abre algo con suavidad',
     'tal vez se insinúe un gesto posible'
+  ];
+
+  var PHRASE_ECHO_RULES = [
+    {
+      phrase: 'dirección interna',
+      alternates: ['tu sentido', 'claridad interna', 'lo que sostienes por dentro', 'propósito en privado']
+    },
+    {
+      phrase: 'bloque reservado',
+      alternates: ['tiempo aparte', 'espacio reservado', 'un rato en privado', 'la pausa elegida'],
+      ban: true
+    }
   ];
 
   var SPINE_APROVECHA_OPEN = [
@@ -201,7 +213,7 @@
       amor: [
         'Puede que una conversación en el trayecto dure más de lo previsto y no quieras que termine.',
         'Tal vez te encuentres volviendo caminando pensando en alguien con más calma que de costumbre.',
-        'A veces ocurre que te sientas sin necesidad de impresionar en el bloque reservado.'
+        'A veces ocurre que te sientas sin necesidad de impresionar cuando nadie te evalúa.'
       ],
       trabajo: [
         'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso en el calendario.',
@@ -459,9 +471,9 @@
     },
     ANGLO: {
       matiz: [
-        'Detrás del bloque hay otra textura, más silenciosa.',
+        'Detrás del calendario hay otra textura, más silenciosa.',
         'Con el tiempo, el proceso aclara lo que la primera lectura no decía.',
-        'En el bloque reservado, lo siguiente completa la dirección interna.',
+        'Lo siguiente completa lo que el plan aún guarda en reserva.',
         'Hay un matiz en el trayecto que no es oposición: es claridad.'
       ],
       contradiccion: [
@@ -480,7 +492,7 @@
         'Si te quedas un poco más en el proceso, el tono cambia.',
         'Algo se mueve cuando dejas de exigirte respuesta inmediata en el plan.',
         'Detrás de la urgencia hay algo que pide límite, no conclusión.',
-        'El bloque cambia cuando dejas de medirlo con prisa.'
+        'El plan cambia cuando dejas de medirlo con prisa.'
       ],
       cierre: [
         'Entre una señal y otra hay espacio para elegir cómo habitas el día.',
@@ -1379,11 +1391,49 @@ function metaphorFingerprint(text) {
     return base ? base + '\n\n' + line : line;
   }
 
+  function applyPhraseEchoControl(sections) {
+    var globalCounts = {};
+    return sections.map(function (sec) {
+      var body = sec.body || '';
+      PHRASE_ECHO_RULES.forEach(function (rule) {
+        var key = rule.phrase.toLowerCase();
+        globalCounts[key] = globalCounts[key] || 0;
+        var escaped = rule.phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        var re = new RegExp(escaped, 'gi');
+        var altIdx = 0;
+        body = body.replace(re, function (match) {
+          if (rule.ban) {
+            var bannedAlt = rule.alternates[altIdx % rule.alternates.length];
+            altIdx += 1;
+            if (match.charAt(0) === match.charAt(0).toUpperCase()) {
+              return bannedAlt.charAt(0).toUpperCase() + bannedAlt.slice(1);
+            }
+            return bannedAlt;
+          }
+          globalCounts[key] += 1;
+          if (globalCounts[key] === 1) return match;
+          var alt = rule.alternates[altIdx % rule.alternates.length];
+          altIdx += 1;
+          if (match.charAt(0) === match.charAt(0).toUpperCase()) {
+            return alt.charAt(0).toUpperCase() + alt.slice(1);
+          }
+          return alt;
+        });
+      });
+      return {
+        id: sec.id,
+        title: sec.title,
+        body: body,
+        words: wordCount(body)
+      };
+    });
+  }
+
   function pickFavoreceOpen(ctx) {
     var region = ctx.regionFamily || 'IBERIAN';
     var pack = SPINE_FAVORECE_OPEN_BY_REGION[region] || SPINE_FAVORECE_OPEN_BY_REGION.IBERIAN;
     var seed = ctx.seed || '';
-    var start = hash32(seed + ':fav') % pack.length;
+    var start = hash32(seed + ':fav:' + (ctx.cityName || '')) % pack.length;
     ctx._usedFavoreceOpen = ctx._usedFavoreceOpen || {};
     var i;
     for (i = 0; i < pack.length; i++) {
@@ -1714,7 +1764,7 @@ function metaphorFingerprint(text) {
         'Una tarea de fondo en el bloque del día puede sostener más que una exposición brillante.',
         'Si algo incomoda en la trayectoria, revísalo en el plan — no como fracaso.',
         'Los bloques honestos del día suelen orientar mejor que los planes demasiado rígidos.',
-        'Elige dirección interna antes de aceptar lo urgente del calendario.',
+        'Elige tu sentido antes de aceptar lo urgente del calendario.',
         'Mira si el cansancio es de obra o de postureo — la diferencia importa en la agenda.',
         'Lo que hoy confunde la trayectoria puede aclararse si aflojas la prisa de demostrar.'
       ],
@@ -2645,6 +2695,7 @@ function metaphorFingerprint(text) {
       }
     }
 
+    sections = applyPhraseEchoControl(sections);
     sections = trimToMaxWords(sections, MAX_WORDS);
 
     var fullText = sections.map(function (s) { return s.body; }).join('\n\n');

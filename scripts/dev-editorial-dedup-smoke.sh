@@ -25,7 +25,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — Editorial de-duplication smoke (3.8h.5)"
-echo " Scope: P03/P06/P10 · maxRepeat ≤ 2"
+echo " Scope: P03/P06/P10 · P1 N01-N03 · maxRepeat ≤ 2"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -201,8 +201,71 @@ assert('P06 reducido (ritmo del cuerpo) = 0', p06 === 0, 'hits=' + p06 + '/' + o
 assert('P10 reducido (lo que sigue no corrige) = 0', p10 === 0, 'hits=' + p10 + '/' + okReadings);
 assert('maxRepeat corpus P0 ≤ 2', maxRepeat <= 2, 'maxRepeat=' + maxRepeat + ' ' + JSON.stringify(Object.fromEntries(phraseCounts)));
 
+const QA_CITIES = ['Nueva York', 'Londres', 'Seúl', 'El Cairo', 'Nairobi'];
+const UNIVERSAL_AMOR = 'invita al encuentro honesto, sin prisa de brillar';
+const BLOQUE_RESERVADO = 'bloque reservado';
+const DIRECCION_INTERNA = 'dirección interna';
+let qaOk = 0;
+let universalAmorHits = 0;
+let bloqueReservadoHits = 0;
+let direccionInternaMax = 0;
+let splitBrainQa = 0;
+
+function countPhrase(text, phrase) {
+  const low = text.toLowerCase();
+  const p = phrase.toLowerCase();
+  let n = 0;
+  let i = 0;
+  while ((i = low.indexOf(p, i)) !== -1) {
+    n += 1;
+    i += p.length;
+  }
+  return n;
+}
+
+Catalog.CITIES.filter(function (city) {
+  return QA_CITIES.indexOf(city.name) !== -1;
+}).forEach(function (city) {
+  const famN = Narrative.resolveRegionFamily(city.name, city.country);
+  const famP = Premium.resolveRegionFamily(city.name, city.country);
+  if (famN !== famP) splitBrainQa += 1;
+  GOALS.forEach(function (goal) {
+    const input = buildInput(goal);
+    const ranked = Scorer.rankInfluences(city, input);
+    const inf = ranked.length ? ranked.slice(0, 5) : mock;
+    const reading = Premium.composeCityReading({
+      city: city,
+      goal: goal,
+      relevantInfluences: inf,
+      bridgeProfile: bridgeProfile,
+      profile: { firstName: 'Roberto' }
+    });
+    if (!reading.ok) return;
+    qaOk += 1;
+    const full = (reading.sections || []).map(function (s) { return s.body; }).join('\n\n');
+    const low = full.toLowerCase();
+    if (goal === 'amor' && low.indexOf(UNIVERSAL_AMOR) !== -1) universalAmorHits += 1;
+    if (low.indexOf(BLOQUE_RESERVADO) !== -1) bloqueReservadoHits += 1;
+    const di = countPhrase(full, DIRECCION_INTERNA);
+    if (di > direccionInternaMax) direccionInternaMax = di;
+  });
+});
+
+assert('QA piloto 15 lecturas OK', qaOk === 15, 'count=' + qaOk);
+assert('Cola amor universal ausente (0/5 amor)', universalAmorHits === 0, 'hits=' + universalAmorHits + '/5');
+assert('«bloque reservado» = 0 en QA piloto', bloqueReservadoHits === 0, 'hits=' + bloqueReservadoHits);
+assert('«dirección interna» max 1 por lectura QA', direccionInternaMax <= 1, 'max=' + direccionInternaMax);
+assert('split-brain QA piloto = 0', splitBrainQa === 0, 'mismatches=' + splitBrainQa);
+
 console.log('\n' + '═'.repeat(60));
 console.log('Corpus P0 hits:', JSON.stringify({ p03: p03, p06: p06, p10: p10, maxRepeat: maxRepeat }));
+console.log('QA P1:', JSON.stringify({
+  readings: qaOk,
+  universalAmor: universalAmorHits,
+  bloqueReservado: bloqueReservadoHits,
+  direccionInternaMax: direccionInternaMax,
+  splitBrain: splitBrainQa
+}));
 console.log('Readings:', okReadings);
 console.log(fail === 0 ? 'SMOKE: ALL PASS' : 'SMOKE: ' + fail + ' FAIL(S)');
 process.exit(fail === 0 ? 0 : 1);

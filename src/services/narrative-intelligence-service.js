@@ -121,7 +121,7 @@
     { match: 'con foco en descanso',
       text: 'En {ciudad}, el ritmo del cuerpo vuelve a importar — como bajar el volumen de una música demasiado alta.' },
     { match: 'con foco en amor',
-      text: 'Hay algo en {ciudad} que invita al encuentro honesto, sin prisa de brillar.' },
+      text: 'En {ciudad}, el encuentro puede pedirte presencia antes que personaje.' },
     { match: 'coherencia emocional',
       text: 'El vínculo en {ciudad} parece pedir coherencia antes que prueba constante.' },
     { match: 'trayectoria',
@@ -136,6 +136,11 @@
 
   var HUMAN_THEME_PATTERNS_BY_REGION = {
     IBERIAN: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en conversación larga — compañía antes que escena.',
+        'En {ciudad}, la cercanía madura en la plaza sin prisa de impresionar.',
+        'En {ciudad}, el encuentro pide verdad sostenida más que personaje.'
+      ],
       descanso: [
         'En {ciudad}, el cuerpo vuelve a la mesa antes que la mente — sin prisa de explicar.',
         'En {ciudad}, la pausa se afina en la sobremesa tranquila — no en el plan perfecto.',
@@ -148,6 +153,11 @@
       ]
     },
     MEDITERRANEAN: {
+      amor: [
+        'En {ciudad}, el vínculo respira en la calle — proximidad antes que declaración.',
+        'En {ciudad}, la cercanía madura al caminar sin prisa de impresionar.',
+        'En {ciudad}, el encuentro pide presencia en el paseo más que escena.'
+      ],
       descanso: [
         'En {ciudad}, el cuerpo baja el paso en la calle — sin perseguir el tránsito.',
         'En {ciudad}, la pausa respira entre idas y vueltas urbanas.',
@@ -160,18 +170,28 @@
       ]
     },
     ANGLO: {
+      amor: [
+        'En {ciudad}, el vínculo se prueba en acuerdos pequeños — claridad antes que performance.',
+        'En {ciudad}, el encuentro pide presencia honesta — no personaje, sino persona.',
+        'En {ciudad}, la cercanía madura en privado antes de volver al calendario.'
+      ],
       descanso: [
         'En {ciudad}, el cuerpo reclama un bloque de calma — no otra tarea cumplida.',
         'En {ciudad}, la pausa se reserva con la misma claridad que una obligación.',
         'En {ciudad}, el descanso vuelve al trayecto cuando bajas la exigencia.'
       ],
       trabajo: [
-        'En {ciudad}, la dirección interna pesa más que el resultado visible del calendario.',
-        'En {ciudad}, el sentido se escribe en privado antes de volver al plan.',
-        'En {ciudad}, conviene separar urgencia y propósito antes de medir la trayectoria.'
+        'En {ciudad}, tu sentido pesa más que el resultado visible del calendario.',
+        'En {ciudad}, el propósito se escribe en privado antes de volver al plan.',
+        'En {ciudad}, conviene separar urgencia y sentido antes de medir la trayectoria.'
       ]
     },
     EAST_ASIAN: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en gestos repetidos — detalle antes que escena.',
+        'En {ciudad}, la cercanía madura en la rutina sin prisa de declarar.',
+        'En {ciudad}, el encuentro pide cuidado sostenido más que performance.'
+      ],
       descanso: [
         'En {ciudad}, el cuerpo marca el ritmo en la rutina — sin convertir la pausa en otro tramo.',
         'En {ciudad}, la calma se observa en el detalle antes de acelerar de nuevo.',
@@ -184,13 +204,18 @@
       ]
     },
     AFRICAN_COASTAL: {
+      amor: [
+        'En {ciudad}, el vínculo respira con amplitud — cercanía antes que escena cerrada.',
+        'En {ciudad}, la cercanía madura ante el horizonte sin prisa de impresionar.',
+        'En {ciudad}, el encuentro pide presencia que no tema la distancia.'
+      ],
       descanso: [
         'En {ciudad}, el cuerpo afloja con el viento — sin competir con la amplitud.',
         'En {ciudad}, la pausa respira con el horizonte abierto.',
         'En {ciudad}, el descanso se prueba en la calma del contraste, no en la prisa.'
       ],
       trabajo: [
-        'En {ciudad}, la dirección interna resiste el impulso del paisaje.',
+        'En {ciudad}, tu sentido resiste el impulso del paisaje.',
         'En {ciudad}, el propósito contrasta con el entorno antes del siguiente paso.',
         'En {ciudad}, conviene leer la obra en amplitud — no solo en el impulso del lugar.'
       ]
@@ -205,7 +230,7 @@
       ],
       trabajo: [
         'En la sobremesa de {ciudad}, leyendo {goalPhrase}, la obra silenciosa dice:',
-        'En la plaza profesional de {ciudad}, con {goalPhrase}, conviene leer la dirección interna:'
+        'En la plaza profesional de {ciudad}, con {goalPhrase}, conviene leer el sentido:'
       ],
       descanso: [
         'En el barrio de {ciudad}, con {goalPhrase}, el cuerpo que vuelve marca:',
@@ -233,7 +258,7 @@
       ],
       trabajo: [
         'Si trazas el calendario en {ciudad} desde {goalPhrase}, mira tu dirección:',
-        'En el bloque reservado de {ciudad}, con {goalPhrase}, la dirección interna dice:'
+        'Si reservas tiempo en {ciudad} para {goalPhrase}, tu sentido dice:'
       ],
       descanso: [
         'Si bloqueas tiempo en {ciudad} para {goalPhrase}, mira tu cuerpo:',
@@ -345,14 +370,14 @@
     ANGLO: {
       amor: [
         ' El acuerdo en {ciudad} suele afinar lo que el vínculo aún no ha nombrado.',
-        ' En el bloque que habitas, {ciudad} devuelve claridad que la escena no alcanza a mostrar.'
+        ' En el plan que habitas, {ciudad} devuelve claridad que la escena no alcanza a mostrar.'
       ],
       trabajo: [
         ' El calendario en {ciudad} suele afinar lo que la dirección aún no ha nombrado.',
         ' En el proceso, {ciudad} devuelve sentido que la vitrina no alcanza a mostrar.'
       ],
       descanso: [
-        ' El bloque reservado en {ciudad} suele afinar lo que el cuerpo pide sin rendir.',
+        ' El tiempo reservado en {ciudad} suele afinar lo que el cuerpo pide sin rendir.',
         ' En la pausa elegida, {ciudad} devuelve calma que la agenda no alcanza a nombrar.'
       ]
     },
@@ -953,7 +978,7 @@
       },
       opportunityByGoal: {
         amor: 'elegir presencia antes que performance en el vínculo — con claridad y sin disculpa.',
-        trabajo: 'recuperar dirección interna antes de volver a medirte por resultados visibles.',
+        trabajo: 'recuperar claridad interna antes de volver a medirte por resultados visibles.',
         descanso: 'reservar bloques de pausa con la misma seriedad que reservas obligaciones.'
       },
       summaryFrame: {
@@ -1005,7 +1030,7 @@
           'esta semana, di un límite claro antes de abrir una escena que no necesitas.'
         ],
         trabajo: [
-          'esta semana, elige la dirección interna antes de aceptar lo urgente del calendario.',
+          'esta semana, elige tu sentido antes de aceptar lo urgente del calendario.',
           'esta semana, escribe en privado qué dirección sostienes antes de volver al calendario.',
           'esta semana, elige una tarea que sostenga sentido aunque nadie la evalúe.'
         ],
@@ -1112,7 +1137,7 @@
         },
         trabajo: {
           IC: '¿Qué parte de tu obra en {ciudad} resiste el viento del entorno?',
-          MC: '¿Tu impulso en {ciudad} busca paisaje o dirección interna?',
+          MC: '¿Tu impulso en {ciudad} busca paisaje o sentido propio?',
           AC: '¿Cómo te presentarías en {ciudad} si tu trabajo no dependiera del contraste exterior?',
           default: '¿Qué propósito sostendrías en {ciudad} antes de seguir el horizonte?'
         },
@@ -1576,7 +1601,7 @@
 
   function humanizeTheme(dominantTheme, goalId, cityName, regionFamily) {
     var regionalThemes = HUMAN_THEME_PATTERNS_BY_REGION[regionFamily || 'IBERIAN'];
-    if ((goalId === 'descanso' || goalId === 'trabajo') &&
+    if ((goalId === 'amor' || goalId === 'descanso' || goalId === 'trabajo') &&
         regionalThemes && regionalThemes[goalId] && regionalThemes[goalId].length) {
       var tIdx = hash32(cityName + '|' + goalId + '|' + (regionFamily || '')) %
         regionalThemes[goalId].length;
