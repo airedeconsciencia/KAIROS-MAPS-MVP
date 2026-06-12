@@ -205,10 +205,16 @@ const QA_CITIES = ['Nueva York', 'Londres', 'Seúl', 'El Cairo', 'Nairobi'];
 const UNIVERSAL_AMOR = 'invita al encuentro honesto, sin prisa de brillar';
 const BLOQUE_RESERVADO = 'bloque reservado';
 const DIRECCION_INTERNA = 'dirección interna';
+const COHERENCIA_CIERRE = 'la coherencia no tiene que ser total';
+const PAUSA_REAL_CIERRE = 'basta una pausa real que te sostenga';
+const TU_SENTIDO = 'tu sentido';
 let qaOk = 0;
 let universalAmorHits = 0;
 let bloqueReservadoHits = 0;
 let direccionInternaMax = 0;
+let coherenciaCierreHits = 0;
+let pausaRealHits = 0;
+let tuSentidoMax = 0;
 let splitBrainQa = 0;
 
 function countPhrase(text, phrase) {
@@ -248,6 +254,10 @@ Catalog.CITIES.filter(function (city) {
     if (low.indexOf(BLOQUE_RESERVADO) !== -1) bloqueReservadoHits += 1;
     const di = countPhrase(full, DIRECCION_INTERNA);
     if (di > direccionInternaMax) direccionInternaMax = di;
+    if (low.indexOf(COHERENCIA_CIERRE) !== -1) coherenciaCierreHits += 1;
+    if (low.indexOf(PAUSA_REAL_CIERRE) !== -1) pausaRealHits += 1;
+    const ts = countPhrase(full, TU_SENTIDO);
+    if (ts > tuSentidoMax) tuSentidoMax = ts;
   });
 });
 
@@ -255,6 +265,9 @@ assert('QA piloto 15 lecturas OK', qaOk === 15, 'count=' + qaOk);
 assert('Cola amor universal ausente (0/5 amor)', universalAmorHits === 0, 'hits=' + universalAmorHits + '/5');
 assert('«bloque reservado» = 0 en QA piloto', bloqueReservadoHits === 0, 'hits=' + bloqueReservadoHits);
 assert('«dirección interna» max 1 por lectura QA', direccionInternaMax <= 1, 'max=' + direccionInternaMax);
+assert('P2-2 coherencia cierre repetido = 0', coherenciaCierreHits === 0, 'hits=' + coherenciaCierreHits);
+assert('P2-2 pausa real cierre = 0', pausaRealHits === 0, 'hits=' + pausaRealHits);
+assert('P2-4 «tu sentido» max 1 por lectura QA', tuSentidoMax <= 1, 'max=' + tuSentidoMax);
 assert('split-brain QA piloto = 0', splitBrainQa === 0, 'mismatches=' + splitBrainQa);
 
 console.log('\n' + '═'.repeat(60));
@@ -265,6 +278,11 @@ console.log('QA P1:', JSON.stringify({
   bloqueReservado: bloqueReservadoHits,
   direccionInternaMax: direccionInternaMax,
   splitBrain: splitBrainQa
+}));
+console.log('QA P2:', JSON.stringify({
+  coherenciaCierre: coherenciaCierreHits,
+  pausaRealCierre: pausaRealHits,
+  tuSentidoMax: tuSentidoMax
 }));
 console.log('Readings:', okReadings);
 console.log(fail === 0 ? 'SMOKE: ALL PASS' : 'SMOKE: ' + fail + ' FAIL(S)');

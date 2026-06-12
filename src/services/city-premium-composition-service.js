@@ -115,6 +115,25 @@
     ]
   };
 
+  var AFRICAN_FAVORECE_OPEN_BY_CITY = {
+    el_cairo: [
+      'En el contraste urbano, la oportunidad toma forma así: ',
+      'Con la densidad de la ciudad, conviene leer la oportunidad: ',
+      'Entre bullicio y horizonte, puede abrirse esto: ',
+      'En la escena densa, la oportunidad aparece sin prisa: ',
+      'Desde la calma dentro del contraste, conviene mirar esto: ',
+      'En el cruce urbano, la oportunidad se deja leer así: '
+    ],
+    nairobi: [
+      'Ante el horizonte abierto, la oportunidad toma forma así: ',
+      'Con el viento del paisaje, conviene leer la oportunidad: ',
+      'En la amplitud del sabana, puede abrirse esto: ',
+      'Con el viento, la oportunidad aparece sin prisa: ',
+      'Desde la respiración abierta, conviene mirar esto: ',
+      'En la escena amplia, la oportunidad se deja leer así: '
+    ]
+  };
+
   var LEGACY_FAVORECE_OPEN_MARKERS = [
     'puede que descubras una puerta',
     'quizá notes que se abre algo con suavidad',
@@ -124,7 +143,11 @@
   var PHRASE_ECHO_RULES = [
     {
       phrase: 'dirección interna',
-      alternates: ['tu sentido', 'claridad interna', 'lo que sostienes por dentro', 'propósito en privado']
+      alternates: ['claridad interna', 'lo que sostienes por dentro', 'propósito en privado', 'tu orientación']
+    },
+    {
+      phrase: 'tu sentido',
+      alternates: ['lo que traes por dentro', 'tu dirección', 'el propósito que sostienes', 'lo que te orienta por dentro']
     },
     {
       phrase: 'bloque reservado',
@@ -716,6 +739,42 @@
       .replace(new RegExp(cityName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '')
       .replace(/\s+/g, ' ')
       .trim();
+  }
+
+  var SPARSE_INFLUENCE_BY_GOAL = {
+    amor: { planetKey: 'VENUS', planet: 'Venus', angle: 'AC' },
+    trabajo: { planetKey: 'SATURNO', planet: 'Saturno', angle: 'MC' },
+    descanso: { planetKey: 'LUNA', planet: 'Luna', angle: 'IC' }
+  };
+
+  function buildSparseInfluenceFallback(goalId) {
+    var spec = SPARSE_INFLUENCE_BY_GOAL[goalId] || SPARSE_INFLUENCE_BY_GOAL.amor;
+    var primaryId = 'sparse_' + spec.planetKey.toLowerCase() + '_' + spec.angle.toLowerCase();
+    return [
+      {
+        line: {
+          planet: spec.planet,
+          planetKey: spec.planetKey,
+          angle: spec.angle,
+          id: primaryId
+        },
+        distKm: 999,
+        composite: 0.24,
+        lineId: primaryId
+      },
+      {
+        line: { planet: 'Venus', planetKey: 'VENUS', angle: 'AC', id: 'sparse_venus_ac' },
+        distKm: 998,
+        composite: 0.22,
+        lineId: 'sparse_venus_ac'
+      },
+      {
+        line: { planet: 'Marte', planetKey: 'MARTE', angle: 'MC', id: 'sparse_marte_mc' },
+        distKm: 997,
+        composite: 0.2,
+        lineId: 'sparse_marte_mc'
+      }
+    ];
   }
 
   function normalizeInfluences(relevantInfluences) {
@@ -1429,9 +1488,26 @@ function metaphorFingerprint(text) {
     });
   }
 
+  function resolveAfricanCitySlug(cityName) {
+    var n = String(cityName || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
+    if (n.indexOf('cairo') !== -1) return 'el_cairo';
+    if (n === 'nairobi') return 'nairobi';
+    return null;
+  }
+
   function pickFavoreceOpen(ctx) {
     var region = ctx.regionFamily || 'IBERIAN';
     var pack = SPINE_FAVORECE_OPEN_BY_REGION[region] || SPINE_FAVORECE_OPEN_BY_REGION.IBERIAN;
+    if (region === 'AFRICAN_COASTAL') {
+      var africanSlug = ctx.citySlug || resolveAfricanCitySlug(ctx.cityName);
+      if (africanSlug && AFRICAN_FAVORECE_OPEN_BY_CITY[africanSlug]) {
+        pack = AFRICAN_FAVORECE_OPEN_BY_CITY[africanSlug];
+      }
+    }
     var seed = ctx.seed || '';
     var start = hash32(seed + ':fav:' + (ctx.cityName || '')) % pack.length;
     ctx._usedFavoreceOpen = ctx._usedFavoreceOpen || {};
@@ -2012,7 +2088,7 @@ function metaphorFingerprint(text) {
       'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en tu día a día.',
       'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en la plaza.',
       'A veces hay que caminar una escena de barrio para entender el mapa.',
-      'La coherencia no tiene que ser total: basta una conversación que te sostenga.',
+      'Tal vez baste una conversación que te sostenga — sin tenerlo todo resuelto.',
       'Tal vez descubras que algunas lecturas maduran despacio, como una sobremesa.',
       'Puede que notes el lugar en detalles: una mirada en la plaza, un silencio cómodo.',
       'Deja que la cercanía cotidiana te devuelva su ritmo — sin prisa de concluir.',
@@ -2024,7 +2100,7 @@ function metaphorFingerprint(text) {
       'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó al caminar.',
       'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en la proximidad.',
       'A veces hay que recorrer una calle cotidiana para entender el mapa.',
-      'La coherencia no tiene que ser total: basta un paseo que te sostenga.',
+      'Tal vez baste un paseo que te sostenga — sin tenerlo todo resuelto.',
       'Tal vez descubras que algunas lecturas maduran despacio, como un giro urbano.',
       'Puede que notes el lugar en detalles: un cruce, un murmullo, una densidad distinta.',
       'Deja que el ritmo urbano te devuelva su calma — sin prisa de concluir.',
@@ -2036,7 +2112,7 @@ function metaphorFingerprint(text) {
       'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en tu proceso.',
       'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en el trayecto.',
       'A veces hay que transitar una escena cotidiana para entender el mapa.',
-      'La coherencia no tiene que ser total: basta un bloque que te sostenga.',
+      'Tal vez baste un bloque que te sostenga — sin tenerlo todo resuelto.',
       'Tal vez descubras que algunas lecturas maduran despacio, como un plan revisado.',
       'Puede que notes el lugar en detalles: un retraso, un cansancio, un silencio útil.',
       'Deja que la planificación te devuelva su ritmo — sin prisa de concluir.',
@@ -2048,7 +2124,7 @@ function metaphorFingerprint(text) {
       'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en el detalle.',
       'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en la precisión cotidiana.',
       'A veces hay que transitar una escena precisa para entender el mapa.',
-      'La coherencia no tiene que ser total: basta una secuencia que te sostenga.',
+      'Tal vez baste una secuencia que te sostenga — sin tenerlo todo resuelto.',
       'Tal vez descubras que algunas lecturas maduran despacio, como un tramo repetido.',
       'Puede que notes el lugar en detalles: un gesto mínimo, un cansancio, un orden distinto.',
       'Deja que el tránsito te devuelva su ritmo — sin prisa de concluir.',
@@ -2060,7 +2136,7 @@ function metaphorFingerprint(text) {
       'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en la amplitud.',
       'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva con el viento.',
       'A veces hay que mirar una escena amplia para entender el mapa.',
-      'La coherencia no tiene que ser total: basta una amplitud que te sostenga.',
+      'Tal vez baste una amplitud que te sostenga — sin tenerlo todo resuelto.',
       'Tal vez descubras que algunas lecturas maduran despacio, como un contraste leve.',
       'Puede que notes el lugar en detalles: una brisa, un cansancio, un silencio distinto.',
       'Deja que el paisaje te devuelva su ritmo — sin prisa de concluir.',
@@ -2077,7 +2153,7 @@ function metaphorFingerprint(text) {
         case 2: return base.replace('esta lectura', 'esta trayectoria').replace(/notar qué mudó [^.]+\./, 'notar qué mudó en el sentido del trabajo.');
         case 3: return base.replace('hacer más', 'producir más').replace('señal', 'dirección');
         case 4: return base.replace('entender el mapa', 'entender el mapa en el trabajo');
-        case 5: return base.replace(/basta [^.]+\./, 'basta un paso de sentido que te sostenga.');
+        case 5: return base;
         case 6: return base.replace('lecturas', 'decisiones');
         case 7: return base.replace(/detalles: .+/, 'detalles: una entrega, un límite, un cansancio útil.');
         case 8: return base.replace(/Deja que [^—]+—/, 'Deja que el proceso te devuelva su ritmo —');
@@ -2091,7 +2167,7 @@ function metaphorFingerprint(text) {
       case 2: return base.replace('esta lectura', 'esta pausa');
       case 3: return base.replace('hacer más', 'llenar más').replace('señal', 'calma');
       case 4: return base.replace('entender el mapa', 'entender el mapa en la pausa');
-      case 5: return base.replace(/basta [^.]+\./, 'basta una pausa real que te sostenga.');
+      case 5: return base;
       case 6: return base.replace('lecturas', 'pausas');
       case 7: return base.replace(/detalles: .+/, 'detalles: un silencio, un respiro, un cansancio distinto.');
       case 8: return base.replace(/Deja que [^—]+—/, 'Deja que el cuerpo te devuelva su ritmo —');
@@ -2486,9 +2562,10 @@ function metaphorFingerprint(text) {
     var name = resolveName(input.profile);
     var influences = normalizeInfluences(input.relevantInfluences);
 
+    var sparseInfluencesFallback = false;
     if (!influences.length) {
-      empty.meta.error = 'no_influences';
-      return empty;
+      influences = buildSparseInfluenceFallback(goalId);
+      sparseInfluencesFallback = true;
     }
 
     var seed = hash32(cityName + '|' + goalId + '|' + aspect + '|' + influences.length);
@@ -2531,6 +2608,10 @@ function metaphorFingerprint(text) {
     ctx.regionFamily = narrativeContext && narrativeContext.regionFamily
       ? narrativeContext.regionFamily
       : resolveRegionFamily(cityName, countryId);
+    ctx.citySlug = narrativeContext && narrativeContext.cityAtmosphere
+      ? narrativeContext.cityAtmosphere.citySlug
+      : resolveAfricanCitySlug(cityName);
+    ctx.sparseInfluencesFallback = sparseInfluencesFallback;
     ctx._atmosphereLinesUsed = countEmbeddedAtmosphere(narrativeContext);
 
     var knowledgeWrap = resolveKnowledgeBlocks(input, ctx, narrativeContext);
@@ -2741,7 +2822,8 @@ function metaphorFingerprint(text) {
         forbiddenHit: forbidden,
         englishThemeHit: englishTheme,
         deterministicSeed: seed,
-        sparseInfluences: influences.length <= 2,
+        sparseInfluences: sparseInfluencesFallback || influences.length <= 2,
+        sparseInfluencesFallback: sparseInfluencesFallback,
         knowledgeAutoResolved: knowledgeWrap.autoResolved,
         knowledgeBlockCount: knowledgeBlocks.length,
         blocksUsed: Object.keys(usedBlockIds),

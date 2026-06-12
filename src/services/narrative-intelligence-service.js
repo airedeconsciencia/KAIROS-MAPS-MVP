@@ -181,7 +181,7 @@
         'En {ciudad}, el descanso vuelve al trayecto cuando bajas la exigencia.'
       ],
       trabajo: [
-        'En {ciudad}, tu sentido pesa más que el resultado visible del calendario.',
+        'En {ciudad}, lo que traes por dentro pesa más que el resultado visible del calendario.',
         'En {ciudad}, el propósito se escribe en privado antes de volver al plan.',
         'En {ciudad}, conviene separar urgencia y sentido antes de medir la trayectoria.'
       ]
@@ -215,10 +215,37 @@
         'En {ciudad}, el descanso se prueba en la calma del contraste, no en la prisa.'
       ],
       trabajo: [
+        'En {ciudad}, el propósito contrasta con el bullicio antes del siguiente paso.',
         'En {ciudad}, tu sentido resiste el impulso del paisaje.',
-        'En {ciudad}, el propósito contrasta con el entorno antes del siguiente paso.',
         'En {ciudad}, conviene leer la obra en amplitud — no solo en el impulso del lugar.'
       ]
+    }
+  };
+
+  var AFRICAN_CITY_MICRO = {
+    el_cairo: {
+      amor: {
+        themePick: 1,
+        conflict: 'El Cairo abre el vínculo entre bullicio y horizonte — ¿sostiene la cercanía cuando la ciudad aprieta y el contraste urbano acelera el ánimo?',
+        opportunity: 'dejar que el vínculo respire entre ciudad densa y calma — sin encerrarlo en una escena pequeña.'
+      },
+      trabajo: {
+        themePick: 0,
+        conflict: 'El Cairo mezcla obra urbana y contraste — a veces confundes el peso del entorno con una dirección que aún no habitas por dentro.',
+        opportunity: 'contrastar bullicio y propósito interno antes del siguiente paso.'
+      }
+    },
+    nairobi: {
+      amor: {
+        themePick: 0,
+        conflict: 'Nairobi mide el vínculo en amplitud: ¿aguanta la cercanía cuando el horizonte abre y el viento cambia el ánimo del día?',
+        opportunity: 'dejar que el vínculo gane terreno en calma — sin encerrarlo en una escena pequeña.'
+      },
+      trabajo: {
+        themePick: 1,
+        conflict: 'Nairobi amplía el horizonte del trabajo — a veces confundes el impulso del paisaje con una dirección que aún no habitas por dentro.',
+        opportunity: 'contrastar impulso del paisaje y propósito propio antes del siguiente paso.'
+      }
     }
   };
 
@@ -258,7 +285,7 @@
       ],
       trabajo: [
         'Si trazas el calendario en {ciudad} desde {goalPhrase}, mira tu dirección:',
-        'Si reservas tiempo en {ciudad} para {goalPhrase}, tu sentido dice:'
+        'Si reservas tiempo en {ciudad} para {goalPhrase}, mira lo que pesa de verdad:'
       ],
       descanso: [
         'Si bloqueas tiempo en {ciudad} para {goalPhrase}, mira tu cuerpo:',
@@ -1444,6 +1471,13 @@
     return null;
   }
 
+  function resolveAfricanCityMicroSlug(cityName) {
+    var n = normalizeLookupKey(cityName);
+    if (n.indexOf('cairo') !== -1 || n === 'el cairo') return 'el_cairo';
+    if (n === 'nairobi') return 'nairobi';
+    return null;
+  }
+
   function normalizeOverlapText(text) {
     return String(text || '')
       .toLowerCase()
@@ -1532,6 +1566,7 @@
     if (!slug) return null;
 
     var index = CITY_ATMOSPHERE_INDEX[slug];
+    if (!index) return null;
     var rhythm = pickAtmosphere({ citySlug: slug, goal: goalId, slot: 'rhythm', seed: seed, cityName: cityName });
     var emotional = pickAtmosphere({
       citySlug: slug, goal: goalId, slot: 'emotional', seed: seed + 1, cityName: cityName
@@ -1600,11 +1635,15 @@
   }
 
   function humanizeTheme(dominantTheme, goalId, cityName, regionFamily) {
+    var slug = resolveAfricanCityMicroSlug(cityName);
+    var micro = slug && AFRICAN_CITY_MICRO[slug] && AFRICAN_CITY_MICRO[slug][goalId];
     var regionalThemes = HUMAN_THEME_PATTERNS_BY_REGION[regionFamily || 'IBERIAN'];
     if ((goalId === 'amor' || goalId === 'descanso' || goalId === 'trabajo') &&
         regionalThemes && regionalThemes[goalId] && regionalThemes[goalId].length) {
-      var tIdx = hash32(cityName + '|' + goalId + '|' + (regionFamily || '')) %
-        regionalThemes[goalId].length;
+      var tIdx = micro && micro.themePick != null
+        ? micro.themePick % regionalThemes[goalId].length
+        : hash32(cityName + '|' + goalId + '|' + (regionFamily || '')) %
+          regionalThemes[goalId].length;
       return withCity(regionalThemes[goalId][tIdx], cityName);
     }
     var hit = matchPattern(HUMAN_THEME_PATTERNS, dominantTheme.label);
@@ -1613,6 +1652,11 @@
   }
 
   function humanizeConflict(centralTension, goalId, cityName, regionFamily) {
+    var slug = resolveAfricanCityMicroSlug(cityName);
+    var micro = slug && AFRICAN_CITY_MICRO[slug] && AFRICAN_CITY_MICRO[slug][goalId];
+    if (micro && micro.conflict) {
+      return withCity(micro.conflict, cityName);
+    }
     var regional = regionalSpine(regionFamily);
     if (regional && regional.conflictByGoal && regional.conflictByGoal[goalId]) {
       return withCity(regional.conflictByGoal[goalId], cityName);
@@ -1622,7 +1666,12 @@
     return withCity(HUMAN_CONFLICT_BY_GOAL[goalId] || HUMAN_CONFLICT_BY_GOAL.amor, cityName);
   }
 
-  function humanizeOpportunity(mainOpportunity, goalId, regionFamily) {
+  function humanizeOpportunity(mainOpportunity, goalId, regionFamily, cityName) {
+    var slug = cityName ? resolveAfricanCityMicroSlug(cityName) : null;
+    var micro = slug && AFRICAN_CITY_MICRO[slug] && AFRICAN_CITY_MICRO[slug][goalId];
+    if (micro && micro.opportunity) {
+      return micro.opportunity;
+    }
     var regional = regionalSpine(regionFamily);
     if (regional && regional.opportunityByGoal && regional.opportunityByGoal[goalId]) {
       return regional.opportunityByGoal[goalId];
@@ -1994,7 +2043,7 @@
       humanTheme = cityAtm.goalTone;
     }
     var humanConflict = humanizeConflict(centralTension, goalId, cityName, regionFamily);
-    var humanOpportunity = humanizeOpportunity(mainOpportunity, goalId, regionFamily);
+    var humanOpportunity = humanizeOpportunity(mainOpportunity, goalId, regionFamily, cityName);
     var humanOpportunityAction = humanizeOpportunityAction(mainOpportunity, goalId, seed, regionFamily);
     var humanObserve = weaveAtmosphereObserve(
       humanizeObserve(goalId, cityName, seed), cityAtm, goalId, cityName, seed, regionFamily

@@ -1548,8 +1548,11 @@
     const inflCount = reading.meta && reading.meta.influencesUsed
       ? reading.meta.influencesUsed.length
       : 0;
+    const sparseNote = reading.meta && reading.meta.sparseInfluencesFallback
+      ? ' · zona neutra (lectura orientativa)'
+      : '';
     interpFooter.textContent = 'Lectura profunda · ' + words + ' palabras · ' +
-      inflCount + ' influencia' + (inflCount === 1 ? '' : 's');
+      inflCount + ' influencia' + (inflCount === 1 ? '' : 's') + sparseNote;
 
     if (kairosDebugEnabled()) {
       console.info('[Kairos Premium]', {
@@ -1604,6 +1607,9 @@
       });
     }
     if (!influences.length) {
+      if (isPremiumBetaEnabled() && state.readingMode === 'deep') {
+        if (renderPremiumReading(city)) return;
+      }
       interpBody.innerHTML = `
         <div class="no-influences">
           Ninguna línea planetaria pasa a menos de ${PROX_KM} km de ${city.name}.<br/><br/>

@@ -249,7 +249,7 @@ assert(
 );
 
 const lisboa = Catalog.findCityByName('Lisboa');
-const badReading = Premium.composeCityReading({
+const sparseReading = Premium.composeCityReading({
   city: lisboa,
   goal: 'amor',
   relevantInfluences: [],
@@ -257,9 +257,14 @@ const badReading = Premium.composeCityReading({
   profile: { firstName: 'Roberto' }
 });
 assert(
-  'fallback path: sin influencias → reading.ok false (no panel vacío en UI)',
-  badReading.ok === false && badReading.meta && badReading.meta.error === 'no_influences',
-  'error=' + (badReading.meta && badReading.meta.error)
+  'fail-soft: sin influencias → lectura OK (zona neutra)',
+  sparseReading.ok === true &&
+    sparseReading.meta &&
+    sparseReading.meta.sparseInfluencesFallback === true &&
+    sparseReading.meta.wordCount >= Premium.MIN_WORDS,
+  'ok=' + sparseReading.ok + ' sparse=' +
+    (sparseReading.meta && sparseReading.meta.sparseInfluencesFallback) +
+    ' words=' + (sparseReading.meta && sparseReading.meta.wordCount)
 );
 
 assert(
