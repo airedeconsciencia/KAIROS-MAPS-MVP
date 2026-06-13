@@ -98,7 +98,7 @@ function assert(label, ok, detail) {
 assert(
   'SPINE_FAVORECE_OPEN_BY_REGION exportado',
   Premium.SPINE_FAVORECE_OPEN_BY_REGION &&
-    Object.keys(Premium.SPINE_FAVORECE_OPEN_BY_REGION).length === 5,
+    Object.keys(Premium.SPINE_FAVORECE_OPEN_BY_REGION).length === 6,
   'regions=' + (Premium.SPINE_FAVORECE_OPEN_BY_REGION
     ? Object.keys(Premium.SPINE_FAVORECE_OPEN_BY_REGION).join(',')
     : 'missing')

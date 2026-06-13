@@ -133,7 +133,10 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Seúl', country: 'Corea del Sur', expected: 'EAST_ASIAN' },
   { city: 'Ciudad del Cabo', country: 'Sudáfrica', expected: 'AFRICAN_COASTAL' },
   { city: 'El Cairo', country: 'Egipto', expected: 'AFRICAN_COASTAL' },
-  { city: 'Nairobi', country: 'Kenia', expected: 'AFRICAN_COASTAL' }
+  { city: 'Nairobi', country: 'Kenia', expected: 'AFRICAN_COASTAL' },
+  { city: 'Ciudad de México', country: 'México', expected: 'LATAM' },
+  { city: 'Buenos Aires', country: 'Argentina', expected: 'LATAM' },
+  { city: 'Lima', country: 'Perú', expected: 'LATAM' }
 ];
 
 const splitBrainHits = [];
@@ -151,7 +154,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('7 casos históricos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('8 casos históricos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -241,7 +244,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (7 casos)',
+  'Pipeline knowledge ≡ narrative (8 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );

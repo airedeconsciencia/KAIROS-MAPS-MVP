@@ -91,7 +91,10 @@ const PILOT = [
   { city: Catalog.findCityByName('Tokio'), goal: 'descanso', region: 'EAST_ASIAN' },
   { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'amor', region: 'AFRICAN_COASTAL' },
   { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'trabajo', region: 'AFRICAN_COASTAL' },
-  { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'descanso', region: 'AFRICAN_COASTAL' }
+  { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'descanso', region: 'AFRICAN_COASTAL' },
+  { city: Catalog.findCityByName('Ciudad de México'), goal: 'amor', region: 'LATAM' },
+  { city: Catalog.findCityByName('Ciudad de México'), goal: 'trabajo', region: 'LATAM' },
+  { city: Catalog.findCityByName('Ciudad de México'), goal: 'descanso', region: 'LATAM' }
 ];
 
 const robertoUtc = vm.runInContext("new Date('1973-05-29T05:30:00.000Z')", ctx);
@@ -211,13 +214,13 @@ const readings = PILOT.map(function (c) {
   };
 });
 
-assert('15 lecturas piloto generadas', readings.length === 15, 'count=' + readings.length);
+assert('18 lecturas piloto generadas', readings.length === 18, 'count=' + readings.length);
 
 const regionsUsed = new Set(readings.map(function (r) { return r.regionResolved; }));
 assert(
-  '5 familias regionales activas',
-  regionsUsed.size === 5 &&
-    ['IBERIAN', 'MEDITERRANEAN', 'ANGLO', 'EAST_ASIAN', 'AFRICAN_COASTAL'].every(function (r) {
+  '6 familias regionales activas',
+  regionsUsed.size === 6 &&
+    ['IBERIAN', 'MEDITERRANEAN', 'ANGLO', 'EAST_ASIAN', 'AFRICAN_COASTAL', 'LATAM'].every(function (r) {
       return regionsUsed.has(r);
     }),
   Array.from(regionsUsed).join(', ')
@@ -235,10 +238,10 @@ const conflicts = new Set(amorByRegion.map(function (r) { return (r.nc.humanConf
 const opportunities = new Set(amorByRegion.map(function (r) { return (r.nc.humanOpportunity || '').slice(0, 48); }));
 const closings = new Set(amorByRegion.map(function (r) { return (r.nc.humanClosing || '').slice(0, 48); }));
 
-assert('Narrative Summary distinto por región (amor 5/5)', summaries.size === 5, 'unique=' + summaries.size);
-assert('Human Conflict distinto por región (amor 5/5)', conflicts.size === 5, 'unique=' + conflicts.size);
-assert('Human Opportunity distinto por región (amor 5/5)', opportunities.size === 5, 'unique=' + opportunities.size);
-assert('Human Closing distinto por región (amor 5/5)', closings.size === 5, 'unique=' + closings.size);
+assert('Narrative Summary distinto por región (amor 6/6)', summaries.size === 6, 'unique=' + summaries.size);
+assert('Human Conflict distinto por región (amor 6/6)', conflicts.size === 6, 'unique=' + conflicts.size);
+assert('Human Opportunity distinto por región (amor 6/6)', opportunities.size === 6, 'unique=' + opportunities.size);
+assert('Human Closing distinto por región (amor 6/6)', closings.size === 6, 'unique=' + closings.size);
 
 const spineTexts = readings.map(function (r) {
   return {
@@ -281,7 +284,7 @@ assert(
 
 assert(
   'NARRATIVE_SPINE_BY_REGION exportado',
-  Narrative.NARRATIVE_SPINE_BY_REGION && Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION).length === 5,
+  Narrative.NARRATIVE_SPINE_BY_REGION && Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION).length === 6,
   'regions=' + (Narrative.NARRATIVE_SPINE_BY_REGION ? Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION).length : 0)
 );
 
@@ -299,14 +302,14 @@ showcase.forEach(function (cityName) {
 });
 
 console.log('\n' + '═'.repeat(60));
-console.log('Métricas spine regional (15 lecturas)');
+console.log('Métricas spine regional (18 lecturas)');
 console.log('  maxRepeat spine:', spinePhraseStats.max, '(baseline', BASELINE_MAX_REPEAT + ')');
 console.log('  maxRepeat corpus:', corpusPhraseStats.max, '(baseline', BASELINE_MAX_REPEAT + ', reduced50%=' + corpusReduced50 + ')');
 console.log('  legacy spine hits:', legacyHits);
-console.log('  summary unique amor:', summaries.size + '/5');
-console.log('  conflict unique amor:', conflicts.size + '/5');
-console.log('  opportunity unique amor:', opportunities.size + '/5');
-console.log('  closing unique amor:', closings.size + '/5');
+console.log('  summary unique amor:', summaries.size + '/6');
+console.log('  conflict unique amor:', conflicts.size + '/6');
+console.log('  opportunity unique amor:', opportunities.size + '/6');
+console.log('  closing unique amor:', closings.size + '/6');
 
 const topRepeats = [...corpusPhraseStats.counts.entries()]
   .sort(function (a, b) { return b[1] - a[1]; })

@@ -192,6 +192,42 @@
           descanso: 'Muy cerca del trazo el cuerpo puede registrar la amplitud sin filtro — ritmo al máximo; conviene moderar si la intensidad te agota.'
         }
       }
+    },
+    LATAM: {
+      doc17: {
+        t1: {
+          amor: 'En {ciudad}, lo íntimo puede abrirse antes que la declaración — te reconocen en el gesto, no en el personaje.',
+          trabajo: 'En {ciudad}, lo hecho en privado puede pesar más — te miden en la obra, no solo en lo que se exhibe.',
+          descanso: 'En {ciudad}, aflojar el ritmo puede devolver calma — el cansancio habla antes que la prisa.'
+        },
+        t2: {
+          amor: 'El vínculo puede calentarse en gestos antes que en palabras — no fallo, sino tono que aún no ha encontrado forma.',
+          trabajo: 'Lo visible puede adelantarse a lo que sostiene por dentro — no fracaso, sino impulso que aún no ha encontrado dirección.',
+          descanso: 'El ritmo social puede empujar cuando pides pausa — no pereza, sino fatiga que pide permiso sin disculpa.'
+        },
+        t3: {
+          amor: 'Puede abrirse un vínculo más honesto si aflojas la prisa de impresionar — la condición es verdad, no personaje.',
+          trabajo: 'Puede abrirse sentido si trabajas la obra lejos del aplauso — la condición es sustancia, no exposición.',
+          descanso: 'Puede abrirse calma si aflojas sin rendir cuentas — la condición es permiso, no explicación.'
+        },
+        t4: {
+          amor: 'Esta semana, elige una charla donde importe más escuchar que brillar — pequeña y real.',
+          trabajo: 'Esta semana, separa lo que haces de lo que muestras — pequeño y real.',
+          descanso: 'Esta semana, afloja un tramo del día sin justificarlo — pequeño y real.'
+        }
+      },
+      byBlockId: {
+        doc6_intensidad_linea_cercana: {
+          amor: 'Esta línea puede sentirse en el vínculo sin teatro — notable sin exigir dominar el tono al primer día.',
+          trabajo: 'Esta línea puede sentirse en la obra cotidiana — señal clara sin la exigencia de exhibirte, más sostenible para ordenar sentido.',
+          descanso: 'Esta línea puede sentirse en el ritmo del día — sostener la pausa sin sobreexigencia, más sostenible para una estancia media.'
+        },
+        doc6_intensidad_linea_exacta: {
+          amor: 'Muy cerca del trazo el vínculo puede sentirse sin filtro — intensidad relacional; conviene ir despacio si el tono te desborda.',
+          trabajo: 'Muy cerca del trazo la obra puede sentirse sin filtro — impulso y visibilidad al máximo; modera ritmo si la exposición te agota.',
+          descanso: 'Muy cerca del trazo la fatiga puede registrar la señal sin filtro — ritmo al máximo; conviene moderar si la intensidad te agota.'
+        }
+      }
     }
   };
 

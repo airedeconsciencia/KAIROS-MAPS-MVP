@@ -219,6 +219,23 @@
         'En {ciudad}, tu sentido resiste el impulso del paisaje.',
         'En {ciudad}, conviene leer la obra en amplitud — no solo en el impulso del lugar.'
       ]
+    },
+    LATAM: {
+      amor: [
+        'En {ciudad}, el vínculo se calienta en lo cotidiano — gesto antes que discurso.',
+        'En {ciudad}, la cercanía se prueba en compañía real — no en la intensidad que se presume.',
+        'En {ciudad}, el amor madura cuando el cuerpo puede quedarse — sin teatro ni prisa.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo pide pausa en medio de la compañía — no lejos del encuentro.',
+        'En {ciudad}, aflojar el ritmo es un gesto — a veces difícil y necesario.',
+        'En {ciudad}, el descanso se afina en lo compartido — sin convertir la pausa en abandono.'
+      ],
+      trabajo: [
+        'En {ciudad}, la obra gana sentido en lo reservado — antes del calor del reconocimiento.',
+        'En {ciudad}, conviene separar lo que haces de lo que muestras — la compañía distrae y también sostiene.',
+        'En {ciudad}, el propósito respira cuando bajas la necesidad de ser visto.'
+      ]
     }
   };
 
@@ -318,6 +335,20 @@
       descanso: [
         'Con el viento de {ciudad} y {goalPhrase}, el cuerpo que afloja responde:',
         'En la amplitud de {ciudad}, leyendo {goalPhrase}, la pausa advierte:'
+      ]
+    },
+    LATAM: {
+      amor: [
+        'En la cercanía habitada de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        'Desde el gesto cotidiano en {ciudad}, leyendo {goalPhrase}, el encuentro marca:'
+      ],
+      trabajo: [
+        'En lo reservado de {ciudad}, con {goalPhrase}, la obra susurra:',
+        'Antes del reconocimiento en {ciudad}, leyendo {goalPhrase}, conviene leer el sentido:'
+      ],
+      descanso: [
+        'En la pausa habitada en {ciudad}, con {goalPhrase}, el cuerpo responde:',
+        'En el ritmo compartido de {ciudad}, leyendo {goalPhrase}, la calma advierte:'
       ]
     }
   };
@@ -434,6 +465,20 @@
       descanso: [
         ' La respiración en {ciudad} suele afinar lo que el cuerpo pide sin competir.',
         ' En la amplitud del día, {ciudad} devuelve calma que la prisa no alcanza a nombrar.'
+      ]
+    },
+    LATAM: {
+      amor: [
+        ' La palabra tarda en {ciudad} suele afinar lo que el vínculo aún no ha nombrado.',
+        ' En lo cotidiano cercano, {ciudad} devuelve matices que la primera escena no mostró.'
+      ],
+      trabajo: [
+        ' Lo reservado en {ciudad} suele afinar lo que la obra aún no ha nombrado.',
+        ' En lo que no se exhibe, {ciudad} devuelve sentido que el impulso visible no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' El ritmo lento en {ciudad} suele afinar lo que el cuerpo pide sin prisa.',
+        ' En la pausa habitada, {ciudad} devuelve calma que la urgencia no alcanza a nombrar.'
       ]
     }
   };
@@ -1207,6 +1252,77 @@
           'esta semana, habita la pausa con el cuerpo abierto al contraste del lugar.',
           'esta semana, deja una tarde sin competir con el horizonte — solo cuerpo presente.',
           'esta semana, guarda un bloque de calma donde el viento afloje la prisa.'
+        ]
+      }
+    },
+    LATAM: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, el encuentro puede abrirse en gestos antes que en palabras — y ahí aparece si la cercanía te acoge o te pide demasiado de ti.',
+        trabajo: 'En {ciudad}, el impulso de mostrar lo que haces compite con una vida que se vive en compañía — a veces confundes reconocimiento con sentido.',
+        descanso: 'En {ciudad}, bajar el ritmo puede sentirse como retirarte del calor humano — aunque el cuerpo ya pida una pausa que no necesita disculparse.'
+      },
+      opportunityByGoal: {
+        amor: 'sostener el encuentro con presencia compartida — sin convertir la cercanía en prueba de intensidad.',
+        trabajo: 'reconocer qué parte de tu obra sigue viva en lo privado — antes de volver a exponerla al espacio humano.',
+        descanso: 'quedarte en la pausa sin disculparte ante el calor relacional — sin desaparecer del encuentro por completo.'
+      },
+      summaryFrame: {
+        amor: 'En el encuentro cotidiano de {ciudad}, con {goalPhrase} como hilo, puede que el vínculo te muestre:',
+        trabajo: 'En el espacio humano de {ciudad}, leyendo {goalPhrase}, puede que tu obra te diga:',
+        descanso: 'En el cuerpo que habita {ciudad}, con {goalPhrase}, puede que la pausa te devuelva:'
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando el encuentro no pide demostrar nada?',
+          DC: '¿Qué verdad compartes en {ciudad} antes de pedirle al otro que encaje en tu ritmo?',
+          MC: '¿Qué historia del amor quieres que {ciudad} sostenga en gestos pequeños?',
+          default: '¿Qué te pide {ciudad} en amor si sueltas la necesidad de impresionar en el encuentro?'
+        },
+        trabajo: {
+          IC: '¿Qué parte de tu obra en {ciudad} sigue viva cuando el aplauso no está cerca?',
+          MC: '¿Tu trabajo en {ciudad} busca ser visto o tener sentido?',
+          AC: '¿Cómo mostrarías tu obra en {ciudad} si no necesitara el calor del reconocimiento?',
+          default: '¿Qué sentido sostendrías en {ciudad} antes de volver al espacio humano profesional?'
+        },
+        descanso: {
+          AC: '¿Puedes quedarte en {ciudad} sin sentir que abandonas al otro?',
+          MC: '¿Tu descanso en {ciudad} es refugio o culpa compartida?',
+          IC: '¿Qué calma te pide {ciudad} en lo íntimo y en la compañía?',
+          default: '¿Qué ritmo corporal te devuelve {ciudad} si aflojas la prisa de rendir?'
+        }
+      },
+      closingByGoal: {
+        amor: [
+          'Que de {ciudad} te quede un gesto compartido — no la intensidad, sino la presencia.',
+          'Llévate de {ciudad} un encuentro que no pidió teatro para ser verdadero.',
+          'Si el vínculo sigue, que sea en lo cercano de cada día — no en la historia que contarías.'
+        ],
+        trabajo: [
+          'De {ciudad} puede quedarte esto: la obra madura en lo privado antes de volver al espacio humano.',
+          'Que te quede la obra que respira cuando baja el ruido del reconocimiento.',
+          'Pregúntate en voz baja: ¿para quién es tu obra cuando el espacio humano se aquieta?'
+        ],
+        descanso: [
+          'Quédate con el cuerpo que en {ciudad} volvió a respirar sin pedir permiso.',
+          'Que permanezca una pausa tomada en medio del calor relacional — breve y tuya.',
+          'Llévate un silencio compartido: el que no compitió con la necesidad de estar disponible.'
+        ]
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, busca un encuentro sencillo — escuchar pesa más que impresionar.',
+          'esta semana, comparte un rato cotidiano con alguien — la presencia importa más que el plan.',
+          'esta semana, di una verdad pequeña antes de sostener la intensidad del vínculo.'
+        ],
+        trabajo: [
+          'esta semana, apunta en privado qué sentido tiene tu obra — antes de volver a mostrarla.',
+          'esta semana, reserva una hora sin pantallas para la obra — no para el reconocimiento.',
+          'esta semana, elige una tarea pequeña con sentido — aunque nadie la vea.'
+        ],
+        descanso: [
+          'esta semana, guarda un rato de pausa como quien guarda un refugio — sin disculparte.',
+          'esta semana, elige una pausa breve y real — no la que suena bien al contarla.',
+          'esta semana, deja una tarde sin rendir — habitar {ciudad} con calma.'
         ]
       }
     }
@@ -2129,6 +2245,7 @@
     deriveNarrativeContext: deriveNarrativeContext,
     resolveRegionFamily: resolveRegionFamily,
     OBSERVE_TAIL_BY_REGION: OBSERVE_TAIL_BY_REGION,
+    SUMMARY_FRAME_POOL_BY_REGION: SUMMARY_FRAME_POOL_BY_REGION,
     NARRATIVE_SPINE_BY_REGION: NARRATIVE_SPINE_BY_REGION,
     GLOBAL_TOURISM_TOKENS: GLOBAL_TOURISM_TOKENS,
     CITY_COUNTRY_OVERLAP_FRAGMENTS: CITY_COUNTRY_OVERLAP_FRAGMENTS,

@@ -99,7 +99,10 @@ const PILOT = [
   { city: Catalog.findCityByName('Tokio'), goal: 'descanso' },
   { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'amor' },
   { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'trabajo' },
-  { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'descanso' }
+  { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'descanso' },
+  { city: Catalog.findCityByName('Ciudad de México'), goal: 'amor' },
+  { city: Catalog.findCityByName('Ciudad de México'), goal: 'trabajo' },
+  { city: Catalog.findCityByName('Ciudad de México'), goal: 'descanso' }
 ];
 
 const robertoUtcIso = (function () {
@@ -207,7 +210,7 @@ const readings = PILOT.map(function (c) {
   };
 });
 
-assert('15 lecturas piloto generadas', readings.length === 15, 'count=' + readings.length);
+assert('18 lecturas piloto generadas', readings.length === 18, 'count=' + readings.length);
 
 const closings = readings.map(function (r) { return r.closing; });
 const closingMax = maxRepeat(closings);
@@ -267,8 +270,8 @@ const amorActions = readings.filter(function (r) { return r.goal === 'amor'; }).
 });
 const amorActionMax = maxRepeat(amorActions);
 assert(
-  'Acción amor variada (máx 2 repeticiones exactas en 5 lecturas)',
-  amorActionMax <= 2 && amorActions.length === 5,
+  'Acción amor variada (máx 2 repeticiones exactas en 6 lecturas)',
+  amorActionMax <= 2 && amorActions.length === 6,
   'maxRepeat=' + amorActionMax + ' unique=' + new Set(amorActions.map(function (a) {
     return a.toLowerCase();
   })).size
@@ -281,20 +284,20 @@ const amorClosingLegacy = amorClosings.filter(function (c) {
   return c.toLowerCase().indexOf(LEGACY_CLOSING_AMOR) !== -1;
 }).length;
 assert(
-  'Cierre amor no clonado en 5/5 (legacy ≤2)',
+  'Cierre amor no clonado en 6/6 (legacy ≤2)',
   amorClosingLegacy <= 2,
-  'legacyHits=' + amorClosingLegacy + '/5'
+  'legacyHits=' + amorClosingLegacy + '/6'
 );
 
 LEGACY_PADS.forEach(function (pad) {
   const hits = readings.filter(function (r) {
     return r.full.toLowerCase().indexOf(pad) !== -1;
   }).length;
-  assert('Pad legacy «' + pad.slice(0, 40) + '…» ≤2/15', hits <= 2, 'hits=' + hits);
+  assert('Pad legacy «' + pad.slice(0, 40) + '…» ≤2/18', hits <= 2, 'hits=' + hits);
 });
 
 assert(
-  'Longitud 500–900 palabras en 15 lecturas',
+  'Longitud 500–900 palabras en 18 lecturas',
   readings.every(function (r) {
     const w = r.reading.meta.wordCount;
     return w >= Premium.MIN_WORDS && w <= Premium.MAX_WORDS;
@@ -305,13 +308,13 @@ assert(
 );
 
 console.log('\n' + '═'.repeat(60));
-console.log('Métricas variación (15 lecturas piloto)');
+console.log('Métricas variación (18 lecturas piloto)');
 console.log('  cierre maxRepeat:', closingMax);
 console.log('  observe maxRepeat:', observeMax);
 console.log('  amor action maxRepeat:', amorActionMax);
 console.log('  «puede que»: ' + puedeQue + ' (baseline ' + BASELINE_MODAL.puedeQue + ', target ≤' + puedeQueMax + ')');
 console.log('  «tal vez»: ' + talVez + ' (baseline ' + BASELINE_MODAL.talVez + ', target ≤' + talVezMax + ')');
-console.log('  amor cierre legacy:', amorClosingLegacy + '/5');
+console.log('  amor cierre legacy:', amorClosingLegacy + '/6');
 
 console.log('\n' + '═'.repeat(60));
 console.log(fail === 0 ? 'SMOKE: ALL PASS' : 'SMOKE: ' + fail + ' FAIL(S)');

@@ -104,7 +104,10 @@ const PILOT = [
   { city: Catalog.findCityByName('Tokio'), goal: 'descanso', region: 'EAST_ASIAN' },
   { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'amor', region: 'AFRICAN_COASTAL' },
   { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'trabajo', region: 'AFRICAN_COASTAL' },
-  { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'descanso', region: 'AFRICAN_COASTAL' }
+  { city: Catalog.findCityByName('Ciudad del Cabo'), goal: 'descanso', region: 'AFRICAN_COASTAL' },
+  { city: Catalog.findCityByName('Ciudad de México'), goal: 'amor', region: 'LATAM' },
+  { city: Catalog.findCityByName('Ciudad de México'), goal: 'trabajo', region: 'LATAM' },
+  { city: Catalog.findCityByName('Ciudad de México'), goal: 'descanso', region: 'LATAM' }
 ];
 
 const robertoUtc = vm.runInContext("new Date('1973-05-29T05:30:00.000Z')", ctx);
@@ -214,22 +217,22 @@ const readings = PILOT.map(function (c) {
   };
 });
 
-assert('15 lecturas piloto generadas', readings.length === 15, 'count=' + readings.length);
+assert('18 lecturas piloto generadas', readings.length === 18, 'count=' + readings.length);
 
 const regionsUsed = new Set(readings.map(function (r) { return r.regionResolved; }));
 assert(
-  '5 familias regionales activas',
-  regionsUsed.size === 5 &&
-    ['IBERIAN', 'MEDITERRANEAN', 'ANGLO', 'EAST_ASIAN', 'AFRICAN_COASTAL'].every(function (r) {
+  '6 familias regionales activas',
+  regionsUsed.size === 6 &&
+    ['IBERIAN', 'MEDITERRANEAN', 'ANGLO', 'EAST_ASIAN', 'AFRICAN_COASTAL', 'LATAM'].every(function (r) {
       return regionsUsed.has(r);
     }),
   Array.from(regionsUsed).join(', ')
 );
 
 assert(
-  'GOAL_PADS_BY_REGION exportado (5 regiones × 3 goals)',
+  'GOAL_PADS_BY_REGION exportado (6 regiones × 3 goals)',
   Premium.GOAL_PADS_BY_REGION &&
-    Object.keys(Premium.GOAL_PADS_BY_REGION).length === 5 &&
+    Object.keys(Premium.GOAL_PADS_BY_REGION).length === 6 &&
     ['amor', 'trabajo', 'descanso'].every(function (g) {
       return Premium.GOAL_PADS_BY_REGION.IBERIAN[g] && Premium.GOAL_PADS_BY_REGION.IBERIAN[g].length >= 6;
     }),
@@ -243,8 +246,8 @@ const goalPadSignatures = amorByRegion.map(function (r) {
 });
 const uniqueGoalPadSigs = new Set(goalPadSignatures);
 assert(
-  'Goal pads amor diferenciados por región (5/5)',
-  uniqueGoalPadSigs.size === 5,
+  'Goal pads amor diferenciados por región (6/6)',
+  uniqueGoalPadSigs.size === 6,
   'unique=' + uniqueGoalPadSigs.size
 );
 
@@ -252,8 +255,8 @@ const actions = new Set(amorByRegion.map(function (r) {
   return (r.nc.humanOpportunityAction || '').slice(0, 48);
 }));
 assert(
-  'humanOpportunityAction distinto por región (amor 5/5)',
-  actions.size === 5,
+  'humanOpportunityAction distinto por región (amor 6/6)',
+  actions.size === 6,
   'unique=' + actions.size
 );
 
@@ -297,11 +300,11 @@ showcase.forEach(function (cityName) {
 });
 
 console.log('\n' + '═'.repeat(60));
-console.log('Métricas goal pad regional (15 lecturas)');
+console.log('Métricas goal pad regional (18 lecturas)');
 console.log('  maxRepeat corpus:', phraseStats.max, '(baseline', BASELINE_MAX_REPEAT + ')');
 console.log('  legacy goal pad hits:', legacyHits);
-console.log('  goal pad sigs amor:', uniqueGoalPadSigs.size + '/5');
-console.log('  action unique amor:', actions.size + '/5');
+console.log('  goal pad sigs amor:', uniqueGoalPadSigs.size + '/6');
+console.log('  action unique amor:', actions.size + '/6');
 
 const topRepeats = [...phraseStats.counts.entries()]
   .sort(function (a, b) { return b[1] - a[1]; })
