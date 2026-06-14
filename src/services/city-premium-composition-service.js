@@ -956,7 +956,9 @@
     var result = Narrative.deriveNarrativeContext({
       city: input.city,
       goal: ctx.goalId,
-      relevantInfluences: input.relevantInfluences || ctx.influences,
+      relevantInfluences: (input.relevantInfluences && input.relevantInfluences.length)
+        ? input.relevantInfluences
+        : ctx.influences,
       bridgeProfile: input.bridgeProfile,
       relocationProfile: input.relocationProfile || null
     });
@@ -1034,13 +1036,17 @@
     };
   }
 
+  function editorialRegionalPack(map, regionFamily) {
+    return window.KairosEditorialFamily.resolveRegionalPack(map, regionFamily).pack;
+  }
+
   function regionalizeInterpretationTail(text, ctx) {
     if (!text) return '';
     var marker = /observa si te sientes m[aá]s entero o m[aá]s expuesto[^.!?]*[.!?]?/gi;
     if (!marker.test(text)) return text;
-    var region = ctx.regionFamily || 'IBERIAN';
     var goal = ctx.goalId || 'amor';
-    var pack = OBSERVE_ENTERO_TAIL_BY_REGION[region] || OBSERVE_ENTERO_TAIL_BY_REGION.IBERIAN;
+    var pack = editorialRegionalPack(OBSERVE_ENTERO_TAIL_BY_REGION, ctx.regionFamily);
+    if (!pack) return text;
     var pool = pack[goal] || pack.amor;
     var variant = pool[hash32(String(ctx.seed) + ':entero-tail') % pool.length];
     return text.replace(marker, variant);
@@ -1265,9 +1271,8 @@
   }
 
   function pickHumanScene(ctx, sectionId) {
-    var region = ctx.regionFamily || 'IBERIAN';
-    var regionalPack = HUMAN_SCENE_BY_REGION[region] || HUMAN_SCENE_BY_REGION.IBERIAN;
-    var pool = regionalPack[ctx.goalId] || regionalPack.amor;
+    var regionalPack = editorialRegionalPack(HUMAN_SCENE_BY_REGION, ctx.regionFamily);
+    var pool = regionalPack ? (regionalPack[ctx.goalId] || regionalPack.amor) : null;
     if (!pool || !pool.length) {
       pool = HUMAN_SCENE_POOL[ctx.goalId] || HUMAN_SCENE_POOL.amor;
     }
@@ -1355,8 +1360,7 @@ function metaphorFingerprint(text) {
   }
 
   function transitionPoolFor(ctx, cat) {
-    var region = ctx.regionFamily || 'IBERIAN';
-    var regional = VOICE_TRANSITION_BY_REGION[region];
+    var regional = VOICE_TRANSITION_BY_REGION[ctx.regionFamily];
     if (regional && regional[cat] && regional[cat].length) {
       return regional[cat];
     }
@@ -1580,9 +1584,9 @@ function metaphorFingerprint(text) {
   }
 
   function pickFavoreceOpen(ctx) {
-    var region = ctx.regionFamily || 'IBERIAN';
-    var pack = SPINE_FAVORECE_OPEN_BY_REGION[region] || SPINE_FAVORECE_OPEN_BY_REGION.IBERIAN;
-    if (region === 'AFRICAN_COASTAL') {
+    var pack = editorialRegionalPack(SPINE_FAVORECE_OPEN_BY_REGION, ctx.regionFamily);
+    if (!pack) pack = SPINE_FAVORECE_OPEN_BY_REGION[window.KairosEditorialFamily.DEFAULT_FAMILY];
+    if (ctx.regionFamily === 'AFRICAN_COASTAL') {
       var africanSlug = ctx.citySlug || resolveAfricanCitySlug(ctx.cityName);
       if (africanSlug && AFRICAN_FAVORECE_OPEN_BY_CITY[africanSlug]) {
         pack = AFRICAN_FAVORECE_OPEN_BY_CITY[africanSlug];
@@ -2335,22 +2339,18 @@ function metaphorFingerprint(text) {
   });
 
   function resolveRegionFamily(cityId, countryId) {
-    var EFR = window.KairosEditorialFamily;
-    if (EFR && typeof EFR.resolveEditorialFamily === 'function') {
-      return EFR.resolveEditorialFamily({ cityName: cityId, countryId: countryId });
-    }
-    return 'IBERIAN';
+    return window.KairosEditorialFamily.resolveRegionFamily(cityId, countryId);
   }
 
   function goalPadPool(ctx) {
-    var region = ctx.regionFamily || 'IBERIAN';
-    var pack = GOAL_PADS_BY_REGION[region] || GOAL_PADS_BY_REGION.IBERIAN;
+    var pack = editorialRegionalPack(GOAL_PADS_BY_REGION, ctx.regionFamily);
+    if (!pack) return [];
     return pack[ctx.goalId] || pack.amor;
   }
 
   function regionalPadsForGoal(ctx) {
-    var region = ctx.regionFamily || 'IBERIAN';
-    var regional = REGIONAL_EDITORIAL_PADS[region] || REGIONAL_EDITORIAL_PADS.IBERIAN;
+    var regional = editorialRegionalPack(REGIONAL_EDITORIAL_PADS, ctx.regionFamily);
+    if (!regional) return [];
     var goalIdx = ctx.goalId === 'trabajo' ? 1 : (ctx.goalId === 'descanso' ? 2 : 0);
     var out = [];
     for (var i = 0; i < regional.length; i += 1) {
@@ -2361,9 +2361,8 @@ function metaphorFingerprint(text) {
 
   function editorialPadPool(ctx) {
     var goalPool = goalPadPool(ctx);
-    var region = ctx.regionFamily || 'IBERIAN';
-    var microPack = REGIONAL_EDITORIAL_MICRO_BY_GOAL[region] || REGIONAL_EDITORIAL_MICRO_BY_GOAL.IBERIAN;
-    var micro = microPack[ctx.goalId] || microPack.amor || [];
+    var microPack = editorialRegionalPack(REGIONAL_EDITORIAL_MICRO_BY_GOAL, ctx.regionFamily);
+    var micro = microPack ? (microPack[ctx.goalId] || microPack.amor || []) : [];
     return goalPool.concat(micro).concat(regionalPadsForGoal(ctx));
   }
 
@@ -2386,8 +2385,8 @@ function metaphorFingerprint(text) {
   }
 
   function regionalTopupPool(ctx) {
-    var region = ctx.regionFamily || 'IBERIAN';
-    var pack = REGIONAL_TOPUP_BY_GOAL[region] || REGIONAL_TOPUP_BY_GOAL.IBERIAN;
+    var pack = editorialRegionalPack(REGIONAL_TOPUP_BY_GOAL, ctx.regionFamily);
+    if (!pack) return [];
     return pack[ctx.goalId] || pack.amor;
   }
 
@@ -2746,19 +2745,19 @@ function metaphorFingerprint(text) {
       _countrySectionsUsed: []
     };
 
+    var EFR = window.KairosEditorialFamily;
+    var countryIdEarly = EFR && typeof EFR.coerceCountryId === 'function'
+      ? EFR.coerceCountryId(city.country)
+      : (window.KairosCitiesCatalog && typeof window.KairosCitiesCatalog.resolveCountryId === 'function'
+        ? window.KairosCitiesCatalog.resolveCountryId(city.country)
+        : null);
+    ctx.regionFamily = EFR.resolveRegionFamily(cityName, countryIdEarly);
+
     var narrativeWrap = resolveNarrativeContext(input, ctx);
     var narrativeContext = narrativeWrap.narrativeContext;
-    var EFR = window.KairosEditorialFamily;
     var countryId = narrativeContext && narrativeContext.countryContext
       ? narrativeContext.countryContext.countryId
-      : (EFR && typeof EFR.coerceCountryId === 'function'
-        ? EFR.coerceCountryId(city.country)
-        : (window.KairosCitiesCatalog && typeof window.KairosCitiesCatalog.resolveCountryId === 'function'
-          ? window.KairosCitiesCatalog.resolveCountryId(city.country)
-          : null));
-    ctx.regionFamily = narrativeContext && narrativeContext.regionFamily
-      ? narrativeContext.regionFamily
-      : resolveRegionFamily(cityName, countryId);
+      : countryIdEarly;
     ctx.citySlug = narrativeContext && narrativeContext.cityAtmosphere
       ? narrativeContext.cityAtmosphere.citySlug
       : resolveAfricanCitySlug(cityName);

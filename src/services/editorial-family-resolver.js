@@ -7,8 +7,17 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f2.2c-0.1';
   var DEFAULT_FAMILY = 'IBERIAN';
+
+  var REGISTERED_FAMILIES = [
+    'IBERIAN',
+    'MEDITERRANEAN',
+    'ANGLO',
+    'EAST_ASIAN',
+    'AFRICAN_COASTAL',
+    'LATAM'
+  ];
 
   /** @type {Record<string, string>} slug canónico → familia (26 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
@@ -207,15 +216,64 @@
     return DEFAULT_FAMILY;
   }
 
+  function isRegisteredFamily(id) {
+    return !!(id && REGISTERED_FAMILIES.indexOf(id) !== -1);
+  }
+
+  function resolveRegionFamily(cityName, countryId) {
+    return resolveEditorialFamily({ cityName: cityName, countryId: countryId });
+  }
+
+  function resolveRegionalPack(map, regionFamily, opts) {
+    opts = opts || {};
+    map = map || {};
+    var fallbackFamily = opts.fallbackFamily != null ? opts.fallbackFamily : DEFAULT_FAMILY;
+    var requested = regionFamily || fallbackFamily;
+
+    if (Object.prototype.hasOwnProperty.call(map, requested) && map[requested]) {
+      return {
+        pack: map[requested],
+        meta: {
+          requestedFamily: requested,
+          effectiveFamily: requested,
+          resolvedFrom: 'explicit'
+        }
+      };
+    }
+
+    if (requested !== fallbackFamily &&
+        Object.prototype.hasOwnProperty.call(map, fallbackFamily) &&
+        map[fallbackFamily]) {
+      return {
+        pack: map[fallbackFamily],
+        meta: {
+          requestedFamily: requested,
+          effectiveFamily: fallbackFamily,
+          resolvedFrom: 'default'
+        }
+      };
+    }
+
+    return {
+      pack: null,
+      meta: {
+        requestedFamily: requested,
+        effectiveFamily: null,
+        resolvedFrom: 'missing'
+      }
+    };
+  }
+
   window.KairosEditorialFamily = {
     SCHEMA_VERSION: SCHEMA_VERSION,
     DEFAULT_FAMILY: DEFAULT_FAMILY,
+    REGISTERED_FAMILIES: REGISTERED_FAMILIES,
     COUNTRY_EDITORIAL_FAMILY: COUNTRY_EDITORIAL_FAMILY,
     CITY_EDITORIAL_FAMILY: CITY_EDITORIAL_FAMILY,
     coerceCountryId: coerceCountryId,
+    isRegisteredFamily: isRegisteredFamily,
     resolveEditorialFamily: resolveEditorialFamily,
-    resolveRegionFamily: function (cityName, countryId) {
-      return resolveEditorialFamily({ cityName: cityName, countryId: countryId });
-    }
+    resolveRegionFamily: resolveRegionFamily,
+    resolveRegionalPack: resolveRegionalPack
   };
 })();

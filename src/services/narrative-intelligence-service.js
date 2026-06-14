@@ -484,8 +484,10 @@
   };
 
   function observeTailPool(regionFamily, goalId) {
-    var region = regionFamily || 'IBERIAN';
-    var pack = OBSERVE_TAIL_BY_REGION[region] || OBSERVE_TAIL_BY_REGION.IBERIAN;
+    var EFR = window.KairosEditorialFamily;
+    var resolved = EFR.resolveRegionalPack(OBSERVE_TAIL_BY_REGION, regionFamily);
+    var pack = resolved.pack;
+    if (!pack) return HUMAN_ATMO_OBSERVE_TAIL;
     return pack[goalId] || pack.amor || HUMAN_ATMO_OBSERVE_TAIL;
   }
 
@@ -1329,11 +1331,7 @@
   };
 
   function resolveRegionFamily(cityId, countryId) {
-    var EFR = window.KairosEditorialFamily;
-    if (EFR && typeof EFR.resolveEditorialFamily === 'function') {
-      return EFR.resolveEditorialFamily({ cityName: cityId, countryId: countryId });
-    }
-    return 'IBERIAN';
+    return window.KairosEditorialFamily.resolveRegionFamily(cityId, countryId);
   }
 
   function regionalSpine(regionFamily) {
@@ -1753,7 +1751,8 @@
   function humanizeTheme(dominantTheme, goalId, cityName, regionFamily) {
     var slug = resolveAfricanCityMicroSlug(cityName);
     var micro = slug && AFRICAN_CITY_MICRO[slug] && AFRICAN_CITY_MICRO[slug][goalId];
-    var regionalThemes = HUMAN_THEME_PATTERNS_BY_REGION[regionFamily || 'IBERIAN'];
+    var regionalThemes = window.KairosEditorialFamily
+      .resolveRegionalPack(HUMAN_THEME_PATTERNS_BY_REGION, regionFamily).pack;
     if ((goalId === 'amor' || goalId === 'descanso' || goalId === 'trabajo') &&
         regionalThemes && regionalThemes[goalId] && regionalThemes[goalId].length) {
       var tIdx = micro && micro.themePick != null
@@ -1895,7 +1894,8 @@
       .replace(/^Tal vez en [^,]+ notes /, '');
 
     var regional = regionalSpine(regionFamily);
-    var framePool = SUMMARY_FRAME_POOL_BY_REGION[regionFamily || 'IBERIAN'];
+    var framePool = window.KairosEditorialFamily
+      .resolveRegionalPack(SUMMARY_FRAME_POOL_BY_REGION, regionFamily).pack;
     var pool = framePool && framePool[goalId];
     var frame;
     if (pool && pool.length) {

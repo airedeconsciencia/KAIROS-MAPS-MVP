@@ -1,0 +1,232 @@
+#!/usr/bin/env bash
+# Kairos Maps — Fallback SSOT smoke (F2.2c)
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+CACHE_DIR="$ROOT/.cache/smoke"
+ASTRONOMY="$CACHE_DIR/astronomy.browser.min.js"
+
+RESOLVER="$ROOT/src/services/editorial-family-resolver.js"
+NARRATIVE="$ROOT/src/services/narrative-intelligence-service.js"
+PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
+KNOWLEDGE="$ROOT/src/services/premium-knowledge-service.js"
+
+GOAL_SIGNAL="$ROOT/src/content/goal-signal.js"
+NATAL_LITE="$ROOT/src/content/natal-lite.js"
+COMPOSITION="$ROOT/src/services/natal-composition-service.js"
+BRIDGE="$ROOT/src/services/natal-map-bridge-service.js"
+CATALOG="$ROOT/src/content/cities-catalog.js"
+ARCHETYPES="$ROOT/src/content/country-archetypes.js"
+COUNTRY_SERVICE="$ROOT/src/services/country-archetype-service.js"
+SCORER="$ROOT/src/content/city-scorer.js"
+ASTRO="$ROOT/src/engines/astro.js"
+INTERP="$ROOT/src/content/interpretations.js"
+BLOCKS="$ROOT/src/content/premium-blocks.js"
+
+echo ""
+echo "══════════════════════════════════════════════════════════"
+echo " KAIROS MAPS — Fallback SSOT smoke (F2.2c)"
+echo " Scope: no logical IBERIAN fallbacks · EFR SSOT · LATAM"
+echo "══════════════════════════════════════════════════════════"
+echo ""
+
+for f in "$RESOLVER" "$NARRATIVE" "$PREMIUM" "$KNOWLEDGE"; do
+  if [[ ! -f "$f" ]]; then
+    echo "ERROR: No se encuentra: $f"
+    exit 1
+  fi
+done
+
+mkdir -p "$CACHE_DIR"
+if [[ ! -f "$ASTRONOMY" ]]; then
+  curl -fsSL "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" -o "$ASTRONOMY"
+fi
+
+export ROOT RESOLVER NARRATIVE PREMIUM KNOWLEDGE ASTRONOMY \
+  GOAL_SIGNAL NATAL_LITE COMPOSITION BRIDGE CATALOG ARCHETYPES COUNTRY_SERVICE \
+  SCORER ASTRO INTERP BLOCKS KNOWLEDGE
+
+node <<'NODE'
+const fs = require('fs');
+const vm = require('vm');
+const path = require('path');
+
+const ROOT = process.env.ROOT;
+const FILES = [
+  process.env.RESOLVER,
+  process.env.NARRATIVE,
+  process.env.PREMIUM,
+  process.env.KNOWLEDGE
+];
+
+let fail = 0;
+function assert(label, ok, detail) {
+  console.log('─'.repeat(60));
+  console.log(label);
+  console.log('RESULT:', ok ? 'PASS' : 'FAIL');
+  if (detail) console.log(' ', detail);
+  if (!ok) fail += 1;
+}
+
+function stripComments(src) {
+  return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+}
+
+const FORBIDDEN = [
+  { re: /\|\|\s*'IBERIAN'/g, label: "|| 'IBERIAN'" },
+  { re: /\|\|\s*"IBERIAN"/g, label: '|| "IBERIAN"' },
+  { re: /return\s+'IBERIAN'/g, label: "return 'IBERIAN'" },
+  { re: /\|\|\s*[A-Za-z0-9_]+\.IBERIAN/g, label: '|| *.IBERIAN pool fallback' }
+];
+
+FILES.forEach(function (file) {
+  const base = path.basename(file);
+  const raw = fs.readFileSync(file, 'utf8');
+  const src = stripComments(raw);
+  FORBIDDEN.forEach(function (rule) {
+    rule.re.lastIndex = 0;
+    const hits = src.match(rule.re) || [];
+    const allowedInResolver = base === 'editorial-family-resolver.js' &&
+      rule.label === "return 'IBERIAN'" &&
+      hits.length === 0;
+    if (allowedInResolver) return;
+    if (base === 'editorial-family-resolver.js' && rule.label === "return 'IBERIAN'") {
+      assert(base + ' sin return IBERIAN', hits.length === 0, 'hits=' + hits.length);
+      return;
+    }
+    assert(base + ' sin ' + rule.label, hits.length === 0, hits.length ? hits.slice(0, 3).join(' · ') : '0');
+  });
+});
+
+const resolverSrc = fs.readFileSync(process.env.RESOLVER, 'utf8');
+assert(
+  'DEFAULT_FAMILY = IBERIAN (F2.2c behavior-preserving)',
+  /DEFAULT_FAMILY\s*=\s*'IBERIAN'/.test(resolverSrc),
+  'DEFAULT_FAMILY'
+);
+assert(
+  'REGISTERED_FAMILIES exportado',
+  /REGISTERED_FAMILIES/.test(resolverSrc) && /isRegisteredFamily/.test(resolverSrc),
+  'EFR API'
+);
+assert(
+  'resolveRegionalPack exportado',
+  /resolveRegionalPack/.test(resolverSrc),
+  'EFR API'
+);
+
+const ctx = { window: {}, console: console };
+vm.createContext(ctx);
+vm.runInContext(fs.readFileSync(process.env.ASTRONOMY, 'utf8'), ctx, { filename: process.env.ASTRONOMY });
+if (ctx.window.Astronomy) ctx.Astronomy = ctx.window.Astronomy;
+
+[
+  process.env.GOAL_SIGNAL, process.env.NATAL_LITE, process.env.COMPOSITION,
+  process.env.BRIDGE, process.env.CATALOG, process.env.RESOLVER,
+  process.env.ARCHETYPES, process.env.COUNTRY_SERVICE, process.env.SCORER,
+  process.env.ASTRO, process.env.INTERP, process.env.BLOCKS, process.env.KNOWLEDGE,
+  process.env.NARRATIVE, process.env.PREMIUM
+].forEach(function (p) {
+  vm.runInContext(fs.readFileSync(p, 'utf8'), ctx, { filename: p });
+});
+
+const EFR = ctx.window.KairosEditorialFamily;
+const Catalog = ctx.window.KairosCitiesCatalog;
+const Premium = ctx.window.KairosCityPremiumComposition;
+const GS = ctx.window.KairosGoalSignal;
+const compose = ctx.window.KairosNatalComposition.composeNatalLiteReading;
+const Bridge = ctx.window.KairosNatalMapBridge;
+const Astro = ctx.window.KairosAstro;
+const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
+
+assert('EFR.DEFAULT_FAMILY === IBERIAN', EFR.DEFAULT_FAMILY === 'IBERIAN', EFR.DEFAULT_FAMILY);
+assert('isRegisteredFamily(LATAM)', EFR.isRegisteredFamily('LATAM') === true, 'LATAM');
+assert('isRegisteredFamily(GLOBAL_NEUTRAL) false', EFR.isRegisteredFamily('GLOBAL_NEUTRAL') === false, 'not yet');
+
+assert(
+  'LATAM countries resolver',
+  ['mexico', 'argentina', 'brazil', 'peru'].every(function (slug) {
+    return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'LATAM';
+  }),
+  JSON.stringify({
+    mexico: EFR.COUNTRY_EDITORIAL_FAMILY.mexico,
+    argentina: EFR.COUNTRY_EDITORIAL_FAMILY.argentina
+  })
+);
+
+assert(
+  'País no mapeado → DEFAULT IBERIAN (F2.2c)',
+  EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' }) === 'IBERIAN',
+  EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' })
+);
+
+const packTest = EFR.resolveRegionalPack({ IBERIAN: { amor: ['x'] }, LATAM: { amor: ['y'] } }, 'LATAM');
+assert(
+  'resolveRegionalPack explicit LATAM',
+  packTest.pack && packTest.pack.amor[0] === 'y' && packTest.meta.resolvedFrom === 'explicit',
+  JSON.stringify(packTest.meta)
+);
+
+const packDefault = EFR.resolveRegionalPack({ IBERIAN: { amor: ['x'] } }, null);
+assert(
+  'resolveRegionalPack null → DEFAULT IBERIAN pack',
+  packDefault.pack && packDefault.pack.amor[0] === 'x' && packDefault.meta.resolvedFrom === 'explicit',
+  JSON.stringify(packDefault.meta)
+);
+
+const robertoUtc = vm.runInContext("new Date('1973-05-29T05:30:00.000Z')", ctx);
+const lines = Astro.computeAllLines(robertoUtc);
+const bridgeProfile = compose({ sun: 'gemini', moon: 'aries', asc: 'cancer' }).meta.bridgeProfile;
+
+function sparseBA() {
+  const city = Catalog.findCityByName('Buenos Aires');
+  const reading = Premium.composeCityReading({
+    city: city,
+    goal: 'trabajo',
+    relevantInfluences: [],
+    bridgeProfile: bridgeProfile,
+    profile: { firstName: 'Roberto' }
+  });
+  const nc = reading.meta.narrativeContext || {};
+  const km = reading.meta.knowledgeMeta || {};
+  const full = (reading.sections || []).map(function (s) { return s.body; }).join('\n\n');
+  const norm = full.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const iberian = IBERIAN_LEAK.filter(function (m) {
+    return norm.indexOf(m.normalize('NFD').replace(/[\u0300-\u036f]/g, '')) !== -1;
+  });
+  return {
+    ok: reading.ok,
+    regionN: nc.regionFamily || null,
+    regionK: km.regionFamily || null,
+    englishThemeHit: reading.meta.englishThemeHit || null,
+    sparseFallback: !!reading.meta.sparseInfluencesFallback,
+    iberian: iberian.length,
+    words: reading.meta.wordCount
+  };
+}
+
+const ba = sparseBA();
+assert(
+  'BA / trabajo / sparse ok:true',
+  ba.ok === true && ba.englishThemeHit === null && ba.sparseFallback === true,
+  JSON.stringify(ba)
+);
+assert(
+  'BA / trabajo / sparse regionFamily LATAM',
+  ba.regionN === 'LATAM' && ba.regionK === 'LATAM',
+  'regionN=' + ba.regionN + ' regionK=' + ba.regionK
+);
+assert(
+  'BA / trabajo / sparse IBERIAN leak 0',
+  ba.iberian === 0,
+  'hits=' + ba.iberian
+);
+
+console.log('');
+console.log('════════════════════════════════════════════════════════════');
+if (fail) {
+  console.log(' FAIL — ' + fail + ' assertion(s)');
+  process.exit(1);
+}
+console.log(' SMOKE: ALL PASS');
+NODE

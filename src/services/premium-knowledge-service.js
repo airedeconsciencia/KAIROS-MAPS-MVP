@@ -232,17 +232,13 @@
   };
 
   function resolveRegionFamily(cityId, countryId) {
-    var EFR = window.KairosEditorialFamily;
-    if (EFR && typeof EFR.resolveEditorialFamily === 'function') {
-      return EFR.resolveEditorialFamily({ cityName: cityId, countryId: countryId });
-    }
-    return 'IBERIAN';
+    return window.KairosEditorialFamily.resolveRegionFamily(cityId, countryId);
   }
 
   function applyRegionalBlockVariation(text, block, ctx) {
     if (!block || !ctx || !ctx.regionFamily) return text;
-    var region = ctx.regionFamily;
-    var pack = PREMIUM_BLOCK_VARIATIONS_BY_REGION[region];
+    var pack = window.KairosEditorialFamily
+      .resolveRegionalPack(PREMIUM_BLOCK_VARIATIONS_BY_REGION, ctx.regionFamily).pack;
     if (!pack) return text;
     var goalId = ctx.goalId || 'amor';
     var slot = block.slot;
@@ -613,7 +609,7 @@
         : null);
     var regionFamily = input.narrativeContext && input.narrativeContext.regionFamily
       ? input.narrativeContext.regionFamily
-      : resolveRegionFamily(cityName, canonicalCountryId);
+      : window.KairosEditorialFamily.resolveRegionFamily(cityName, canonicalCountryId);
 
     var ctx = {
       goalId: goalId,
