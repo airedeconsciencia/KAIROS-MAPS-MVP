@@ -2,8 +2,8 @@
 
 **Documento:** handoff operativo y editorial · fin de ciclo PRE-F1  
 **Fecha:** 26 mayo 2026  
-**Rama:** `main` · **HEAD local:** `ce69f09`  
-**Handoff milestone:** post PRE-F1.8 staging re-deploy (hotfix sparse premium)
+**Rama:** `main` · **HEAD repo:** `b3342ee` · **Runtime LATAM:** `ce69f09`  
+**Handoff milestone:** post PRE-F1.9b producción LATAM live · PRE-F1 **cerrado**
 
 > Documento de continuidad para el siguiente agente, sesión o revisor humano.  
 > Máximo scope: estado exacto al cierre F1.8 · no sustituye `KAIROS_DOC_INDEX.md`.
@@ -14,11 +14,12 @@
 
 | Dimensión | Valor |
 |-----------|-------|
-| **Repo local HEAD** | `ce69f09` — `pref1 latam sparse premium hotfix` |
+| **Repo HEAD** | `b3342ee` — `pref1 f1.8 master handoff` (doc) |
+| **Runtime LATAM** | `ce69f09` — `pref1 latam sparse premium hotfix` |
 | **`src/`** | Limpio · LATAM + hotfix cognate `control` integrados |
-| **`docs/`** | PRE-F1.4 checkpoint · este handoff · `KAIROS_CURRENT_CHECKPOINT` parcialmente desactualizado (staging) |
-| **`dist/`** | Sincronizado con `src/` tras deploy staging · **no commiteado** (política release) |
-| **Git remoto** | `main` **ahead of origin/main by 3 commits** · **sin push** |
+| **`docs/`** | PRE-F1.4 · este handoff · `KAIROS_CURRENT_CHECKPOINT` @ PRE-F1.9c |
+| **`dist/`** | Sincronizado post-deploy prod · **no commiteado** (política release) |
+| **Git remoto** | `main` **up to date with `origin/main`** · push PRE-F1.9a completado |
 | **Familias editoriales** | 6: IBERIAN · MEDITERRANEAN · ANGLO · EAST_ASIAN · AFRICAN_COASTAL · **LATAM** |
 | **Países LATAM** | `mexico` · `argentina` · `brazil` · `peru` → resolver `LATAM` |
 | **Premium beta** | `?premium=1` o `localStorage kairosPremiumBeta=1` |
@@ -36,8 +37,9 @@
 | `a8d4a60` | `pref1 latam editorial runtime integration` | LATAM runtime · 14 tablas · 10 smokes · MX/AR/BR/PE |
 | `41bad5a` | `pref1 latam integration checkpoint` | Doc PRE-F1.4 · trazabilidad · frozen runtime v1 |
 | `ce69f09` | `pref1 latam sparse premium hotfix` | Fix `englishThemeHit: "control"` falso positivo (cognate ES) |
+| `b3342ee` | `pref1 f1.8 master handoff` | Handoff doc PRE-F1.8 |
 
-**Cadena local no pusheada:** `7247f1e` → … → `a8d4a60` → `41bad5a` → `ce69f09`.
+**Cadena remota (push PRE-F1.9a):** `7247f1e` → … → `a8d4a60` → `41bad5a` → `ce69f09` → `b3342ee` → `origin/main`.
 
 ---
 
@@ -47,10 +49,13 @@
 |-------|-------|
 | **URL** | https://kairos-maps-mvp.web.app |
 | **Premium** | https://kairos-maps-mvp.web.app/?premium=1 |
-| **HEAD desplegado** | `33f3ec8` (3.8h.7b) |
-| **LATAM** | **NO** — `mexico`/`argentina` siguen `IBERIAN` en resolver |
-| **Familias** | 5 (pre-LATAM) |
-| **Estado** | Estable · no tocar salvo ciclo smoke → staging → prod explícito |
+| **Runtime desplegado** | `ce69f09` (PRE-F1.9b · 26 mayo 2026) |
+| **LATAM** | **SÍ** — `mexico` · `argentina` · `brazil` · `peru` → resolver **`LATAM`** |
+| **Familias** | 6 (incl. LATAM) |
+| **Deploy** | PRE-F1.9b · `./scripts/deploy-prod.sh` · 5/5 smokes · QA prod PASS |
+| **Estado** | **LATAM live** · no redeploy salvo ciclo smoke → staging → prod explícito |
+
+> **Nota final producción (PRE-F1.9c):** PRE-F1 cerrado. Prod y staging alineados @ runtime `ce69f09`. QA post-deploy: BA/trabajo/sparse · CDMX/amor · Río/descanso · Lima/trabajo — PASS. Siguiente fase: **F2.1 — DEFAULT neutral / Regional Expansion Roadmap**.
 
 ---
 
@@ -86,20 +91,23 @@ Resolver unificado · dedup P0/P1/P2 · premium UI beta · sparse NY · deploy p
 | PRE-F1.6 | ✅ Manual browser QA | 11 PASS · 1 WATCH (BA/trabajo sparse pre-hotfix) |
 | **PRE-F1.7** | ✅ Hotfix | `ce69f09` · cognate `control` en `containsEnglishThemeKeys` |
 | **PRE-F1.8** | ✅ Staging re-deploy | Hotfix live · BA/trabajo sparse PASS |
+| **PRE-F1.8b** | ✅ Master handoff doc | `b3342ee` |
+| **PRE-F1.9** | ✅ Readiness audit | READY FOR PROD |
+| **PRE-F1.9a** | ✅ Push LATAM stack | `origin/main` @ `b3342ee` |
+| **PRE-F1.9b** | ✅ Prod deploy LATAM | `./scripts/deploy-prod.sh` · LATAM live |
+| **PRE-F1.9c** | ✅ Post-prod checkpoint | `KAIROS_CURRENT_CHECKPOINT.md` |
+
+**PRE-F1:** **cerrado.**
 
 ---
 
-## 6. Fases pendientes
+## 6. Fases pendientes (post PRE-F1)
 
-| Fase | Descripción | Bloqueante |
-|------|-------------|------------|
-| **PRE-F1.8b** | Checkpoint doc formal post hotfix + actualizar `KAIROS_CURRENT_CHECKPOINT.md` | Opcional · trazabilidad |
-| **PRE-F1.9** | Decisión + deploy **producción** LATAM | Aprobación explícita Roberto |
-| **Push remoto** | Backup cadena `a8d4a60`→`ce69f09` | Continuidad repo |
-| **PRE-F1.6b** | QA manual humano extendido (12 lecturas UI completas) | Recomendado pre-prod |
+| Fase | Descripción | Prioridad |
+|------|-------------|-----------|
+| **F2.1** | DEFAULT neutral · Regional Expansion Roadmap | **Inmediata** |
+| **PRE-F1.6b** | QA manual humano extendido (12 lecturas UI completas) | Opcional |
 | **Export smoke** | Decidir si `SUMMARY_FRAME_POOL_BY_REGION` permanece en API pública | Deuda menor |
-
-**PRE-F1.8 ops:** cerrado. **PRE-F1.8 doc/checkpoint en master corpus:** pendiente de sincronizar refs en índice doc.
 
 ---
 
@@ -107,9 +115,11 @@ Resolver unificado · dedup P0/P1/P2 · premium UI beta · sparse NY · deploy p
 
 | ID | Riesgo | Severidad |
 |----|--------|-----------|
-| R-1 | Prod desincronizado vs staging (sin LATAM) | Alta hasta F1.9 |
-| R-2 | 3 commits sin push | Media |
-| R-3 | `dist/` local sucio · no SSOT git | Baja (esperado) |
+| R-1 | ~~Prod desincronizado vs staging~~ | **Cerrado** — LATAM live prod @ `ce69f09` |
+| R-2 | ~~Commits sin push~~ | **Cerrado** — PRE-F1.9a |
+| R-3 | `dist/` local sucio post-deploy · no SSOT git | Baja (esperado) |
+| R-9 | BA sparse `regionN:null` metadata only | Baja · monitorear |
+| R-10 | `DEFAULT_FAMILY = IBERIAN` — países no mapeados | Media · F2.1 |
 | R-4 | Cache browser en staging QA | Baja |
 | R-5 | Eco editorial descanso («compañía» sin calificador IBERIAN) | WATCH editorial |
 | R-6 | Country archetype «Quizá en Argentina/Brasil» homogeneiza ciudades | WATCH editorial |
@@ -126,7 +136,7 @@ Resolver unificado · dedup P0/P1/P2 · premium UI beta · sparse NY · deploy p
 |------|-------------------|
 | Motores astrológicos | `src/engines/astro.js` · WASM · efemérides |
 | Catálogo ciudades | `src/content/cities-catalog.js` |
-| Firebase / hosting prod | Sin deploy hasta F1.9 |
+| Firebase / hosting prod | Sin redeploy salvo ciclo explícito post-F1.9b |
 | `dist/` en git | No commitear salvo release |
 | Motores legacy congelados | `planetary_engine.js` · `weekly_engine.js` · etc. (ver skill KAIROS) |
 
@@ -165,15 +175,11 @@ Clichés turísticos monitorizados: `samba` · `tango` · `carnaval` · `fútbol
 
 ---
 
-## 10. Roadmap inmediato (próximas 2–4 semanas)
+## 10. Roadmap inmediato (post PRE-F1.9c)
 
-1. **Push remoto** cadena PRE-F1 (`a8d4a60` → `ce69f09`) — backup.
-2. **PRE-F1.9 — Prod deploy LATAM** (solo tras aprobación):
-   - Re-run 10 smokes + 5 smokes gate deploy
-   - `./scripts/deploy-prod.sh` · QA post-deploy 4 ciudades × 3 goals
-   - Monitor 48h
-3. Actualizar `KAIROS_CURRENT_CHECKPOINT.md` (staging @ `ce69f09`, prod split).
-4. Opcional: script `scripts/pref1-staging-gate.sh` (smokes + node QA) para ops rápidas.
+1. **F2.1 — DEFAULT neutral / Regional Expansion Roadmap** — auditoría cobertura · diseño familias · sin copy runtime.
+2. Monitor prod LATAM 48–72h (opcional · manual).
+3. Opcional: script `scripts/pref1-staging-gate.sh` (smokes + node QA) para ops rápidas.
 
 ---
 
@@ -213,11 +219,11 @@ Capa conceptual: **firma zodiacal territorial** como metadata editorial ponderad
 | Documento | Uso |
 |-----------|-----|
 | `docs/architecture/PRE-F1.4_LATAM_INTEGRATION_CHECKPOINT.md` | Trazabilidad LATAM · amends · frozen v1 |
-| `docs/architecture/KAIROS_CURRENT_CHECKPOINT.md` | Snapshot global (actualizar post-F1.9) |
+| `docs/architecture/KAIROS_CURRENT_CHECKPOINT.md` | Snapshot global @ PRE-F1.9c |
 | `docs/architecture/KAIROS_DOC_INDEX.md` | Constitución viva |
 | `scripts/deploy-staging.sh` | Solo staging |
 | `scripts/deploy-prod.sh` | Solo prod · requiere `DEPLOY-PROD` |
 
 ---
 
-*Handoff F1.8 · Doc-only · Sin push · Prod @ `33f3ec8` · Staging @ `ce69f09`*
+*Handoff F1.8 · Actualizado PRE-F1.9c · Prod LATAM live @ `ce69f09` · HEAD repo `b3342ee` · PRE-F1 cerrado*
