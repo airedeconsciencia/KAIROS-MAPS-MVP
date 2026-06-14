@@ -127,15 +127,19 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'LATAM en resolver (MX, AR, BR, PE)',
-  ['mexico', 'argentina', 'brazil', 'peru'].every(function (slug) {
+  'LATAM en resolver (MX, AR, BR, PE, CO, CL, UY, EC)',
+  ['mexico', 'argentina', 'brazil', 'peru', 'colombia', 'chile', 'uruguay', 'ecuador'].every(function (slug) {
     return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'LATAM';
   }),
   JSON.stringify({
     mexico: EFR.COUNTRY_EDITORIAL_FAMILY.mexico,
     argentina: EFR.COUNTRY_EDITORIAL_FAMILY.argentina,
     brazil: EFR.COUNTRY_EDITORIAL_FAMILY.brazil,
-    peru: EFR.COUNTRY_EDITORIAL_FAMILY.peru
+    peru: EFR.COUNTRY_EDITORIAL_FAMILY.peru,
+    colombia: EFR.COUNTRY_EDITORIAL_FAMILY.colombia,
+    chile: EFR.COUNTRY_EDITORIAL_FAMILY.chile,
+    uruguay: EFR.COUNTRY_EDITORIAL_FAMILY.uruguay,
+    ecuador: EFR.COUNTRY_EDITORIAL_FAMILY.ecuador
   })
 );
 
@@ -258,6 +262,70 @@ if (cdmx) {
   console.log('  summary:', (cdmx.nc.narrativeSummary || '').slice(0, 90) + '…');
   console.log('  words:', cdmx.reading.meta.wordCount);
 }
+
+const P03 = 'puede que descubras una puerta';
+const P06 = 'el ritmo del cuerpo vuelve a importar';
+const P10 = 'lo que sigue no corrige';
+
+function scanWave1(reading, countryId) {
+  const full = (reading.sections || []).map(function (s) { return s.body; }).join('\n\n');
+  const norm = full.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const nc = reading.meta.narrativeContext || {};
+  const km = reading.meta.knowledgeMeta || {};
+  const regionE = EFR.resolveEditorialFamily({ cityName: reading.meta.cityName || '', countryId: countryId });
+  return {
+    ok: reading.ok,
+    words: reading.meta.wordCount,
+    regionN: nc.regionFamily,
+    regionK: km.regionFamily,
+    regionE: regionE,
+    iberian: IBERIAN_LEAK.filter(function (m) {
+      return norm.indexOf(m.normalize('NFD').replace(/[\u0300-\u036f]/g, '')) !== -1;
+    }).length,
+    p03: norm.indexOf(P03) !== -1,
+    p06: norm.indexOf(P06) !== -1,
+    p10: norm.indexOf(P10) !== -1
+  };
+}
+
+function composeWave1(city, goal) {
+  return Premium.composeCityReading({
+    city: city,
+    goal: goal,
+    relevantInfluences: mockInfluences,
+    bridgeProfile: bridgeProfile,
+    profile: { firstName: 'Roberto' }
+  });
+}
+
+const WAVE1_QA = [
+  { label: 'Bogotá / amor', city: { name: 'Bogotá', country: 'Colombia', lat: 4.711, lon: -74.0721 }, goal: 'amor', slug: 'colombia' },
+  { label: 'Bogotá / trabajo', city: { name: 'Bogotá', country: 'Colombia', lat: 4.711, lon: -74.0721 }, goal: 'trabajo', slug: 'colombia' },
+  { label: 'Bogotá / descanso', city: { name: 'Bogotá', country: 'Colombia', lat: 4.711, lon: -74.0721 }, goal: 'descanso', slug: 'colombia' },
+  { label: 'Santiago / amor', city: { name: 'Santiago', country: 'Chile', lat: -33.4489, lon: -70.6693 }, goal: 'amor', slug: 'chile' },
+  { label: 'Montevideo / trabajo', city: { name: 'Montevideo', country: 'Uruguay', lat: -34.9011, lon: -56.1645 }, goal: 'trabajo', slug: 'uruguay' },
+  { label: 'Quito / descanso', city: { name: 'Quito', country: 'Ecuador', lat: -0.1807, lon: -78.4678 }, goal: 'descanso', slug: 'ecuador' }
+];
+
+WAVE1_QA.forEach(function (c) {
+  const reading = composeWave1(c.city, c.goal);
+  const s = scanWave1(reading, c.slug);
+  assert(
+    c.label + ' → LATAM',
+    s.regionN === 'LATAM' && s.regionK === 'LATAM' && s.regionE === 'LATAM',
+    JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+  );
+  assert(
+    c.label + ' ok:true · words 500–900',
+    s.ok === true && s.words >= Premium.MIN_WORDS && s.words <= Premium.MAX_WORDS,
+    JSON.stringify({ ok: s.ok, words: s.words })
+  );
+  assert(
+    c.label + ' IBERIAN leak 0 · legacy 0',
+    s.iberian === 0 && !s.p03 && !s.p06 && !s.p10,
+    JSON.stringify({ iberian: s.iberian, p03: s.p03, p06: s.p06, p10: s.p10 })
+  );
+});
 
 console.log('\n' + '═'.repeat(60));
 console.log(fail === 0 ? 'SMOKE: ALL PASS' : 'SMOKE: ' + fail + ' FAIL(S)');

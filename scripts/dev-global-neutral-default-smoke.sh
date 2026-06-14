@@ -103,8 +103,8 @@ assert(
   EFR.DEFAULT_FAMILY
 );
 assert(
-  'Schema F2.2d3',
-  EFR.SCHEMA_VERSION.indexOf('f2.2d3') !== -1,
+  'Schema F2.2d3+',
+  EFR.SCHEMA_VERSION.indexOf('f2.2d3') !== -1 || EFR.SCHEMA_VERSION.indexOf('f2.3b') !== -1,
   EFR.SCHEMA_VERSION
 );
 
@@ -114,8 +114,8 @@ assert(
   EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' })
 );
 assert(
-  'Bogotá/colombia no mapeado → GLOBAL_NEUTRAL',
-  EFR.resolveEditorialFamily({ cityName: 'Bogotá', countryId: 'colombia' }) === 'GLOBAL_NEUTRAL',
+  'Bogotá/colombia → LATAM (F2.3b wave 1)',
+  EFR.resolveEditorialFamily({ cityName: 'Bogotá', countryId: 'colombia' }) === 'LATAM',
   EFR.resolveEditorialFamily({ cityName: 'Bogotá', countryId: 'colombia' })
 );
 assert(
@@ -129,7 +129,7 @@ assert(
   'Kenia mapeado en COUNTRY_EDITORIAL_FAMILY — no cae en GLOBAL_NEUTRAL'
 );
 
-['mexico', 'argentina', 'brazil', 'peru'].forEach(function (slug) {
+['mexico', 'argentina', 'brazil', 'peru', 'colombia', 'chile', 'uruguay', 'ecuador'].forEach(function (slug) {
   assert(
     'LATAM resolver ' + slug,
     EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'LATAM',
@@ -201,13 +201,38 @@ function composeReading(city, goal) {
   );
 });
 
-const bogotaReading = composeReading(BOGOTA, 'descanso');
-const bogotaScan = scanReading(bogotaReading);
-assert(
-  'Bogotá / descanso → GLOBAL_NEUTRAL',
-  bogotaScan.regionN === 'GLOBAL_NEUTRAL' && bogotaScan.regionK === 'GLOBAL_NEUTRAL',
-  JSON.stringify(bogotaScan)
-);
+const bogotaGoals = ['amor', 'trabajo', 'descanso'];
+bogotaGoals.forEach(function (goal) {
+  const reading = composeReading(BOGOTA, goal);
+  const s = scanReading(reading);
+  assert(
+    'Bogotá / ' + goal + ' → LATAM',
+    s.regionN === 'LATAM' && s.regionK === 'LATAM',
+    JSON.stringify(s)
+  );
+  assert(
+    'Bogotá / ' + goal + ' IBERIAN leak 0 · gates 0',
+    s.iberian === 0 && !s.p03 && !s.p06 && !s.p10 && s.ok === true &&
+      s.words >= 500 && s.words <= 900,
+    JSON.stringify({ iberian: s.iberian, p03: s.p03, p06: s.p06, p10: s.p10, words: s.words })
+  );
+});
+
+const wave1Latam = [
+  { label: 'Santiago / amor', city: { name: 'Santiago', country: 'Chile', lat: -33.4489, lon: -70.6693 }, goal: 'amor' },
+  { label: 'Montevideo / trabajo', city: { name: 'Montevideo', country: 'Uruguay', lat: -34.9011, lon: -56.1645 }, goal: 'trabajo' },
+  { label: 'Quito / descanso', city: { name: 'Quito', country: 'Ecuador', lat: -0.1807, lon: -78.4678 }, goal: 'descanso' }
+];
+wave1Latam.forEach(function (c) {
+  const reading = composeReading(c.city, c.goal);
+  const s = scanReading(reading);
+  assert(
+    c.label + ' → LATAM',
+    s.regionN === 'LATAM' && s.regionK === 'LATAM' && s.iberian === 0 &&
+      s.ok === true && s.words >= 500 && s.words <= 900 && !s.p03 && !s.p06 && !s.p10,
+    JSON.stringify(s)
+  );
+});
 
 const nairobi = Catalog.findCityByName('Nairobi');
 const nairobiReading = composeReading(nairobi, 'trabajo');
