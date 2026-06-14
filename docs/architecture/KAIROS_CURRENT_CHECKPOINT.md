@@ -3,22 +3,25 @@
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
 **Rama:** `main`  
-**Último commit cerrado:** `33f3ec8` — `3.8h6 editorial p2 polish`  
-**Producción live:** `33f3ec8` (deploy 3.8h.7b · 26 mayo 2026)
+**Runtime local (`src/`):** `a8d4a60` — `pref1 latam editorial runtime integration`  
+**Producción live:** `33f3ec8` (deploy 3.8h.7b · 26 mayo 2026) — **sin LATAM**  
+**Checkpoint LATAM:** `docs/architecture/PRE-F1.4_LATAM_INTEGRATION_CHECKPOINT.md`
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`) con **resolver editorial unificado** (26 países, 5 familias), **deduplicación editorial P0+P1+P2** y **sparse fallback** para zonas neutra (NY sin influencias ranked).
+KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`) con **resolver editorial unificado** (26 países, **6 familias** en `src/` local), **deduplicación editorial P0+P1+P2** y **sparse fallback** para zonas neutra (NY sin influencias ranked).
 
-**Producción** (https://kairos-maps-mvp.web.app) desplegada con HEAD **`33f3ec8`** tras smokes 5/5 PASS y QA post-deploy 7/7 PASS. Premium beta **live** con `?premium=1`; producto **free sin beta visible** (toggle oculto).
+**Producción** (https://kairos-maps-mvp.web.app) desplegada con HEAD **`33f3ec8`** tras smokes 5/5 PASS y QA post-deploy 7/7 PASS. Premium beta **live** con `?premium=1`; producto **free sin beta visible** (toggle oculto). **LATAM no desplegado.**
 
-**Staging** (https://kairos-maps-dev.web.app) alineado con el mismo bloque editorial desde 3.8h.6a.
+**Staging** (https://kairos-maps-dev.web.app) alineado con bloque editorial **pre-LATAM** (`33f3ec8`).
 
-**Métricas editoriales verificadas:** P03/P06/P10 **0** · IBERIAN **0** · split-brain **0** · NY sparse footer **«zona neutra (lectura orientativa)»** live en prod.
+**PRE-F1.3 (local @ `a8d4a60`):** familia **LATAM** integrada · MX/AR/BR/PE migrados · smokes **10/10 PASS** · QA piloto **33/33 PASS**. Trazabilidad cerrada en **PRE-F1.4**.
 
-**Riesgos vivos:** bundle premium cargado para usuarios free · `localStorage kairosPremiumBeta=1` activa beta · `dist/` modificado por deploy · commits **sin push** remoto.
+**Métricas editoriales verificadas (prod @ `33f3ec8`):** P03/P06/P10 **0** · IBERIAN **0** · split-brain **0** · NY sparse footer **«zona neutra (lectura orientativa)»** live en prod.
+
+**Riesgos vivos:** `dist/` desincronizado vs `src/` LATAM · bundle premium cargado para usuarios free · `localStorage kairosPremiumBeta=1` activa beta · commit `a8d4a60` **sin push** remoto · LATAM **sin staging/prod**.
 
 ---
 
@@ -39,7 +42,9 @@ KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`) con **resolver e
 | **3.8h.6a** — Staging sparse QA | ✅ Cerrado | deploy staging | NY sparse validado · QA 15 lect avg 8.48 |
 | **3.8h.7** — RC audit pre-prod | ✅ Cerrado | auditoría | READY FOR PROD · smokes 5/5 · QA 7/7 |
 | **3.8h.7b** — Controlled prod deploy | ✅ Cerrado | deploy prod | `./scripts/deploy-prod.sh` · QA post-deploy 7/7 PASS |
-| **3.8h.7c** — Checkpoint post-prod | ✅ Este doc | — | Cierre operativo deploy producción |
+| **3.8h.7c** — Checkpoint post-prod | ✅ Cerrado | — | Cierre operativo deploy producción |
+| **PRE-F1.3** — LATAM editorial runtime integration | ✅ Cerrado | `a8d4a60` | 6ª familia · 14 tablas · smokes 10/10 · QA 33/33 |
+| **PRE-F1.4** — LATAM integration checkpoint | ✅ Cerrado | doc-only | Trazabilidad PRE-F1.3 · frozen runtime v1 |
 
 ---
 
@@ -117,7 +122,7 @@ KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`) con **resolver e
 
 ### Resolver + regionalización (3.8h.2 + 3.8f.7)
 
-- `editorial-family-resolver.js` — SSOT familias (IBERIAN · MEDITERRANEAN · ANGLO · EAST_ASIAN · AFRICAN_COASTAL)
+- `editorial-family-resolver.js` — SSOT familias (IBERIAN · MEDITERRANEAN · ANGLO · EAST_ASIAN · AFRICAN_COASTAL · **LATAM** @ `a8d4a60` local)
 - Regionalización knowledge · narrative spine · goal pads · micro-transitions
 
 ### Editorial deduplication (3.8h.5 + 3.8h.5b + 3.8h.6)
@@ -174,39 +179,41 @@ KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`) con **resolver e
 
 ---
 
-## IX. Git status (26 mayo 2026, post-3.8h.7b deploy)
+## IX. Git status (26 mayo 2026, post PRE-F1.4)
 
 ```
-HEAD: 33f3ec8 — 3.8h6 editorial p2 polish
-      fdf2e55 — 3.8h5e checkpoint post editorial dedup staging
-      cbcd1f0 — 3.8h5b editorial dedup p1 hotfix
-      db04480 — 3.8h5 editorial deduplication p0
-      67d9b83 — 3.8h2 unified editorial family resolver
+HEAD: a8d4a60 — pref1 latam editorial runtime integration
+      7247f1e — 3.8h8 repository hygiene post github push
+      33f3ec8 — 3.8h6 editorial p2 polish (producción live)
 
-Rama: main
-src/: limpio @ 33f3ec8
-dist/: modificado por deploy 3.8h.7b prod (NO commiteado)
-.DS_Store: modificado (NO commitear)
-Commits: sin push remoto
+Rama: main (ahead of origin/main by 1 commit — a8d4a60 sin push)
+src/: limpio @ a8d4a60 (LATAM integrado)
+dist/: modificado / untracked (NO commiteado · sin sync LATAM)
+Producción: 33f3ec8 (sin LATAM)
 ```
 
 ---
 
 ## X. Siguiente fase recomendada
 
-### **Push remoto + backup** (recomendado inmediato)
+### **PRE-F1.5 — Staging deploy LATAM** (recomendado inmediato)
 
-Sincronizar `main` local con remoto para preservar la cadena `67d9b83` → `33f3ec8` + doc 3.8h.7c. **No urgente para prod** (ya live), **sí urgente para continuidad del repo**.
+1. Re-run smokes **10/10 PASS** (`dev-latam-editorial-integration-smoke.sh` incluido)
+2. Sync `src/` → `dist/` · deploy staging
+3. QA manual browser: CDMX · BA · Río · Lima × amor/trabajo/descanso
+4. Push remoto `a8d4a60` + doc PRE-F1.4 (cuando se apruebe)
+
+Ver detalle: `docs/architecture/PRE-F1.4_LATAM_INTEGRATION_CHECKPOINT.md` § XI.
 
 ### Alternativas posteriores (requieren aprobación explícita)
 
 | Fase | Cuándo |
 |------|--------|
-| **3.8h.8** | Copy hardening sparse NY («amplifica» en knowledge blocks) |
+| **PRE-F1.5** | Staging deploy LATAM |
 | **3.8i** | Ampliación territorial / ciudades |
 | **3.8j** | Premium beta visible sin query param (decisión producto) |
 
-**Recomendación operativa:** **push remoto** → monitor prod 48h → opcional 3.8h.8 copy.
+**Recomendación operativa:** **PRE-F1.5 staging** → QA manual LATAM → push remoto → decisión prod.
 
 ---
 
@@ -214,6 +221,7 @@ Sincronizar `main` local con remoto para preservar la cadena `67d9b83` → `33f3
 
 | Documento | Contenido |
 |-----------|-----------|
+| `PRE-F1.4_LATAM_INTEGRATION_CHECKPOINT.md` | Trazabilidad integración LATAM PRE-F1.3 |
 | `TERRITORIAL_ARCHETYPE_LAYER.md` | Diseño capa territorial (3.8h.0) |
 | `CITY_ATMOSPHERE_LIBRARY.md` | Biblioteca editorial 5 ciudades |
 | `KAIROS_MASTER_AUDIT.md` | Auditoría total |
@@ -221,4 +229,4 @@ Sincronizar `main` local con remoto para preservar la cadena `67d9b83` → `33f3
 
 ---
 
-*Checkpoint actualizado Fase 3.8h.7c · Commit doc-only · Sin push · Sin deploy*
+*Checkpoint actualizado PRE-F1.4 · Commit doc-only · Sin push · Sin deploy · Prod sin LATAM*
