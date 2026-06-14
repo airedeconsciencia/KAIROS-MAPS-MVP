@@ -89,8 +89,8 @@ assert(
 );
 
 assert(
-  'index.html cache-bust editorial-family-resolver (3.8h2)',
-  indexHtml.indexOf('services/editorial-family-resolver.js?v=3.8h2') !== -1,
+  'index.html cache-bust editorial-family-resolver (f2.2d5)',
+  indexHtml.indexOf('services/editorial-family-resolver.js?v=f2.2d5') !== -1,
   null
 );
 
