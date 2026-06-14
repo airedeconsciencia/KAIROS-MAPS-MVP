@@ -7,8 +7,8 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f2.2c-0.1';
-  var DEFAULT_FAMILY = 'IBERIAN';
+  var SCHEMA_VERSION = '3.8h.2-f2.2d3-0.1';
+  var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
     'IBERIAN',
@@ -16,7 +16,8 @@
     'ANGLO',
     'EAST_ASIAN',
     'AFRICAN_COASTAL',
-    'LATAM'
+    'LATAM',
+    'GLOBAL_NEUTRAL'
   ];
 
   /** @type {Record<string, string>} slug canónico → familia (26 países) */

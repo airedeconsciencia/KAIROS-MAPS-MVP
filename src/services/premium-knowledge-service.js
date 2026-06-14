@@ -228,6 +228,42 @@
           descanso: 'Muy cerca del trazo la fatiga puede registrar la señal sin filtro — ritmo al máximo; conviene moderar si la intensidad te agota.'
         }
       }
+    },
+    GLOBAL_NEUTRAL: {
+      doc17: {
+        t1: {
+          amor: 'En {ciudad}, la atención puede abrirse antes que la escena — te reconocen en el gesto, no en el personaje.',
+          trabajo: 'En {ciudad}, lo hecho en margen puede pesar más — te miden en la obra, no solo en lo que se exhibe.',
+          descanso: 'En {ciudad}, reservar pausa puede devolver calma — el cansancio habla antes que la prisa.'
+        },
+        t2: {
+          amor: 'El vínculo puede abrirse en gestos antes que en declaración — no fallo, sino tono que aún no ha encontrado forma.',
+          trabajo: 'Lo expuesto puede adelantarse a lo que sostiene por dentro — no fracaso, sino impulso que aún no ha encontrado dirección.',
+          descanso: 'La prisa externa puede empujar cuando pides pausa — no pereza, sino fatiga que pide permiso sin disculpa.'
+        },
+        t3: {
+          amor: 'Puede abrirse un vínculo más honesto si aflojas la prisa de impresionar — la condición es honestidad, no personaje.',
+          trabajo: 'Puede abrirse dirección si trabajas la obra lejos del aplauso — la condición es sustancia, no exposición.',
+          descanso: 'Puede abrirse calma si reservas pausa sin rendir cuentas — la condición es permiso, no explicación.'
+        },
+        t4: {
+          amor: 'Esta semana, elige una conversación donde importe más escuchar que impresionar — pequeña y real.',
+          trabajo: 'Esta semana, distingue lo que haces de lo que muestras — pequeño y real.',
+          descanso: 'Esta semana, reserva un tramo de pausa sin justificarlo — pequeño y real.'
+        }
+      },
+      byBlockId: {
+        doc6_intensidad_linea_cercana: {
+          amor: 'La cercanía de esta línea puede sentirse en el vínculo — notable sin exigir dominar el tono al primer día.',
+          trabajo: 'La señal puede orientar la obra cotidiana — clara sin exigirte exhibirte, más sostenible para ordenar sentido.',
+          descanso: 'La señal puede sentirse en el ritmo del día — sostener la pausa sin sobreexigencia, más sostenible para una estancia media.'
+        },
+        doc6_intensidad_linea_exacta: {
+          amor: 'Con el trazo muy cerca, el vínculo puede sentirse sin filtro — conviene ir despacio si la intensidad te desborda.',
+          trabajo: 'Con el trazo muy cerca, la obra puede sentirse sin filtro — modera ritmo si la exposición te agota.',
+          descanso: 'Con el trazo muy cerca, la fatiga puede registrar la señal al máximo — conviene moderar si la intensidad te agota.'
+        }
+      }
     }
   };
 

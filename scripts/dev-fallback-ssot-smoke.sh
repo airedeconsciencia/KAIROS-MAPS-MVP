@@ -100,8 +100,8 @@ FILES.forEach(function (file) {
 
 const resolverSrc = fs.readFileSync(process.env.RESOLVER, 'utf8');
 assert(
-  'DEFAULT_FAMILY = IBERIAN (F2.2c behavior-preserving)',
-  /DEFAULT_FAMILY\s*=\s*'IBERIAN'/.test(resolverSrc),
+  'DEFAULT_FAMILY = GLOBAL_NEUTRAL (F2.2d3)',
+  /DEFAULT_FAMILY\s*=\s*'GLOBAL_NEUTRAL'/.test(resolverSrc),
   'DEFAULT_FAMILY'
 );
 assert(
@@ -139,9 +139,41 @@ const Bridge = ctx.window.KairosNatalMapBridge;
 const Astro = ctx.window.KairosAstro;
 const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
 
-assert('EFR.DEFAULT_FAMILY === IBERIAN', EFR.DEFAULT_FAMILY === 'IBERIAN', EFR.DEFAULT_FAMILY);
+assert('EFR.DEFAULT_FAMILY === GLOBAL_NEUTRAL', EFR.DEFAULT_FAMILY === 'GLOBAL_NEUTRAL', EFR.DEFAULT_FAMILY);
 assert('isRegisteredFamily(LATAM)', EFR.isRegisteredFamily('LATAM') === true, 'LATAM');
-assert('isRegisteredFamily(GLOBAL_NEUTRAL) false', EFR.isRegisteredFamily('GLOBAL_NEUTRAL') === false, 'not yet');
+assert('isRegisteredFamily(GLOBAL_NEUTRAL)', EFR.isRegisteredFamily('GLOBAL_NEUTRAL') === true, 'F2.2d1');
+
+const Narrative = ctx.window.KairosNarrativeIntelligence;
+const Knowledge = ctx.window.KairosPremiumKnowledge;
+const PACK_MAPS = [
+  { label: 'HUMAN_THEME_PATTERNS_BY_REGION', map: Narrative.HUMAN_THEME_PATTERNS_BY_REGION },
+  { label: 'SUMMARY_FRAME_POOL_BY_REGION', map: Narrative.SUMMARY_FRAME_POOL_BY_REGION },
+  { label: 'OBSERVE_TAIL_BY_REGION', map: Narrative.OBSERVE_TAIL_BY_REGION },
+  { label: 'NARRATIVE_SPINE_BY_REGION', map: Narrative.NARRATIVE_SPINE_BY_REGION },
+  { label: 'SPINE_FAVORECE_OPEN_BY_REGION', map: Premium.SPINE_FAVORECE_OPEN_BY_REGION },
+  { label: 'HUMAN_SCENE_BY_REGION', map: Premium.HUMAN_SCENE_BY_REGION },
+  { label: 'OBSERVE_ENTERO_TAIL_BY_REGION', map: Premium.OBSERVE_ENTERO_TAIL_BY_REGION },
+  { label: 'VOICE_TRANSITION_BY_REGION', map: Premium.VOICE_TRANSITION_BY_REGION },
+  { label: 'GOAL_PADS_BY_REGION', map: Premium.GOAL_PADS_BY_REGION },
+  { label: 'REGIONAL_EDITORIAL_MICRO_BY_GOAL', map: Premium.REGIONAL_EDITORIAL_MICRO_BY_GOAL },
+  { label: 'REGIONAL_EDITORIAL_PADS', map: Premium.REGIONAL_EDITORIAL_PADS },
+  { label: 'REGIONAL_TOPUP_VARIANTS', map: Premium.REGIONAL_TOPUP_VARIANTS },
+  { label: 'REGIONAL_TOPUP_BY_GOAL', map: Premium.REGIONAL_TOPUP_BY_GOAL },
+  { label: 'PREMIUM_BLOCK_VARIATIONS_BY_REGION', map: Knowledge.PREMIUM_BLOCK_VARIATIONS_BY_REGION }
+];
+
+const packMissing = [];
+PACK_MAPS.forEach(function (entry) {
+  const resolved = EFR.resolveRegionalPack(entry.map, 'GLOBAL_NEUTRAL');
+  if (!resolved.pack || resolved.meta.resolvedFrom === 'missing') {
+    packMissing.push(entry.label + ':' + resolved.meta.resolvedFrom);
+  }
+});
+assert(
+  'resolveRegionalPack(GLOBAL_NEUTRAL) never missing (14 maps)',
+  packMissing.length === 0,
+  packMissing.join(' · ') || '14/14 explicit'
+);
 
 assert(
   'LATAM countries resolver',
@@ -155,8 +187,8 @@ assert(
 );
 
 assert(
-  'País no mapeado → DEFAULT IBERIAN (F2.2c)',
-  EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' }) === 'IBERIAN',
+  'País no mapeado → DEFAULT GLOBAL_NEUTRAL (F2.2d3)',
+  EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' }) === 'GLOBAL_NEUTRAL',
   EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' })
 );
 
@@ -167,9 +199,9 @@ assert(
   JSON.stringify(packTest.meta)
 );
 
-const packDefault = EFR.resolveRegionalPack({ IBERIAN: { amor: ['x'] } }, null);
+const packDefault = EFR.resolveRegionalPack({ GLOBAL_NEUTRAL: { amor: ['x'] } }, null);
 assert(
-  'resolveRegionalPack null → DEFAULT IBERIAN pack',
+  'resolveRegionalPack null → DEFAULT GLOBAL_NEUTRAL pack',
   packDefault.pack && packDefault.pack.amor[0] === 'x' && packDefault.meta.resolvedFrom === 'explicit',
   JSON.stringify(packDefault.meta)
 );

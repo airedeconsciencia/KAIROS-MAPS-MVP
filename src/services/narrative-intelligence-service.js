@@ -236,6 +236,29 @@
         'En {ciudad}, conviene separar lo que haces de lo que muestras — la compañía distrae y también sostiene.',
         'En {ciudad}, el propósito respira cuando bajas la necesidad de ser visto.'
       ]
+    },
+    GLOBAL_NEUTRAL: {
+      amor: [
+        'En {ciudad}, el vínculo se prueba en atención sostenida — persona antes que personaje.',
+        'En {ciudad}, el encuentro madura cuando bajas la prisa de impresionar.',
+        'En {ciudad}, la honestidad pesa más que la escena que contarías después.',
+        'En {ciudad}, el amor respira en gestos mínimos — no en la performance del momento.',
+        'En {ciudad}, conviene mirar si la presencia aguanta cuando nadie evalúa.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo habla cuando aflojas la agenda — si le devuelves el micrófono.',
+        'En {ciudad}, la pausa madura en silencio cómodo — no en el plan perfecto.',
+        'En {ciudad}, el descanso pide permiso antes que disculpa.',
+        'En {ciudad}, conviene notar qué ritmo corporal vuelve al ralentizar.',
+        'En {ciudad}, a veces basta quedarte un poco más sin rendir nada.'
+      ],
+      trabajo: [
+        'En {ciudad}, lo que traes por dentro pesa más que lo que otros pueden medir.',
+        'En {ciudad}, el propósito madura en margen — antes de volver a exponerte.',
+        'En {ciudad}, conviene separar urgencia y dirección antes del siguiente paso.',
+        'En {ciudad}, la obra callada sostiene más que el impulso visible.',
+        'En {ciudad}, el sentido se prueba cuando baja el ruido externo.'
+      ]
     }
   };
 
@@ -349,6 +372,23 @@
       descanso: [
         'En la pausa habitada en {ciudad}, con {goalPhrase}, el cuerpo responde:',
         'En el ritmo compartido de {ciudad}, leyendo {goalPhrase}, la calma advierte:'
+      ]
+    },
+    GLOBAL_NEUTRAL: {
+      amor: [
+        'En {ciudad}, leyendo desde {goalPhrase}, conviene mirar qué sostiene el paso — no la escena:',
+        'Con {goalPhrase} como brújula en {ciudad}, el vínculo deja ver:',
+        'Para {goalPhrase}, {ciudad} condensa hoy un arco de atención — no de performance:'
+      ],
+      trabajo: [
+        'En {ciudad}, con {goalPhrase}, la obra susurra antes de exponerse:',
+        'Leyendo {goalPhrase} en {ciudad}, conviene escuchar qué parte sigue viva por dentro:',
+        'Desde {goalPhrase}, {ciudad} muestra hoy dónde pesa el sentido — no la prisa:'
+      ],
+      descanso: [
+        'En {ciudad}, con {goalPhrase}, el cuerpo responde al margen:',
+        'Para {goalPhrase}, {ciudad} devuelve hoy señales de calma — no de rendimiento:',
+        'Con {goalPhrase} en {ciudad}, la pausa advierte sin pedir permiso:'
       ]
     }
   };
@@ -479,6 +519,23 @@
       descanso: [
         ' El ritmo lento en {ciudad} suele afinar lo que el cuerpo pide sin prisa.',
         ' En la pausa habitada, {ciudad} devuelve calma que la urgencia no alcanza a nombrar.'
+      ]
+    },
+    GLOBAL_NEUTRAL: {
+      amor: [
+        ' Al ralentizar en {ciudad}, el vínculo deja ver matices que la primera impresión no mostró.',
+        ' En la repetición del día, {ciudad} afina lo que el encuentro aún no ha nombrado.',
+        ' Si te quedas un poco, {ciudad} dibuja si la presencia es hábito o excepción.'
+      ],
+      trabajo: [
+        ' En lo reservado, {ciudad} suele afinar lo que la obra aún no ha dicho en voz alta.',
+        ' Al bajar el ruido, {ciudad} devuelve sentido que la exposición no alcanza a mostrar.',
+        ' Con semanas de margen, {ciudad} enseña si trabajas para ti o para la señal externa.'
+      ],
+      descanso: [
+        ' En la pausa breve, {ciudad} suele afinar lo que el cuerpo pide sin disculpa.',
+        ' Al aflojar el paso, {ciudad} devuelve calma que la urgencia no alcanza a nombrar.',
+        ' Si repites la semana lenta, {ciudad} muestra si el alivio es profundo o cosmético.'
       ]
     }
   };
@@ -1325,6 +1382,77 @@
           'esta semana, guarda un rato de pausa como quien guarda un refugio — sin disculparte.',
           'esta semana, elige una pausa breve y real — no la que suena bien al contarla.',
           'esta semana, deja una tarde sin rendir — habitar {ciudad} con calma.'
+        ]
+      }
+    },
+    GLOBAL_NEUTRAL: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, la tensión no es brillar — es si el vínculo aguanta cuando baja la prisa de ser visto.',
+        trabajo: 'En {ciudad}, la urgencia externa compite con lo que traes por dentro — a veces confundes señal con sentido.',
+        descanso: 'En {ciudad}, aflojar puede sentirse como perder terreno — aunque el cuerpo ya pida un margen real.'
+      },
+      opportunityByGoal: {
+        amor: 'habitar el encuentro con presencia — sin convertir la honestidad en escena.',
+        trabajo: 'guardar en privado qué parte de tu obra sigue viva — antes de volver a medirte por fuera.',
+        descanso: 'quedarte en la pausa sin convertirla en otra tarea — ni en culpa.'
+      },
+      summaryFrame: {
+        amor: 'En {ciudad}, con {goalPhrase} como hilo, puede que el vínculo te muestre:',
+        trabajo: 'En {ciudad}, leyendo {goalPhrase}, puede que tu obra te diga:',
+        descanso: 'En {ciudad}, con {goalPhrase}, puede que el cuerpo te devuelva:'
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando dejas de actuar para gustar?',
+          DC: '¿Qué límites contigo necesitas antes de pedirle al otro algo en {ciudad}?',
+          MC: '¿Qué gesto del vínculo quieres que {ciudad} recuerde en voz baja?',
+          default: '¿Qué te pide {ciudad} en amor si aflojas la máscara?'
+        },
+        trabajo: {
+          IC: '¿Qué parte de tu obra en {ciudad} sigue viva cuando nadie te evalúa?',
+          MC: '¿Tu impulso en {ciudad} busca dirección o exposición?',
+          AC: '¿Cómo mostrarías tu trabajo en {ciudad} si no necesitara prueba constante?',
+          default: '¿Qué sentido sostendrías en {ciudad} antes de medir resultados?'
+        },
+        descanso: {
+          AC: '¿Puedes aflojar en {ciudad} sin sentir que pierdes terreno?',
+          MC: '¿Tu descanso en {ciudad} es margen o otra forma de competir?',
+          IC: '¿Qué ritmo te pide {ciudad} para recuperar de verdad?',
+          default: '¿Qué señal corporal te devuelve {ciudad} si dejas de rendir?'
+        }
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea atención sostenida — no escena.',
+          'Llévate de {ciudad} una pregunta simple: ¿qué cambia cuando dejas de actuar el vínculo?',
+          'Si el vínculo permanece, que sea en gestos mínimos — no en la historia que contarías.'
+        ],
+        trabajo: [
+          'De {ciudad} llévate esto: el sentido puede madurar en margen antes de volver a medirte.',
+          'Si algo queda, que sea la obra que respira cuando baja el ruido.',
+          'Pregúntate en voz baja: ¿para quién trabajas cuando nadie te evalúa?'
+        ],
+        descanso: [
+          'Quédate con el cuerpo que en {ciudad} volvió a hablar sin pedir permiso.',
+          'Si algo permanece, que sea un margen breve tomado sin disculpa.',
+          'Llévate un silencio cómodo: el que no compitió con la prisa.'
+        ]
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, elige una conversación donde importe más escuchar que impresionar.',
+          'esta semana, queda con alguien en un sitio sencillo — la atención importa más que el plan.',
+          'esta semana, nombra una verdad pequeña antes de sostener la escena.'
+        ],
+        trabajo: [
+          'esta semana, anota en privado qué dirección tiene tu obra — antes de volver a mostrarla.',
+          'esta semana, reserva una hora sin pantallas para la dirección — no para la exposición.',
+          'esta semana, elige una tarea mínima con sentido — aunque nadie la vea.'
+        ],
+        descanso: [
+          'esta semana, guarda un tramo de pausa como quien guarda aire — sin justificarte.',
+          'esta semana, prueba una pausa breve y real — no la que suena bien al contarla.',
+          'esta semana, deja un bloque sin rendir — habitar {ciudad} con calma.'
         ]
       }
     }
@@ -2244,6 +2372,7 @@
     THEME_ES: THEME_ES,
     deriveNarrativeContext: deriveNarrativeContext,
     resolveRegionFamily: resolveRegionFamily,
+    HUMAN_THEME_PATTERNS_BY_REGION: HUMAN_THEME_PATTERNS_BY_REGION,
     OBSERVE_TAIL_BY_REGION: OBSERVE_TAIL_BY_REGION,
     SUMMARY_FRAME_POOL_BY_REGION: SUMMARY_FRAME_POOL_BY_REGION,
     NARRATIVE_SPINE_BY_REGION: NARRATIVE_SPINE_BY_REGION,
