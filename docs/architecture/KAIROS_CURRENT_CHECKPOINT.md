@@ -2,150 +2,75 @@
 
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
-**Rama:** `main` · **up to date with `origin/main`**  
-**HEAD repo:** `b3342ee` — `pref1 f1.8 master handoff`  
-**Runtime LATAM (`src/`):** `ce69f09` — `pref1 latam sparse premium hotfix`  
-**Producción live:** **LATAM desplegado** · runtime efectivo @ `ce69f09` (deploy PRE-F1.9b)  
-**Checkpoint LATAM:** `docs/architecture/PRE-F1.4_LATAM_INTEGRATION_CHECKPOINT.md` · handoff `KAIROS_MASTER_HANDOFF_F1.8.md`
+**Rama:** `main` · **ahead of `origin/main` by 1 commit** (`df1797a` sin push)  
+**HEAD repo:** `df1797a` — `f2.2c fallback ssot refactor infrastructure`  
+**Runtime LATAM base:** `ce69f09` + F2.2c SSOT overlay local  
+**Producción live:** **LATAM @ `ce69f09`** — **sin F2.2c desplegado**  
+**Checkpoint F2:** `docs/architecture/F2.2C_SSOT_FALLBACK_REFACTOR_CHECKPOINT.md`
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`) con **resolver editorial unificado** (26 países, **6 familias**), **deduplicación editorial P0+P1+P2**, **sparse fallback** y familia **LATAM live en producción**.
+KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (26 países, **6 familias**), dedup P0–P2, **LATAM live en producción**, y desde **F2.2c** infraestructura **SSOT de fallback** (`resolveRegionalPack` · sin literales `IBERIAN` en lógica de compositor).
 
-**PRE-F1 cerrado.** Cadena LATAM integrada (`a8d4a60` → `ce69f09`), pusheada a GitHub (PRE-F1.9a), desplegada a producción (PRE-F1.9b) y documentada (PRE-F1.9c).
+**PRE-F1 cerrado** · prod LATAM @ `ce69f09`. **F2.2c cerrado localmente** · behavior-preserving · `DEFAULT_FAMILY` sigue **IBERIAN**.
 
-**Producción** (https://kairos-maps-mvp.web.app) — **LATAM live** · `mexico` · `argentina` · `brazil` · `peru` → resolver **`LATAM`**. Premium beta con `?premium=1`; producto free sin beta visible.
+**Producción** (https://kairos-maps-mvp.web.app) — LATAM live · MX/AR/BR/PE → `LATAM`. Runtime desplegado **`ce69f09`** (no incluye F2.2c).
 
-**Staging** (https://kairos-maps-dev.web.app) — paridad editorial con prod @ runtime `ce69f09`.
+**Local `src/`** — **`df1797a`**: SSOT fallback refactor + fix sparse IF-C08 + smoke `dev-fallback-ssot-smoke.sh`.
 
-**Smokes gate deploy (PRE-F1.9b pre-deploy):** **5/5 PASS**.  
-**QA post-deploy producción LATAM:** BA/trabajo/sparse · CDMX/amor · Río/descanso · Lima/trabajo — **PASS**.
+**Smokes gate F2.2c:** **7/7 PASS** (6 gate + SSOT).
 
-**Métricas editoriales verificadas (prod post-F1.9b):** P03/P06/P10 **0** · IBERIAN leak **0** · split-brain **0** en lecturas normales · palabras **500–900** · NY sparse footer live.
-
-**Riesgos vivos:** BA sparse `regionN:null` (metadata only) · `DEFAULT_FAMILY = IBERIAN` para países no mapeados · `dist/` sucio post-deploy (no commiteado) · bundle premium cargado en free · `localStorage kairosPremiumBeta=1`.
+**Riesgos vivos:** `DEFAULT_FAMILY = IBERIAN` (~167 países) · mis-maps FR/DE/IN/TH/SG · prod desincronizado vs local F2.2c · `df1797a` sin push · `dist/` sucio.
 
 ---
 
 ## II. Serie PRE-F1 — cerrada
 
-| Fase | Estado | Commit / evidencia | Qué cerró |
-|------|--------|-------------------|-----------|
-| **PRE-F1.3** — LATAM editorial runtime integration | ✅ Cerrado | `a8d4a60` | 6ª familia · 14 tablas · MX/AR/BR/PE · smokes 10/10 · QA 33/33 |
-| **PRE-F1.4** — LATAM integration checkpoint | ✅ Cerrado | `41bad5a` | Doc trazabilidad · frozen runtime v1 |
-| **PRE-F1.5** — Staging deploy LATAM | ✅ Cerrado | deploy staging | Primera subida LATAM staging |
-| **PRE-F1.6** — Manual browser QA | ✅ Cerrado | auditoría | 11 PASS · 1 WATCH (pre-hotfix) |
-| **PRE-F1.7** — Sparse premium hotfix | ✅ Cerrado | `ce69f09` | Fix cognate `control` · BA/trabajo/sparse `ok:true` |
-| **PRE-F1.8** — Staging re-deploy post hotfix | ✅ Cerrado | deploy staging | Hotfix live staging |
-| **PRE-F1.8b** — Master handoff doc | ✅ Cerrado | `b3342ee` | `KAIROS_MASTER_HANDOFF_F1.8.md` |
-| **PRE-F1.9** — Production readiness audit | ✅ Cerrado | read-only | Verdict **READY FOR PROD** |
-| **PRE-F1.9a** — Push LATAM stack | ✅ Cerrado | push | `7247f1e..b3342ee` → `origin/main` |
-| **PRE-F1.9b** — Controlled prod deploy LATAM | ✅ Cerrado | deploy prod | `./scripts/deploy-prod.sh` · 5/5 smokes · QA prod PASS |
-| **PRE-F1.9c** — Post-prod checkpoint doc | ✅ Cerrado | doc-only | Este documento |
+| Fase | Estado | Commit |
+|------|--------|--------|
+| PRE-F1.3 → PRE-F1.9d | ✅ Cerrado | `a8d4a60` → `a25e2c7` pushed |
 
-### Serie 3.8h base (referencia)
-
-Resolver unificado · dedup P0/P1/P2 · premium UI beta · sparse NY · prod histórico `33f3ec8` (pre-LATAM) · sustituido editorialmente por stack `ce69f09`.
+Prod LATAM deploy: PRE-F1.9b @ `ce69f09`. Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 ---
 
-## III. Métricas registradas (producción post PRE-F1.9b)
+## III. Serie F2 — en curso
 
-### Smokes pre-deploy (PRE-F1.9b)
-
-| Smoke | Resultado |
-|-------|-----------|
-| `dev-latam-editorial-integration-smoke.sh` | **PASS** |
-| `dev-city-premium-composition-smoke.sh` | **PASS** |
-| `dev-narrative-intelligence-smoke.sh` | **PASS** |
-| `dev-editorial-dedup-smoke.sh` | **PASS** |
-| `dev-premium-ui-beta-smoke.sh` | **PASS** |
-
-**Total:** **5/5 PASS** antes de `./scripts/deploy-prod.sh`.
-
-### QA post-deploy producción LATAM (PRE-F1.9b)
-
-| Caso | Resultado |
-|------|-----------|
-| Buenos Aires / trabajo / sparse | **PASS** — `ok:true` · `englishThemeHit:null` · premium renderiza |
-| Ciudad de México / amor | **PASS** — `regionFamily LATAM` · IBERIAN leak 0 |
-| Río de Janeiro / descanso | **PASS** — `regionFamily LATAM` · IBERIAN leak 0 |
-| Lima / trabajo | **PASS** — `regionFamily LATAM` · IBERIAN leak 0 |
-
-**Gates globales QA:** split-brain **0** (lecturas normales) · P03/P06/P10 **0** · palabras **500–900** · sin `plaza` · `sobremesa` · `barrio` · `compañía cotidiana`.
-
-**WATCH (no bloqueante):** BA/trabajo/sparse — `narrativeContext.regionFamily` = `null` (metadata only; lectura OK).
-
-### Editorial / arquitectura (prod verificado)
-
-| Métrica | Valor |
-|---------|-------|
-| **Producción base** | https://kairos-maps-mvp.web.app — **OK** |
-| **Producción premium** | https://kairos-maps-mvp.web.app/?premium=1 — **OK** · LATAM live |
-| **Staging premium** | https://kairos-maps-dev.web.app/?premium=1 — **OK** · paridad `ce69f09` |
-| **Países LATAM live** | `mexico` · `argentina` · `brazil` · `peru` → **LATAM** |
-| **split-brain** | **0** (lecturas piloto normales) |
-| **IBERIAN leak** | **0** |
-| **P03 / P06 / P10** | **0** |
-| **NY sparse fallback** | **Live** |
-| **`KairosEditorialFamily`** | 6 familias · UI beta gated por `?premium=1` |
+| Fase | Estado | Evidencia |
+|------|--------|-----------|
+| **F2.0** | ✅ Audit read-only | Country coverage · DEFAULT risk |
+| **F2.1** | ✅ Diseño | DEFAULT neutral architecture |
+| **F2.2a** | ✅ Audit | IBERIAN_FALLBACK_MAP · 24 líneas críticas |
+| **F2.2b** | ✅ Diseño | Opción C · SSOT + helper |
+| **F2.2c** | ✅ Runtime | `df1797a` · infra SSOT · behavior-preserving |
+| **F2.2c1** | ✅ Doc | Este checkpoint + `F2.2C_SSOT_FALLBACK_REFACTOR_CHECKPOINT.md` |
+| **F2.2d** | ⏳ Pendiente | GLOBAL_NEUTRAL tablas + switch DEFAULT |
+| **F2.3** | ⏳ Pendiente | Remapeo mis-maps explícitos |
 
 ---
 
-## IV. Deuda operativa viva
+## IV. F2.2c — qué cambió / qué no
 
-| ID | Descripción |
-|----|-------------|
-| **OP-1** | Bundle premium cargado para usuarios free (scripts en `index.html`, UI oculta) |
-| **OP-2** | `localStorage kairosPremiumBeta=1` activa beta sin URL |
-| **OP-3** | **`dist/`** modificado por deploy prod — **no commitear** salvo política release |
-| **R-F1-1** | BA sparse `regionN:null` — metadata only · monitorear |
-| **R-F1-2** | `DEFAULT_FAMILY = IBERIAN` — ~167 países sin mapeo explícito · riesgo leak editorial |
+### Cambió (`df1797a`)
 
----
+- `REGISTERED_FAMILIES` · `isRegisteredFamily` · `resolveRegionalPack`
+- `resolveRegionFamily` consolidado en EFR
+- Eliminación fallbacks lógicos `IBERIAN` (11 coerciones + 8 pool fallbacks + 3 hard returns)
+- Fix IF-C08 sparse → BA/trabajo/sparse `regionN=LATAM`
+- Nuevo smoke `dev-fallback-ssot-smoke.sh`
 
-## V. Qué está cerrado (runtime `src/` @ `ce69f09`)
+### No cambió
 
-### Resolver + regionalización (6 familias)
-
-- `editorial-family-resolver.js` — SSOT: IBERIAN · MEDITERRANEAN · ANGLO · EAST_ASIAN · AFRICAN_COASTAL · **LATAM**
-- MX/AR/BR/PE → **LATAM** en prod y staging
-- Regionalización knowledge · narrative spine · goal pads · micro-transitions (14 tablas LATAM)
-
-### Editorial deduplication + premium beta
-
-- Dedup P0/P1/P2 · sparse fallback · premium UI beta (`?premium=1`)
-- Hotfix cognate `control` @ `ce69f09`
+- `DEFAULT_FAMILY = 'IBERIAN'`
+- Sin `GLOBAL_NEUTRAL` · sin familias nuevas
+- Sin deploy post-F2.2c
+- Prod sigue @ `ce69f09`
 
 ---
 
-## VI. Qué NO tocar (salvo instrucción explícita)
-
-| Área | Motivo |
-|------|--------|
-| **`src/engines/astro.js`** | Motor congelado |
-| **`dist/`** | Artefacto deploy; no SSOT; no commitear salvo release explícito |
-| **Deploy adicional** | Prod LATAM live; cambios requieren ciclo smoke → staging → prod |
-| **Motores legacy congelados** | Ver skill KAIROS |
-
----
-
-## VII. Staging / producción
-
-| Entorno | URL | Estado |
-|---------|-----|--------|
-| **Producción** | https://kairos-maps-mvp.web.app | **LIVE LATAM** · runtime @ `ce69f09` |
-| **Producción premium** | https://kairos-maps-mvp.web.app/?premium=1 | Beta · LATAM · sparse NY |
-| **Staging** | https://kairos-maps-dev.web.app | **OK** — paridad prod |
-| **Staging premium** | https://kairos-maps-dev.web.app/?premium=1 | Beta · LATAM |
-
-**Deploy producción LATAM (PRE-F1.9b):** `./scripts/deploy-prod.sh` (confirmación `DEPLOY-PROD`) — sync `src/` → `dist/` · `hosting:prod` only · 26 mayo 2026.
-
----
-
-## VIII. Smokes gate actuales
+## V. Smokes gate actuales
 
 ```bash
 ./scripts/dev-latam-editorial-integration-smoke.sh
@@ -153,50 +78,69 @@ Resolver unificado · dedup P0/P1/P2 · premium UI beta · sparse NY · prod his
 ./scripts/dev-narrative-intelligence-smoke.sh
 ./scripts/dev-editorial-dedup-smoke.sh
 ./scripts/dev-premium-ui-beta-smoke.sh
+./scripts/dev-editorial-family-resolver-smoke.sh
+./scripts/dev-fallback-ssot-smoke.sh
 ```
 
-**Estado verificado PRE-F1.9b pre-deploy:** **5/5 PASS**.
+**Estado F2.2c:** **7/7 PASS**.
 
 ---
 
-## IX. Git status (26 mayo 2026, post PRE-F1.9c)
+## VI. Staging / producción
+
+| Entorno | URL | Runtime efectivo |
+|---------|-----|------------------|
+| **Producción** | https://kairos-maps-mvp.web.app | **`ce69f09`** · LATAM · sin F2.2c |
+| **Staging** | https://kairos-maps-dev.web.app | Paridad prod (pre-F2.2c deploy) |
+| **Local `src/`** | — | **`df1797a`** · SSOT fallback |
+
+---
+
+## VII. Deuda / riesgos abiertos
+
+| ID | Descripción |
+|----|-------------|
+| **R-F2-1** | `DEFAULT_FAMILY = IBERIAN` — F2.2d |
+| **R-F2-2** | Mis-maps FR/DE/NL/SE/IN/TH/SG — F2.3 |
+| **R-F2-3** | Prod sin F2.2c |
+| **R-F2-4** | `df1797a` sin push |
+| **OP-3** | `dist/` dirty · no commiteado |
+
+---
+
+## VIII. Git status (post F2.2c1 doc)
 
 ```
-HEAD: b3342ee — pref1 f1.8 master handoff (doc)
-      ce69f09 — pref1 latam sparse premium hotfix (runtime LATAM)
-      a8d4a60 — pref1 latam editorial runtime integration
+HEAD: df1797a — f2.2c fallback ssot refactor infrastructure
+      (+ doc commit F2.2c1 pending/at HEAD after commit)
 
-Rama: main · up to date with origin/main
-src/: limpio @ ce69f09
-dist/: modificado / untracked (NO commiteado · post-deploy rsync)
-Producción: LATAM live @ ce69f09 runtime
+Rama: main · ahead of origin/main by 1–2 commits
+src/: limpio @ df1797a
+dist/: modificado / untracked (NO commiteado)
+Producción: ce69f09 (LATAM live · pre-F2.2c)
 ```
 
 ---
 
-## X. Siguiente fase recomendada
+## IX. Siguiente fase
 
-### **F2.1 — DEFAULT neutral / Regional Expansion Roadmap**
+### **F2.2d — GLOBAL_NEUTRAL design / activation**
 
-1. Auditoría cobertura global (~26/193 países mapeados explícitamente).
-2. Diseño familias adicionales (WESTERN_EUROPE · NORDIC · SOUTHEAST_ASIAN · etc.).
-3. **`DEFAULT_FAMILY` neutro** — prioridad para eliminar leak IBERIAN en países no curados.
-4. Sin copy runtime hasta fase F2.2+ explícita.
-
-Ver handoff: `docs/architecture/KAIROS_MASTER_HANDOFF_F1.8.md` §11–12.
+1. 14 tablas `GLOBAL_NEUTRAL`
+2. `REGISTERED_FAMILIES` += GLOBAL_NEUTRAL
+3. `DEFAULT_FAMILY = 'GLOBAL_NEUTRAL'` tras smokes
+4. Staging QA → prod explícito
 
 ---
 
-## XI. Documentos relacionados
+## X. Documentos relacionados
 
 | Documento | Contenido |
 |-----------|-----------|
-| `KAIROS_MASTER_HANDOFF_F1.8.md` | Handoff PRE-F1 · nota final producción LATAM |
-| `PRE-F1.4_LATAM_INTEGRATION_CHECKPOINT.md` | Trazabilidad integración LATAM PRE-F1.3 |
-| `TERRITORIAL_ARCHETYPE_LAYER.md` | Diseño capa territorial |
-| `KAIROS_MASTER_AUDIT.md` | Auditoría total |
-| `MAPS_AGENT_LIBRARY.md` | Inventario agentes GPT |
+| `F2.2C_SSOT_FALLBACK_REFACTOR_CHECKPOINT.md` | Trazabilidad F2.2c |
+| `KAIROS_MASTER_HANDOFF_F1.8.md` | Handoff PRE-F1 |
+| `PRE-F1.4_LATAM_INTEGRATION_CHECKPOINT.md` | LATAM integration |
 
 ---
 
-*Checkpoint actualizado PRE-F1.9c · Commit doc-only · Sin push · Sin deploy · Prod LATAM live @ ce69f09*
+*Checkpoint actualizado F2.2c1 · Doc-only · Sin deploy · Prod @ ce69f09 · Local SSOT @ df1797a*
