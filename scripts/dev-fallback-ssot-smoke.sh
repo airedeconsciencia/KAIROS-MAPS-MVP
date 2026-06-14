@@ -141,6 +141,7 @@ const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
 
 assert('EFR.DEFAULT_FAMILY === GLOBAL_NEUTRAL', EFR.DEFAULT_FAMILY === 'GLOBAL_NEUTRAL', EFR.DEFAULT_FAMILY);
 assert('isRegisteredFamily(LATAM)', EFR.isRegisteredFamily('LATAM') === true, 'LATAM');
+assert('isRegisteredFamily(WESTERN_EUROPE)', EFR.isRegisteredFamily('WESTERN_EUROPE') === true, 'F2.5c');
 assert('isRegisteredFamily(GLOBAL_NEUTRAL)', EFR.isRegisteredFamily('GLOBAL_NEUTRAL') === true, 'F2.2d1');
 
 const Narrative = ctx.window.KairosNarrativeIntelligence;
@@ -173,6 +174,19 @@ assert(
   'resolveRegionalPack(GLOBAL_NEUTRAL) never missing (14 maps)',
   packMissing.length === 0,
   packMissing.join(' · ') || '14/14 explicit'
+);
+
+assert(
+  'WESTERN_EUROPE countries resolver (F2.5c)',
+  ['france', 'germany', 'netherlands', 'sweden'].every(function (slug) {
+    return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'WESTERN_EUROPE';
+  }),
+  JSON.stringify({
+    france: EFR.COUNTRY_EDITORIAL_FAMILY.france,
+    germany: EFR.COUNTRY_EDITORIAL_FAMILY.germany,
+    netherlands: EFR.COUNTRY_EDITORIAL_FAMILY.netherlands,
+    sweden: EFR.COUNTRY_EDITORIAL_FAMILY.sweden
+  })
 );
 
 assert(

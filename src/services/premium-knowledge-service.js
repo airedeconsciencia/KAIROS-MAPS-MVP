@@ -229,6 +229,42 @@
         }
       }
     },
+    WESTERN_EUROPE: {
+      doc17: {
+        t1: {
+          amor: 'En {ciudad}, lo reservado puede abrirse antes que la escena — te reconocen en la constancia, no en el personaje.',
+          trabajo: 'En {ciudad}, lo acotado en privado puede pesar más — te miden en la obra, no solo en lo que se muestra.',
+          descanso: 'En {ciudad}, tomar margen puede devolver calma — el cuerpo habla antes que la exigencia del día.'
+        },
+        t2: {
+          amor: 'El vínculo puede probarse en lo que nombras con medida — no fallo, sino franqueza que aún no ha encontrado tono.',
+          trabajo: 'Lo visible puede adelantarse a lo que madura en reserva — no fracaso, sino impulso que aún no ha encontrado dirección.',
+          descanso: 'La medida del entorno puede empujar cuando pides pausa — no pereza, sino fatiga que pide umbral sin disculpa.'
+        },
+        t3: {
+          amor: 'Puede abrirse un vínculo más honesto si filtras antes de demostrar — la condición es claridad, no espectáculo.',
+          trabajo: 'Puede abrirse sentido si trabajas la obra en reserva — la condición es sustancia, no exposición.',
+          descanso: 'Puede abrirse calma si cruzas el umbral hacia la pausa — la condición es margen, no rendición.'
+        },
+        t4: {
+          amor: 'Esta semana, elige una conversación breve donde importe más nombrar que impresionar — pequeña y real.',
+          trabajo: 'Esta semana, acota lo que haces antes de volver a mostrarlo — pequeño y real.',
+          descanso: 'Esta semana, guarda un tramo de pausa sin disculparte — pequeño y real.'
+        }
+      },
+      byBlockId: {
+        doc6_intensidad_linea_cercana: {
+          amor: 'Esta línea puede sentirse en el vínculo con sobriedad — notable sin exigir dominar el tono al primer día.',
+          trabajo: 'Esta línea puede sentirse en la obra medida — señal clara sin la exigencia de exponerte, más sostenible para ordenar sentido.',
+          descanso: 'Esta línea puede sentirse en el ritmo acotado — sostener la pausa sin sobreexigencia, más sostenible para una estancia media.'
+        },
+        doc6_intensidad_linea_exacta: {
+          amor: 'Muy cerca del trazo el vínculo puede sentirse sin filtro — franqueza intensa; conviene ir despacio si la exposición te desborda.',
+          trabajo: 'Muy cerca del trazo la obra puede sentirse sin filtro — impulso y visibilidad al máximo; modera ritmo si la medida externa te agota.',
+          descanso: 'Muy cerca del trazo la exigencia puede registrar la señal sin filtro — ritmo al máximo; conviene moderar si la medida externa te agota.'
+        }
+      }
+    },
     GLOBAL_NEUTRAL: {
       doc17: {
         t1: {

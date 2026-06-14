@@ -60,6 +60,30 @@
 
   var MAX_FALLBACK_SENTENCES = 4;
 
+  var REGIONAL_FALLBACK_BAN_MARKERS = {
+    IBERIAN: ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'],
+    MEDITERRANEAN: ['paseo', 'acera', 'vitrina urbana'],
+    ANGLO: ['agenda', 'calendario', 'bloque reservado', 'productividad']
+  };
+
+  function normFoldRegional(text) {
+    return String(text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function fallbackViolatesRegionalBan(text, regionFamily) {
+    if (!regionFamily || !text) return false;
+    var norm = normFoldRegional(text);
+    var families = Object.keys(REGIONAL_FALLBACK_BAN_MARKERS);
+    for (var fi = 0; fi < families.length; fi++) {
+      if (families[fi] === regionFamily) continue;
+      var markers = REGIONAL_FALLBACK_BAN_MARKERS[families[fi]];
+      for (var mi = 0; mi < markers.length; mi++) {
+        if (norm.indexOf(normFoldRegional(markers[mi])) !== -1) return true;
+      }
+    }
+    return false;
+  }
+
   var SYNTHESIS_OPEN = {
     amor: 'Para {nombre}, {ciudad} puede leerse hoy como un escenario de {objetivo}: una lectura integrada, no una lista de piezas sueltas.',
     trabajo: 'Para {nombre}, {ciudad} condensa hoy una lectura de {objetivo}: varias señales del mapa en un solo arco.',
@@ -120,6 +144,14 @@
       'Donde el cuerpo se queda, la oportunidad aparece sin escena: ',
       'Con margen íntimo, conviene mirar esto: ',
       'En el calor humano, la oportunidad se deja leer así: '
+    ],
+    WESTERN_EUROPE: [
+      'En el umbral, conviene leer la oportunidad así: ',
+      'Desde lo reservado, la oportunidad se presenta con medida: ',
+      'En la frontera interior, puede abrirse esto: ',
+      'Donde el silencio filtra, la oportunidad aparece sin escena: ',
+      'Con claridad sobria, conviene mirar esto: ',
+      'En la medida justa, la oportunidad se deja leer así: '
     ],
     GLOBAL_NEUTRAL: [
       'Al ralentizar, conviene leer la oportunidad así: ',
@@ -316,6 +348,23 @@
         'Quizá descubras que un silencio largo deja de incomodarte en lo cercano.'
       ]
     },
+    WESTERN_EUROPE: {
+      amor: [
+        'Puede que una conversación breve dure más de lo previsto y no quieras que termine.',
+        'Tal vez notes calma al pensar en alguien — sin prisa de cerrar el umbral.',
+        'A veces ocurre que te sientas sin necesidad de demostrar — constancia antes que espectáculo.'
+      ],
+      trabajo: [
+        'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso en reserva.',
+        'Puede que vuelvas caminando con una idea que por fin encaja — sin prisa de exponerla.',
+        'Tal vez te sorprenda sentarte sin necesidad de producir nada — sin medirte por fuera.'
+      ],
+      descanso: [
+        'Puede que te sorprenda aflojar el ritmo sin sentir que incumples la medida del día.',
+        'A veces ocurre que el cuerpo pide pausa antes que la mente lo autorice en el trayecto.',
+        'Quizá descubras que un silencio útil deja de incomodarte en lo reservado.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'Puede que una charla sin reloj dure más de lo previsto y no quieras que termine.',
@@ -424,6 +473,20 @@
       descanso: [
         'Mira si te sientes más entero o más expuesto al aflojar; ambas respuestas informan.',
         'Fíjate si quedarte un poco más te sostiene o te desnuda; las dos lecturas valen.'
+      ]
+    },
+    WESTERN_EUROPE: {
+      amor: [
+        'Mira si te sientes más entero o más expuesto al nombrar lo esencial; ambas respuestas informan.',
+        'Fíjate si la constancia te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      trabajo: [
+        'Mira si te sientes más entero o más expuesto al acotar la dirección; ambas respuestas informan.',
+        'Fíjate si la obra en reserva te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      descanso: [
+        'Mira si te sientes más entero o más expuesto al tomar margen; ambas respuestas informan.',
+        'Fíjate si el silencio útil te sostiene o te desnuda; las dos lecturas valen.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -741,6 +804,47 @@
         'Hay momentos en que el lugar habla por contraste, no por confirmación.',
         'Puede que lo que despierta afuera no despierte lo mismo en ti.',
         'Hay señales que se entienden mejor al volver sobre lo mismo.'
+      ]
+    },
+    WESTERN_EUROPE: {
+      matiz: [
+        'Detrás del umbral hay otra textura, más silenciosa.',
+        'Con el tiempo, lo reservado aclara lo que la primera impresión no decía.',
+        'Lo que sigue completa la medida sin pedir prisa.',
+        'Hay un matiz en la frontera interior que no es oposición: es claridad.'
+      ],
+      contradiccion: [
+        'La segunda mirada en lo acotado suele ser más honesta que la primera.',
+        'Entre lo sentido y lo exigible hay un pasillo estrecho — no contradicción, tensión.',
+        'Quizá notes dos medidas conviviendo sin pedir permiso.',
+        'A veces la franqueza choca con la medida social — ahí está la fricción.'
+      ],
+      capa: [
+        'Hay una capa que solo aparece cuando filtras antes de mostrar.',
+        'Lo que sigue no es anexo: es otra cara de lo que guardas en reserva.',
+        'Detrás del impulso hay una pregunta más lenta — casi en silencio útil.',
+        'Hay un hilo que conecta lo visible con lo no dicho al cruzar el umbral.'
+      ],
+      advertencia: [
+        'Si te quedas un poco más en reserva, el tono cambia.',
+        'Algo se mueve cuando dejas de exigirte respuesta inmediata al entorno.',
+        'Detrás de la exigencia hay algo que pide margen, no conclusión.',
+        'La escena cambia cuando dejas de medirla con la medida ajena.'
+      ],
+      cierre: [
+        'Entre una señal y otra hay espacio para elegir qué cruzas hacia afuera.',
+        'Lo repetido confirma o matiza lo que intuías en privado.',
+        'Hay un giro pequeño en el umbral que altera el sentido de todo.'
+      ],
+      cuerpo: [
+        'La lectura se afina cuando el cuerpo también opina en el margen.',
+        'Algo se revela cuando sueltas la necesidad de demostrar.',
+        'No todo lo que se activa en el día apunta al mismo norte.'
+      ],
+      ciudad: [
+        'Hay momentos en que el entorno habla por contraste, no por confirmación.',
+        'Puede que lo que exige afuera no exija lo mismo en ti.',
+        'Hay señales que se entienden mejor en la conversación breve repetida.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -1913,6 +2017,7 @@ function metaphorFingerprint(text) {
     for (var i = 0; i < candidates.length && words < maxWords && used < cap; i++) {
       var sent = applyTextPolish(candidates[i].text, ctx, true);
       if (!sent || !claimText(sent, ctx.cityName, globalSeen)) continue;
+      if (fallbackViolatesRegionalBan(sent, ctx.regionFamily)) continue;
       parts.push(sent);
       words += wordCount(sent);
       used += 1;
@@ -2124,6 +2229,38 @@ function metaphorFingerprint(text) {
         'Lo que hoy acelera el cuerpo puede aflojarse si te quedas un poco más sin rendir.'
       ]
     },
+    WESTERN_EUROPE: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en lo que nombras con medida — sin prisa de demostrar.',
+        'Anota una escena concreta del día y vuelve a ella sin prisa de acotar.',
+        'El amor aquí no pide escena: pide constancia que el cuerpo pueda sostener.',
+        'Si algo incomoda en el vínculo, obsérvalo en lo reservado — no como fallo personal.',
+        'Lo acotado con honestidad suele orientar mejor que los planes demasiado pulidos.',
+        'Una verdad breve y sobria vale más que una noche perfecta para contar.',
+        'Mira si el vínculo respira cuando baja la necesidad de demostrar.',
+        'Lo que hoy tensa el vínculo puede aclararse si aflojas la prisa de exponerlo.'
+      ],
+      trabajo: [
+        'En {ciudad}, el sentido del trabajo madura en reserva — no en lo que se exhibe.',
+        'Registra en reserva qué parte de tu obra sigue viva cuando nadie te evalúa.',
+        'El propósito aquí no pide exposición: pide obra que respire antes de mostrarse.',
+        'Si algo incomoda en la trayectoria, obsérvalo en lo acotado — no como fracaso.',
+        'Lo hecho en silencio suele orientar mejor que las urgencias demasiado visibles.',
+        'Contrasta lo exigible y lo verdadero antes de volver a exponerte.',
+        'Mira si el cansancio es de obra o de postureo — la diferencia importa en la medida del día.',
+        'Lo que hoy confunde la trayectoria puede aclararse si bajas la necesidad de mostrar.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo recupera en el margen: un paso lento, una tarde sin prisa.',
+        'Guarda un momento de calma sobria — no el que suena bien contarlo.',
+        'El descanso aquí no pide disculpa: pide permiso sin rendir cuentas al entorno.',
+        'Si algo incomoda en la pausa, obsérvalo en el umbral — no como pereza.',
+        'El ritmo honesto del día suele orientar mejor que los planes demasiado rígidos.',
+        'Un margen sobrio y real vale más que una semana de pausa teatral.',
+        'Mira si la calma aguanta cuando vuelves a la exigencia — ahí está la prueba.',
+        'Lo que hoy acelera el cuerpo puede aflojarse si cruzas el umbral hacia la pausa.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, el vínculo se afina en atención sostenida — una mirada, un silencio cómodo.',
@@ -2277,6 +2414,20 @@ function metaphorFingerprint(text) {
         'El ritmo lento puede sostener lo anterior un poco más.'
       ]
     },
+    WESTERN_EUROPE: {
+      amor: [
+        'En el umbral de {ciudad}, a veces basta nombrar lo esencial sin concluir la escena.',
+        'La constancia sobria puede sostener lo anterior un poco más.'
+      ],
+      trabajo: [
+        'En reserva en {ciudad}, a veces basta acotar antes de volver a exponerte.',
+        'La obra en silencio puede sostener lo anterior un poco más.'
+      ],
+      descanso: [
+        'En el margen de {ciudad}, a veces basta aflojar sin disculparte ante la exigencia.',
+        'El silencio útil puede sostener lo anterior un poco más.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, a veces basta alargar la conversación sin concluirla.',
@@ -2353,6 +2504,16 @@ function metaphorFingerprint(text) {
       'Cuando algo incomoda, obsérvalo en la fatiga — no en el juicio rápido.',
       'Deja que lo cotidiano te devuelva su ritmo — sin prisa de concluir.',
       'Un paso en privado puede bastarte para seguir caminando {ciudad} con calma.'
+    ],
+    WESTERN_EUROPE: [
+      'A veces lo esencial aparece en el umbral — una verdad que no pide audiencia.',
+      '{ciudad} enseña en la medida, sin pedirte prisa de entenderlo todo.',
+      'Acotar antes de expandir puede bastarte para seguir explorando {ciudad} con verdad.',
+      'Lo hermoso vive en lo sobrio, no solo en el gran gesto.',
+      'No necesitas resolver la exigencia: basta sustancia antes que exposición.',
+      'Cuando algo incomoda, obsérvalo en el filtro interior — no en el juicio rápido.',
+      'Deja que lo reservado te devuelva su ritmo — sin prisa de concluir.',
+      'Un paso en silencio puede bastarte para seguir caminando {ciudad} con calma.'
     ],
     GLOBAL_NEUTRAL: [
       'A veces lo esencial aparece en el margen — una conversación que no pide conclusión.',
@@ -2438,6 +2599,18 @@ function metaphorFingerprint(text) {
       'Puede que notes el lugar en detalles: una pausa, un murmullo, un cansancio distinto.',
       'Deja que lo vivido te devuelva su ritmo — sin prisa de concluir.',
       'Un margen breve puede bastarte para seguir explorando {ciudad} con verdad.'
+    ],
+    WESTERN_EUROPE: [
+      'Puede que notes que {ciudad} se afina cuando el umbral también orienta.',
+      'Las medidas honestas suelen guiar mejor que las urgencias demasiado visibles.',
+      'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en reserva.',
+      'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en lo acotado.',
+      'A veces hay que cruzar el umbral otra vez para entender el mapa.',
+      'Tal vez baste un silencio útil que te sostenga — sin tenerlo todo resuelto.',
+      'Tal vez descubras que algunas lecturas maduran despacio, como una verdad filtrada.',
+      'Puede que notes el lugar en detalles: un límite, un trayecto, un cansancio sobrio.',
+      'Deja que lo reservado te devuelva su ritmo — sin prisa de concluir.',
+      'Un tramo en medida puede bastarte para seguir explorando {ciudad} con verdad.'
     ],
     GLOBAL_NEUTRAL: [
       'Puede que notes que {ciudad} se afina cuando la atención también orienta.',
@@ -2662,6 +2835,7 @@ function metaphorFingerprint(text) {
     for (var i = 0; i < candidates.length && words < maxWords && used < cap; i++) {
       var sent = applyTextPolish(candidates[i].text, ctx, true);
       if (!sent || !claimText(sent, ctx.cityName, globalSeen)) continue;
+      if (fallbackViolatesRegionalBan(sent, ctx.regionFamily)) continue;
       parts.push(sent);
       words += wordCount(sent);
       used += 1;

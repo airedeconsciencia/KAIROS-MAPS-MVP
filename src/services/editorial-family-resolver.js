@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f2.3b-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f2.5c-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -17,16 +17,17 @@
     'EAST_ASIAN',
     'AFRICAN_COASTAL',
     'LATAM',
+    'WESTERN_EUROPE',
     'GLOBAL_NEUTRAL'
   ];
 
   /** @type {Record<string, string>} slug canónico → familia (30 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
-    france: 'IBERIAN',
-    germany: 'IBERIAN',
-    netherlands: 'IBERIAN',
-    sweden: 'IBERIAN',
+    france: 'WESTERN_EUROPE',
+    germany: 'WESTERN_EUROPE',
+    netherlands: 'WESTERN_EUROPE',
+    sweden: 'WESTERN_EUROPE',
     mexico: 'LATAM',
     argentina: 'LATAM',
     brazil: 'LATAM',

@@ -237,6 +237,23 @@
         'En {ciudad}, el propósito respira cuando bajas la necesidad de ser visto.'
       ]
     },
+    WESTERN_EUROPE: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en lo que nombras con medida — constancia antes que escena.',
+        'En {ciudad}, la cercanía madura cuando el silencio filtra lo esencial — no lo performativo.',
+        'En {ciudad}, el amor respira en gestos fiables — sin convertir la franqueza en espectáculo.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo pide margen cuando el día exige demasiada medida — sin culpa performativa.',
+        'En {ciudad}, aflojar el ritmo es un umbral — a veces tardío y necesario.',
+        'En {ciudad}, el descanso se prueba en lo reservado — sin convertir la pausa en incumplimiento.'
+      ],
+      trabajo: [
+        'En {ciudad}, la obra gana sentido en reserva — antes de volver a la exposición profesional.',
+        'En {ciudad}, conviene contrastar lo exigible y lo verdadero — la claridad distrae y también orienta.',
+        'En {ciudad}, el propósito respira cuando bajas la necesidad de mostrar antes de acotar.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, el vínculo se prueba en atención sostenida — persona antes que personaje.',
@@ -372,6 +389,20 @@
       descanso: [
         'En la pausa habitada en {ciudad}, con {goalPhrase}, el cuerpo responde:',
         'En el ritmo compartido de {ciudad}, leyendo {goalPhrase}, la calma advierte:'
+      ]
+    },
+    WESTERN_EUROPE: {
+      amor: [
+        'En la medida de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        'Desde el umbral interior en {ciudad}, leyendo {goalPhrase}, la constancia marca:'
+      ],
+      trabajo: [
+        'En lo acotado de {ciudad}, con {goalPhrase}, la obra susurra:',
+        'Antes de la exposición en {ciudad}, leyendo {goalPhrase}, conviene leer el sentido:'
+      ],
+      descanso: [
+        'En el margen del día en {ciudad}, con {goalPhrase}, el cuerpo responde:',
+        'En la frontera entre exigencia y calma en {ciudad}, leyendo {goalPhrase}, la pausa advierte:'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -519,6 +550,20 @@
       descanso: [
         ' El ritmo lento en {ciudad} suele afinar lo que el cuerpo pide sin prisa.',
         ' En la pausa habitada, {ciudad} devuelve calma que la urgencia no alcanza a nombrar.'
+      ]
+    },
+    WESTERN_EUROPE: {
+      amor: [
+        ' El filtro interior en {ciudad} suele afinar lo que el vínculo aún no ha nombrado.',
+        ' En la conversación breve, {ciudad} devuelve matices que la primera escena no mostró.'
+      ],
+      trabajo: [
+        ' Lo acotado en {ciudad} suele afinar lo que la obra aún no ha dicho en voz alta.',
+        ' En lo que guardas en reserva, {ciudad} devuelve sentido que la exposición no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' El margen tomado en {ciudad} suele afinar lo que el cuerpo pide sin disculpa.',
+        ' En el silencio útil, {ciudad} devuelve calma que la exigencia no alcanza a nombrar.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -1382,6 +1427,77 @@
           'esta semana, guarda un rato de pausa como quien guarda un refugio — sin disculparte.',
           'esta semana, elige una pausa breve y real — no la que suena bien al contarla.',
           'esta semana, deja una tarde sin rendir — habitar {ciudad} con calma.'
+        ]
+      }
+    },
+    WESTERN_EUROPE: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, el vínculo se prueba en lo que filtras antes de mostrar — si la constancia aguanta cuando baja la necesidad de escena.',
+        trabajo: 'En {ciudad}, lo exigible del día compite con lo que tu obra aún madura en reserva — a veces confundes visibilidad con claridad.',
+        descanso: 'En {ciudad}, aflojar puede sentirse como incumplir la medida del día — aunque el cuerpo ya pida un margen sin disculpa.'
+      },
+      opportunityByGoal: {
+        amor: 'sostener el vínculo con franqueza sobria — sin convertir la honestidad en espectáculo.',
+        trabajo: 'guardar en reserva qué parte de tu obra sigue viva — antes de volver a exponerla.',
+        descanso: 'quedarte en la pausa sin justificarla ante la exigencia del entorno — sin desaparecer del todo.'
+      },
+      summaryFrame: {
+        amor: 'En la medida de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        trabajo: 'En lo acotado de {ciudad}, leyendo {goalPhrase}, la obra susurra:',
+        descanso: 'En el umbral del día en {ciudad}, con {goalPhrase}, el cuerpo responde:'
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando nombras la verdad sin buscar audiencia?',
+          DC: '¿Qué límite acotas en {ciudad} antes de abrir el vínculo?',
+          MC: '¿Qué gesto del amor quieres que {ciudad} recuerde en voz contenida?',
+          default: '¿Qué te pide {ciudad} en amor si sueltas la necesidad de demostrar?'
+        },
+        trabajo: {
+          IC: '¿Qué parte de tu obra en {ciudad} sigue viva cuando la exposición no está cerca?',
+          MC: '¿Tu impulso en {ciudad} busca claridad o visibilidad?',
+          AC: '¿Cómo sostendrías tu obra en {ciudad} si no necesitara demostración constante?',
+          default: '¿Qué sentido acotas en {ciudad} antes de volver a medirte por fuera?'
+        },
+        descanso: {
+          AC: '¿Puedes aflojar en {ciudad} sin sentir que incumples la medida del día?',
+          MC: '¿Tu descanso en {ciudad} es margen o culpa funcional?',
+          IC: '¿Qué calma te pide {ciudad} en lo reservado y en lo visible?',
+          default: '¿Qué ritmo corporal te devuelve {ciudad} si cruzas el umbral hacia la pausa?'
+        }
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea una pregunta más clara — no una respuesta más ruidosa.',
+          'Llévate de {ciudad} la constancia que no necesitó escena para ser verdadera.',
+          'Si el vínculo permanece, que sea en gestos fiables — no en la historia que contarías.'
+        ],
+        trabajo: [
+          'De {ciudad} puede quedarte esto: el sentido madura en reserva antes de volver a exponerse.',
+          'Que te quede la obra que respira cuando baja la exigencia de mostrar.',
+          'Pregúntate en voz baja: ¿para quién trabajas cuando el día se aquieta?'
+        ],
+        descanso: [
+          'Quédate con el cuerpo que en {ciudad} volvió a hablar sin pedir permiso al entorno.',
+          'Que permanezca un margen tomado sin disculpa — breve y tuyo.',
+          'Llévate un silencio útil: la pausa que no compitió con la medida impuesta.'
+        ]
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, elige una conversación breve donde puedas nombrar una verdad pequeña — sin escena.',
+          'esta semana, comparte un rato sencillo con alguien — la constancia importa más que la intensidad.',
+          'esta semana, di lo esencial antes de intentar impresionar.'
+        ],
+        trabajo: [
+          'esta semana, anota en reserva qué sentido tiene tu obra — antes de volver a exponerla.',
+          'esta semana, guarda una hora sin pantallas para acotar la dirección — no para la vitrina.',
+          'esta semana, elige una tarea mínima con sentido — aunque quede fuera de la vitrina.'
+        ],
+        descanso: [
+          'esta semana, guarda un tramo de pausa como quien guarda un umbral — sin disculparte.',
+          'esta semana, prueba una pausa sobria y real — no la que suena bien al contarla.',
+          'esta semana, deja una tarde sin rendir — habitar {ciudad} con medida.'
         ]
       }
     },

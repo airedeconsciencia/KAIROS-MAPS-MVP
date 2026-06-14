@@ -104,7 +104,9 @@ assert(
 );
 assert(
   'Schema F2.2d3+',
-  EFR.SCHEMA_VERSION.indexOf('f2.2d3') !== -1 || EFR.SCHEMA_VERSION.indexOf('f2.3b') !== -1,
+  EFR.SCHEMA_VERSION.indexOf('f2.2d3') !== -1 ||
+    EFR.SCHEMA_VERSION.indexOf('f2.3b') !== -1 ||
+    EFR.SCHEMA_VERSION.indexOf('f2.5c') !== -1,
   EFR.SCHEMA_VERSION
 );
 
@@ -122,6 +124,11 @@ assert(
   'Lisboa/portugal → IBERIAN explícito',
   EFR.resolveEditorialFamily({ cityName: 'Lisboa', countryId: 'portugal' }) === 'IBERIAN',
   EFR.resolveEditorialFamily({ cityName: 'Lisboa', countryId: 'portugal' })
+);
+assert(
+  'París/france → WESTERN_EUROPE (F2.5c)',
+  EFR.resolveEditorialFamily({ cityName: 'París', countryId: 'france' }) === 'WESTERN_EUROPE',
+  EFR.resolveEditorialFamily({ cityName: 'París', countryId: 'france' })
 );
 assert(
   'Nairobi/kenya → AFRICAN_COASTAL explícito (no DEFAULT)',
