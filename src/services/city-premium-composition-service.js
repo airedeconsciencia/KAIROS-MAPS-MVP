@@ -2669,7 +2669,10 @@ function metaphorFingerprint(text) {
   function containsEnglishThemeKeys(text) {
     var lower = String(text).toLowerCase();
     for (var i = 0; i < EN_THEME_KEYS.length; i++) {
-      if (lower.indexOf(EN_THEME_KEYS[i]) !== -1) return EN_THEME_KEYS[i];
+      var key = EN_THEME_KEYS[i];
+      // Cognates approved in Spanish copy (e.g. control → control) are not English leaks.
+      if (THEME_ES[key] === key) continue;
+      if (lower.indexOf(key) !== -1) return key;
     }
     return null;
   }
