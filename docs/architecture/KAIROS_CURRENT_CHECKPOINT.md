@@ -2,27 +2,26 @@
 
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
-**Rama:** `main` · **ahead of `origin/main` by 1 commit** (`fcf61d7` sin push)  
-**HEAD repo:** `fcf61d7` — `f2.2d3 global neutral default switch`  
-**Runtime LATAM base:** `ce69f09` + F2.2c SSOT + F2.2d3 GLOBAL_NEUTRAL overlay local  
-**Producción live:** **LATAM @ `ce69f09`** — **sin F2.2d3 desplegado**  
-**Checkpoint F2:** `docs/architecture/F2.2D3_GLOBAL_NEUTRAL_DEFAULT_CHECKPOINT.md`
+**Rama:** `main` · **ahead of `origin/main`** (sin push)  
+**HEAD runtime:** `227a00b` — `f2.5c western europe runtime integration`  
+**Checkpoint F2.5:** `docs/architecture/F2.5C_WESTERN_EUROPE_RUNTIME_CHECKPOINT.md`  
+**Producción live:** **sin WESTERN_EUROPE desplegado** · runtime local @ `227a00b`
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (26 países, **7 familias**), dedup P0–P2, **LATAM live en producción**, **SSOT de fallback** (`resolveRegionalPack`), y desde **F2.2d3** **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**.
+KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (30 países · **8 familias**), dedup P0–P2, **LATAM live en producción**, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, y desde **F2.5c** familia **`WESTERN_EUROPE`** integrada en runtime local.
 
-**PRE-F1 cerrado** · prod LATAM @ `ce69f09`. **F2.2c cerrado** · SSOT infra. **F2.2d3 cerrado localmente** · switch DEFAULT · 14 tablas GLOBAL_NEUTRAL.
+**PRE-F1 cerrado** · prod LATAM legacy. **F2.2c–F2.2d3 cerrados** · DEFAULT neutral. **F2.3b cerrado** · wave 1 LATAM (CO/CL/UY/EC). **F2.5c cerrado localmente** · WE runtime + 14 packs + smokes.
 
-**Producción** (https://kairos-maps-mvp.web.app) — LATAM live · MX/AR/BR/PE → `LATAM`. Runtime desplegado **`ce69f09`** (no incluye F2.2c ni F2.2d3). Países no mapeados en prod siguen voz IBERIAN por DEFAULT legacy.
+**Producción** (https://kairos-maps-mvp.web.app) — **sin F2.5c / WESTERN_EUROPE**. París · Berlín · Ámsterdam · Estocolmo siguen voz legacy en live hasta F2.5d.
 
-**Local `src/`** — **`fcf61d7`**: GLOBAL_NEUTRAL default · tablas editoriales · smokes gate ampliados.
+**Local `src/`** — **`227a00b`**: WE registrada · FR/DE/NL/SE migrados · filtro fallback cross-family.
 
-**Smokes gate F2.2d3:** **9/9 PASS**.
+**Smokes gate F2.5c:** **10/10 PASS**.
 
-**Riesgos vivos:** prod desincronizado vs local · `fcf61d7` sin push · `dist/` sucio · detector leak por subcadena `plaza`.
+**Riesgos vivos:** prod sin WE · `dist/` desincronizado · TH/SG/IN siguen IBERIAN · vocabulario global en rutas no filtradas.
 
 ---
 
@@ -30,9 +29,9 @@ KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver edit
 
 | Fase | Estado | Commit |
 |------|--------|--------|
-| PRE-F1.3 → PRE-F1.9d | ✅ Cerrado | `a8d4a60` → `a25e2c7` pushed |
+| PRE-F1.3 → PRE-F1.9d | ✅ Cerrado | `a8d4a60` → `a25e2c7` |
 
-Prod LATAM deploy: PRE-F1.9b @ `ce69f09`. Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
+Prod LATAM deploy histórico: PRE-F1.9b @ `ce69f09`. Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 ---
 
@@ -40,37 +39,34 @@ Prod LATAM deploy: PRE-F1.9b @ `ce69f09`. Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 | Fase | Estado | Evidencia |
 |------|--------|-----------|
-| **F2.0** | ✅ Audit read-only | Country coverage · DEFAULT risk |
-| **F2.1** | ✅ Diseño | DEFAULT neutral architecture |
-| **F2.2a** | ✅ Audit | IBERIAN_FALLBACK_MAP · 24 líneas críticas |
-| **F2.2b** | ✅ Diseño | Opción C · SSOT + helper |
-| **F2.2c** | ✅ Runtime | `df1797a` · infra SSOT · behavior-preserving |
-| **F2.2c1** | ✅ Doc | `F2.2C_SSOT_FALLBACK_REFACTOR_CHECKPOINT.md` |
-| **F2.2d0–d2** | ✅ Copy | Brief · scaffolding · copy final GLOBAL_NEUTRAL |
-| **F2.2d3** | ✅ Runtime | `fcf61d7` · `DEFAULT_FAMILY = GLOBAL_NEUTRAL` |
-| **F2.2d3c** | ✅ Doc | Este checkpoint + `F2.2D3_GLOBAL_NEUTRAL_DEFAULT_CHECKPOINT.md` |
-| **F2.2d4** | ⏳ Pendiente | Staging deploy + browser QA GLOBAL_NEUTRAL |
-| **F2.3** | ⏳ Pendiente | Remapeo mis-maps explícitos |
+| **F2.0–F2.2d3** | ✅ Runtime + doc | DEFAULT GLOBAL_NEUTRAL · `fcf61d7` |
+| **F2.2d3c** | ✅ Doc | `F2.2D3_GLOBAL_NEUTRAL_DEFAULT_CHECKPOINT.md` |
+| **F2.3b** | ✅ Runtime | `c4629bd` · CO/CL/UY/EC → LATAM |
+| **F2.5a** | ✅ Diseño | Arquitectura WE (read-only) |
+| **F2.5b** | ✅ Copy | 14 packs WE (contenido, incluido en F2.5c) |
+| **F2.5c** | ✅ Runtime | `227a00b` · WE registrada · mis-maps FR/DE/NL/SE |
+| **F2.5c1** | ✅ Doc | `F2.5C_WESTERN_EUROPE_RUNTIME_CHECKPOINT.md` |
+| **F2.5d** | ⏳ Pendiente | Staging deploy + browser QA WESTERN_EUROPE |
 
 ---
 
-## IV. F2.2d3 — qué cambió / qué no
+## IV. F2.5c — qué cambió / qué no
 
-### Cambió (`fcf61d7`)
+### Cambió (`227a00b`)
 
-- `DEFAULT_FAMILY`: **`IBERIAN` → `GLOBAL_NEUTRAL`**
-- `REGISTERED_FAMILIES` += **`GLOBAL_NEUTRAL`** (7 familias)
-- 14 tablas editoriales GLOBAL_NEUTRAL (narrative · composition · knowledge)
-- Schema EFR: **`3.8h.2-f2.2d3-0.1`**
-- Smokes: `dev-global-neutral-default-smoke.sh` · `dev-global-neutral-editorial-smoke.sh`
-- `dev-fallback-ssot-smoke.sh` actualizado — Oslo → GLOBAL_NEUTRAL
+- **`WESTERN_EUROPE`** en `REGISTERED_FAMILIES` (**8 familias**)
+- Migración: **`france` · `germany` · `netherlands` · `sweden`** → `WESTERN_EUROPE`
+- **14 packs editoriales** WE integrados (narrative · composition · knowledge)
+- Schema EFR: **`3.8h.2-f2.5c-0.1`**
+- Filtro fallback cross-family en composición (leak `paseo` genérico)
+- Smokes: 2 nuevos WE + actualización **7 → 8 familias**
 
 ### No cambió
 
-- Países explícitos mantienen familia (Lisboa → IBERIAN · LATAM → LATAM · Kenia → AFRICAN_COASTAL)
-- Sin nuevas familias regionales
-- Sin deploy post-F2.2d3
-- Prod sigue @ `ce69f09`
+- **`DEFAULT_FAMILY`** sigue `GLOBAL_NEUTRAL`
+- **TH / SG / IN** siguen `IBERIAN`
+- Sin deploy post-F2.5c
+- Prod **sin WESTERN_EUROPE**
 - Catálogo · astro · WASM sin tocar
 
 ---
@@ -78,9 +74,10 @@ Prod LATAM deploy: PRE-F1.9b @ `ce69f09`. Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 ## V. Smokes gate actuales
 
 ```bash
-./scripts/dev-global-neutral-default-smoke.sh
-./scripts/dev-global-neutral-editorial-smoke.sh
+./scripts/dev-western-europe-editorial-smoke.sh
+./scripts/dev-western-europe-editorial-integration-smoke.sh
 ./scripts/dev-fallback-ssot-smoke.sh
+./scripts/dev-global-neutral-default-smoke.sh
 ./scripts/dev-editorial-family-resolver-smoke.sh
 ./scripts/dev-city-premium-composition-smoke.sh
 ./scripts/dev-narrative-intelligence-smoke.sh
@@ -89,69 +86,82 @@ Prod LATAM deploy: PRE-F1.9b @ `ce69f09`. Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 ./scripts/dev-premium-ui-beta-smoke.sh
 ```
 
-**Estado F2.2d3:** **9/9 PASS**.
+**Estado F2.5c:** **10/10 PASS**.
 
 ---
 
-## VI. Staging / producción
+## VI. QA piloto WE (local)
+
+| Bloque | Resultado |
+|--------|-----------|
+| París × amor · trabajo · descanso | **PASS** → WESTERN_EUROPE |
+| Berlín × amor · trabajo · descanso | **PASS** → WESTERN_EUROPE |
+| Ámsterdam × amor · trabajo · descanso | **PASS** → WESTERN_EUROPE |
+| Estocolmo × amor · trabajo · descanso | **PASS** → WESTERN_EUROPE |
+| Lisboa / amor | **PASS** → IBERIAN |
+| Oslo / amor | **PASS** → GLOBAL_NEUTRAL |
+| CDMX / amor | **PASS** → LATAM |
+
+---
+
+## VII. Staging / producción
 
 | Entorno | URL | Runtime efectivo |
 |---------|-----|------------------|
-| **Producción** | https://kairos-maps-mvp.web.app | **`ce69f09`** · LATAM · sin F2.2d3 |
-| **Staging** | https://kairos-maps-dev.web.app | Paridad prod (pre-F2.2d3 deploy) |
-| **Local `src/`** | — | **`fcf61d7`** · DEFAULT GLOBAL_NEUTRAL |
+| **Producción** | https://kairos-maps-mvp.web.app | **Sin F2.5c** · sin WESTERN_EUROPE |
+| **Staging** | https://kairos-maps-dev.web.app | Paridad prod (pre-F2.5d) |
+| **Local `src/`** | — | **`227a00b`** · WE integrada |
 
 ---
 
-## VII. Deuda / riesgos abiertos
+## VIII. Deuda / riesgos abiertos
 
 | ID | Descripción |
 |----|-------------|
-| **R-F2-7** | `dist/` desincronizado vs `src/` F2.2d3 |
-| **R-F2-8** | `fcf61d7` sin push |
-| **R-F2-9** | Prod sin F2.2d3 — no mapeados siguen IBERIAN en live |
-| **R-F2-10** | Detector IBERIAN leak por subcadena (`plaza` en `reemplaza`) |
-| **R-F2-2** | Mis-maps FR/DE/NL/SE/IN/TH/SG — F2.3 |
+| **R-F2.5-1** | Producción sin WESTERN_EUROPE |
+| **R-F2.5-2** | `thailand` · `singapore` · `india` → IBERIAN |
+| **R-F2.5-3** | `dist/` desincronizado vs `src/` F2.5c |
+| **R-F2.5-4** | Vocabulario global en rutas no filtradas (premium-blocks · country-archetypes · etc.) |
+| **R-F2.5-5** | Commits F2.3b/F2.5c sin push |
 | **OP-3** | `dist/` dirty · no commiteado |
 
-**Cerrado F2.2d3:** R-F2-1 (`DEFAULT_FAMILY = IBERIAN`).
-
 ---
 
-## VIII. Git status (post F2.2d3c doc)
+## IX. Git status (post F2.5c1 doc)
 
 ```
-HEAD runtime: fcf61d7 — f2.2d3 global neutral default switch
-HEAD doc:     (pending) — f2.2d3 global neutral default checkpoint
+HEAD runtime: 227a00b — f2.5c western europe runtime integration
+HEAD doc:     (pending) — f2.5c western europe runtime checkpoint
 
-Rama: main · ahead of origin/main by 1–2 commits
-src/: limpio @ fcf61d7
+Rama: main · ahead of origin/main
+src/: limpio @ 227a00b
 dist/: modificado / untracked (NO commiteado)
-Producción: ce69f09 (LATAM live · pre-F2.2d3)
+Producción: sin WESTERN_EUROPE desplegado
 ```
 
 ---
 
-## IX. Siguiente fase
+## X. Siguiente fase
 
-### **F2.2d4 — Staging deploy + browser QA GLOBAL_NEUTRAL**
+### **F2.5d — Staging deploy + browser QA WESTERN_EUROPE**
 
-1. Build `dist/` desde `src/` @ `fcf61d7`
+1. Build `dist/` desde `src/` @ `227a00b`
 2. Deploy staging
-3. Browser QA Oslo · Bogotá · Lisboa · CDMX · Nairobi
+3. Browser QA París · Berlín · Ámsterdam · Estocolmo (+ regresiones Lisboa · Oslo · CDMX)
 4. Gate explícito antes de prod
 
 ---
 
-## X. Documentos relacionados
+## XI. Documentos relacionados
 
 | Documento | Contenido |
 |-----------|-----------|
-| `F2.2D3_GLOBAL_NEUTRAL_DEFAULT_CHECKPOINT.md` | Trazabilidad F2.2d3 DEFAULT switch |
-| `F2.2C_SSOT_FALLBACK_REFACTOR_CHECKPOINT.md` | Trazabilidad F2.2c SSOT |
+| `F2.5C_WESTERN_EUROPE_RUNTIME_CHECKPOINT.md` | Trazabilidad F2.5c WE runtime |
+| `F2.2D3_GLOBAL_NEUTRAL_DEFAULT_CHECKPOINT.md` | DEFAULT GLOBAL_NEUTRAL |
+| `F2.2C_SSOT_FALLBACK_REFACTOR_CHECKPOINT.md` | SSOT fallback |
+| `PRE-F1.4_LATAM_INTEGRATION_CHECKPOINT.md` | Patrón LATAM |
 | `KAIROS_MASTER_HANDOFF_F1.8.md` | Handoff PRE-F1 |
-| `PRE-F1.4_LATAM_INTEGRATION_CHECKPOINT.md` | LATAM integration |
 
 ---
 
-*Checkpoint actualizado F2.2d3c · Doc-only · Sin deploy · Prod @ ce69f09 · Local DEFAULT @ fcf61d7*
+*Checkpoint actualizado F2.5c1 · Doc-only · Sin deploy · Prod sin WE · Local runtime @ 227a00b*
