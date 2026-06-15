@@ -159,6 +159,18 @@ assert(
   'schema=' + (EFR && EFR.SCHEMA_VERSION)
 );
 
+assert(
+  '10 familias registradas (F2.7c)',
+  EFR.REGISTERED_FAMILIES.length === 10 && EFR.isRegisteredFamily('SOUTH_ASIAN') === true,
+  'count=' + EFR.REGISTERED_FAMILIES.length
+);
+
+assert(
+  'Delhi / india → SOUTH_ASIAN',
+  EFR.resolveEditorialFamily({ cityName: 'Delhi', countryId: 'india' }) === 'SOUTH_ASIAN',
+  EFR.resolveEditorialFamily({ cityName: 'Delhi', countryId: 'india' })
+);
+
 const nySlug = 'united_states';
 const nyNarrative = Narrative.resolveRegionFamily('Nueva York', nySlug);
 const nyPremium = Premium.resolveRegionFamily('Nueva York', nySlug);

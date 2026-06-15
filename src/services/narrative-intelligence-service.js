@@ -271,6 +271,23 @@
         'En {ciudad}, el propósito respira cuando bajas la prisa de mostrar antes de habitar el paso.'
       ]
     },
+    SOUTH_ASIAN: {
+      amor: [
+        'En {ciudad}, el vínculo se afina entre muchas voces — rostro humano antes que escena.',
+        'En {ciudad}, la cercanía madura cuando la coherencia interior no pide permiso para mostrarse.',
+        'En {ciudad}, el amor respira en escala humana — pertenencia sin convertir el cruce en teatro.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo habla en sobrecarga urbana — sin convertir la pausa en culpa funcional.',
+        'En {ciudad}, la calma se gana entre obligación y respiro — un alivio que no compite con el ruido.',
+        'En {ciudad}, el descanso madura cuando habitas la pausa breve — no la exigencia del trayecto.'
+      ],
+      trabajo: [
+        'En {ciudad}, la obra gana sentido en coherencia interior — antes de volver al bullicio visible.',
+        'En {ciudad}, conviene leer la dirección bajo ruido — la densidad distrae y también orienta.',
+        'En {ciudad}, el propósito respira cuando bajas la prisa de mostrar antes de ordenar el paso.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, el vínculo se prueba en atención sostenida — persona antes que personaje.',
@@ -434,6 +451,20 @@
       descanso: [
         'En el calor humano de {ciudad}, con {goalPhrase}, el cuerpo responde:',
         'En la armonía sin rigidez de {ciudad}, leyendo {goalPhrase}, la pausa advierte:'
+      ]
+    },
+    SOUTH_ASIAN: {
+      amor: [
+        'En la multiplicidad de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        'Desde la escala humana en la densidad de {ciudad}, leyendo {goalPhrase}, la cercanía marca:'
+      ],
+      trabajo: [
+        'En las capas del deber en {ciudad}, con {goalPhrase}, la obra susurra:',
+        'Antes del bullicio cotidiano en {ciudad}, leyendo {goalPhrase}, conviene leer el sentido:'
+      ],
+      descanso: [
+        'En el ritmo entre obligación y pausa en {ciudad}, con {goalPhrase}, el cuerpo responde:',
+        'En la coherencia interior de {ciudad}, leyendo {goalPhrase}, el alivio advierte:'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -609,6 +640,20 @@
       descanso: [
         ' El ritual ligero en {ciudad} suele afinar lo que el cuerpo pide sin otra exigencia.',
         ' En la suavidad del entorno, {ciudad} devuelve calma que la prisa no alcanza a nombrar.'
+      ]
+    },
+    SOUTH_ASIAN: {
+      amor: [
+        ' La multiplicidad habitada en {ciudad} suele afinar lo que el vínculo aún no ha nombrado.',
+        ' En la escala humana del cruce, {ciudad} devuelve matices que la primera densidad no mostró.'
+      ],
+      trabajo: [
+        ' Lo que ordenas en silencio en {ciudad} suele afinar lo que la obra aún no ha articulado en voz alta.',
+        ' En la coherencia bajo ruido, {ciudad} devuelve sentido que el bullicio visible no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' El respiro entre obligaciones en {ciudad} suele afinar lo que el cuerpo pide sin otra exigencia.',
+        ' En la pausa ganada al pasaje, {ciudad} devuelve calma que la prisa no alcanza a nombrar.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -1614,6 +1659,77 @@
           'esta semana, guarda un tramo de pausa como ritual ligero — sin disculparte.',
           'esta semana, prueba una pausa suave y real — no la que suena bien al contarla.',
           'esta semana, deja una tarde sin rendir — habitar {ciudad} con armonía.'
+        ]
+      }
+    },
+    SOUTH_ASIAN: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, el vínculo se prueba en la multiplicidad del día — si la coherencia interior aguanta cuando el ruido pide escena.',
+        trabajo: 'En {ciudad}, la densidad del deber compite con lo que tu obra aún madura en silencio — a veces confundes visibilidad con dirección.',
+        descanso: 'En {ciudad}, aflojar puede sentirse como quedar fuera del ritmo de obligación — aunque el cuerpo ya pida respiro sin disculpa.'
+      },
+      opportunityByGoal: {
+        amor: 'sostener el vínculo con escala humana en la densidad — sin convertir la cercanía en teatro.',
+        trabajo: 'ordenar en silencio qué parte de tu obra sigue viva — antes de volver al bullicio visible.',
+        descanso: 'quedarte en la pausa entre deberes — sin convertir el descanso en otra capa de exigencia.'
+      },
+      summaryFrame: {
+        amor: 'En la multiplicidad de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        trabajo: 'En las capas del deber en {ciudad}, leyendo {goalPhrase}, la obra susurra:',
+        descanso: 'En el ritmo entre obligación y pausa en {ciudad}, con {goalPhrase}, el cuerpo responde:'
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando la coherencia interior no pide permiso para mostrarse?',
+          DC: '¿Qué capa sueltas en {ciudad} antes de abrir el vínculo?',
+          MC: '¿Qué gesto del amor quieres que {ciudad} recuerde en la escala humana del cruce?',
+          default: '¿Qué te pide {ciudad} en amor si sueltas la prisa de espectáculo?'
+        },
+        trabajo: {
+          IC: '¿Qué parte de tu obra en {ciudad} sigue viva cuando el ruido no está cerca?',
+          MC: '¿Tu impulso en {ciudad} busca dirección o visibilidad en la multiplicidad?',
+          AC: '¿Cómo sostendrías tu obra en {ciudad} si no necesitara mostrarse en cada pasaje?',
+          default: '¿Qué sentido ordenas en {ciudad} antes de volver a medirte por fuera?'
+        },
+        descanso: {
+          AC: '¿Puedes aflojar en {ciudad} sin sentir que traicionas el deber del día?',
+          MC: '¿Tu descanso en {ciudad} es respiro ganado o culpa funcional?',
+          IC: '¿Qué calma te pide {ciudad} entre la sobrecarga urbana y el ruido?',
+          default: '¿Qué ritmo corporal te devuelve {ciudad} si habitas la pausa sin espectáculo?'
+        }
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea rostro compartido — no escena.',
+          'Llévate de {ciudad} la coherencia que no pidió permiso para ser verdadera.',
+          'Si el vínculo permanece, que sea en escala humana — no en la historia que contarías.'
+        ],
+        trabajo: [
+          'De {ciudad} puede quedarte esto: el sentido madura en silencio antes de volver al ruido.',
+          'Que te quede la obra que respira cuando baja la sobrecarga visible.',
+          'Pregúntate en voz baja: ¿para quién trabajas cuando el trayecto se aquieta?'
+        ],
+        descanso: [
+          'Quédate con el cuerpo que en {ciudad} volvió a hablar sin competir con el trayecto.',
+          'Que permanezca un respiro breve — ganado y tuyo.',
+          'Llévate un alivio útil: la pausa que no compitió con la obligación del día.'
+        ]
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, elige un encuentro donde importe más habitar la escala humana que impresionar — pequeño y real.',
+          'esta semana, comparte un rato sencillo con alguien — la coherencia importa más que la intensidad.',
+          'esta semana, deja que la pertenencia aparezca sin pedir permiso performativo.'
+        ],
+        trabajo: [
+          'esta semana, anota en silencio qué sentido tiene tu obra — antes de volver al bullicio visible.',
+          'esta semana, guarda una hora en coherencia interior para orientar la dirección — no para el ruido visible.',
+          'esta semana, elige una tarea mínima con sentido — aunque quede fuera del bullicio.'
+        ],
+        descanso: [
+          'esta semana, guarda un tramo de pausa entre obligaciones — sin disculparte.',
+          'esta semana, prueba un respiro breve y real — no el que suena bien al contarla.',
+          'esta semana, deja una tarde sin rendir — habitar {ciudad} con calma ganada.'
         ]
       }
     },

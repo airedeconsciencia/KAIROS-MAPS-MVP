@@ -143,6 +143,7 @@ assert('EFR.DEFAULT_FAMILY === GLOBAL_NEUTRAL', EFR.DEFAULT_FAMILY === 'GLOBAL_N
 assert('isRegisteredFamily(LATAM)', EFR.isRegisteredFamily('LATAM') === true, 'LATAM');
 assert('isRegisteredFamily(WESTERN_EUROPE)', EFR.isRegisteredFamily('WESTERN_EUROPE') === true, 'F2.5c');
 assert('isRegisteredFamily(SOUTHEAST_ASIAN)', EFR.isRegisteredFamily('SOUTHEAST_ASIAN') === true, 'F2.6c');
+assert('isRegisteredFamily(SOUTH_ASIAN)', EFR.isRegisteredFamily('SOUTH_ASIAN') === true, 'F2.7c');
 assert('isRegisteredFamily(GLOBAL_NEUTRAL)', EFR.isRegisteredFamily('GLOBAL_NEUTRAL') === true, 'F2.2d1');
 
 const Narrative = ctx.window.KairosNarrativeIntelligence;
@@ -188,9 +189,9 @@ assert(
 );
 
 assert(
-  'India permanece IBERIAN (F2.7 pendiente)',
-  EFR.COUNTRY_EDITORIAL_FAMILY.india === 'IBERIAN',
-  EFR.COUNTRY_EDITORIAL_FAMILY.india
+  'India → SOUTH_ASIAN (F2.7c)',
+  EFR.COUNTRY_EDITORIAL_FAMILY.india === 'SOUTH_ASIAN',
+  EFR.resolveEditorialFamily({ cityName: 'Delhi', countryId: 'india' })
 );
 
 assert(

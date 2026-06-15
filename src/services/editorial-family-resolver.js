@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f2.6c-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f2.7c-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -19,6 +19,7 @@
     'LATAM',
     'WESTERN_EUROPE',
     'SOUTHEAST_ASIAN',
+    'SOUTH_ASIAN',
     'GLOBAL_NEUTRAL'
   ];
 
@@ -39,7 +40,7 @@
     ecuador: 'LATAM',
     thailand: 'SOUTHEAST_ASIAN',
     singapore: 'SOUTHEAST_ASIAN',
-    india: 'IBERIAN',
+    india: 'SOUTH_ASIAN',
     spain: 'MEDITERRANEAN',
     italy: 'MEDITERRANEAN',
     greece: 'MEDITERRANEAN',

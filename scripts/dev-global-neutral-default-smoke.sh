@@ -107,7 +107,8 @@ assert(
   EFR.SCHEMA_VERSION.indexOf('f2.2d3') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f2.3b') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f2.5c') !== -1 ||
-    EFR.SCHEMA_VERSION.indexOf('f2.6c') !== -1,
+    EFR.SCHEMA_VERSION.indexOf('f2.6c') !== -1 ||
+    EFR.SCHEMA_VERSION.indexOf('f2.7c') !== -1,
   EFR.SCHEMA_VERSION
 );
 

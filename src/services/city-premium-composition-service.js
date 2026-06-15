@@ -161,6 +161,14 @@
       'Con armonía sin rigidez, conviene mirar esto: ',
       'En el ritual ligero, la oportunidad se deja leer así: '
     ],
+    SOUTH_ASIAN: [
+      'En la multiplicidad habitada, conviene leer la oportunidad así: ',
+      'Desde la escala humana en la densidad, la oportunidad se presenta sin prisa: ',
+      'En la coherencia interior del día, puede abrirse esto: ',
+      'Donde el cuerpo afloja entre obligaciones, la oportunidad aparece sin escena: ',
+      'Con pertenencia sin espectáculo, conviene mirar esto: ',
+      'En el respiro ganado al pasaje, la oportunidad se deja leer así: '
+    ],
     GLOBAL_NEUTRAL: [
       'Al ralentizar, conviene leer la oportunidad así: ',
       'Desde la atención sostenida, la oportunidad se presenta sin prisa: ',
@@ -390,6 +398,23 @@
         'Quizá descubras que un ritual ligero deja de incomodarte en la suavidad del día.'
       ]
     },
+    SOUTH_ASIAN: {
+      amor: [
+        'Puede que una charla en el cruce dure más de lo previsto y no quieras que termine.',
+        'Tal vez notes calma al pensar en alguien — sin prisa de cerrar la escena visible.',
+        'A veces ocurre que te sientas sin necesidad de demostrar — rostro humano antes que espectáculo.'
+      ],
+      trabajo: [
+        'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso en coherencia interior.',
+        'Puede que vuelvas del cruce con una idea que por fin encaja — sin prisa de articularla en voz alta.',
+        'Tal vez te sorprenda sentarte sin necesidad de producir nada — sin medirte por el deber del día.'
+      ],
+      descanso: [
+        'Puede que te sorprenda aflojar el ritmo sin sentir que traicionas la obligación del trayecto.',
+        'A veces ocurre que el cuerpo pide pausa antes que la mente lo autorice entre voces.',
+        'Quizá notes que un respiro breve deja de incomodarte en la sobrecarga urbana.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'Puede que una charla sin reloj dure más de lo previsto y no quieras que termine.',
@@ -526,6 +551,20 @@
       descanso: [
         'Mira si te sientes más entero o más expuesto al tomar pausa con gracia; ambas respuestas informan.',
         'Fíjate si el ritual ligero te sostiene o te desnuda; las dos lecturas valen.'
+      ]
+    },
+    SOUTH_ASIAN: {
+      amor: [
+        'Mira si te sientes más entero o más expuesto al habitar la escala humana; ambas respuestas informan.',
+        'Fíjate si la coherencia interior te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      trabajo: [
+        'Mira si te sientes más entero o más expuesto al orientar la dirección en silencio; ambas respuestas informan.',
+        'Fíjate si la obra en coherencia interior te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      descanso: [
+        'Mira si te sientes más entero o más expuesto al tomar pausa entre obligaciones; ambas respuestas informan.',
+        'Fíjate si el respiro ganado te sostiene o te desnuda; las dos lecturas valen.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -925,6 +964,47 @@
         'Hay momentos en que {ciudad} habla en capas, no por confirmación.',
         'Puede que lo que pide afuera no pida lo mismo en ti.',
         'Hay señales que se entienden mejor al volver sobre el mismo flujo.'
+      ]
+    },
+    SOUTH_ASIAN: {
+      matiz: [
+        'Detrás del ruido hay otra textura, más cercana.',
+        'Con el tiempo, la multiplicidad aclara lo que la primera capa no decía.',
+        'Lo que continúa completa la escala humana en la densidad sin pedir prisa.',
+        'Hay un matiz en la coherencia del día que no es oposición: es rostro habitado.'
+      ],
+      contradiccion: [
+        'La segunda mirada en el cruce suele ser más honesta que la primera.',
+        'Entre lo sentido y lo visible hay un andarivel estrecho — no contradicción, tensión.',
+        'Quizá notes dos ritmos conviviendo entre obligación y pausa sin pedir permiso.',
+        'A veces la coherencia interior choca con la sobrecarga urbana — ahí está la fricción.'
+      ],
+      capa: [
+        'Hay una capa que solo aparece cuando aflojas la prisa de espectáculo.',
+        'Lo que continúa no es anexo: es otra cara de lo que habitas en la multiplicidad.',
+        'Detrás del impulso hay una pregunta más lenta — casi en respiro ganado.',
+        'Hay un hilo que conecta lo visible con lo no dicho en la densidad del pasaje.'
+      ],
+      advertencia: [
+        'Si te quedas un poco más en el cruce, el tono cambia.',
+        'Algo se mueve cuando dejas de exigirte respuesta inmediata al ruido urbano.',
+        'Detrás de la densidad hay algo que pide coherencia, no conclusión.',
+        'La escena cambia cuando dejas de medirla con la prisa del deber cotidiano.'
+      ],
+      cierre: [
+        'Entre una señal y otra hay espacio para elegir cómo habitas la multiplicidad.',
+        'Lo repetido confirma o matiza lo que intuías en la escala humana del día.',
+        'Hay un giro pequeño en el pasaje que altera el sentido de todo.'
+      ],
+      cuerpo: [
+        'La lectura se afina cuando el cuerpo también opina en la sobrecarga urbana.',
+        'Algo se revela cuando sueltas la necesidad de demostrar en cada cruce.',
+        'No todo lo que se activa en el ruido apunta al mismo norte.'
+      ],
+      ciudad: [
+        'Hay momentos en que {ciudad} habla en voces múltiples, no por confirmación.',
+        'Puede que lo que pide el trayecto no pida lo mismo en ti.',
+        'Hay señales que se entienden mejor al volver sobre el mismo cruce.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -2373,6 +2453,38 @@ function metaphorFingerprint(text) {
         'Lo que hoy acelera el cuerpo puede aflojarse si habitas la pausa con gracia.'
       ]
     },
+    SOUTH_ASIAN: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en la escala humana del cruce — sin prisa de demostrar.',
+        'Anota una escena concreta del día y vuelve a ella sin prisa de cerrar la escena visible.',
+        'El amor aquí no pide espectáculo: pide coherencia que el cuerpo pueda sostener.',
+        'Si algo incomoda en el vínculo, obsérvalo en la multiplicidad del día — no como fallo personal.',
+        'Lo ordenado con honestidad suele orientar mejor que los planes demasiado pulidos.',
+        'Un gesto breve y verdadero vale más que una noche perfecta para contar.',
+        'Mira si el vínculo respira cuando baja la necesidad de impresionar en el cruce.',
+        'Lo que hoy tensa el vínculo puede aclararse si aflojas la prisa de espectáculo.'
+      ],
+      trabajo: [
+        'En {ciudad}, el sentido del trabajo madura en coherencia interior — no en lo que se muestra.',
+        'Registra en silencio qué parte de tu obra sigue viva cuando el bullicio no está cerca.',
+        'El propósito aquí no pide visibilidad: pide obra que respire antes de volver al ruido.',
+        'Si algo incomoda en la trayectoria, obsérvalo en las capas del deber — no como fracaso.',
+        'Lo hecho en calma interior suele orientar mejor que las urgencias demasiado visibles.',
+        'Contrasta lo visible y lo verdadero antes de volver a articularlo.',
+        'Mira si el cansancio es de obra o de postureo — la diferencia importa en la sobrecarga urbana.',
+        'Lo que hoy confunde la trayectoria puede aclararse si aflojas la prisa de mostrar en el trayecto.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo recupera en respiro ganado: un paso lento, una tarde sin prisa.',
+        'Guarda un momento de calma breve — no el que suena bien contarlo.',
+        'El descanso aquí no pide disculpa: pide alivio sin rendir cuentas al deber del día.',
+        'Si algo incomoda en la pausa, obsérvalo en la sobrecarga del cuerpo — no como pereza.',
+        'El ritmo honesto del trayecto suele orientar mejor que los planes demasiado rígidos.',
+        'Un alivio ganado y real vale más que una semana de pausa teatral.',
+        'Mira si la calma aguanta cuando vuelves al ruido — ahí está la prueba.',
+        'Lo que hoy acelera el cuerpo puede aflojarse si habitas la pausa entre obligaciones.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, el vínculo se afina en atención sostenida — una mirada, un silencio cómodo.',
@@ -2554,6 +2666,20 @@ function metaphorFingerprint(text) {
         'El calor del cuerpo puede sostener lo anterior un poco más.'
       ]
     },
+    SOUTH_ASIAN: {
+      amor: [
+        'En la multiplicidad de {ciudad}, a veces basta habitar la coherencia sin concluir la escena.',
+        'La escala humana en la densidad puede sostener lo anterior un poco más.'
+      ],
+      trabajo: [
+        'En las capas del deber en {ciudad}, a veces basta orientar la dirección antes de volver al ruido.',
+        'La obra en coherencia interior puede sostener lo anterior un poco más.'
+      ],
+      descanso: [
+        'En el respiro ganado de {ciudad}, a veces basta aflojar sin disculparte ante el bullicio.',
+        'El alivio del cuerpo puede sostener lo anterior un poco más.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, a veces basta alargar la conversación sin concluirla.',
@@ -2650,6 +2776,16 @@ function metaphorFingerprint(text) {
       'Cuando algo incomoda, obsérvalo en el calor humano — no en el juicio rápido.',
       'Deja que el flujo te devuelva su ritmo — sin prisa de concluir.',
       'Un paso en gracia puede bastarte para seguir caminando {ciudad} con calma.'
+    ],
+    SOUTH_ASIAN: [
+      'A veces lo esencial aparece en el cruce — una verdad que no pide escena.',
+      '{ciudad} enseña en la escala humana de la densidad, sin pedirte prisa de entenderlo todo.',
+      'Habitar la multiplicidad puede bastarte para seguir explorando {ciudad} con verdad.',
+      'Lo hermoso vive en la coherencia interior, no solo en el gran gesto.',
+      'No necesitas resolver el ruido: basta pertenencia antes que espectáculo.',
+      'Cuando algo incomoda, obsérvalo en la sobrecarga del cuerpo — no en el juicio rápido.',
+      'Deja que el trayecto te devuelva su ritmo — sin prisa de concluir.',
+      'Un paso en calma ganada puede bastarte para seguir caminando {ciudad} con verdad.'
     ],
     GLOBAL_NEUTRAL: [
       'A veces lo esencial aparece en el margen — una conversación que no pide conclusión.',
@@ -2759,6 +2895,18 @@ function metaphorFingerprint(text) {
       'Puede que notes el lugar en matices: un cruce, un calor distinto, un alivio breve.',
       'Deja que el flujo te devuelva su ritmo — sin prisa de concluir.',
       'Un tramo en gracia puede bastarte para seguir explorando {ciudad} con verdad.'
+    ],
+    SOUTH_ASIAN: [
+      'Puede que notes que {ciudad} se afina cuando la multiplicidad también orienta.',
+      'Las voces honestas suelen guiar mejor que las urgencias demasiado visibles.',
+      'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en la escala humana del día.',
+      'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en la coherencia interior.',
+      'A veces hay que cruzar otro andarivel del mapa para entender qué pide el paso.',
+      'Tal vez baste una coherencia que te sostenga — sin tenerlo todo resuelto.',
+      'Tal vez notes que algunas lecturas maduran despacio, como un respiro ganado.',
+      'Puede que notes el lugar en matices: un cruce, un rostro distinto, un alivio breve.',
+      'Deja que el trayecto te devuelva su ritmo — sin prisa de concluir.',
+      'Un tramo en calma ganada puede bastarte para seguir explorando {ciudad} con verdad.'
     ],
     GLOBAL_NEUTRAL: [
       'Puede que notes que {ciudad} se afina cuando la atención también orienta.',
