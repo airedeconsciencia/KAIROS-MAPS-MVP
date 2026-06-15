@@ -144,8 +144,8 @@ assert(
 );
 
 assert(
-  '8 familias en pools narrativos (incl. GLOBAL_NEUTRAL scaffold)',
-  Narrative.NARRATIVE_SPINE_BY_REGION && Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION).length === 8,
+  '9 familias en pools narrativos (incl. GLOBAL_NEUTRAL scaffold)',
+  Narrative.NARRATIVE_SPINE_BY_REGION && Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION).length === 9,
   'spine=' + Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION || {}).length
 );
 

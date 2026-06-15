@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — WESTERN_EUROPE editorial integration smoke (F2.5c)
+# Kairos Maps — SOUTHEAST_ASIAN editorial integration smoke (F2.6c)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -24,8 +24,8 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — WESTERN_EUROPE editorial integration (F2.5c)"
-echo " Scope: París · Berlín · Ámsterdam · Estocolmo · anti-leak"
+echo " KAIROS MAPS — SOUTHEAST_ASIAN editorial integration (F2.6c)"
+echo " Scope: Bangkok · Singapur · anti-leak · regresiones"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -76,16 +76,14 @@ const compose = ctx.window.KairosNatalComposition.composeNatalLiteReading;
 const Bridge = ctx.window.KairosNatalMapBridge;
 const Scorer = ctx.window.KairosCityScorer;
 
-const WE_CITIES = [
-  { name: 'París', country: 'Francia', slug: 'france' },
-  { name: 'Berlín', country: 'Alemania', slug: 'germany' },
-  { name: 'Ámsterdam', country: 'Países Bajos', slug: 'netherlands' },
-  { name: 'Estocolmo', country: 'Suecia', slug: 'sweden' }
+const SEA_CITIES = [
+  { name: 'Bangkok', country: 'Tailandia', slug: 'thailand' },
+  { name: 'Singapur', country: 'Singapur', slug: 'singapore' }
 ];
 const GOALS = ['amor', 'trabajo', 'descanso'];
 const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
-const MED_LEAK = ['paseo', 'acera', 'vitrina urbana'];
-const ANGLO_LEAK = ['agenda', 'calendario', 'bloque reservado', 'productividad'];
+const EAST_ASIAN_LEAK = ['secuencia', 'detalle observado', 'rutina precisa', 'proceso callado', 'gesto mínimo'];
+const WE_LEAK = ['umbral', 'medida performativa', 'exposición profesional', 'reserva sobria'];
 const P03 = 'puede que descubras una puerta';
 const P06 = 'el ritmo del cuerpo vuelve a importar';
 const P10 = 'lo que sigue no corrige';
@@ -156,40 +154,56 @@ function scanReading(reading, countryId) {
     regionN: nc.regionFamily || null,
     regionK: km.regionFamily || null,
     regionE: regionE,
+    full: full,
+    norm: norm,
     iberian: scanLeakMarkers(norm, IBERIAN_LEAK),
-    med: scanLeakMarkers(norm, MED_LEAK),
-    anglo: scanLeakMarkers(norm, ANGLO_LEAK),
+    eastAsian: scanLeakMarkers(norm, EAST_ASIAN_LEAK),
+    we: scanLeakMarkers(norm, WE_LEAK),
     p03: norm.indexOf(P03) !== -1,
     p06: norm.indexOf(P06) !== -1,
     p10: norm.indexOf(P10) !== -1
   };
 }
 
+function composeReading(city, goal, slug) {
+  const input = buildInput(goal);
+  const ranked = Scorer.rankInfluences(city, input);
+  const influences = ranked.length ? ranked.slice(0, 5) : mockInfluences;
+  return Premium.composeCityReading({
+    city: city,
+    goal: goal,
+    relevantInfluences: influences,
+    bridgeProfile: bridgeProfile,
+    profile: { firstName: 'Roberto' }
+  });
+}
+
 assert(
-  'WESTERN_EUROPE registered in resolver',
-  EFR.isRegisteredFamily('WESTERN_EUROPE') === true,
-  'registered=' + EFR.isRegisteredFamily('WESTERN_EUROPE')
+  '9 familias registradas',
+  EFR.REGISTERED_FAMILIES.length === 9 && EFR.isRegisteredFamily('SOUTHEAST_ASIAN') === true,
+  'count=' + EFR.REGISTERED_FAMILIES.length + ' registered=' + EFR.isRegisteredFamily('SOUTHEAST_ASIAN')
 );
 
 assert(
-  'france → WESTERN_EUROPE',
-  EFR.COUNTRY_EDITORIAL_FAMILY.france === 'WESTERN_EUROPE',
-  EFR.resolveEditorialFamily({ cityName: 'París', countryId: 'france' })
+  'DEFAULT_FAMILY sigue GLOBAL_NEUTRAL',
+  EFR.DEFAULT_FAMILY === 'GLOBAL_NEUTRAL',
+  EFR.DEFAULT_FAMILY
+);
+
+assert(
+  'thailand → SOUTHEAST_ASIAN',
+  EFR.COUNTRY_EDITORIAL_FAMILY.thailand === 'SOUTHEAST_ASIAN',
+  EFR.resolveEditorialFamily({ cityName: 'Bangkok', countryId: 'thailand' })
 );
 assert(
-  'germany → WESTERN_EUROPE',
-  EFR.COUNTRY_EDITORIAL_FAMILY.germany === 'WESTERN_EUROPE',
-  EFR.resolveEditorialFamily({ cityName: 'Berlín', countryId: 'germany' })
+  'singapore → SOUTHEAST_ASIAN',
+  EFR.COUNTRY_EDITORIAL_FAMILY.singapore === 'SOUTHEAST_ASIAN',
+  EFR.resolveEditorialFamily({ cityName: 'Singapur', countryId: 'singapore' })
 );
 assert(
-  'netherlands → WESTERN_EUROPE',
-  EFR.COUNTRY_EDITORIAL_FAMILY.netherlands === 'WESTERN_EUROPE',
-  EFR.resolveEditorialFamily({ cityName: 'Ámsterdam', countryId: 'netherlands' })
-);
-assert(
-  'sweden → WESTERN_EUROPE',
-  EFR.COUNTRY_EDITORIAL_FAMILY.sweden === 'WESTERN_EUROPE',
-  EFR.resolveEditorialFamily({ cityName: 'Estocolmo', countryId: 'sweden' })
+  'india → IBERIAN (no migrado)',
+  EFR.COUNTRY_EDITORIAL_FAMILY.india === 'IBERIAN',
+  EFR.resolveEditorialFamily({ cityName: 'Delhi', countryId: 'india' })
 );
 
 assert(
@@ -198,165 +212,125 @@ assert(
   'spine=' + Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION || {}).length
 );
 
+const PACK_MAPS = [
+  { label: 'HUMAN_THEME_PATTERNS_BY_REGION', map: Narrative.HUMAN_THEME_PATTERNS_BY_REGION },
+  { label: 'SUMMARY_FRAME_POOL_BY_REGION', map: Narrative.SUMMARY_FRAME_POOL_BY_REGION },
+  { label: 'OBSERVE_TAIL_BY_REGION', map: Narrative.OBSERVE_TAIL_BY_REGION },
+  { label: 'NARRATIVE_SPINE_BY_REGION', map: Narrative.NARRATIVE_SPINE_BY_REGION },
+  { label: 'SPINE_FAVORECE_OPEN_BY_REGION', map: Premium.SPINE_FAVORECE_OPEN_BY_REGION },
+  { label: 'HUMAN_SCENE_BY_REGION', map: Premium.HUMAN_SCENE_BY_REGION },
+  { label: 'OBSERVE_ENTERO_TAIL_BY_REGION', map: Premium.OBSERVE_ENTERO_TAIL_BY_REGION },
+  { label: 'VOICE_TRANSITION_BY_REGION', map: Premium.VOICE_TRANSITION_BY_REGION },
+  { label: 'GOAL_PADS_BY_REGION', map: Premium.GOAL_PADS_BY_REGION },
+  { label: 'REGIONAL_EDITORIAL_MICRO_BY_GOAL', map: Premium.REGIONAL_EDITORIAL_MICRO_BY_GOAL },
+  { label: 'REGIONAL_EDITORIAL_PADS', map: Premium.REGIONAL_EDITORIAL_PADS },
+  { label: 'REGIONAL_TOPUP_VARIANTS', map: Premium.REGIONAL_TOPUP_VARIANTS },
+  { label: 'REGIONAL_TOPUP_BY_GOAL', map: Premium.REGIONAL_TOPUP_BY_GOAL },
+  { label: 'PREMIUM_BLOCK_VARIATIONS_BY_REGION', map: Knowledge.PREMIUM_BLOCK_VARIATIONS_BY_REGION }
+];
+
+const packMissing = [];
+PACK_MAPS.forEach(function (entry) {
+  const resolved = EFR.resolveRegionalPack(entry.map, 'SOUTHEAST_ASIAN');
+  if (!resolved.pack || resolved.meta.resolvedFrom !== 'explicit') {
+    packMissing.push(entry.label + ':' + resolved.meta.resolvedFrom);
+  }
+});
 assert(
-  'WESTERN_EUROPE en GOAL_PADS + PREMIUM_BLOCK',
-  Premium.GOAL_PADS_BY_REGION.WESTERN_EUROPE &&
-    Knowledge.PREMIUM_BLOCK_VARIATIONS_BY_REGION.WESTERN_EUROPE,
-  'goalPads=' + !!Premium.GOAL_PADS_BY_REGION.WESTERN_EUROPE +
-    ' blocks=' + !!Knowledge.PREMIUM_BLOCK_VARIATIONS_BY_REGION.WESTERN_EUROPE
+  '14/14 packs SOUTHEAST_ASIAN explicit',
+  packMissing.length === 0,
+  packMissing.join(' · ') || '14/14'
+);
+
+assert(
+  'SOUTHEAST_ASIAN en GOAL_PADS + PREMIUM_BLOCK',
+  Premium.GOAL_PADS_BY_REGION.SOUTHEAST_ASIAN &&
+    Knowledge.PREMIUM_BLOCK_VARIATIONS_BY_REGION.SOUTHEAST_ASIAN,
+  'goalPads=' + !!Premium.GOAL_PADS_BY_REGION.SOUTHEAST_ASIAN +
+    ' blocks=' + !!Knowledge.PREMIUM_BLOCK_VARIATIONS_BY_REGION.SOUTHEAST_ASIAN
 );
 
 const readings = [];
-WE_CITIES.forEach(function (entry) {
+SEA_CITIES.forEach(function (entry) {
   const city = Catalog.findCityByName(entry.name) || entry;
   GOALS.forEach(function (goal) {
-    const input = buildInput(goal);
-    const ranked = Scorer.rankInfluences(city, input);
-    const influences = ranked.length ? ranked.slice(0, 5) : mockInfluences;
-    const reading = Premium.composeCityReading({
-      city: city,
-      goal: goal,
-      relevantInfluences: influences,
-      bridgeProfile: bridgeProfile,
-      profile: { firstName: 'Roberto' }
-    });
-    const nc = reading.meta.narrativeContext || {};
-    const km = reading.meta.knowledgeMeta || {};
-    const full = reading.sections.map(function (s) { return s.body; }).join('\n\n');
-    const norm = normFold(full);
+    const reading = composeReading(city, goal, entry.slug);
+    const s = scanReading(reading, entry.slug);
     readings.push({
       city: city.name,
       goal: goal,
       slug: entry.slug,
       reading: reading,
-      norm: norm,
-      regionN: nc.regionFamily,
-      regionK: km.regionFamily,
-      regionE: EFR.resolveEditorialFamily({ cityName: city.name, countryId: entry.slug })
+      scan: s
     });
   });
 });
 
-assert('12 lecturas WESTERN_EUROPE (4 ciudades × 3 goals)', readings.length === 12, 'count=' + readings.length);
+assert('6 lecturas SEA (2 ciudades × 3 goals)', readings.length === 6, 'count=' + readings.length);
+
+readings.forEach(function (r) {
+  const s = r.scan;
+  assert(
+    r.city + ' / ' + r.goal + ' → ok:true',
+    s.ok === true,
+    'ok=' + s.ok
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → words 500–900',
+    s.words >= Premium.MIN_WORDS && s.words <= Premium.MAX_WORDS,
+    'words=' + s.words
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → SOUTHEAST_ASIAN (n=k=e)',
+    s.regionN === 'SOUTHEAST_ASIAN' && s.regionK === 'SOUTHEAST_ASIAN' && s.regionE === 'SOUTHEAST_ASIAN',
+    JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → IBERIAN leak 0',
+    s.iberian === 0,
+    'hits=' + s.iberian
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → EAST_ASIAN leak 0',
+    s.eastAsian === 0,
+    'hits=' + s.eastAsian
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → WESTERN_EUROPE leak 0',
+    s.we === 0,
+    'hits=' + s.we
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → P03/P06/P10 = 0',
+    !s.p03 && !s.p06 && !s.p10,
+    'p03=' + s.p03 + ' p06=' + s.p06 + ' p10=' + s.p10
+  );
+});
 
 const splitBrain = readings.filter(function (r) {
-  return r.regionN !== r.regionK ||
-    r.regionN !== 'WESTERN_EUROPE' ||
-    r.regionE !== 'WESTERN_EUROPE';
+  return r.scan.regionN !== r.scan.regionK || r.scan.regionN !== r.scan.regionE;
 });
 assert(
-  'Split-brain WESTERN_EUROPE = 0 (narrative ≡ knowledge ≡ resolver)',
+  'Split-brain SOUTHEAST_ASIAN = 0',
   splitBrain.length === 0,
   splitBrain.map(function (r) {
-    return r.city + '/' + r.goal + ' n=' + r.regionN + ' k=' + r.regionK + ' e=' + r.regionE;
+    return r.city + '/' + r.goal;
   }).join(' · ')
 );
-
-const gnFallback = readings.filter(function (r) {
-  return r.regionN === 'GLOBAL_NEUTRAL' || r.regionK === 'GLOBAL_NEUTRAL' || r.regionE === 'GLOBAL_NEUTRAL';
-});
-assert(
-  'GLOBAL_NEUTRAL fallback = 0 en lecturas WE',
-  gnFallback.length === 0,
-  gnFallback.map(function (r) {
-    return r.city + '/' + r.goal + ' n=' + r.regionN + ' k=' + r.regionK + ' e=' + r.regionE;
-  }).join(' · ')
-);
-
-function collectLeaks(readings, markers, label) {
-  const hits = [];
-  readings.forEach(function (r) {
-    markers.forEach(function (marker) {
-      const m = normFold(marker);
-      if (r.norm.indexOf(m) !== -1) hits.push(r.city + '/' + r.goal + ':' + label + ':' + marker);
-    });
-  });
-  return hits;
-}
-
-assert(
-  'IBERIAN leak = 0',
-  collectLeaks(readings, IBERIAN_LEAK, 'IBERIAN').length === 0,
-  collectLeaks(readings, IBERIAN_LEAK, 'IBERIAN').join(' · ')
-);
-assert(
-  'MEDITERRANEAN leak = 0',
-  collectLeaks(readings, MED_LEAK, 'MED').length === 0,
-  collectLeaks(readings, MED_LEAK, 'MED').join(' · ')
-);
-assert(
-  'ANGLO leak = 0',
-  collectLeaks(readings, ANGLO_LEAK, 'ANGLO').length === 0,
-  collectLeaks(readings, ANGLO_LEAK, 'ANGLO').join(' · ')
-);
-
-const okFails = readings.filter(function (r) { return r.reading.ok !== true; });
-assert(
-  'ok:true (12 lecturas)',
-  okFails.length === 0,
-  okFails.map(function (r) { return r.city + '/' + r.goal; }).join(' · ')
-);
-
-const wordFails = readings.filter(function (r) {
-  const w = r.reading.meta.wordCount;
-  return w < Premium.MIN_WORDS || w > Premium.MAX_WORDS;
-});
-assert(
-  'Longitud 500–900 palabras (12 lecturas)',
-  wordFails.length === 0,
-  wordFails.map(function (r) {
-    return r.city + '/' + r.goal + '=' + r.reading.meta.wordCount;
-  }).join(' · ')
-);
-
-const legacyFails = [];
-readings.forEach(function (r) {
-  const s = scanReading(r.reading, r.slug);
-  if (s.p03 || s.p06 || s.p10) {
-    legacyFails.push(r.city + '/' + r.goal + ' p03=' + s.p03 + ' p06=' + s.p06 + ' p10=' + s.p10);
-  }
-});
-assert('P03/P06/P10 = 0 (12 lecturas)', legacyFails.length === 0, legacyFails.join(' · '));
-
-function composeReading(city, goal) {
-  return Premium.composeCityReading({
-    city: city,
-    goal: goal,
-    relevantInfluences: mockInfluences,
-    bridgeProfile: bridgeProfile,
-    profile: { firstName: 'Roberto' }
-  });
-}
-
-const QA_WE = [
-  { label: 'París / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'París', slug: 'france', goals: GOALS },
-  { label: 'Berlín / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Berlín', slug: 'germany', goals: GOALS },
-  { label: 'Ámsterdam / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Ámsterdam', slug: 'netherlands', goals: GOALS },
-  { label: 'Estocolmo / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Estocolmo', slug: 'sweden', goals: GOALS }
-];
-
-QA_WE.forEach(function (entry) {
-  const city = Catalog.findCityByName(entry.cityName);
-  entry.goals.forEach(function (goal) {
-    const reading = composeReading(city, goal);
-    const s = scanReading(reading, entry.slug);
-    assert(
-      entry.cityName + ' / ' + goal + ' → WESTERN_EUROPE',
-      s.regionN === 'WESTERN_EUROPE' && s.regionK === 'WESTERN_EUROPE' && s.regionE === 'WESTERN_EUROPE',
-      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
-    );
-  });
-});
 
 const QA_REGRESSION = [
+  { label: 'Tokio / amor → EAST_ASIAN', cityName: 'Tokio', slug: 'japan', goal: 'amor', expected: 'EAST_ASIAN' },
+  { label: 'Seúl / amor → EAST_ASIAN', cityName: 'Seúl', slug: 'south_korea', goal: 'amor', expected: 'EAST_ASIAN' },
   { label: 'Lisboa / amor → IBERIAN', cityName: 'Lisboa', slug: 'portugal', goal: 'amor', expected: 'IBERIAN' },
+  { label: 'Ciudad de México / amor → LATAM', cityName: 'Ciudad de México', slug: 'mexico', goal: 'amor', expected: 'LATAM' },
   { label: 'Oslo / amor → GLOBAL_NEUTRAL', cityName: 'Oslo', slug: 'norway', goal: 'amor', expected: 'GLOBAL_NEUTRAL' },
-  { label: 'Ciudad de México / amor → LATAM', cityName: 'Ciudad de México', slug: 'mexico', goal: 'amor', expected: 'LATAM' }
+  { label: 'Nairobi / trabajo → AFRICAN_COASTAL', cityName: 'Nairobi', slug: 'kenya', goal: 'trabajo', expected: 'AFRICAN_COASTAL' },
+  { label: 'Delhi / amor → IBERIAN', cityName: 'Delhi', slug: 'india', goal: 'amor', expected: 'IBERIAN' }
 ];
 
 QA_REGRESSION.forEach(function (c) {
   const city = Catalog.findCityByName(c.cityName) || { name: c.cityName, country: c.slug };
-  const reading = composeReading(city, c.goal);
+  const reading = composeReading(city, c.goal, c.slug);
   const s = scanReading(reading, c.slug);
   assert(
     c.label,
@@ -366,11 +340,33 @@ QA_REGRESSION.forEach(function (c) {
 });
 
 console.log('\n' + '═'.repeat(60));
-console.log('Muestra París amor:');
-const paris = readings.find(function (r) { return r.city === 'París' && r.goal === 'amor'; });
-if (paris) {
-  console.log('  region:', paris.regionN);
-  console.log('  words:', paris.reading.meta.wordCount);
+console.log('QA matriz — diferenciación editorial');
+console.log('═'.repeat(60));
+
+function bodyFor(cityName, goal, slug) {
+  const city = Catalog.findCityByName(cityName) || { name: cityName, country: slug };
+  const reading = composeReading(city, goal, slug);
+  return scanReading(reading, slug);
+}
+
+const qaPairs = [
+  { label: 'Bangkok amor ≠ Tokio amor', a: bodyFor('Bangkok', 'amor', 'thailand'), b: bodyFor('Tokio', 'amor', 'japan') },
+  { label: 'Singapur amor ≠ París amor', a: bodyFor('Singapur', 'amor', 'singapore'), b: bodyFor('París', 'amor', 'france') },
+  { label: 'Singapur amor ≠ Bangkok amor', a: bodyFor('Singapur', 'amor', 'singapore'), b: bodyFor('Bangkok', 'amor', 'thailand') }
+];
+
+qaPairs.forEach(function (pair) {
+  const same = pair.a.full === pair.b.full;
+  assert(pair.label, !same, same ? 'textos idénticos' : 'ok distintos');
+  console.log(' ', pair.label + ':', pair.a.regionE, 'vs', pair.b.regionE, '| words', pair.a.words, 'vs', pair.b.words);
+});
+
+console.log('\n' + '═'.repeat(60));
+console.log('Muestra Bangkok amor:');
+const bangkokAmor = readings.find(function (r) { return r.city === 'Bangkok' && r.goal === 'amor'; });
+if (bangkokAmor) {
+  console.log('  region:', bangkokAmor.scan.regionN);
+  console.log('  words:', bangkokAmor.scan.words);
 }
 
 console.log('\n' + '═'.repeat(60));

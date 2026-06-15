@@ -254,6 +254,23 @@
         'En {ciudad}, el propósito respira cuando bajas la necesidad de mostrar antes de acotar.'
       ]
     },
+    SOUTHEAST_ASIAN: {
+      amor: [
+        'En {ciudad}, el vínculo se calienta en el flujo compartido — cuerpo antes que escena.',
+        'En {ciudad}, la cercanía madura cuando la suavidad no pide permiso para mostrarse.',
+        'En {ciudad}, el amor respira en capas — armonía sin rigidez ni teatro.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo afloja con el calor del entorno — sin convertir la pausa en rendimiento.',
+        'En {ciudad}, la calma se prueba en ritual ligero — un respiro que no compite con el bullicio.',
+        'En {ciudad}, el descanso madura cuando habitas la suavidad — no la exigencia del entorno.'
+      ],
+      trabajo: [
+        'En {ciudad}, la obra gana sentido en el flujo interno — antes de volver al ruido visible.',
+        'En {ciudad}, conviene leer la dirección en capas — la densidad distrae y también orienta.',
+        'En {ciudad}, el propósito respira cuando bajas la prisa de mostrar antes de habitar el paso.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, el vínculo se prueba en atención sostenida — persona antes que personaje.',
@@ -403,6 +420,20 @@
       descanso: [
         'En el margen del día en {ciudad}, con {goalPhrase}, el cuerpo responde:',
         'En la frontera entre exigencia y calma en {ciudad}, leyendo {goalPhrase}, la pausa advierte:'
+      ]
+    },
+    SOUTHEAST_ASIAN: {
+      amor: [
+        'En el flujo de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        'Desde la gracia en la densidad de {ciudad}, leyendo {goalPhrase}, la cercanía marca:'
+      ],
+      trabajo: [
+        'En las capas del día en {ciudad}, con {goalPhrase}, la obra susurra:',
+        'Antes del bullicio visible en {ciudad}, leyendo {goalPhrase}, conviene leer el sentido:'
+      ],
+      descanso: [
+        'En el calor humano de {ciudad}, con {goalPhrase}, el cuerpo responde:',
+        'En la armonía sin rigidez de {ciudad}, leyendo {goalPhrase}, la pausa advierte:'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -564,6 +595,20 @@
       descanso: [
         ' El margen tomado en {ciudad} suele afinar lo que el cuerpo pide sin disculpa.',
         ' En el silencio útil, {ciudad} devuelve calma que la exigencia no alcanza a nombrar.'
+      ]
+    },
+    SOUTHEAST_ASIAN: {
+      amor: [
+        ' El flujo compartido en {ciudad} suele afinar lo que el vínculo aún no ha nombrado.',
+        ' En la capa más suave del día, {ciudad} devuelve matices que la primera densidad no mostró.'
+      ],
+      trabajo: [
+        ' Lo que habitas en privado en {ciudad} suele afinar lo que la obra aún no ha dicho en voz alta.',
+        ' En el ritmo interno, {ciudad} devuelve sentido que el bullicio visible no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' El ritual ligero en {ciudad} suele afinar lo que el cuerpo pide sin otra exigencia.',
+        ' En la suavidad del entorno, {ciudad} devuelve calma que la prisa no alcanza a nombrar.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -1498,6 +1543,77 @@
           'esta semana, guarda un tramo de pausa como quien guarda un umbral — sin disculparte.',
           'esta semana, prueba una pausa sobria y real — no la que suena bien al contarla.',
           'esta semana, deja una tarde sin rendir — habitar {ciudad} con medida.'
+        ]
+      }
+    },
+    SOUTHEAST_ASIAN: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, el vínculo se prueba en el calor del entorno — si la suavidad aguanta cuando el bullicio pide escena.',
+        trabajo: 'En {ciudad}, la densidad del día compite con lo que tu obra aún madura en flujo interno — a veces confundes visibilidad con dirección.',
+        descanso: 'En {ciudad}, aflojar puede sentirse como quedar fuera del ritmo compartido — aunque el cuerpo ya pida suavidad sin disculpa.'
+      },
+      opportunityByGoal: {
+        amor: 'sostener el vínculo con gracia en la densidad — sin convertir la cercanía en teatro.',
+        trabajo: 'habitar en privado qué parte de tu obra sigue viva — antes de volver al ruido visible.',
+        descanso: 'quedarte en la pausa con ritual ligero — sin convertir el descanso en otra capa de exigencia.'
+      },
+      summaryFrame: {
+        amor: 'En el flujo de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        trabajo: 'En las capas del día en {ciudad}, leyendo {goalPhrase}, la obra susurra:',
+        descanso: 'En la armonía del entorno en {ciudad}, con {goalPhrase}, el cuerpo responde:'
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando la suavidad no pide permiso para mostrarse?',
+          DC: '¿Qué capa aflojas en {ciudad} antes de abrir el vínculo?',
+          MC: '¿Qué gesto del amor quieres que {ciudad} recuerde en el flujo compartido?',
+          default: '¿Qué te pide {ciudad} en amor si sueltas la prisa de escena?'
+        },
+        trabajo: {
+          IC: '¿Qué parte de tu obra en {ciudad} sigue viva cuando el bullicio no está cerca?',
+          MC: '¿Tu impulso en {ciudad} busca dirección o visibilidad en la densidad?',
+          AC: '¿Cómo sostendrías tu obra en {ciudad} si no necesitara mostrarse en cada capa?',
+          default: '¿Qué sentido habitas en {ciudad} antes de volver a medirte por fuera?'
+        },
+        descanso: {
+          AC: '¿Puedes aflojar en {ciudad} sin sentir que traicionas el ritmo del entorno?',
+          MC: '¿Tu descanso en {ciudad} es suavidad o culpa funcional?',
+          IC: '¿Qué calma te pide {ciudad} entre el calor humano y el bullicio?',
+          default: '¿Qué ritmo corporal te devuelve {ciudad} si habitas la pausa con gracia?'
+        }
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea calor compartido — no escena.',
+          'Llévate de {ciudad} la suavidad que no pidió permiso para ser verdadera.',
+          'Si el vínculo permanece, que sea en capas — no en la historia que contarías.'
+        ],
+        trabajo: [
+          'De {ciudad} puede quedarte esto: el sentido madura en flujo interno antes de volver al ruido.',
+          'Que te quede la obra que respira cuando baja la densidad visible.',
+          'Pregúntate en voz baja: ¿para quién trabajas cuando el bullicio se aquieta?'
+        ],
+        descanso: [
+          'Quédate con el cuerpo que en {ciudad} volvió a hablar sin competir con el entorno.',
+          'Que permanezca un ritual ligero — breve y tuyo.',
+          'Llévate una suavidad útil: la pausa que no compitió con el calor del día.'
+        ]
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, elige un encuentro donde importe más habitar el flujo que impresionar — pequeño y real.',
+          'esta semana, comparte un rato sencillo con alguien — la gracia importa más que la intensidad.',
+          'esta semana, deja que la suavidad aparezca sin pedir permiso performativo.'
+        ],
+        trabajo: [
+          'esta semana, anota en privado qué sentido tiene tu obra — antes de volver al bullicio visible.',
+          'esta semana, guarda una hora en flujo interno para orientar la dirección — no para el ruido visible.',
+          'esta semana, elige una tarea mínima con sentido — aunque quede fuera del ruido.'
+        ],
+        descanso: [
+          'esta semana, guarda un tramo de pausa como ritual ligero — sin disculparte.',
+          'esta semana, prueba una pausa suave y real — no la que suena bien al contarla.',
+          'esta semana, deja una tarde sin rendir — habitar {ciudad} con armonía.'
         ]
       }
     },

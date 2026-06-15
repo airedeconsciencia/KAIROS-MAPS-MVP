@@ -140,7 +140,10 @@ const SPLIT_BRAIN_CASES = [
   { city: 'París', country: 'Francia', expected: 'WESTERN_EUROPE' },
   { city: 'Berlín', country: 'Alemania', expected: 'WESTERN_EUROPE' },
   { city: 'Ámsterdam', country: 'Países Bajos', expected: 'WESTERN_EUROPE' },
-  { city: 'Estocolmo', country: 'Suecia', expected: 'WESTERN_EUROPE' }
+  { city: 'Estocolmo', country: 'Suecia', expected: 'WESTERN_EUROPE' },
+  { city: 'Bangkok', country: 'Tailandia', expected: 'SOUTHEAST_ASIAN' },
+  { city: 'Singapur', country: 'Singapur', expected: 'SOUTHEAST_ASIAN' },
+  { city: 'Delhi', country: 'India', expected: 'IBERIAN' }
 ];
 
 const splitBrainHits = [];

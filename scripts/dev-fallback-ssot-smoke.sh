@@ -142,6 +142,7 @@ const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
 assert('EFR.DEFAULT_FAMILY === GLOBAL_NEUTRAL', EFR.DEFAULT_FAMILY === 'GLOBAL_NEUTRAL', EFR.DEFAULT_FAMILY);
 assert('isRegisteredFamily(LATAM)', EFR.isRegisteredFamily('LATAM') === true, 'LATAM');
 assert('isRegisteredFamily(WESTERN_EUROPE)', EFR.isRegisteredFamily('WESTERN_EUROPE') === true, 'F2.5c');
+assert('isRegisteredFamily(SOUTHEAST_ASIAN)', EFR.isRegisteredFamily('SOUTHEAST_ASIAN') === true, 'F2.6c');
 assert('isRegisteredFamily(GLOBAL_NEUTRAL)', EFR.isRegisteredFamily('GLOBAL_NEUTRAL') === true, 'F2.2d1');
 
 const Narrative = ctx.window.KairosNarrativeIntelligence;
@@ -174,6 +175,22 @@ assert(
   'resolveRegionalPack(GLOBAL_NEUTRAL) never missing (14 maps)',
   packMissing.length === 0,
   packMissing.join(' · ') || '14/14 explicit'
+);
+
+assert(
+  'SOUTHEAST_ASIAN countries resolver (F2.6c)',
+  EFR.COUNTRY_EDITORIAL_FAMILY.thailand === 'SOUTHEAST_ASIAN' &&
+    EFR.COUNTRY_EDITORIAL_FAMILY.singapore === 'SOUTHEAST_ASIAN',
+  JSON.stringify({
+    thailand: EFR.COUNTRY_EDITORIAL_FAMILY.thailand,
+    singapore: EFR.COUNTRY_EDITORIAL_FAMILY.singapore
+  })
+);
+
+assert(
+  'India permanece IBERIAN (F2.7 pendiente)',
+  EFR.COUNTRY_EDITORIAL_FAMILY.india === 'IBERIAN',
+  EFR.COUNTRY_EDITORIAL_FAMILY.india
 );
 
 assert(

@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f2.5c-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f2.6c-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -18,6 +18,7 @@
     'AFRICAN_COASTAL',
     'LATAM',
     'WESTERN_EUROPE',
+    'SOUTHEAST_ASIAN',
     'GLOBAL_NEUTRAL'
   ];
 
@@ -36,8 +37,8 @@
     chile: 'LATAM',
     uruguay: 'LATAM',
     ecuador: 'LATAM',
-    thailand: 'IBERIAN',
-    singapore: 'IBERIAN',
+    thailand: 'SOUTHEAST_ASIAN',
+    singapore: 'SOUTHEAST_ASIAN',
     india: 'IBERIAN',
     spain: 'MEDITERRANEAN',
     italy: 'MEDITERRANEAN',

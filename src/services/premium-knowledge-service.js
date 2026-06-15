@@ -265,6 +265,42 @@
         }
       }
     },
+    SOUTHEAST_ASIAN: {
+      doc17: {
+        t1: {
+          amor: 'En {ciudad}, lo compartido puede abrirse antes que la escena — te reconocen en la suavidad, no en el personaje.',
+          trabajo: 'En {ciudad}, lo habitado en privado puede pesar más — te miden en la obra, no solo en lo que se muestra.',
+          descanso: 'En {ciudad}, tomar pausa con gracia puede devolver calma — el cuerpo habla antes que el bullicio del día.'
+        },
+        t2: {
+          amor: 'El vínculo puede probarse en el flujo compartido — no fallo, sino cercanía que aún no ha encontrado tono.',
+          trabajo: 'Lo visible puede adelantarse a lo que madura en capas internas — no fracaso, sino impulso que aún no ha encontrado dirección.',
+          descanso: 'La densidad del entorno puede empujar cuando pides pausa — no pereza, sino fatiga que pide suavidad sin disculpa.'
+        },
+        t3: {
+          amor: 'Puede abrirse un vínculo más honesto si habitas la suavidad antes de demostrar — la condición es gracia, no espectáculo.',
+          trabajo: 'Puede abrirse sentido si trabajas la obra en flujo interno — la condición es sustancia, no exposición.',
+          descanso: 'Puede abrirse calma si cruzas hacia la pausa con ritual ligero — la condición es armonía, no rendición.'
+        },
+        t4: {
+          amor: 'Esta semana, elige un encuentro donde importe más habitar el flujo que impresionar — pequeño y real.',
+          trabajo: 'Esta semana, orienta lo que haces antes de volver a mostrarlo — pequeño y real.',
+          descanso: 'Esta semana, guarda un tramo de pausa con ritual ligero — pequeño y real.'
+        }
+      },
+      byBlockId: {
+        doc6_intensidad_linea_cercana: {
+          amor: 'Esta línea puede sentirse en el vínculo con suavidad — notable sin exigir dominar el tono al primer día.',
+          trabajo: 'Esta línea puede sentirse en la obra habitada — señal clara sin la exigencia de exponerte, más sostenible para ordenar sentido.',
+          descanso: 'Esta línea puede sentirse en el ritmo del entorno — sostener la pausa sin sobreexigencia, más sostenible para una estancia media.'
+        },
+        doc6_intensidad_linea_exacta: {
+          amor: 'Muy cerca del trazo el vínculo puede sentirse sin filtro — calor intenso; conviene ir despacio si la densidad te desborda.',
+          trabajo: 'Muy cerca del trazo la obra puede sentirse sin filtro — impulso y visibilidad al máximo; modera ritmo si el bullicio te agota.',
+          descanso: 'Muy cerca del trazo la exigencia puede registrar la señal sin filtro — ritmo al máximo; conviene moderar si el entorno te agota.'
+        }
+      }
+    },
     GLOBAL_NEUTRAL: {
       doc17: {
         t1: {
