@@ -2,26 +2,24 @@
 
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
-**Rama:** `main` · **ahead of `origin/main`** (post F2.9c)  
-**HEAD:** *(F2.9c commit)* — `f2.9c latam catalog expansion wave a`  
-**Checkpoint catálogo:** `docs/architecture/F2.9C_LATAM_CATALOG_WAVE_A_CHECKPOINT.md`  
-**Producción live:** **SOUTH_ASIAN** · schema EFR `3.8h.2-f2.7c-0.1` · **catálogo prod legacy 27 ciudades**
+**Rama:** `main` · **up to date with `origin/main`**  
+**HEAD:** `23c52a4` — `f2.9c1 latam catalog wave a checkpoint`  
+**Checkpoint F2.9:** `docs/architecture/F2.9G_LATAM_CATALOG_WAVE_A_PRODUCTION_CHECKPOINT.md`  
+**Producción live:** catálogo **`3.8f.1-f2.9c-0.1`** · **31 ciudades / 30 países** · editorial EFR **`3.8h.2-f2.7c-0.1`**
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (30 países · **10 familias**), dedup P0–P2, **LATAM live en producción**, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, familias regionales integradas (WE · SEA · SA), y desde **F2.9c** **catálogo SSOT ampliado** a **31 ciudades / 30 países visibles**.
+KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (30 países · **10 familias**), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, familias regionales live (LATAM · WE · SEA · SA · …), y desde **F2.9f** **catálogo 31 ciudades / 30 países visibles en producción**.
 
-**PRE-F1 cerrado** · **F2.2–F2.7 cerrados** (runtime + prod SA) · **F2.8 auditorías territoriales cerradas** (read-only) · **F2.9c cerrado** (catálogo Wave A LATAM).
+**PRE-F1 cerrado** · **F2.2–F2.7 cerrados** · **F2.8–F2.9b auditorías cerradas** · **F2.9 serie cerrada** (catálogo + staging + prod).
 
-**Local `src/`** — catálogo **`3.8f.1-f2.9c-0.1`**: Bogotá · Santiago · Montevideo · Quito → **LATAM**. Gap resolver↔catálogo = **0**.
+**Producción** (https://kairos-maps-mvp.web.app) — catálogo Wave A live: Bogotá · Santiago · Montevideo · Quito. Gap resolver↔catálogo = **0**. Editorial sin cambio F2.9.
 
-**Producción** (https://kairos-maps-mvp.web.app) — editorial **F2.7c** live · catálogo mapa **aún 27 ciudades** hasta deploy F2.9d+.
+**Smokes gate F2.9f (pre-deploy prod):** **5/5 PASS** · post-deploy catalog smoke **PASS**.
 
-**Smokes gate catálogo F2.9c:** `dev-cities-catalog-smoke.sh` + `dev-editorial-family-resolver-smoke.sh` — **ALL PASS**.
-
-**Riesgos vivos:** prod/staging sin catálogo 31 · PK/BD/LK/NP → GN · `dist/` sucio · 8 ciudades LATAM misma voz.
+**Riesgos vivos:** cache browser · `dist/` sucio · QA prod parcial SCL/MVD/UIO · PK/BD/LK/NP → GN · 8 ciudades LATAM misma voz.
 
 ---
 
@@ -39,45 +37,46 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 | Fase | Estado | Evidencia |
 |------|--------|-----------|
-| **F2.0–F2.7g** | ✅ Cerrado | SA prod @ `70a255b` doc · runtime @ `4ca9675` |
-| **F2.8a** | ✅ Audit | Global Coverage Review v2 (read-only) |
-| **F2.9a–F2.9b** | ✅ Audit | Catalog coverage + expansion ROI (read-only) |
-| **F2.9c** | ✅ **Catálogo** | +4 ciudades LATAM · 31/30 · gap = 0 |
-| **F2.9c1** | ✅ Doc | `F2.9C_LATAM_CATALOG_WAVE_A_CHECKPOINT.md` |
-| **F2.9d** | ⏳ Siguiente | **Staging deploy + browser QA Wave A** |
+| **F2.0–F2.7g** | ✅ Cerrado | SA prod editorial @ `4ca9675` · doc `70a255b` |
+| **F2.8a** | ✅ Audit | Global Coverage Review v2 |
+| **F2.9a–F2.9b** | ✅ Audit | Catalog coverage + expansion ROI |
+| **F2.9c** | ✅ Catálogo | `fe629f3` · 31/30 · gap = 0 |
+| **F2.9c1–F2.9c2** | ✅ Doc + push | `23c52a4` |
+| **F2.9d** | ✅ Staging | QA 12/12 Wave A + reg 7/7 |
+| **F2.9f** | ✅ **Prod** | Catálogo 31 live · Bogotá ×3 + reg 6/6 |
+| **F2.9g** | ✅ Doc | `F2.9G_LATAM_CATALOG_WAVE_A_PRODUCTION_CHECKPOINT.md` |
+| **F3.0** | ⏳ Siguiente | **Roadmap decision / next expansion audit** |
 
 ---
 
-## IV. F2.9c — qué cambió / qué no
+## IV. F2.9 — qué cambió / qué no
 
-### Cambió (catálogo local)
+### Cambió (prod live @ F2.9f)
 
-- **+4 ciudades:** Bogotá · Santiago · Montevideo · Quito
-- **+4 países visibles:** Colombia · Chile · Uruguay · Ecuador
-- **`EXPECTED_CITY_COUNT`:** 27 → **31**
-- **`EXPECTED_COUNTRY_COUNT`:** 26 → **30**
-- **`SCHEMA_VERSION` catálogo:** `3.8f.1-f2.9c-0.1`
-- **Gap resolver↔catálogo:** 4 → **0**
+- **Catálogo:** 27 → **31 ciudades** · 26 → **30 países visibles**
+- **+4 ciudades:** Bogotá · Santiago · Montevideo · Quito → **LATAM**
+- **Schema catálogo prod:** `3.8f.1-f2.9c-0.1`
+- **Gap resolver↔catálogo:** **0** (30/30 países mapeados con ciudad catálogo)
+- **Mapa / búsqueda local / scorer:** 31 lugares
 
 ### No cambió
 
-- **`COUNTRY_EDITORIAL_FAMILY`** — 30 países · mismas familias
-- **`REGISTERED_FAMILIES`** — 10 familias
+- **`COUNTRY_EDITORIAL_FAMILY`** · **`REGISTERED_FAMILIAS`** — 30 países · 10 familias
 - **Resolver schema** — `3.8h.2-f2.7c-0.1`
-- **Copy / packs / country-archetypes / premium runtime**
-- **Producción live** — sin deploy F2.9c
+- **Copy / packs / country-archetypes / premium compositor**
+- **Familias editoriales live** (SA · SEA · WE · …)
 
 ---
 
-## V. Catálogo SSOT (post F2.9c)
+## V. Catálogo SSOT (prod live)
 
 | Métrica | Valor |
 |---------|-------|
 | Ciudades | **31** |
 | Países visibles | **30** |
 | Países resolver sin ciudad | **0** |
-| Ciudades LATAM en catálogo | **8** (MX · AR · BR · PE · CO · CL · UY · EC) |
-| Familia Wave A | **LATAM** (hereda packs F2.3) |
+| Ciudades LATAM | **8** |
+| Schema | `3.8f.1-f2.9c-0.1` |
 
 ---
 
@@ -87,36 +86,28 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 ./scripts/dev-cities-catalog-smoke.sh
 ./scripts/dev-editorial-family-resolver-smoke.sh
 ./scripts/dev-latam-editorial-integration-smoke.sh
-./scripts/dev-south-asian-editorial-integration-smoke.sh
-./scripts/dev-southeast-asian-editorial-integration-smoke.sh
-./scripts/dev-western-europe-editorial-integration-smoke.sh
-./scripts/dev-global-neutral-default-smoke.sh
-./scripts/dev-editorial-family-resolver-smoke.sh
 ./scripts/dev-city-premium-composition-smoke.sh
-./scripts/dev-narrative-intelligence-smoke.sh
-./scripts/dev-editorial-dedup-smoke.sh
 ./scripts/dev-premium-ui-beta-smoke.sh
 ```
 
-**Estado F2.9c:** catalog + resolver smokes **ALL PASS**.
+**Estado F2.9f:** **ALL PASS** (gate pre-deploy prod).
 
 ---
 
-## VII. QA local F2.9c (familias)
+## VII. QA producción (F2.9f)
 
-| Ciudad | Familia | Resultado |
-|--------|---------|-----------|
-| Bogotá | LATAM | PASS |
-| Santiago | LATAM | PASS |
-| Montevideo | LATAM | PASS |
-| Quito | LATAM | PASS |
-| Ciudad de México | LATAM | PASS |
-| Buenos Aires | LATAM | PASS |
-| Lisboa | IBERIAN | PASS |
-| Delhi | SOUTH_ASIAN | PASS |
-| Bangkok | SOUTHEAST_ASIAN | PASS |
-| París | WESTERN_EUROPE | PASS |
-| Oslo | GLOBAL_NEUTRAL | PASS |
+| Bloque | Resultado |
+|--------|-----------|
+| Bogotá × amor · trabajo · descanso | **PASS** → LATAM |
+| CDMX / amor | **PASS** → LATAM |
+| Delhi / amor | **PASS** → SOUTH_ASIAN |
+| Bangkok / amor | **PASS** → SOUTHEAST_ASIAN |
+| París / amor | **PASS** → WESTERN_EUROPE |
+| Lisboa / amor | **PASS** → IBERIAN |
+| Oslo / amor | **PASS** → GLOBAL_NEUTRAL |
+| UI catálogo | **31 ciudades · 31 markers** |
+
+**Staging baseline F2.9d:** Santiago · Montevideo · Quito × 3 goals — **12/12 PASS** (no re-leídos en prod F2.9f).
 
 ---
 
@@ -124,9 +115,9 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 | Entorno | URL | Catálogo | Editorial |
 |---------|-----|----------|-----------|
-| **Producción** | https://kairos-maps-mvp.web.app | **27 ciudades** (legacy) | F2.7c SA live |
-| **Staging** | https://kairos-maps-dev.web.app | **27 ciudades** (legacy) | F2.7c + hotfix |
-| **Local `src/`** | — | **31 ciudades** @ F2.9c | Sin cambio resolver |
+| **Producción** | https://kairos-maps-mvp.web.app | **31** @ `3.8f.1-f2.9c-0.1` | `3.8h.2-f2.7c-0.1` |
+| **Staging** | https://kairos-maps-dev.web.app | **31** (paridad F2.9d) | Sin cambio F2.9 |
+| **Local `src/`** | — | **31** @ `23c52a4` | Sin cambio resolver |
 
 ---
 
@@ -134,32 +125,32 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 | ID | Descripción |
 |----|-------------|
-| **R-F2.9c-1** | **Prod/staging sin catálogo 31** — requiere deploy F2.9d+ |
+| **R-F2.9f-1** | **Cache browser** — catálogo legacy 27 si bundle cacheado |
+| **OP-3** | **`dist/` sucio post-deploy** · no commiteado |
+| **R-F2.9f-3** | **QA prod parcial** SCL/MVD/UIO — baseline F2.9d |
 | **R-F2.7-3** | **PK / BD / LK / NP** → **`GLOBAL_NEUTRAL`** |
-| **R-F2.9c-3** | **8 ciudades LATAM / misma voz editorial** |
-| **OP-3** | **`dist/` sucio** · no commiteado |
-| **R-F2.7f-2** | **Cache browser** en QA manual |
+| **R-F2.9c-3** | **8 ciudades LATAM / misma voz** |
 
 ---
 
-## X. Git status (post F2.9c1)
+## X. Git status (post F2.9g doc)
 
 ```
-Runtime F2.9c: cities-catalog.js + smokes (commit pending → f2.9c)
-Doc F2.9c1: F2.9C checkpoint + KAIROS_CURRENT (commit pending)
-origin/main: 70a255b — f2.7g south asian production checkpoint
-dist/: modificado / untracked (NO commiteado)
-Producción editorial: SOUTH_ASIAN @ 3.8h.2-f2.7c-0.1
-Producción catálogo: 27 ciudades hasta deploy
+HEAD / origin/main: 23c52a4 — f2.9c1 latam catalog wave a checkpoint
+Runtime catálogo: fe629f3 — f2.9c latam catalog expansion wave a
+Doc checkpoint: F2.9G (+ F2.9g commit pending)
+src/ · scripts/: limpios @ 23c52a4
+dist/: modificado / untracked (NO commiteado — rsync deploy-prod)
+Producción catálogo: 31/30 live @ 3.8f.1-f2.9c-0.1
 ```
 
 ---
 
 ## XI. Siguiente fase
 
-### **F2.9d — Staging deploy + browser QA Wave A**
+### **F3.0 — Roadmap decision / next expansion audit**
 
-Build · deploy staging · QA 4 capitales LATAM × 3 goals · regresiones · gate prod (F2.9f).
+Decisión Wave B catálogo · priorización territorial · alineación F2.8/F2.9 audits.
 
 ---
 
@@ -167,12 +158,12 @@ Build · deploy staging · QA 4 capitales LATAM × 3 goals · regresiones · gat
 
 | Documento | Contenido |
 |-----------|-----------|
-| `F2.9C_LATAM_CATALOG_WAVE_A_CHECKPOINT.md` | Cierre F2.9c catálogo |
-| `F2.7G_SOUTH_ASIAN_PRODUCTION_CHECKPOINT.md` | Cierre F2.7 prod SA |
-| `F2.7C_SOUTH_ASIAN_RUNTIME_CHECKPOINT.md` | Trazabilidad SA runtime |
+| `F2.9G_LATAM_CATALOG_WAVE_A_PRODUCTION_CHECKPOINT.md` | Cierre F2.9 prod catálogo |
+| `F2.9C_LATAM_CATALOG_WAVE_A_CHECKPOINT.md` | Trazabilidad F2.9c catálogo |
+| `F2.7G_SOUTH_ASIAN_PRODUCTION_CHECKPOINT.md` | Cierre F2.7 prod editorial |
 | `F2.6G_SOUTHEAST_ASIAN_PRODUCTION_CHECKPOINT.md` | Cierre F2.6 prod SEA |
 | `KAIROS_MASTER_HANDOFF_F1.8.md` | Handoff PRE-F1 |
 
 ---
 
-*Checkpoint actualizado F2.9c1 · Catálogo 31/30 · gap resolver = 0 · prod catálogo legacy 27*
+*Checkpoint actualizado F2.9g · Doc-only · Catálogo live prod 31/30 @ 23c52a4 · Schema 3.8f.1-f2.9c-0.1*
