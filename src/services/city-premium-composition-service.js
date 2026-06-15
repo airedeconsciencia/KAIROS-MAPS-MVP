@@ -1002,7 +1002,7 @@
         'No todo lo que se activa en el ruido apunta al mismo norte.'
       ],
       ciudad: [
-        'Hay momentos en que {ciudad} habla en voces múltiples, no por confirmación.',
+        'Hay momentos en que la multiplicidad habla en voces distintas, no por confirmación.',
         'Puede que lo que pide el trayecto no pida lo mismo en ti.',
         'Hay señales que se entienden mejor al volver sobre el mismo cruce.'
       ]
