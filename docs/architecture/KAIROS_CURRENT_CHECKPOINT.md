@@ -2,24 +2,26 @@
 
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
-**Rama:** `main` · **up to date with `origin/main`**  
-**HEAD:** `4ca9675` — `f2.7d1 south asian placeholder hotfix`  
-**Checkpoint F2.7:** `docs/architecture/F2.7G_SOUTH_ASIAN_PRODUCTION_CHECKPOINT.md`  
-**Producción live:** **SOUTH_ASIAN desplegada** · schema `3.8h.2-f2.7c-0.1`
+**Rama:** `main` · **ahead of `origin/main`** (post F2.9c)  
+**HEAD:** *(F2.9c commit)* — `f2.9c latam catalog expansion wave a`  
+**Checkpoint catálogo:** `docs/architecture/F2.9C_LATAM_CATALOG_WAVE_A_CHECKPOINT.md`  
+**Producción live:** **SOUTH_ASIAN** · schema EFR `3.8h.2-f2.7c-0.1` · **catálogo prod legacy 27 ciudades**
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (30 países · **10 familias**), dedup P0–P2, **LATAM live en producción**, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, **`WESTERN_EUROPE`** (F2.5c), **`SOUTHEAST_ASIAN`** (F2.6f), y desde **F2.7f** familia **`SOUTH_ASIAN`** **live en producción**.
+KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (30 países · **10 familias**), dedup P0–P2, **LATAM live en producción**, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, familias regionales integradas (WE · SEA · SA), y desde **F2.9c** **catálogo SSOT ampliado** a **31 ciudades / 30 países visibles**.
 
-**PRE-F1 cerrado** · **F2.2c–F2.2d3 cerrados** · **F2.3b cerrado** · **F2.5c cerrado** · **F2.6 cerrado** · **F2.7 cerrado** (runtime + staging + hotfix + prod).
+**PRE-F1 cerrado** · **F2.2–F2.7 cerrados** (runtime + prod SA) · **F2.8 auditorías territoriales cerradas** (read-only) · **F2.9c cerrado** (catálogo Wave A LATAM).
 
-**Producción** (https://kairos-maps-mvp.web.app) — **`SOUTH_ASIAN` live**. Delhi con voz SA. Schema **`3.8h.2-f2.7c-0.1`**. Bangkok · Singapur siguen **`SOUTHEAST_ASIAN`**.
+**Local `src/`** — catálogo **`3.8f.1-f2.9c-0.1`**: Bogotá · Santiago · Montevideo · Quito → **LATAM**. Gap resolver↔catálogo = **0**.
 
-**Smokes gate F2.7f (pre-deploy prod):** **11/11 PASS**.
+**Producción** (https://kairos-maps-mvp.web.app) — editorial **F2.7c** live · catálogo mapa **aún 27 ciudades** hasta deploy F2.9d+.
 
-**Riesgos vivos:** PK/BD/LK/NP → GLOBAL_NEUTRAL · `dist/` sucio post-deploy · cache browser posible · TH/SG comparten familia SEA.
+**Smokes gate catálogo F2.9c:** `dev-cities-catalog-smoke.sh` + `dev-editorial-family-resolver-smoke.sh` — **ALL PASS**.
+
+**Riesgos vivos:** prod/staging sin catálogo 31 · PK/BD/LK/NP → GN · `dist/` sucio · 8 ciudades LATAM misma voz.
 
 ---
 
@@ -29,7 +31,7 @@ KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver edit
 |------|--------|--------|
 | PRE-F1.3 → PRE-F1.9d | ✅ Cerrado | `a8d4a60` → `a25e2c7` |
 
-Prod LATAM deploy histórico: PRE-F1.9b @ `ce69f09`. Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
+Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 ---
 
@@ -37,139 +39,140 @@ Prod LATAM deploy histórico: PRE-F1.9b @ `ce69f09`. Ver `KAIROS_MASTER_HANDOFF_
 
 | Fase | Estado | Evidencia |
 |------|--------|-----------|
-| **F2.0–F2.2d3** | ✅ Runtime + doc | DEFAULT GLOBAL_NEUTRAL · `fcf61d7` |
-| **F2.2d3c** | ✅ Doc | `F2.2D3_GLOBAL_NEUTRAL_DEFAULT_CHECKPOINT.md` |
-| **F2.3b** | ✅ Runtime | `c4629bd` · CO/CL/UY/EC → LATAM |
-| **F2.5a–F2.5c** | ✅ Runtime | `227a00b` · WE registrada · FR/DE/NL/SE |
-| **F2.5c1** | ✅ Doc | `F2.5C_WESTERN_EUROPE_RUNTIME_CHECKPOINT.md` |
-| **F2.6a–F2.6b** | ✅ Diseño + copy | 14 packs SEA |
-| **F2.6c** | ✅ Runtime | `e66bcc7` · SEA registrada · TH/SG migrados |
-| **F2.6c1** | ✅ Doc | `F2.6C_SOUTHEAST_ASIAN_RUNTIME_CHECKPOINT.md` |
-| **F2.6d–F2.6d2** | ✅ Staging + push | `edcf116` |
-| **F2.6f** | ✅ **Prod** | SEA live · gate 10/10 |
-| **F2.6g** | ✅ Doc | `286bcac` · `F2.6G_SOUTHEAST_ASIAN_PRODUCTION_CHECKPOINT.md` |
-| **F2.7a–F2.7b** | ✅ Diseño + copy | Constitución SA · 202 strings |
-| **F2.7c** | ✅ Runtime | `adf2caa` · `india` → SOUTH_ASIAN |
-| **F2.7c1** | ✅ Doc | `F2.7C_SOUTH_ASIAN_RUNTIME_CHECKPOINT.md` |
-| **F2.7d–F2.7d2** | ✅ Staging + hotfix | `4ca9675` · placeholder fix · staging validado |
-| **F2.7f** | ✅ **Prod** | SA live · gate 11/11 · Delhi 3/3 + reg 8/8 |
-| **F2.7g** | ✅ Doc | `F2.7G_SOUTH_ASIAN_PRODUCTION_CHECKPOINT.md` |
-| **F2.8** | ⏳ Siguiente | **Global Coverage Review / Territorial Audit v2** |
+| **F2.0–F2.7g** | ✅ Cerrado | SA prod @ `70a255b` doc · runtime @ `4ca9675` |
+| **F2.8a** | ✅ Audit | Global Coverage Review v2 (read-only) |
+| **F2.9a–F2.9b** | ✅ Audit | Catalog coverage + expansion ROI (read-only) |
+| **F2.9c** | ✅ **Catálogo** | +4 ciudades LATAM · 31/30 · gap = 0 |
+| **F2.9c1** | ✅ Doc | `F2.9C_LATAM_CATALOG_WAVE_A_CHECKPOINT.md` |
+| **F2.9d** | ⏳ Siguiente | **Staging deploy + browser QA Wave A** |
 
 ---
 
-## IV. F2.7 — qué cambió / qué no
+## IV. F2.9c — qué cambió / qué no
 
-### Cambió (prod live @ F2.7f)
+### Cambió (catálogo local)
 
-- **`SOUTH_ASIAN`** en `REGISTERED_FAMILIES` (**10 familias**)
-- Migración prod: **`india`** → **`SOUTH_ASIAN`**
-- Schema EFR prod: **`3.8h.2-f2.7c-0.1`**
-- Delhi lectura premium con voz SA (n/k/e = SOUTH_ASIAN · split-brain 0)
-- Hotfix F2.7d1: sin placeholder `{ciudad}` visible en transiciones SA
+- **+4 ciudades:** Bogotá · Santiago · Montevideo · Quito
+- **+4 países visibles:** Colombia · Chile · Uruguay · Ecuador
+- **`EXPECTED_CITY_COUNT`:** 27 → **31**
+- **`EXPECTED_COUNTRY_COUNT`:** 26 → **30**
+- **`SCHEMA_VERSION` catálogo:** `3.8f.1-f2.9c-0.1`
+- **Gap resolver↔catálogo:** 4 → **0**
 
 ### No cambió
 
-- **`DEFAULT_FAMILY`** sigue `GLOBAL_NEUTRAL`
-- **PK / BD / LK / NP** — sin slug canónico → **`GLOBAL_NEUTRAL`**
-- **TH / SG** — siguen **`SOUTHEAST_ASIAN`**
-- Catálogo · astro · WASM sin tocar
-- **`dist/`** no commiteado en repo
+- **`COUNTRY_EDITORIAL_FAMILY`** — 30 países · mismas familias
+- **`REGISTERED_FAMILIES`** — 10 familias
+- **Resolver schema** — `3.8h.2-f2.7c-0.1`
+- **Copy / packs / country-archetypes / premium runtime**
+- **Producción live** — sin deploy F2.9c
 
 ---
 
-## V. Smokes gate actuales
+## V. Catálogo SSOT (post F2.9c)
+
+| Métrica | Valor |
+|---------|-------|
+| Ciudades | **31** |
+| Países visibles | **30** |
+| Países resolver sin ciudad | **0** |
+| Ciudades LATAM en catálogo | **8** (MX · AR · BR · PE · CO · CL · UY · EC) |
+| Familia Wave A | **LATAM** (hereda packs F2.3) |
+
+---
+
+## VI. Smokes gate actuales
 
 ```bash
-./scripts/dev-south-asian-editorial-smoke.sh
+./scripts/dev-cities-catalog-smoke.sh
+./scripts/dev-editorial-family-resolver-smoke.sh
+./scripts/dev-latam-editorial-integration-smoke.sh
 ./scripts/dev-south-asian-editorial-integration-smoke.sh
 ./scripts/dev-southeast-asian-editorial-integration-smoke.sh
 ./scripts/dev-western-europe-editorial-integration-smoke.sh
-./scripts/dev-latam-editorial-integration-smoke.sh
 ./scripts/dev-global-neutral-default-smoke.sh
 ./scripts/dev-editorial-family-resolver-smoke.sh
 ./scripts/dev-city-premium-composition-smoke.sh
 ./scripts/dev-narrative-intelligence-smoke.sh
 ./scripts/dev-editorial-dedup-smoke.sh
 ./scripts/dev-premium-ui-beta-smoke.sh
-./scripts/dev-fallback-ssot-smoke.sh
 ```
 
-**Estado F2.7f (pre-deploy prod):** **11/11 PASS**.
+**Estado F2.9c:** catalog + resolver smokes **ALL PASS**.
 
 ---
 
-## VI. QA producción (F2.7f)
+## VII. QA local F2.9c (familias)
 
-| Bloque | Resultado |
-|--------|-----------|
-| Delhi × amor · trabajo · descanso | **PASS** → SOUTH_ASIAN |
-| Bangkok / amor | **PASS** → SOUTHEAST_ASIAN |
-| Singapur / amor | **PASS** → SOUTHEAST_ASIAN |
-| Tokio / amor | **PASS** → EAST_ASIAN |
-| París / amor | **PASS** → WESTERN_EUROPE |
-| Lisboa / amor | **PASS** → IBERIAN |
-| CDMX / amor | **PASS** → LATAM |
-| Oslo / amor | **PASS** → GLOBAL_NEUTRAL |
-| Nairobi / trabajo | **PASS** → AFRICAN_COASTAL |
-| UI Delhi / amor | **PASS** — premium · eyebrow · sin clásica |
-
----
-
-## VII. Staging / producción
-
-| Entorno | URL | Runtime efectivo |
-|---------|-----|------------------|
-| **Producción** | https://kairos-maps-mvp.web.app | **F2.7c** · SOUTH_ASIAN live · schema `3.8h.2-f2.7c-0.1` |
-| **Staging** | https://kairos-maps-dev.web.app | Paridad F2.7c + hotfix F2.7d1 |
-| **Local `src/`** | — | **`4ca9675`** · SA integrada |
+| Ciudad | Familia | Resultado |
+|--------|---------|-----------|
+| Bogotá | LATAM | PASS |
+| Santiago | LATAM | PASS |
+| Montevideo | LATAM | PASS |
+| Quito | LATAM | PASS |
+| Ciudad de México | LATAM | PASS |
+| Buenos Aires | LATAM | PASS |
+| Lisboa | IBERIAN | PASS |
+| Delhi | SOUTH_ASIAN | PASS |
+| Bangkok | SOUTHEAST_ASIAN | PASS |
+| París | WESTERN_EUROPE | PASS |
+| Oslo | GLOBAL_NEUTRAL | PASS |
 
 ---
 
-## VIII. Deuda / riesgos abiertos
+## VIII. Staging / producción
+
+| Entorno | URL | Catálogo | Editorial |
+|---------|-----|----------|-----------|
+| **Producción** | https://kairos-maps-mvp.web.app | **27 ciudades** (legacy) | F2.7c SA live |
+| **Staging** | https://kairos-maps-dev.web.app | **27 ciudades** (legacy) | F2.7c + hotfix |
+| **Local `src/`** | — | **31 ciudades** @ F2.9c | Sin cambio resolver |
+
+---
+
+## IX. Deuda / riesgos abiertos
 
 | ID | Descripción |
 |----|-------------|
-| **R-F2.7-3** | **PK / BD / LK / NP** — sin slug canónico → **`GLOBAL_NEUTRAL`** |
-| **OP-3** | **`dist/` sucio post-deploy** · no commiteado |
-| **R-F2.7f-2** | **Cache browser** — hard refresh en QA manual |
-| **R-F2.6-4** | TH/SG comparten familia SEA — WATCH QA manual |
-| **R-F2.6-5** | Vocabulario global en rutas no filtradas |
+| **R-F2.9c-1** | **Prod/staging sin catálogo 31** — requiere deploy F2.9d+ |
+| **R-F2.7-3** | **PK / BD / LK / NP** → **`GLOBAL_NEUTRAL`** |
+| **R-F2.9c-3** | **8 ciudades LATAM / misma voz editorial** |
+| **OP-3** | **`dist/` sucio** · no commiteado |
+| **R-F2.7f-2** | **Cache browser** en QA manual |
 
 ---
 
-## IX. Git status (post F2.7g doc)
+## X. Git status (post F2.9c1)
 
 ```
-HEAD / origin/main: 4ca9675 — f2.7d1 south asian placeholder hotfix
-Doc checkpoint: F2.7G_SOUTH_ASIAN_PRODUCTION_CHECKPOINT.md (+ F2.7g commit pending)
-src/ · scripts/: limpios @ 4ca9675
-dist/: modificado / untracked (NO commiteado — rsync deploy-prod)
-Producción: SOUTH_ASIAN live @ 3.8h.2-f2.7c-0.1 · Delhi SOUTH_ASIAN
+Runtime F2.9c: cities-catalog.js + smokes (commit pending → f2.9c)
+Doc F2.9c1: F2.9C checkpoint + KAIROS_CURRENT (commit pending)
+origin/main: 70a255b — f2.7g south asian production checkpoint
+dist/: modificado / untracked (NO commiteado)
+Producción editorial: SOUTH_ASIAN @ 3.8h.2-f2.7c-0.1
+Producción catálogo: 27 ciudades hasta deploy
 ```
 
 ---
 
-## X. Siguiente fase
+## XI. Siguiente fase
 
-### **F2.8 — Global Coverage Review / Territorial Audit v2**
+### **F2.9d — Staging deploy + browser QA Wave A**
 
-Auditoría read-only de cobertura territorial · gaps subcontinente · priorización editorial · alineación catálogo vs mapa canónico.
+Build · deploy staging · QA 4 capitales LATAM × 3 goals · regresiones · gate prod (F2.9f).
 
 ---
 
-## XI. Documentos relacionados
+## XII. Documentos relacionados
 
 | Documento | Contenido |
 |-----------|-----------|
+| `F2.9C_LATAM_CATALOG_WAVE_A_CHECKPOINT.md` | Cierre F2.9c catálogo |
 | `F2.7G_SOUTH_ASIAN_PRODUCTION_CHECKPOINT.md` | Cierre F2.7 prod SA |
-| `F2.7C_SOUTH_ASIAN_RUNTIME_CHECKPOINT.md` | Trazabilidad F2.7c SA runtime |
+| `F2.7C_SOUTH_ASIAN_RUNTIME_CHECKPOINT.md` | Trazabilidad SA runtime |
 | `F2.6G_SOUTHEAST_ASIAN_PRODUCTION_CHECKPOINT.md` | Cierre F2.6 prod SEA |
-| `F2.6C_SOUTHEAST_ASIAN_RUNTIME_CHECKPOINT.md` | Trazabilidad F2.6c SEA runtime |
-| `F2.5C_WESTERN_EUROPE_RUNTIME_CHECKPOINT.md` | Trazabilidad F2.5c WE runtime |
-| `F2.2D3_GLOBAL_NEUTRAL_DEFAULT_CHECKPOINT.md` | DEFAULT GLOBAL_NEUTRAL |
 | `KAIROS_MASTER_HANDOFF_F1.8.md` | Handoff PRE-F1 |
 
 ---
 
-*Checkpoint actualizado F2.7g · Doc-only · SOUTH_ASIAN live prod @ 4ca9675 · Schema 3.8h.2-f2.7c-0.1*
+*Checkpoint actualizado F2.9c1 · Catálogo 31/30 · gap resolver = 0 · prod catálogo legacy 27*
