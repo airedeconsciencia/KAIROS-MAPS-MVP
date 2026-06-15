@@ -17,7 +17,7 @@ ASTRO="$ROOT/src/engines/astro.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — Cities Catalog smoke (3.8f.0)"
+echo " KAIROS MAPS — Cities Catalog smoke (3.8f.1)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -75,8 +75,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Catalog existe (schema 3.8f.0)',
-  Catalog && Catalog.SCHEMA_VERSION.indexOf('3.8f.0') === 0,
+  'Catalog existe (schema 3.8f.1)',
+  Catalog && Catalog.SCHEMA_VERSION.indexOf('3.8f.1') === 0,
   'schema=' + (Catalog && Catalog.SCHEMA_VERSION)
 );
 
@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '27 ciudades (estado actual)',
-  Catalog.CITIES.length === 27,
+  '31 ciudades (estado actual)',
+  Catalog.CITIES.length === 31,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '26 países únicos (estado actual)',
-  countries.length === 26,
+  '30 países únicos (estado actual)',
+  countries.length === 30,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (26)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 26,
+  'COUNTRY_IDS alineados (30)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 30,
   'sample=' + Catalog.resolveCountryId('Portugal')
 );
 

@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.0-0.1';
-  var EXPECTED_CITY_COUNT = 27;
-  var EXPECTED_COUNTRY_COUNT = 26;
+  var SCHEMA_VERSION = '3.8f.1-f2.9c-0.1';
+  var EXPECTED_CITY_COUNT = 31;
+  var EXPECTED_COUNTRY_COUNT = 30;
 
   var CITIES = [
     // Europa
@@ -31,6 +31,10 @@
     { name: 'Buenos Aires', country: 'Argentina', lat: -34.6037, lon: -58.3816 },
     { name: 'Río de Janeiro', country: 'Brasil', lat: -22.9068, lon: -43.1729 },
     { name: 'Lima', country: 'Perú', lat: -12.0464, lon: -77.0428 },
+    { name: 'Bogotá', country: 'Colombia', lat: 4.7110, lon: -74.0721 },
+    { name: 'Santiago', country: 'Chile', lat: -33.4489, lon: -70.6693 },
+    { name: 'Montevideo', country: 'Uruguay', lat: -34.9011, lon: -56.1645 },
+    { name: 'Quito', country: 'Ecuador', lat: -0.1807, lon: -78.4678 },
     // Asia
     { name: 'Tokio', country: 'Japón', lat: 35.6762, lon: 139.6503 },
     { name: 'Seúl', country: 'Corea del Sur', lat: 37.5665, lon: 126.9780 },
@@ -63,6 +67,10 @@
     'Argentina': 'ar',
     'Brasil': 'br',
     'Perú': 'pe',
+    'Colombia': 'co',
+    'Chile': 'cl',
+    'Uruguay': 'uy',
+    'Ecuador': 'ec',
     'Japón': 'jp',
     'Corea del Sur': 'kr',
     'Tailandia': 'th',
@@ -93,6 +101,10 @@
     'Argentina': 'argentina',
     'Brasil': 'brazil',
     'Perú': 'peru',
+    'Colombia': 'colombia',
+    'Chile': 'chile',
+    'Uruguay': 'uruguay',
+    'Ecuador': 'ecuador',
     'Japón': 'japan',
     'Corea del Sur': 'south_korea',
     'Tailandia': 'thailand',

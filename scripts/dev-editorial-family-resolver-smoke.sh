@@ -93,13 +93,13 @@ assert(
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '27 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 27,
+  '31 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 31,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('26 países en catálogo', countries.length === 26, 'count=' + countries.length);
+assert('30 países en catálogo', countries.length === 30, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -121,8 +121,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '27 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 27,
+  '31 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 31,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -143,7 +143,11 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Estocolmo', country: 'Suecia', expected: 'WESTERN_EUROPE' },
   { city: 'Bangkok', country: 'Tailandia', expected: 'SOUTHEAST_ASIAN' },
   { city: 'Singapur', country: 'Singapur', expected: 'SOUTHEAST_ASIAN' },
-  { city: 'Delhi', country: 'India', expected: 'SOUTH_ASIAN' }
+  { city: 'Delhi', country: 'India', expected: 'SOUTH_ASIAN' },
+  { city: 'Bogotá', country: 'Colombia', expected: 'LATAM' },
+  { city: 'Santiago', country: 'Chile', expected: 'LATAM' },
+  { city: 'Montevideo', country: 'Uruguay', expected: 'LATAM' },
+  { city: 'Quito', country: 'Ecuador', expected: 'LATAM' }
 ];
 
 const splitBrainHits = [];
@@ -161,7 +165,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('14 casos históricos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('18 casos históricos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -251,7 +255,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (14 casos)',
+  'Pipeline knowledge ≡ narrative (18 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );
