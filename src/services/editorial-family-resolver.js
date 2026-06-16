@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f2.7c-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f3.3c-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -20,10 +20,11 @@
     'WESTERN_EUROPE',
     'SOUTHEAST_ASIAN',
     'SOUTH_ASIAN',
+    'WEST_AFRICAN',
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (30 países) */
+  /** @type {Record<string, string>} slug canónico → familia (40 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -54,7 +55,17 @@
     south_korea: 'EAST_ASIAN',
     south_africa: 'AFRICAN_COASTAL',
     egypt: 'AFRICAN_COASTAL',
-    kenya: 'AFRICAN_COASTAL'
+    kenya: 'AFRICAN_COASTAL',
+    nigeria: 'WEST_AFRICAN',
+    ghana: 'WEST_AFRICAN',
+    senegal: 'WEST_AFRICAN',
+    ivory_coast: 'WEST_AFRICAN',
+    sierra_leone: 'WEST_AFRICAN',
+    liberia: 'WEST_AFRICAN',
+    benin: 'WEST_AFRICAN',
+    togo: 'WEST_AFRICAN',
+    guinea: 'WEST_AFRICAN',
+    gambia: 'WEST_AFRICAN'
   };
 
   /** @type {Record<string, string>} slug de ciudad → familia (overrides) */
@@ -148,7 +159,30 @@
     egipto: 'egypt',
     ke: 'kenya',
     kenya: 'kenya',
-    kenia: 'kenya'
+    kenia: 'kenya',
+    ng: 'nigeria',
+    nigeria: 'nigeria',
+    gh: 'ghana',
+    ghana: 'ghana',
+    sn: 'senegal',
+    senegal: 'senegal',
+    ci: 'ivory_coast',
+    ivory_coast: 'ivory_coast',
+    cote_divoire: 'ivory_coast',
+    costa_de_marfil: 'ivory_coast',
+    sl: 'sierra_leone',
+    sierra_leone: 'sierra_leone',
+    sierra_leona: 'sierra_leone',
+    lr: 'liberia',
+    liberia: 'liberia',
+    bj: 'benin',
+    benin: 'benin',
+    tg: 'togo',
+    togo: 'togo',
+    gn: 'guinea',
+    guinea: 'guinea',
+    gm: 'gambia',
+    gambia: 'gambia'
   };
 
   function normalizeKey(value) {

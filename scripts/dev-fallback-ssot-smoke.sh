@@ -144,6 +144,7 @@ assert('isRegisteredFamily(LATAM)', EFR.isRegisteredFamily('LATAM') === true, 'L
 assert('isRegisteredFamily(WESTERN_EUROPE)', EFR.isRegisteredFamily('WESTERN_EUROPE') === true, 'F2.5c');
 assert('isRegisteredFamily(SOUTHEAST_ASIAN)', EFR.isRegisteredFamily('SOUTHEAST_ASIAN') === true, 'F2.6c');
 assert('isRegisteredFamily(SOUTH_ASIAN)', EFR.isRegisteredFamily('SOUTH_ASIAN') === true, 'F2.7c');
+assert('isRegisteredFamily(WEST_AFRICAN)', EFR.isRegisteredFamily('WEST_AFRICAN') === true, 'F3.3c');
 assert('isRegisteredFamily(GLOBAL_NEUTRAL)', EFR.isRegisteredFamily('GLOBAL_NEUTRAL') === true, 'F2.2d1');
 
 const Narrative = ctx.window.KairosNarrativeIntelligence;
@@ -192,6 +193,18 @@ assert(
   'India → SOUTH_ASIAN (F2.7c)',
   EFR.COUNTRY_EDITORIAL_FAMILY.india === 'SOUTH_ASIAN',
   EFR.resolveEditorialFamily({ cityName: 'Delhi', countryId: 'india' })
+);
+
+assert(
+  'WEST_AFRICAN countries resolver (F3.3c)',
+  ['nigeria', 'ghana', 'senegal', 'ivory_coast', 'sierra_leone', 'liberia', 'benin', 'togo', 'guinea', 'gambia'].every(function (slug) {
+    return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'WEST_AFRICAN';
+  }),
+  JSON.stringify({
+    nigeria: EFR.COUNTRY_EDITORIAL_FAMILY.nigeria,
+    ghana: EFR.COUNTRY_EDITORIAL_FAMILY.ghana,
+    senegal: EFR.COUNTRY_EDITORIAL_FAMILY.senegal
+  })
 );
 
 assert(

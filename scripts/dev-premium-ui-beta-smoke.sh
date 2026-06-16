@@ -160,8 +160,8 @@ assert(
 );
 
 assert(
-  '10 familias registradas (F2.7c)',
-  EFR.REGISTERED_FAMILIES.length === 10 && EFR.isRegisteredFamily('SOUTH_ASIAN') === true,
+  '11 familias registradas (F3.3c)',
+  EFR.REGISTERED_FAMILIES.length === 11 && EFR.isRegisteredFamily('SOUTH_ASIAN') === true,
   'count=' + EFR.REGISTERED_FAMILIES.length
 );
 

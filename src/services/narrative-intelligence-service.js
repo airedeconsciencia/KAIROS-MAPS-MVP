@@ -288,6 +288,23 @@
         'En {ciudad}, el propósito respira cuando bajas la prisa de mostrar antes de ordenar el paso.'
       ]
     },
+    WEST_AFRICAN: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en la red — rostro humano antes que escena.',
+        'En {ciudad}, la cercanía madura cuando quien te conoce no pide permiso para nombrarte.',
+        'En {ciudad}, el amor respira en presencia verificable — pertenencia sin convertir la densidad en teatro.'
+      ],
+      trabajo: [
+        'En {ciudad}, la obra gana sentido en movimiento — antes de volver a lo visible.',
+        'En {ciudad}, conviene leer la dirección bajo ruido — la oportunidad distrae y también orienta.',
+        'En {ciudad}, el propósito respira cuando separas oportunidad visible y sentido propio — antes del siguiente paso.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo habla en el apretón urbano — sin convertir la pausa en culpa social.',
+        'En {ciudad}, la calma se gana entre ritmo y red — un alivio que no compite con el bullicio.',
+        'En {ciudad}, el descanso madura cuando aflojas sin desaparecer de quien cuenta contigo.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, el vínculo se prueba en atención sostenida — persona antes que personaje.',
@@ -465,6 +482,20 @@
       descanso: [
         'En el ritmo entre obligación y pausa en {ciudad}, con {goalPhrase}, el cuerpo responde:',
         'En la coherencia interior de {ciudad}, leyendo {goalPhrase}, el alivio advierte:'
+      ]
+    },
+    WEST_AFRICAN: {
+      amor: [
+        'En la red de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        'Desde el rostro en la densidad de {ciudad}, leyendo {goalPhrase}, la cercanía marca:'
+      ],
+      trabajo: [
+        'En la oportunidad visible de {ciudad}, con {goalPhrase}, la obra susurra:',
+        'Antes del bullicio negociado en {ciudad}, leyendo {goalPhrase}, conviene leer el sentido:'
+      ],
+      descanso: [
+        'En el ritmo entre red y pausa en {ciudad}, con {goalPhrase}, el cuerpo responde:',
+        'En la estabilidad flexible de {ciudad}, leyendo {goalPhrase}, el alivio advierte:'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -654,6 +685,20 @@
       descanso: [
         ' El respiro entre obligaciones en {ciudad} suele afinar lo que el cuerpo pide sin otra exigencia.',
         ' En la pausa ganada al pasaje, {ciudad} devuelve calma que la prisa no alcanza a nombrar.'
+      ]
+    },
+    WEST_AFRICAN: {
+      amor: [
+        ' La red habitada en {ciudad} suele afinar lo que el vínculo aún no ha nombrado.',
+        ' En el rostro del apretón, {ciudad} devuelve matices que la primera densidad no mostró.'
+      ],
+      trabajo: [
+        ' Lo que orientas en privado en {ciudad} suele afinar lo que la obra aún no ha articulado en voz alta.',
+        ' En la tensión entre oportunidad y sentido, {ciudad} devuelve dirección que el ruido visible no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' La pausa breve entre conexiones en {ciudad} suele afinar lo que el cuerpo pide sin otra exigencia.',
+        ' En la constancia relacional del día, {ciudad} devuelve calma que la prisa no alcanza a nombrar.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -1731,6 +1776,77 @@
           'esta semana, prueba un respiro breve y real — no el que suena bien al contarla.',
           'esta semana, deja una tarde sin rendir — habitar {ciudad} con calma ganada.'
         ]
+      }
+    },
+    WEST_AFRICAN: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, el vínculo se prueba en la red — si la cercanía aguanta cuando muchos miran y pocos conocen de verdad.',
+        trabajo: 'En {ciudad}, la oportunidad visible compite con lo que tu obra aún madura por dentro — a veces confundes ser visto con tener dirección.',
+        descanso: 'En {ciudad}, aflojar puede sentirse como quedar fuera del ritmo de la gente — aunque el cuerpo ya pida una pausa breve y real.',
+      },
+      opportunityByGoal: {
+        amor: 'sostener el vínculo con presencia verificable — sin convertir la cercanía en prueba de intensidad.',
+        trabajo: 'separar oportunidad visible y sentido propio — antes de volver al ruido negociado.',
+        descanso: 'quedarte en la pausa sin desaparecer de quien te nombra — sin convertir el descanso en abandono.',
+      },
+      summaryFrame: {
+        amor: 'En la red de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        trabajo: 'En la oportunidad visible de {ciudad}, leyendo {goalPhrase}, la obra susurra:',
+        descanso: 'En el ritmo entre red y pausa en {ciudad}, con {goalPhrase}, el cuerpo responde:',
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando la red no pide demostrar nada?',
+          DC: '¿Qué verdad compartes en {ciudad} antes de pedirle al otro que encaje en tu visibilidad?',
+          MC: '¿Qué gesto del amor quieres que {ciudad} recuerde en la red que te conoce?',
+          default: '¿Qué te pide {ciudad} en amor si sueltas la necesidad de impresionar a quien no te conoce?',
+        },
+        trabajo: {
+          IC: '¿Qué parte de tu obra en {ciudad} sigue viva cuando el ruido visible no está cerca?',
+          MC: '¿Tu impulso en {ciudad} busca oportunidad o sentido propio?',
+          AC: '¿Cómo sostendrías tu obra en {ciudad} si no necesitara ser vista en cada paso?',
+          default: '¿Qué sentido habitas en {ciudad} antes de volver a medirte por lo visible?',
+        },
+        descanso: {
+          AC: '¿Puedes aflojar en {ciudad} sin sentir que abandonas a quien cuenta contigo?',
+          MC: '¿Tu descanso en {ciudad} es alivio ganado o culpa social?',
+          IC: '¿Qué calma te pide {ciudad} entre el apretón y la gente que te nombra?',
+          default: '¿Qué ritmo corporal te devuelve {ciudad} si habitas la pausa sin desaparecer?',
+        },
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea presencia verificable — no escena.',
+          'Llévate de {ciudad} la presencia que no pidió permiso para ser verdadera.',
+          'Si el vínculo permanece, que sea en la red que te conoce — no en la historia que contarías.',
+        ],
+        trabajo: [
+          'De {ciudad} puede quedarte esto: la dirección puede ser tuya aunque la ciudad empuje hacia lo visible.',
+          'Que te quede la obra que respira cuando baja la necesidad de ser vista.',
+          'Pregúntate en voz baja: ¿para quién trabajas cuando el ruido negociado se aquieta?',
+        ],
+        descanso: [
+          'Quédate con el cuerpo que en {ciudad} volvió a hablar sin desaparecer de quien te nombra.',
+          'Que permanezca una pausa breve — tomada y tuya.',
+          'Llévate un alivio útil: la pausa que no compitió con el ritmo de la red.',
+        ],
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, elige un encuentro donde importe más habitar la presencia verificable que impresionar — pequeño y real.',
+          'esta semana, comparte un rato sencillo con alguien que te conoce — el rostro importa más que la intensidad.',
+          'esta semana, deja que la red te reconozca sin pedir permiso performativo.',
+        ],
+        trabajo: [
+          'esta semana, anota en privado qué sentido tiene tu obra — antes de volver al ruido visible.',
+          'esta semana, guarda una hora en movimiento interno para orientar la dirección — no para la vitrina.',
+          'esta semana, elige una tarea mínima con sentido — aunque quede fuera de lo negociado.',
+        ],
+        descanso: [
+          'esta semana, guarda un tramo de pausa breve — sin desaparecer de quien cuenta contigo.',
+          'esta semana, prueba un alivio real — no el que suena bien al contarlo.',
+          'esta semana, deja una tarde sin rendir — habitar {ciudad} con constancia relacional.',
+        ],
       }
     },
     GLOBAL_NEUTRAL: {

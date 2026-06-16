@@ -181,8 +181,8 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '10 familias registradas',
-  EFR.REGISTERED_FAMILIES.length === 10 && EFR.isRegisteredFamily('SOUTH_ASIAN') === true,
+  '11 familias registradas',
+  EFR.REGISTERED_FAMILIES.length === 11 && EFR.isRegisteredFamily('SOUTH_ASIAN') === true,
   'count=' + EFR.REGISTERED_FAMILIES.length + ' registered=' + EFR.isRegisteredFamily('SOUTH_ASIAN')
 );
 
@@ -193,8 +193,8 @@ assert(
 );
 
 assert(
-  'SCHEMA_VERSION f2.7c',
-  EFR.SCHEMA_VERSION.indexOf('f2.7c') !== -1,
+  'SCHEMA_VERSION f3.3c',
+  EFR.SCHEMA_VERSION.indexOf('f3.3c') !== -1,
   EFR.SCHEMA_VERSION
 );
 
@@ -205,8 +205,8 @@ assert(
 );
 
 assert(
-  '10 familias en pools narrativos',
-  Narrative.NARRATIVE_SPINE_BY_REGION && Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION).length === 10,
+  '11 familias en pools narrativos',
+  Narrative.NARRATIVE_SPINE_BY_REGION && Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION).length === 11,
   'spine=' + Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION || {}).length
 );
 

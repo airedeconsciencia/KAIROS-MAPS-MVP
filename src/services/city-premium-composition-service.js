@@ -63,7 +63,12 @@
   var REGIONAL_FALLBACK_BAN_MARKERS = {
     IBERIAN: ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'],
     MEDITERRANEAN: ['paseo', 'acera', 'vitrina urbana'],
-    ANGLO: ['agenda', 'calendario', 'bloque reservado', 'productividad']
+    ANGLO: ['agenda', 'calendario', 'bloque reservado', 'productividad'],
+    AFRICAN_COASTAL: ['horizonte', 'viento', 'amplitud', 'paisaje'],
+    LATAM: ['compañía', 'calor humano', 'lo reservado', 'sobremesa', 'plaza'],
+    SOUTH_ASIAN: ['coherencia interior', 'multiplicidad habitada'],
+    SOUTHEAST_ASIAN: ['gracia en la densidad', 'ritual ligero', 'flujo compartido'],
+    GLOBAL_NEUTRAL: ['persona antes que personaje', 'prisa de impresionar', 'obra callada']
   };
 
   function normFoldRegional(text) {
@@ -168,6 +173,14 @@
       'Donde el cuerpo afloja entre obligaciones, la oportunidad aparece sin escena: ',
       'Con pertenencia sin espectáculo, conviene mirar esto: ',
       'En el respiro ganado al pasaje, la oportunidad se deja leer así: '
+    ],
+    WEST_AFRICAN: [
+      'En la red habitada, conviene leer la oportunidad así: ',
+      'Desde el rostro en la densidad, la oportunidad se presenta sin prisa: ',
+      'En la adaptación con arraigo móvil, puede abrirse esto: ',
+      'Donde la visibilidad se negocia, la oportunidad aparece sin escena: ',
+      'Con estabilidad flexible, conviene mirar esto: ',
+      'En la obra en movimiento, la oportunidad se deja leer así: '
     ],
     GLOBAL_NEUTRAL: [
       'Al ralentizar, conviene leer la oportunidad así: ',
@@ -415,6 +428,23 @@
         'Quizá notes que un respiro breve deja de incomodarte en la sobrecarga urbana.'
       ]
     },
+    WEST_AFRICAN: {
+      amor: [
+        'Puede que una charla en el apretón dure más de lo previsto y no quieras que termine.',
+        'Tal vez notes calma al pensar en alguien — sin prisa de cerrar la escena pública.',
+        'A veces ocurre que te sientas sin necesidad de demostrar — rostro antes que espectáculo.'
+      ],
+      trabajo: [
+        'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso en movimiento interno.',
+        'Puede que vuelvas del cruce con una idea que por fin encaja — sin prisa de mostrarla.',
+        'Tal vez te sorprenda sentarte sin necesidad de producir nada — sin medirte por lo visible.'
+      ],
+      descanso: [
+        'Puede que te sorprenda aflojar el ritmo sin sentir que abandonas a quien te nombra.',
+        'A veces ocurre que el cuerpo pide pausa antes que la mente lo autorice entre conexiones.',
+        'Quizá notes que un alivio breve deja de incomodarte en el apretón urbano.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'Puede que una charla sin reloj dure más de lo previsto y no quieras que termine.',
@@ -565,6 +595,20 @@
       descanso: [
         'Mira si te sientes más entero o más expuesto al tomar pausa entre obligaciones; ambas respuestas informan.',
         'Fíjate si el respiro ganado te sostiene o te desnuda; las dos lecturas valen.'
+      ]
+    },
+    WEST_AFRICAN: {
+      amor: [
+        'Mira si te sientes más entero o más expuesto al habitar la red; ambas respuestas informan.',
+        'Fíjate si quien te conoce te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      trabajo: [
+        'Mira si te sientes más entero o más expuesto al orientar la dirección en movimiento; ambas respuestas informan.',
+        'Fíjate si la obra en movimiento te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      descanso: [
+        'Mira si te sientes más entero o más expuesto al tomar pausa sin desaparecer; ambas respuestas informan.',
+        'Fíjate si el alivio breve te sostiene o te desnuda; las dos lecturas valen.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -1005,6 +1049,47 @@
         'Hay momentos en que la multiplicidad habla en voces distintas, no por confirmación.',
         'Puede que lo que pide el trayecto no pida lo mismo en ti.',
         'Hay señales que se entienden mejor al volver sobre el mismo cruce.'
+      ]
+    },
+    WEST_AFRICAN: {
+      matiz: [
+        'Detrás del apretón hay otra lectura, más humana.',
+        'Con el tiempo, quien te nombra aclara lo que la primera capa no decía.',
+        'Lo que continúa completa el arraigo móvil sin pedir prisa.',
+        'Hay un matiz en la red que no es oposición: es presencia verificable.'
+      ],
+      contradiccion: [
+        'La segunda mirada en la densidad suele ser más honesta que la primera.',
+        'Entre oportunidad visible y sentido propio hay un cruce estrecho — no contradicción, tensión.',
+        'Quizá notes dos ritmos conviviendo entre visibilidad y pertenencia sin pedir permiso.',
+        'A veces la red choca con la prisa de ser visto — ahí está la fricción.'
+      ],
+      capa: [
+        'Hay una capa que solo aparece cuando aflojas la necesidad de impresionar.',
+        'Lo que continúa no es anexo: es otra cara de lo que habitas en movimiento.',
+        'Detrás del impulso hay una pregunta más lenta — casi en alivio breve.',
+        'Hay un hilo que conecta lo negociado con lo no dicho en quien te conoce.'
+      ],
+      advertencia: [
+        'Si te quedas un poco más en el apretón, el tono cambia.',
+        'Algo se mueve cuando dejas de exigirte respuesta inmediata a lo visible.',
+        'Detrás de la densidad hay algo que pide cobertura mutua, no conclusión.',
+        'La escena cambia cuando dejas de medirla con la prisa de oportunidad.'
+      ],
+      cierre: [
+        'Entre una señal y otra hay espacio para elegir cómo habitas la constancia relacional.',
+        'Lo repetido confirma o matiza lo que intuías en la red del día.',
+        'Hay un giro pequeño en la densidad que altera el sentido de todo.'
+      ],
+      cuerpo: [
+        'La lectura se afina cuando el cuerpo también opina entre conexiones.',
+        'Algo se revela cuando sueltas la necesidad de demostrar ante quien no te conoce.',
+        'No todo lo que se activa en la visibilidad negociada apunta al mismo norte.'
+      ],
+      ciudad: [
+        'Hay momentos en que {ciudad} habla por quien te nombra, no por confirmación.',
+        'Puede que lo que pide la oportunidad no pida lo mismo en ti.',
+        'Hay señales que se entienden mejor al volver sobre el mismo rostro.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -2485,6 +2570,38 @@ function metaphorFingerprint(text) {
         'Lo que hoy acelera el cuerpo puede aflojarse si habitas la pausa entre obligaciones.'
       ]
     },
+    WEST_AFRICAN: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en la red — sin prisa de demostrar.',
+        'Registra un rostro concreto del día y vuelve a él sin prisa de cerrar la escena pública.',
+        'El amor aquí no pide vitrina: pide presencia verificable que el cuerpo pueda sostener.',
+        'Si algo incomoda en el vínculo, obsérvalo en la densidad del apretón — no como fallo personal.',
+        'Lo dicho con honestidad ante quien te conoce suele orientar mejor que los planes demasiado pulidos.',
+        'Un gesto breve ante la red vale más que una noche perfecta para contar.',
+        'Mira si el vínculo respira cuando baja la necesidad de impresionar fuera de quien te nombra.',
+        'Lo que hoy tensa el vínculo puede aclararse si aflojas la prisa de ser visto.'
+      ],
+      trabajo: [
+        'En {ciudad}, el sentido del trabajo madura en movimiento — no en lo negociado.',
+        'Anota en privado qué parte de tu obra sigue viva cuando la oportunidad visible no está cerca.',
+        'El propósito aquí no pide espectáculo: pide dirección que respire antes de volver al ruido.',
+        'Si algo incomoda en la trayectoria, obsérvalo en la visibilidad negociada — no como fracaso.',
+        'Lo orientado en calma interna suele guiar mejor que las urgencias demasiado visibles.',
+        'Separa oportunidad visible y sentido propio antes de volver a mostrarlo.',
+        'Mira si el cansancio es de obra o de postureo — la diferencia importa en el apretón urbano.',
+        'Lo que hoy confunde la trayectoria puede aclararse si aflojas la prisa de negociar visibilidad.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo recupera en pausa breve: un paso lento, una tarde sin prisa.',
+        'Guarda un tramo de alivio real — no el que suena bien contarlo.',
+        'El descanso aquí no pide disculpa: pide tregua sin rendir cuentas al ritmo de la red.',
+        'Si algo incomoda en la pausa, obsérvalo en el apretón del cuerpo — no como pereza.',
+        'El ritmo honesto entre conexiones suele orientar mejor que los planes demasiado rígidos.',
+        'Un alivio breve y ganado vale más que una semana de pausa teatral.',
+        'Mira si la calma aguanta cuando vuelves al apretón — ahí está la prueba.',
+        'Lo que hoy acelera el cuerpo puede aflojarse si habitas la pausa sin desaparecer de quien te nombra.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, el vínculo se afina en atención sostenida — una mirada, un silencio cómodo.',
@@ -2680,6 +2797,20 @@ function metaphorFingerprint(text) {
         'El alivio del cuerpo puede sostener lo anterior un poco más.'
       ]
     },
+    WEST_AFRICAN: {
+      amor: [
+        'En la red de {ciudad}, a veces basta habitar la presencia verificable sin concluir la escena.',
+        'El rostro en la densidad puede sostener lo anterior un poco más.'
+      ],
+      trabajo: [
+        'En la oportunidad visible de {ciudad}, a veces basta orientar la dirección antes de volver al ruido.',
+        'La obra en movimiento puede sostener lo anterior un poco más.'
+      ],
+      descanso: [
+        'En la pausa breve de {ciudad}, a veces basta aflojar sin desaparecer de quien te nombra.',
+        'La tregua breve puede sostener lo anterior un poco más.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, a veces basta alargar la conversación sin concluirla.',
@@ -2786,6 +2917,16 @@ function metaphorFingerprint(text) {
       'Cuando algo incomoda, obsérvalo en la sobrecarga del cuerpo — no en el juicio rápido.',
       'Deja que el trayecto te devuelva su ritmo — sin prisa de concluir.',
       'Un paso en calma ganada puede bastarte para seguir caminando {ciudad} con verdad.'
+    ],
+    WEST_AFRICAN: [
+      'A veces lo esencial aparece en la red — una verdad que no pide escena.',
+      '{ciudad} enseña en el rostro de la densidad, sin pedirte prisa de entenderlo todo.',
+      'Habitar la adaptación puede bastarte para seguir explorando {ciudad} con verdad.',
+      'Lo hermoso vive en la presencia verificable, no solo en el gran gesto.',
+      'No necesitas resolver el bullicio: basta red antes que exposición.',
+      'Cuando algo incomoda, obsérvalo en el apretón del cuerpo — no en el juicio rápido.',
+      'Deja que la constancia relacional te devuelva su ritmo — sin prisa de concluir.',
+      'Un paso en movimiento interno puede bastarte para seguir caminando {ciudad} con verdad.'
     ],
     GLOBAL_NEUTRAL: [
       'A veces lo esencial aparece en el margen — una conversación que no pide conclusión.',
@@ -2907,6 +3048,18 @@ function metaphorFingerprint(text) {
       'Puede que notes el lugar en matices: un cruce, un rostro distinto, un alivio breve.',
       'Deja que el trayecto te devuelva su ritmo — sin prisa de concluir.',
       'Un tramo en calma ganada puede bastarte para seguir explorando {ciudad} con verdad.'
+    ],
+    WEST_AFRICAN: [
+      'Puede que notes que {ciudad} se afina cuando la red también orienta.',
+      'Las voces honestas del apretón suelen guiar mejor que las urgencias demasiado visibles.',
+      'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en el rostro del día.',
+      'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en la visibilidad negociada.',
+      'A veces hay que cruzar otro cruce del mapa para entender qué pide el paso.',
+      'Tal vez baste una presencia verificable que te sostenga — sin tenerlo todo resuelto.',
+      'Tal vez notes que algunas lecturas maduran despacio, como una pausa breve ganada.',
+      'Puede que notes el lugar en matices: un apretón, un rostro distinto, una pausa ganada.',
+      'Deja que la adaptación te devuelva su ritmo — sin prisa de concluir.',
+      'Un tramo en constancia relacional puede bastarte para seguir explorando {ciudad} con verdad.'
     ],
     GLOBAL_NEUTRAL: [
       'Puede que notes que {ciudad} se afina cuando la atención también orienta.',
