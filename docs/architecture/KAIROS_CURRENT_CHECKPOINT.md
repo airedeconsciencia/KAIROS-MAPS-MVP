@@ -2,24 +2,24 @@
 
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
-**Rama:** `main` · **up to date with `origin/main`**  
-**HEAD:** `23c52a4` — `f2.9c1 latam catalog wave a checkpoint`  
-**Checkpoint F2.9:** `docs/architecture/F2.9G_LATAM_CATALOG_WAVE_A_PRODUCTION_CHECKPOINT.md`  
-**Producción live:** catálogo **`3.8f.1-f2.9c-0.1`** · **31 ciudades / 30 países** · editorial EFR **`3.8h.2-f2.7c-0.1`**
+**Rama:** `main` · **ahead of `origin/main`**  
+**HEAD runtime:** `9f244eb` — `f3.3c west african runtime integration`  
+**Checkpoint F3.3:** `docs/architecture/F3.3C_WEST_AFRICAN_RUNTIME_CHECKPOINT.md`  
+**Producción live:** catálogo **`3.8f.1-f2.9c-0.1`** · **31 ciudades / 30 países** · editorial EFR prod **`3.8h.2-f2.7c-0.1`** (sin WEST_AFRICAN)
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (30 países · **10 familias**), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, familias regionales live (LATAM · WE · SEA · SA · …), y desde **F2.9f** **catálogo 31 ciudades / 30 países visibles en producción**.
+KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (**40 países** · **11 familias** en `src/` local), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, familias regionales live en prod (LATAM · WE · SEA · SA · …), catálogo **31 ciudades / 30 países** en producción, y desde **F3.3c** familia **`WEST_AFRICAN`** integrada en runtime local (**no desplegada**).
 
-**PRE-F1 cerrado** · **F2.2–F2.7 cerrados** · **F2.8–F2.9b auditorías cerradas** · **F2.9 serie cerrada** (catálogo + staging + prod).
+**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3c runtime WA cerrado local** · **F3.3d pendiente** (push + staging).
 
-**Producción** (https://kairos-maps-mvp.web.app) — catálogo Wave A live: Bogotá · Santiago · Montevideo · Quito. Gap resolver↔catálogo = **0**. Editorial sin cambio F2.9.
+**Producción** (https://kairos-maps-mvp.web.app) — catálogo Wave A live. Editorial prod **sin WEST_AFRICAN** hasta deploy F3.3d.
 
-**Smokes gate F2.9f (pre-deploy prod):** **5/5 PASS** · post-deploy catalog smoke **PASS**.
+**Smokes gate F3.3c (pre-staging):** **8/8 PASS** WA + regresiones LATAM/resolver/dedup/compositor.
 
-**Riesgos vivos:** cache browser · `dist/` sucio · QA prod parcial SCL/MVD/UIO · PK/BD/LK/NP → GN · 8 ciudades LATAM misma voz.
+**Riesgos vivos:** producción sin WA · ciudades WA fuera de catálogo · `dist/` sucio · cache browser · Lagos futura ancla (no metonimia).
 
 ---
 
@@ -33,137 +33,156 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 ---
 
-## III. Serie F2 — en curso
+## III. Serie F2 — cerrada
 
 | Fase | Estado | Evidencia |
 |------|--------|-----------|
-| **F2.0–F2.7g** | ✅ Cerrado | SA prod editorial @ `4ca9675` · doc `70a255b` |
-| **F2.8a** | ✅ Audit | Global Coverage Review v2 |
-| **F2.9a–F2.9b** | ✅ Audit | Catalog coverage + expansion ROI |
-| **F2.9c** | ✅ Catálogo | `fe629f3` · 31/30 · gap = 0 |
-| **F2.9c1–F2.9c2** | ✅ Doc + push | `23c52a4` |
-| **F2.9d** | ✅ Staging | QA 12/12 Wave A + reg 7/7 |
-| **F2.9f** | ✅ **Prod** | Catálogo 31 live · Bogotá ×3 + reg 6/6 |
-| **F2.9g** | ✅ Doc | `F2.9G_LATAM_CATALOG_WAVE_A_PRODUCTION_CHECKPOINT.md` |
-| **F3.0** | ⏳ Siguiente | **Roadmap decision / next expansion audit** |
+| **F2.0–F2.7g** | ✅ Cerrado | SA prod editorial @ `4ca9675` |
+| **F2.8a–F2.9b** | ✅ Audit | Coverage + expansion ROI |
+| **F2.9c–F2.9g** | ✅ Catálogo prod | 31/30 live · doc `F2.9G` |
 
 ---
 
-## IV. F2.9 — qué cambió / qué no
+## IV. Serie F3 — en curso
 
-### Cambió (prod live @ F2.9f)
+| Fase | Estado | Evidencia |
+|------|--------|-----------|
+| **F3.3a** | ✅ Audit | Constitution WA — CONSTELACIÓN GOLFO |
+| **F3.3b** | ✅ Copy | 14 packs · 202 strings · parity SA |
+| **F3.3c** | ✅ Runtime | `9f244eb` · familia #11 · 10 países v1 |
+| **F3.3c1** | ✅ Bleed fix | `REGIONAL_FALLBACK_BAN_MARKERS` ampliado (incl. `9f244eb`) |
+| **F3.3c3** | ✅ Doc | `F3.3C_WEST_AFRICAN_RUNTIME_CHECKPOINT.md` |
+| **F3.3d** | ⏳ Siguiente | **Push + staging deploy / browser QA** |
 
-- **Catálogo:** 27 → **31 ciudades** · 26 → **30 países visibles**
-- **+4 ciudades:** Bogotá · Santiago · Montevideo · Quito → **LATAM**
-- **Schema catálogo prod:** `3.8f.1-f2.9c-0.1`
-- **Gap resolver↔catálogo:** **0** (30/30 países mapeados con ciudad catálogo)
-- **Mapa / búsqueda local / scorer:** 31 lugares
+---
+
+## V. F3.3c — qué cambió / qué no
+
+### Cambió (runtime local @ `9f244eb`)
+
+- **Resolver:** **`WEST_AFRICAN`** familia **#11** · schema **`3.8h.2-f3.3c-0.1`**
+- **Países resolver:** 30 → **40 explícitos** (+10 WA v1)
+- **14 packs editoriales** WA en narrative · compositor · knowledge
+- **Fix fallback regional:** filtro AC/LATAM/SA/SEA/GN en `interpretations.js` bleed
+- **Smokes:** 2 nuevos WA + 9 actualizados (10→11 familias)
+
+**10 países v1 → WEST_AFRICAN:** nigeria · ghana · senegal · ivory_coast · sierra_leone · liberia · benin · togo · guinea · gambia
 
 ### No cambió
 
-- **`COUNTRY_EDITORIAL_FAMILY`** · **`REGISTERED_FAMILIAS`** — 30 países · 10 familias
-- **Resolver schema** — `3.8h.2-f2.7c-0.1`
-- **Copy / packs / country-archetypes / premium compositor**
-- **Familias editoriales live** (SA · SEA · WE · …)
+- **`DEFAULT_FAMILY`** — sigue **`GLOBAL_NEUTRAL`**
+- **Catálogo SSOT** — **31 ciudades / 30 países** (sin Lagos/Accra/Dakar)
+- **Deploy staging / producción** — sin WEST_AFRICAN live
+- **`dist/`** — desincronizado · no commiteado
+- **Familias existentes** — sin remapeo de países previos
 
 ---
 
-## V. Catálogo SSOT (prod live)
+## VI. Resolver + catálogo SSOT
 
-| Métrica | Valor |
-|---------|-------|
-| Ciudades | **31** |
-| Países visibles | **30** |
-| Países resolver sin ciudad | **0** |
-| Ciudades LATAM | **8** |
-| Schema | `3.8f.1-f2.9c-0.1` |
+| Métrica | `src/` local | Prod live |
+|---------|--------------|-----------|
+| Familias editoriales | **11** | **10** (sin WA) |
+| Países resolver | **40** | **30** |
+| Ciudades catálogo | **31** | **31** |
+| Países catálogo visibles | **30** | **30** |
+| Schema resolver | `3.8h.2-f3.3c-0.1` | `3.8h.2-f2.7c-0.1` |
+| Schema catálogo | `3.8f.1-f2.9c-0.1` | `3.8f.1-f2.9c-0.1` |
 
 ---
 
-## VI. Smokes gate actuales
+## VII. Smokes gate actuales
 
 ```bash
-./scripts/dev-cities-catalog-smoke.sh
-./scripts/dev-editorial-family-resolver-smoke.sh
-./scripts/dev-latam-editorial-integration-smoke.sh
+./scripts/dev-west-african-editorial-integration-smoke.sh
+./scripts/dev-west-african-editorial-smoke.sh
 ./scripts/dev-city-premium-composition-smoke.sh
+./scripts/dev-editorial-dedup-smoke.sh
+./scripts/dev-latam-editorial-integration-smoke.sh
+./scripts/dev-editorial-family-resolver-smoke.sh
+./scripts/dev-fallback-ssot-smoke.sh
 ./scripts/dev-premium-ui-beta-smoke.sh
 ```
 
-**Estado F2.9f:** **ALL PASS** (gate pre-deploy prod).
+**Estado F3.3c:** **ALL PASS** (gate pre-staging).
 
 ---
 
-## VII. QA producción (F2.9f)
+## VIII. QA runtime local (F3.3c)
 
 | Bloque | Resultado |
 |--------|-----------|
-| Bogotá × amor · trabajo · descanso | **PASS** → LATAM |
-| CDMX / amor | **PASS** → LATAM |
+| Lagos × amor · trabajo · descanso | **PASS** → WEST_AFRICAN |
+| Accra × amor · trabajo · descanso | **PASS** → WEST_AFRICAN |
+| Dakar × amor · trabajo · descanso | **PASS** → WEST_AFRICAN |
 | Delhi / amor | **PASS** → SOUTH_ASIAN |
 | Bangkok / amor | **PASS** → SOUTHEAST_ASIAN |
 | París / amor | **PASS** → WESTERN_EUROPE |
 | Lisboa / amor | **PASS** → IBERIAN |
+| CDMX / amor | **PASS** → LATAM |
+| Nairobi / trabajo | **PASS** → AFRICAN_COASTAL |
 | Oslo / amor | **PASS** → GLOBAL_NEUTRAL |
-| UI catálogo | **31 ciudades · 31 markers** |
 
-**Staging baseline F2.9d:** Santiago · Montevideo · Quito × 3 goals — **12/12 PASS** (no re-leídos en prod F2.9f).
+**Nota:** Lagos/Accra/Dakar vía objetos sintéticos — no en catálogo.
 
 ---
 
-## VIII. Staging / producción
+## IX. Staging / producción
 
 | Entorno | URL | Catálogo | Editorial |
 |---------|-----|----------|-----------|
-| **Producción** | https://kairos-maps-mvp.web.app | **31** @ `3.8f.1-f2.9c-0.1` | `3.8h.2-f2.7c-0.1` |
-| **Staging** | https://kairos-maps-dev.web.app | **31** (paridad F2.9d) | Sin cambio F2.9 |
-| **Local `src/`** | — | **31** @ `23c52a4` | Sin cambio resolver |
+| **Producción** | https://kairos-maps-mvp.web.app | **31** @ `3.8f.1-f2.9c-0.1` | `3.8h.2-f2.7c-0.1` (sin WA) |
+| **Staging** | https://kairos-maps-dev.web.app | **31** | Sin WA hasta F3.3d |
+| **Local `src/`** | — | **31** @ `9f244eb` | **`3.8h.2-f3.3c-0.1`** · 11 familias |
 
 ---
 
-## IX. Deuda / riesgos abiertos
+## X. Deuda / riesgos abiertos
 
 | ID | Descripción |
 |----|-------------|
-| **R-F2.9f-1** | **Cache browser** — catálogo legacy 27 si bundle cacheado |
-| **OP-3** | **`dist/` sucio post-deploy** · no commiteado |
-| **R-F2.9f-3** | **QA prod parcial** SCL/MVD/UIO — baseline F2.9d |
+| **R-F3.3-1** | **Producción sin WEST_AFRICAN** hasta F3.3d deploy |
+| **R-F3.3-2** | **`dist/` sucio** post-deploy previo · no commiteado |
+| **R-F3.3-3** | **Ciudades WA fuera de catálogo** — smoke sintético only |
+| **R-F3.3-4** | **Marker `compañía` amplio** en ban LATAM fallback |
+| **R-F3.3-5** | **Lagos futura ancla, no metonimia** — Nigeria ≠ solo Lagos |
+| **R-F2.9f-1** | **Cache browser** — catálogo legacy si bundle cacheado |
 | **R-F2.7-3** | **PK / BD / LK / NP** → **`GLOBAL_NEUTRAL`** |
-| **R-F2.9c-3** | **8 ciudades LATAM / misma voz** |
 
 ---
 
-## X. Git status (post F2.9g doc)
+## XI. Git status (post F3.3c3 doc)
 
 ```
-HEAD / origin/main: 23c52a4 — f2.9c1 latam catalog wave a checkpoint
-Runtime catálogo: fe629f3 — f2.9c latam catalog expansion wave a
-Doc checkpoint: F2.9G (+ F2.9g commit pending)
-src/ · scripts/: limpios @ 23c52a4
-dist/: modificado / untracked (NO commiteado — rsync deploy-prod)
-Producción catálogo: 31/30 live @ 3.8f.1-f2.9c-0.1
+HEAD runtime: 9f244eb — f3.3c west african runtime integration
+HEAD doc:     (pending) — f3.3c west african runtime checkpoint
+
+Rama: main · ahead of origin/main
+src/: limpio @ 9f244eb
+dist/: modificado / untracked (NO commiteado)
+Producción: catálogo 31/30 live · editorial sin WEST_AFRICAN
 ```
 
 ---
 
-## XI. Siguiente fase
+## XII. Siguiente fase
 
-### **F3.0 — Roadmap decision / next expansion audit**
+### **F3.3d — Push + staging deploy / browser QA**
 
-Decisión Wave B catálogo · priorización territorial · alineación F2.8/F2.9 audits.
+Push `main` · build `dist/` · deploy staging · browser QA Lagos/Accra/Dakar × 3 goals + regresiones.
 
 ---
 
-## XII. Documentos relacionados
+## XIII. Documentos relacionados
 
 | Documento | Contenido |
 |-----------|-----------|
+| `F3.3C_WEST_AFRICAN_RUNTIME_CHECKPOINT.md` | Cierre F3.3c runtime WA |
 | `F2.9G_LATAM_CATALOG_WAVE_A_PRODUCTION_CHECKPOINT.md` | Cierre F2.9 prod catálogo |
-| `F2.9C_LATAM_CATALOG_WAVE_A_CHECKPOINT.md` | Trazabilidad F2.9c catálogo |
+| `F2.7C_SOUTH_ASIAN_RUNTIME_CHECKPOINT.md` | Patrón integración SA |
 | `F2.7G_SOUTH_ASIAN_PRODUCTION_CHECKPOINT.md` | Cierre F2.7 prod editorial |
-| `F2.6G_SOUTHEAST_ASIAN_PRODUCTION_CHECKPOINT.md` | Cierre F2.6 prod SEA |
 | `KAIROS_MASTER_HANDOFF_F1.8.md` | Handoff PRE-F1 |
 
 ---
 
-*Checkpoint actualizado F2.9g · Doc-only · Catálogo live prod 31/30 @ 23c52a4 · Schema 3.8f.1-f2.9c-0.1*
+*Checkpoint actualizado F3.3c3 · Doc-only · Runtime local @ 9f244eb · Schema resolver 3.8h.2-f3.3c-0.1 · Catálogo 31/30 sin cambio · Prod sin WEST_AFRICAN*
