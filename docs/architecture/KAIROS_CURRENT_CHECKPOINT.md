@@ -2,25 +2,27 @@
 
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
-**Rama:** `main` · **up to date with `origin/main`** (pre-push F3.6)  
-**HEAD local:** F3.6d doc checkpoint (post F3.6 runtime)  
-**Checkpoint F3.6:** `docs/architecture/F3.6_SEA_PLUS_RESOLVER_CATALOG_CHECKPOINT.md`  
+**Rama:** `main` · **up to date with `origin/main`**  
+**HEAD local:** F3.6g doc checkpoint (post F3.6f prod deploy)  
+**Checkpoint F3.6:** `docs/architecture/F3.6G_SEA_PLUS_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint F3.4:** `docs/architecture/F3.4B_WEST_AFRICAN_CATALOG_WAVE_A_CHECKPOINT.md`  
-**Producción live:** catálogo **`3.8f.1-f3.4b-0.1`** · **34 ciudades / 33 países** · editorial EFR **`3.8h.2-f3.3c-0.1`** · **40 países** · **11 familias**
+**Producción live:** catálogo **`3.8f.1-f3.6c-0.1`** · **38 ciudades / 37 países** · editorial EFR **`3.8h.2-f3.6b-0.1`** · **44 países** · **11 familias**
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado**, dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, catálogo local **`38 ciudades / 37 países`**, y resolver local **`44 países / 11 familias`** con **SEA+ Wave A** (F3.6b + F3.6c).
+KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (**44 países** · **11 familias** live en prod), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, y catálogo **`38 ciudades / 37 países`** con **SEA+ Wave A** (Ho Chi Minh City · Kuala Lumpur · Jakarta · Manila).
 
-**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3 serie cerrada** · **F3.4b catálogo WA cerrado** · **F3.6 SEA+ resolver + catálogo cerrado en `src/`**.
+**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3 serie cerrada** · **F3.4b catálogo WA cerrado** · **F3.6 SEA+ serie cerrada en producción**.
 
-**Producción** (https://kairos-maps-mvp.web.app) — editorial **`3.8h.2-f3.3c-0.1`** · catálogo prod **34/33** (sin deploy F3.6 aún).
+**Producción** (https://kairos-maps-mvp.web.app) — resolver **`3.8h.2-f3.6b-0.1`** · catálogo **`3.8f.1-f3.6c-0.1`** · **38/37** live.
 
-**Smokes gate F3.6:** **5/5 PASS** (catalog · resolver · SEA integration · fallback SSOT · global neutral).
+**Smokes gate F3.6:** **6/6 PASS** (pre-deploy F3.6f).
 
-**Riesgos vivos:** homogeneización SEA · Ho Chi Minh naming · Manila words mínimo · cache browser · `dist/` sucio · prod desincronizado.
+**QA prod F3.6f:** catálogo **38/37 PASS** · premium **12/12 PASS** · regresiones **7/7 PASS**.
+
+**Riesgos vivos:** Manila 502 words · Ho Chi Minh naming · homogeneización SEA · cache browser · 7 países WA sin ancla · `dist/` sucio.
 
 ---
 
@@ -44,54 +46,54 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 ---
 
-## IV. Serie F3 — F3.6 SEA+ cerrado
+## IV. Serie F3 — F3.6 SEA+ cerrada en prod
 
 | Fase | Estado | Evidencia |
 |------|--------|-----------|
 | **F3.3a–F3.3g** | ✅ Cerrado | Editorial WA prod @ `479693a` |
-| **F3.4a–F3.4b1** | ✅ Cerrado | Catálogo WA Wave A · 34/33 |
-| **F3.4d–F3.4f** | ✅ Cerrado | Staging + prod catálogo 34/33 |
+| **F3.4a–F3.4f** | ✅ Cerrado | Catálogo WA Wave A prod 34/33 |
 | **F3.5a–F3.5b** | ✅ Audit | Coverage gap · SEA+ first |
 | **F3.6a** | ✅ Audit | SEA+ resolver readiness |
-| **F3.6b** | ✅ **Resolver** | 44 países · schema `3.8h.2-f3.6b-0.1` |
-| **F3.6c** | ✅ **Catálogo** | 38/37 · schema `3.8f.1-f3.6c-0.1` |
+| **F3.6b–F3.6c** | ✅ Runtime | Resolver 44 · catálogo 38/37 |
 | **F3.6d** | ✅ Doc | `F3.6_SEA_PLUS_RESOLVER_CATALOG_CHECKPOINT.md` |
-| **F3.6e** | ⏳ Siguiente | **Staging deploy + browser QA** |
+| **F3.6e** | ✅ Staging | Browser QA 12/12 · 7/7 |
+| **F3.6f** | ✅ **Prod** | Push `bbcd7f4` · deploy prod |
+| **F3.6g** | ✅ Doc | `F3.6G_SEA_PLUS_PRODUCTION_CHECKPOINT.md` |
+| **F3.7a** | ⏳ Siguiente | **South Asian Expansion Audit** |
 
 ---
 
-## V. F3.6 — qué cambió en `src/` / qué no
+## V. F3.6 — qué cambió en producción
 
-### Cambió (local `src/` @ F3.6)
+### Cambió (prod live @ F3.6f)
 
 - **Schema resolver:** `3.8h.2-f3.3c-0.1` → **`3.8h.2-f3.6b-0.1`**
 - **Países resolver:** 40 → **44** (+ vietnam · malaysia · indonesia · philippines → SOUTHEAST_ASIAN)
 - **Schema catálogo:** `3.8f.1-f3.4b-0.1` → **`3.8f.1-f3.6c-0.1`**
 - **Ciudades catálogo:** 34 → **38** (+ Ho Chi Minh City · Kuala Lumpur · Jakarta · Manila)
-- **Países visibles:** 33 → **37** (+ Vietnam · Malasia · Indonesia · Filipinas)
+- **Países visibles:** 33 → **37**
 - **Países SEA con ancla catálogo:** 2/6 → **6/6**
-- **Smokes:** conteos 44/38/37 · 12 lecturas SEA+ · regresiones 7/7
+- **Push:** `77615ae` → **`bbcd7f4`** en `origin/main`
 
 ### No cambió
 
 - **Familias** — **11** (sin cambio)
 - **Copy / packs / country-archetypes** — intactos
 - **`DEFAULT_FAMILY`** — `GLOBAL_NEUTRAL`
-- **Producción** — sigue **40 resolver / 34 catálogo** hasta deploy F3.6e
 
 ---
 
 ## VI. Resolver + catálogo SSOT
 
-| Métrica | Prod live | Local `src/` (F3.6) |
-|---------|-----------|---------------------|
-| Familias editoriales | **11** | **11** |
-| Países resolver | **40** | **44** |
-| Ciudades catálogo | **34** | **38** |
-| Países catálogo visibles | **33** | **37** |
-| Schema resolver | `3.8h.2-f3.3c-0.1` | **`3.8h.2-f3.6b-0.1`** |
-| Schema catálogo | `3.8f.1-f3.4b-0.1` | **`3.8f.1-f3.6c-0.1`** |
-| Ciudades SEA en catálogo | **2** | **6** |
+| Métrica | Prod live | Staging | Local `src/` |
+|---------|-----------|---------|--------------|
+| Familias editoriales | **11** | **11** | **11** |
+| Países resolver | **44** | **44** | **44** |
+| Ciudades catálogo | **38** | **38** | **38** |
+| Países catálogo visibles | **37** | **37** | **37** |
+| Schema resolver | **`3.8h.2-f3.6b-0.1`** | **`3.8h.2-f3.6b-0.1`** | **`3.8h.2-f3.6b-0.1`** |
+| Schema catálogo | **`3.8f.1-f3.6c-0.1`** | **`3.8f.1-f3.6c-0.1`** | **`3.8f.1-f3.6c-0.1`** |
+| Ciudades SEA en catálogo | **6** | **6** | **6** |
 
 ---
 
@@ -103,18 +105,18 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 ./scripts/dev-southeast-asian-editorial-integration-smoke.sh
 ./scripts/dev-fallback-ssot-smoke.sh
 ./scripts/dev-global-neutral-default-smoke.sh
-./scripts/dev-west-african-editorial-integration-smoke.sh
-./scripts/dev-city-premium-composition-smoke.sh
+./scripts/dev-premium-ui-beta-smoke.sh
 ```
 
-**Estado F3.6:** **5/5 PASS** (gate SEA+ Wave A).
+**Estado F3.6f pre-deploy:** **6/6 PASS**.
 
 ---
 
-## VIII. QA F3.6 (smokes — resolver + catálogo SSOT)
+## VIII. QA F3.6f producción
 
 | Bloque | Resultado |
 |--------|-----------|
+| Catálogo 38/37 · validateCatalog | **PASS** |
 | Ho Chi Minh City × amor · trabajo · descanso | **PASS** → SOUTHEAST_ASIAN |
 | Kuala Lumpur × amor · trabajo · descanso | **PASS** → SOUTHEAST_ASIAN |
 | Jakarta × amor · trabajo · descanso | **PASS** → SOUTHEAST_ASIAN |
@@ -127,7 +129,7 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 | Lisboa / amor | **PASS** → IBERIAN |
 | Oslo / amor | **PASS** → GLOBAL_NEUTRAL |
 
-**Browser QA prod:** pendiente F3.6e (staging primero).
+**Browser QA prod:** **19/19 PASS** @ https://kairos-maps-mvp.web.app/?premium=1&debug=1
 
 ---
 
@@ -135,8 +137,8 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 | Entorno | URL | Catálogo | Editorial |
 |---------|-----|----------|-----------|
-| **Producción** | https://kairos-maps-mvp.web.app | **34** @ `3.8f.1-f3.4b-0.1` | **`3.8h.2-f3.3c-0.1`** · 40 países |
-| **Staging** | https://kairos-maps-dev.web.app | **34** | **`3.8h.2-f3.3c-0.1`** |
+| **Producción** | https://kairos-maps-mvp.web.app | **38** @ `3.8f.1-f3.6c-0.1` | **`3.8h.2-f3.6b-0.1`** · 44 países |
+| **Staging** | https://kairos-maps-dev.web.app | **38** @ `3.8f.1-f3.6c-0.1` | **`3.8h.2-f3.6b-0.1`** · 44 países |
 | **Local `src/`** | — | **38** @ `3.8f.1-f3.6c-0.1` | **`3.8h.2-f3.6b-0.1`** · 44 países |
 
 ---
@@ -145,38 +147,37 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 | ID | Descripción |
 |----|-------------|
-| **R-F3.6-1** | **Homogeneización SEA** — spine/packs compartidos |
-| **R-F3.6-2** | **Indonesia/Jakarta como ancla** |
-| **R-F3.6-3** | **Ho Chi Minh City naming** — EN vs búsqueda ES |
-| **R-F3.6-4** | **Manila words cerca del mínimo** (502) |
-| **R-F3.6-5** | **Prod desincronizado** — 40/34 vs 44/38 local |
+| **R-F3.6g-1** | **Manila amor @ 502 words** — margen mínimo |
+| **R-F3.6g-2** | **Ho Chi Minh City naming EN** |
+| **R-F3.6g-3** | **Homogeneización SEA** — spine/packs compartidos |
+| **R-F3.6g-4** | **Cache browser** post-deploy |
 | **R-F3.4b-1** | **7 países WA sin ancla catálogo** |
 | **OP-3** | **`dist/` sucio post-deploy** · no commiteado |
 
 ---
 
-## XI. Git status (post F3.6d)
+## XI. Git status (post F3.6g)
 
 ```
-HEAD local: F3.6d — f3.6 sea plus resolver catalog checkpoint
-Runtime: F3.6 — f3.6 sea plus resolver and catalog wave a
-origin/main: 77615ae (pre-push F3.6)
+HEAD local: F3.6g — f3.6g sea plus production checkpoint
+Runtime + doc prev: bbcd7f4 — f3.6 sea plus resolver catalog checkpoint
+origin/main: bbcd7f4 (post F3.6f push; +1 doc commit local post-F3.6g)
 
 Rama: main
-src/: limpio post F3.6
-docs/: limpio post F3.6d
-scripts/: limpio post F3.6
+src/: limpio
+docs/: limpio post F3.6g
+scripts/: limpio
 dist/: modificado / untracked (NO commiteado)
-Producción: 40 resolver / 34 catálogo hasta F3.6e
+Producción: 44 resolver / 38 catálogo live @ F3.6f
 ```
 
 ---
 
 ## XII. Siguiente fase
 
-### **F3.6e — Staging deploy + browser QA SEA+ Wave A**
+### **F3.7a — South Asian Expansion Audit**
 
-Build `dist/` · deploy staging · QA 4 ciudades × 3 goals · regresiones · **38 markers** UI.
+Auditoría READ-ONLY: gap South Asian (PK · BD · LK · NP · etc.) · resolver vs catálogo vs packs · roadmap Wave siguiente.
 
 ---
 
@@ -184,11 +185,12 @@ Build `dist/` · deploy staging · QA 4 ciudades × 3 goals · regresiones · **
 
 | Documento | Contenido |
 |-----------|-----------|
-| `F3.6_SEA_PLUS_RESOLVER_CATALOG_CHECKPOINT.md` | Cierre F3.6 resolver + catálogo |
+| `F3.6G_SEA_PLUS_PRODUCTION_CHECKPOINT.md` | Cierre F3.6 prod |
+| `F3.6_SEA_PLUS_RESOLVER_CATALOG_CHECKPOINT.md` | Cierre F3.6b+c runtime |
 | `F3.4B_WEST_AFRICAN_CATALOG_WAVE_A_CHECKPOINT.md` | Catálogo WA Wave A |
 | `F3.3G_WEST_AFRICAN_PRODUCTION_CHECKPOINT.md` | Editorial WA prod |
 | `KAIROS_MASTER_HANDOFF_F1.8.md` | Handoff PRE-F1 |
 
 ---
 
-*Checkpoint actualizado F3.6d · Resolver 44 @ 3.8h.2-f3.6b-0.1 · Catálogo 38/37 @ 3.8f.1-f3.6c-0.1 · Prod sin deploy F3.6 · Siguiente F3.6e staging QA*
+*Checkpoint actualizado F3.6g · Prod 44/38/37 @ 3.8h.2-f3.6b-0.1 + 3.8f.1-f3.6c-0.1 · origin/main bbcd7f4 · Siguiente F3.7a SA audit*
