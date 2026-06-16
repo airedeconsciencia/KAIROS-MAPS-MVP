@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f2.9c-0.1';
-  var EXPECTED_CITY_COUNT = 31;
-  var EXPECTED_COUNTRY_COUNT = 30;
+  var SCHEMA_VERSION = '3.8f.1-f3.4b-0.1';
+  var EXPECTED_CITY_COUNT = 34;
+  var EXPECTED_COUNTRY_COUNT = 33;
 
   var CITIES = [
     // Europa
@@ -45,6 +45,9 @@
     { name: 'Ciudad del Cabo', country: 'Sudáfrica', lat: -33.9249, lon: 18.4241 },
     { name: 'El Cairo', country: 'Egipto', lat: 30.0444, lon: 31.2357 },
     { name: 'Nairobi', country: 'Kenia', lat: -1.2921, lon: 36.8219 },
+    { name: 'Lagos', country: 'Nigeria', lat: 6.5244, lon: 3.3792 },
+    { name: 'Accra', country: 'Ghana', lat: 5.6037, lon: -0.1870 },
+    { name: 'Dakar', country: 'Senegal', lat: 14.7167, lon: -17.4677 },
     // Oceanía
     { name: 'Sídney', country: 'Australia', lat: -33.8688, lon: 151.2093 },
     { name: 'Auckland', country: 'Nueva Zelanda', lat: -36.8485, lon: 174.7633 }
@@ -79,6 +82,9 @@
     'Sudáfrica': 'za',
     'Egipto': 'eg',
     'Kenia': 'ke',
+    'Nigeria': 'ng',
+    'Ghana': 'gh',
+    'Senegal': 'sn',
     'Australia': 'au',
     'Nueva Zelanda': 'nz'
   };
@@ -113,6 +119,9 @@
     'Sudáfrica': 'south_africa',
     'Egipto': 'egypt',
     'Kenia': 'kenya',
+    'Nigeria': 'nigeria',
+    'Ghana': 'ghana',
+    'Senegal': 'senegal',
     'Australia': 'australia',
     'Nueva Zelanda': 'new_zealand'
   };

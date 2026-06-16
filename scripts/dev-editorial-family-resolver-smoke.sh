@@ -93,13 +93,13 @@ assert(
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '31 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 31,
+  '34 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 34,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('30 países en catálogo', countries.length === 30, 'count=' + countries.length);
+assert('33 países en catálogo', countries.length === 33, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -121,8 +121,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '31 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 31,
+  '34 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 34,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -147,7 +147,11 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Bogotá', country: 'Colombia', expected: 'LATAM' },
   { city: 'Santiago', country: 'Chile', expected: 'LATAM' },
   { city: 'Montevideo', country: 'Uruguay', expected: 'LATAM' },
-  { city: 'Quito', country: 'Ecuador', expected: 'LATAM' }
+  { city: 'Quito', country: 'Ecuador', expected: 'LATAM' },
+  { city: 'Lisboa', country: 'Portugal', expected: 'IBERIAN' },
+  { city: 'Lagos', country: 'Nigeria', expected: 'WEST_AFRICAN' },
+  { city: 'Accra', country: 'Ghana', expected: 'WEST_AFRICAN' },
+  { city: 'Dakar', country: 'Senegal', expected: 'WEST_AFRICAN' }
 ];
 
 const splitBrainHits = [];
@@ -165,7 +169,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('18 casos históricos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('25 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -255,7 +259,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (18 casos)',
+  'Pipeline knowledge ≡ narrative (25 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );

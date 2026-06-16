@@ -24,8 +24,8 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — WEST_AFRICAN editorial integration (F3.3c)"
-echo " Scope: Lagos · Accra · Dakar · anti-leak · regresiones"
+echo " KAIROS MAPS — WEST_AFRICAN editorial integration (F3.4b)"
+echo " Scope: Lagos · Accra · Dakar · catálogo SSOT · anti-leak · regresiones"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -195,6 +195,21 @@ function composeReading(city, goal) {
     profile: { firstName: 'Roberto' }
   });
 }
+
+assert(
+  '34 ciudades / 33 países catálogo (F3.4b Wave A)',
+  Catalog.CITIES.length === 34 && Catalog.getCountries().length === 33,
+  'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
+);
+
+const catalogMiss = WA_CITIES.filter(function (entry) {
+  return !Catalog.findCityByName(entry.name);
+});
+assert(
+  'Lagos · Accra · Dakar en catálogo SSOT',
+  catalogMiss.length === 0,
+  catalogMiss.map(function (e) { return e.name; }).join(' · ') || '3/3'
+);
 
 assert(
   '11 familias registradas',

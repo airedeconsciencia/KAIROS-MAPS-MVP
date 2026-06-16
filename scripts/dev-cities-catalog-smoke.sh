@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '31 ciudades (estado actual)',
-  Catalog.CITIES.length === 31,
+  '34 ciudades (F3.4b WEST_AFRICAN Wave A)',
+  Catalog.CITIES.length === 34,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '30 países únicos (estado actual)',
-  countries.length === 30,
+  '33 países únicos (F3.4b WEST_AFRICAN Wave A)',
+  countries.length === 33,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (30)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 30,
+  'COUNTRY_IDS alineados (33)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 33,
   'sample=' + Catalog.resolveCountryId('Portugal')
 );
 
