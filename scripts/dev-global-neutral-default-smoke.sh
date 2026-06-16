@@ -109,7 +109,8 @@ assert(
     EFR.SCHEMA_VERSION.indexOf('f2.5c') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f2.6c') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f2.7c') !== -1 ||
-    EFR.SCHEMA_VERSION.indexOf('f3.3c') !== -1,
+    EFR.SCHEMA_VERSION.indexOf('f3.3c') !== -1 ||
+    EFR.SCHEMA_VERSION.indexOf('f3.6b') !== -1,
   EFR.SCHEMA_VERSION
 );
 
@@ -137,6 +138,23 @@ assert(
   'Nairobi/kenya → AFRICAN_COASTAL explícito (no DEFAULT)',
   EFR.resolveEditorialFamily({ cityName: 'Nairobi', countryId: 'kenya' }) === 'AFRICAN_COASTAL',
   'Kenia mapeado en COUNTRY_EDITORIAL_FAMILY — no cae en GLOBAL_NEUTRAL'
+);
+
+['vietnam', 'malaysia', 'indonesia', 'philippines'].forEach(function (slug) {
+  assert(
+    slug + ' → SOUTHEAST_ASIAN (F3.6b SEA+)',
+    EFR.resolveEditorialFamily({ cityName: '', countryId: slug }) === 'SOUTHEAST_ASIAN',
+    EFR.resolveEditorialFamily({ cityName: '', countryId: slug })
+  );
+});
+assert(
+  'Malasia display → malaysia slug → SOUTHEAST_ASIAN',
+  EFR.coerceCountryId('Malasia') === 'malaysia' &&
+    EFR.resolveEditorialFamily({ cityName: 'Kuala Lumpur', countryDisplay: 'Malasia' }) === 'SOUTHEAST_ASIAN',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Malasia'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Kuala Lumpur', countryDisplay: 'Malasia' })
+  })
 );
 
 ['mexico', 'argentina', 'brazil', 'peru', 'colombia', 'chile', 'uruguay', 'ecuador'].forEach(function (slug) {

@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.4b-0.1';
-  var EXPECTED_CITY_COUNT = 34;
-  var EXPECTED_COUNTRY_COUNT = 33;
+  var SCHEMA_VERSION = '3.8f.1-f3.6c-0.1';
+  var EXPECTED_CITY_COUNT = 38;
+  var EXPECTED_COUNTRY_COUNT = 37;
 
   var CITIES = [
     // Europa
@@ -40,6 +40,10 @@
     { name: 'Seúl', country: 'Corea del Sur', lat: 37.5665, lon: 126.9780 },
     { name: 'Bangkok', country: 'Tailandia', lat: 13.7563, lon: 100.5018 },
     { name: 'Singapur', country: 'Singapur', lat: 1.3521, lon: 103.8198 },
+    { name: 'Ho Chi Minh City', country: 'Vietnam', lat: 10.8231, lon: 106.6297 },
+    { name: 'Kuala Lumpur', country: 'Malasia', lat: 3.1390, lon: 101.6869 },
+    { name: 'Jakarta', country: 'Indonesia', lat: -6.2088, lon: 106.8456 },
+    { name: 'Manila', country: 'Filipinas', lat: 14.5995, lon: 120.9842 },
     { name: 'Delhi', country: 'India', lat: 28.6139, lon: 77.2090 },
     // África
     { name: 'Ciudad del Cabo', country: 'Sudáfrica', lat: -33.9249, lon: 18.4241 },
@@ -78,6 +82,10 @@
     'Corea del Sur': 'kr',
     'Tailandia': 'th',
     'Singapur': 'sg',
+    'Vietnam': 'vn',
+    'Malasia': 'my',
+    'Indonesia': 'id',
+    'Filipinas': 'ph',
     'India': 'in',
     'Sudáfrica': 'za',
     'Egipto': 'eg',
@@ -115,6 +123,10 @@
     'Corea del Sur': 'south_korea',
     'Tailandia': 'thailand',
     'Singapur': 'singapore',
+    'Vietnam': 'vietnam',
+    'Malasia': 'malaysia',
+    'Indonesia': 'indonesia',
+    'Filipinas': 'philippines',
     'India': 'india',
     'Sudáfrica': 'south_africa',
     'Egipto': 'egypt',

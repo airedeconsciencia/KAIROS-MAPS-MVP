@@ -180,12 +180,17 @@ assert(
 );
 
 assert(
-  'SOUTHEAST_ASIAN countries resolver (F2.6c)',
-  EFR.COUNTRY_EDITORIAL_FAMILY.thailand === 'SOUTHEAST_ASIAN' &&
-    EFR.COUNTRY_EDITORIAL_FAMILY.singapore === 'SOUTHEAST_ASIAN',
+  'SOUTHEAST_ASIAN countries resolver (F3.6b SEA+)',
+  ['thailand', 'singapore', 'vietnam', 'malaysia', 'indonesia', 'philippines'].every(function (slug) {
+    return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'SOUTHEAST_ASIAN';
+  }),
   JSON.stringify({
     thailand: EFR.COUNTRY_EDITORIAL_FAMILY.thailand,
-    singapore: EFR.COUNTRY_EDITORIAL_FAMILY.singapore
+    singapore: EFR.COUNTRY_EDITORIAL_FAMILY.singapore,
+    vietnam: EFR.COUNTRY_EDITORIAL_FAMILY.vietnam,
+    malaysia: EFR.COUNTRY_EDITORIAL_FAMILY.malaysia,
+    indonesia: EFR.COUNTRY_EDITORIAL_FAMILY.indonesia,
+    philippines: EFR.COUNTRY_EDITORIAL_FAMILY.philippines
   })
 );
 

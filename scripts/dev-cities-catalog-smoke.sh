@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '34 ciudades (F3.4b WEST_AFRICAN Wave A)',
-  Catalog.CITIES.length === 34,
+  '38 ciudades (F3.6c SEA+ Wave A)',
+  Catalog.CITIES.length === 38,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '33 países únicos (F3.4b WEST_AFRICAN Wave A)',
-  countries.length === 33,
+  '37 países únicos (F3.6c SEA+ Wave A)',
+  countries.length === 37,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,10 +163,31 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (33)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 33,
-  'sample=' + Catalog.resolveCountryId('Portugal')
+  'COUNTRY_IDS alineados (37)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 37,
+  'sample=' + Catalog.resolveCountryId('Vietnam')
 );
+
+const seaWaveA = [
+  { name: 'Ho Chi Minh City', countryId: 'vietnam', code: 'vn' },
+  { name: 'Kuala Lumpur', countryId: 'malaysia', code: 'my' },
+  { name: 'Jakarta', countryId: 'indonesia', code: 'id' },
+  { name: 'Manila', countryId: 'philippines', code: 'ph' }
+];
+const seaIssues = [];
+seaWaveA.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) seaIssues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      seaIssues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      seaIssues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('SEA+ Wave A ciudades + slugs (F3.6c)', seaIssues.length === 0, seaIssues.join(' · '));
 
 console.log('');
 console.log('════════════════════════════════════════════════════════════');
