@@ -110,7 +110,8 @@ assert(
     EFR.SCHEMA_VERSION.indexOf('f2.6c') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f2.7c') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f3.3c') !== -1 ||
-    EFR.SCHEMA_VERSION.indexOf('f3.6b') !== -1,
+    EFR.SCHEMA_VERSION.indexOf('f3.6b') !== -1 ||
+    EFR.SCHEMA_VERSION.indexOf('f3.7b') !== -1,
   EFR.SCHEMA_VERSION
 );
 
@@ -154,6 +155,32 @@ assert(
   JSON.stringify({
     slug: EFR.coerceCountryId('Malasia'),
     family: EFR.resolveEditorialFamily({ cityName: 'Kuala Lumpur', countryDisplay: 'Malasia' })
+  })
+);
+
+['pakistan', 'bangladesh', 'sri_lanka', 'nepal'].forEach(function (slug) {
+  assert(
+    slug + ' → SOUTH_ASIAN (F3.7b SA+)',
+    EFR.resolveEditorialFamily({ cityName: '', countryId: slug }) === 'SOUTH_ASIAN',
+    EFR.resolveEditorialFamily({ cityName: '', countryId: slug })
+  );
+});
+assert(
+  'Pakistán display → pakistan slug → SOUTH_ASIAN',
+  EFR.coerceCountryId('Pakistán') === 'pakistan' &&
+    EFR.resolveEditorialFamily({ cityName: 'Karachi', countryDisplay: 'Pakistán' }) === 'SOUTH_ASIAN',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Pakistán'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Karachi', countryDisplay: 'Pakistán' })
+  })
+);
+assert(
+  'Sri Lanka display → sri_lanka slug → SOUTH_ASIAN',
+  EFR.coerceCountryId('Sri Lanka') === 'sri_lanka' &&
+    EFR.resolveEditorialFamily({ cityName: 'Colombo', countryDisplay: 'Sri Lanka' }) === 'SOUTH_ASIAN',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Sri Lanka'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Colombo', countryDisplay: 'Sri Lanka' })
   })
 );
 

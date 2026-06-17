@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.6c-0.1';
-  var EXPECTED_CITY_COUNT = 38;
-  var EXPECTED_COUNTRY_COUNT = 37;
+  var SCHEMA_VERSION = '3.8f.1-f3.7c-0.1';
+  var EXPECTED_CITY_COUNT = 42;
+  var EXPECTED_COUNTRY_COUNT = 41;
 
   var CITIES = [
     // Europa
@@ -45,6 +45,10 @@
     { name: 'Jakarta', country: 'Indonesia', lat: -6.2088, lon: 106.8456 },
     { name: 'Manila', country: 'Filipinas', lat: 14.5995, lon: 120.9842 },
     { name: 'Delhi', country: 'India', lat: 28.6139, lon: 77.2090 },
+    { name: 'Karachi', country: 'Pakistán', lat: 24.8607, lon: 67.0011 },
+    { name: 'Dhaka', country: 'Bangladesh', lat: 23.8103, lon: 90.4125 },
+    { name: 'Colombo', country: 'Sri Lanka', lat: 6.9271, lon: 79.8612 },
+    { name: 'Kathmandu', country: 'Nepal', lat: 27.7172, lon: 85.3240 },
     // África
     { name: 'Ciudad del Cabo', country: 'Sudáfrica', lat: -33.9249, lon: 18.4241 },
     { name: 'El Cairo', country: 'Egipto', lat: 30.0444, lon: 31.2357 },
@@ -87,6 +91,10 @@
     'Indonesia': 'id',
     'Filipinas': 'ph',
     'India': 'in',
+    'Pakistán': 'pk',
+    'Bangladesh': 'bd',
+    'Sri Lanka': 'lk',
+    'Nepal': 'np',
     'Sudáfrica': 'za',
     'Egipto': 'eg',
     'Kenia': 'ke',
@@ -128,6 +136,10 @@
     'Indonesia': 'indonesia',
     'Filipinas': 'philippines',
     'India': 'india',
+    'Pakistán': 'pakistan',
+    'Bangladesh': 'bangladesh',
+    'Sri Lanka': 'sri_lanka',
+    'Nepal': 'nepal',
     'Sudáfrica': 'south_africa',
     'Egipto': 'egypt',
     'Kenia': 'kenya',

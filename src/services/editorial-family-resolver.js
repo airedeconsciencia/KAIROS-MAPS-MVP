@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f3.6b-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f3.7b-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -24,7 +24,7 @@
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (44 países) */
+  /** @type {Record<string, string>} slug canónico → familia (48 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -46,6 +46,10 @@
     indonesia: 'SOUTHEAST_ASIAN',
     philippines: 'SOUTHEAST_ASIAN',
     india: 'SOUTH_ASIAN',
+    pakistan: 'SOUTH_ASIAN',
+    bangladesh: 'SOUTH_ASIAN',
+    sri_lanka: 'SOUTH_ASIAN',
+    nepal: 'SOUTH_ASIAN',
     spain: 'MEDITERRANEAN',
     italy: 'MEDITERRANEAN',
     greece: 'MEDITERRANEAN',
@@ -131,6 +135,14 @@
     filipinas: 'philippines',
     in: 'india',
     india: 'india',
+    pk: 'pakistan',
+    pakistan: 'pakistan',
+    bd: 'bangladesh',
+    bangladesh: 'bangladesh',
+    lk: 'sri_lanka',
+    sri_lanka: 'sri_lanka',
+    np: 'nepal',
+    nepal: 'nepal',
     es: 'spain',
     spain: 'spain',
     espana: 'spain',

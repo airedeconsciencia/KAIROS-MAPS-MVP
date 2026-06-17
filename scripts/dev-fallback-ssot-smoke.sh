@@ -195,9 +195,17 @@ assert(
 );
 
 assert(
-  'India → SOUTH_ASIAN (F2.7c)',
-  EFR.COUNTRY_EDITORIAL_FAMILY.india === 'SOUTH_ASIAN',
-  EFR.resolveEditorialFamily({ cityName: 'Delhi', countryId: 'india' })
+  'SOUTH_ASIAN countries resolver (F3.7b SA+)',
+  ['india', 'pakistan', 'bangladesh', 'sri_lanka', 'nepal'].every(function (slug) {
+    return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'SOUTH_ASIAN';
+  }),
+  JSON.stringify({
+    india: EFR.COUNTRY_EDITORIAL_FAMILY.india,
+    pakistan: EFR.COUNTRY_EDITORIAL_FAMILY.pakistan,
+    bangladesh: EFR.COUNTRY_EDITORIAL_FAMILY.bangladesh,
+    sri_lanka: EFR.COUNTRY_EDITORIAL_FAMILY.sri_lanka,
+    nepal: EFR.COUNTRY_EDITORIAL_FAMILY.nepal
+  })
 );
 
 assert(

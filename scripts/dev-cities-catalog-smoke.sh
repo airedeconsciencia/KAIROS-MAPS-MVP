@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '38 ciudades (F3.6c SEA+ Wave A)',
-  Catalog.CITIES.length === 38,
+  '42 ciudades (F3.7c SA+ Wave A)',
+  Catalog.CITIES.length === 42,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '37 países únicos (F3.6c SEA+ Wave A)',
-  countries.length === 37,
+  '41 países únicos (F3.7c SA+ Wave A)',
+  countries.length === 41,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,9 +163,9 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (37)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 37,
-  'sample=' + Catalog.resolveCountryId('Vietnam')
+  'COUNTRY_IDS alineados (41)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 41,
+  'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
 const seaWaveA = [
@@ -188,6 +188,33 @@ seaWaveA.forEach(function (entry) {
   }
 });
 assert('SEA+ Wave A ciudades + slugs (F3.6c)', seaIssues.length === 0, seaIssues.join(' · '));
+
+const saWaveA = [
+  { name: 'Karachi', countryId: 'pakistan', code: 'pk' },
+  { name: 'Dhaka', countryId: 'bangladesh', code: 'bd' },
+  { name: 'Colombo', countryId: 'sri_lanka', code: 'lk' },
+  { name: 'Kathmandu', countryId: 'nepal', code: 'np' }
+];
+const saIssues = [];
+saWaveA.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) saIssues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      saIssues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      saIssues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('SA+ Wave A ciudades + slugs (F3.7c)', saIssues.length === 0, saIssues.join(' · '));
+
+assert(
+  'SCHEMA catálogo f3.7c',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.7c-0.1',
+  Catalog.SCHEMA_VERSION
+);
 
 console.log('');
 console.log('════════════════════════════════════════════════════════════');
