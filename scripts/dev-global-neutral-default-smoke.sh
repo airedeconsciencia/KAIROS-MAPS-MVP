@@ -111,7 +111,8 @@ assert(
     EFR.SCHEMA_VERSION.indexOf('f2.7c') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f3.3c') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f3.6b') !== -1 ||
-    EFR.SCHEMA_VERSION.indexOf('f3.7b') !== -1,
+    EFR.SCHEMA_VERSION.indexOf('f3.7b') !== -1 ||
+    EFR.SCHEMA_VERSION.indexOf('f3.8b') !== -1,
   EFR.SCHEMA_VERSION
 );
 
@@ -184,13 +185,31 @@ assert(
   })
 );
 
-['mexico', 'argentina', 'brazil', 'peru', 'colombia', 'chile', 'uruguay', 'ecuador'].forEach(function (slug) {
+['mexico', 'argentina', 'brazil', 'peru', 'colombia', 'chile', 'uruguay', 'ecuador', 'costa_rica', 'panama'].forEach(function (slug) {
   assert(
     'LATAM resolver ' + slug,
     EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'LATAM',
     EFR.resolveEditorialFamily({ cityName: '', countryId: slug })
   );
 });
+assert(
+  'Costa Rica display → costa_rica slug → LATAM (F3.8b)',
+  EFR.coerceCountryId('Costa Rica') === 'costa_rica' &&
+    EFR.resolveEditorialFamily({ cityName: 'San José', countryDisplay: 'Costa Rica' }) === 'LATAM',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Costa Rica'),
+    family: EFR.resolveEditorialFamily({ cityName: 'San José', countryDisplay: 'Costa Rica' })
+  })
+);
+assert(
+  'Panamá display → panama slug → LATAM (F3.8b)',
+  EFR.coerceCountryId('Panamá') === 'panama' &&
+    EFR.resolveEditorialFamily({ cityName: 'Ciudad de Panamá', countryDisplay: 'Panamá' }) === 'LATAM',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Panamá'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Ciudad de Panamá', countryDisplay: 'Panamá' })
+  })
+);
 
 const robertoUtc = vm.runInContext("new Date('1973-05-29T05:30:00.000Z')", ctx);
 const lines = Astro.computeAllLines(robertoUtc);

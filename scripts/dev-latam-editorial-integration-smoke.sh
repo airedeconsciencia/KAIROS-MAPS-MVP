@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke LATAM editorial integration (PRE-F1.3)
+# Kairos Maps — LATAM editorial integration smoke (F3.8c LATAM+ Wave A)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -24,8 +24,8 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — LATAM editorial integration smoke (PRE-F1.3)"
-echo " Scope: CDMX · BA · Rio · Lima · amends · anti-IBERIAN"
+echo " KAIROS MAPS — LATAM editorial integration (F3.8c Wave A)"
+echo " Scope: 44/43 catálogo · CR/PA · amends · regresiones · anti-leak"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -76,14 +76,26 @@ const compose = ctx.window.KairosNatalComposition.composeNatalLiteReading;
 const Bridge = ctx.window.KairosNatalMapBridge;
 const Scorer = ctx.window.KairosCityScorer;
 
+const LATAM_COUNTRIES = ['mexico', 'argentina', 'brazil', 'peru', 'colombia', 'chile', 'uruguay', 'ecuador', 'costa_rica', 'panama'];
 const LATAM_CITIES = [
   { name: 'Ciudad de México', country: 'México' },
   { name: 'Buenos Aires', country: 'Argentina' },
   { name: 'Río de Janeiro', country: 'Brasil' },
   { name: 'Lima', country: 'Perú' }
 ];
+const LATAM_PLUS_CITIES = [
+  { name: 'San José', slug: 'costa_rica' },
+  { name: 'Ciudad de Panamá', slug: 'panama' }
+];
 const GOALS = ['amor', 'trabajo', 'descanso'];
 const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
+const SEA_LEAK = ['gracia en la densidad', 'flujo compartido', 'ritual ligero', 'suavidad como eje central'];
+const WE_LEAK = ['umbral', 'medida performativa', 'exposición profesional', 'reserva sobria'];
+const GN_LEAK = ['persona antes que personaje', 'prisa de impresionar', 'performance del momento', 'silencio cómodo', 'obra callada'];
+const PLACEHOLDER_BAN = ['PLACEHOLDER', 'FIXME', 'lorem ipsum', '[TBD]', '[[', '{{'];
+const P03 = 'puede que descubras una puerta';
+const P06 = 'el ritmo del cuerpo vuelve a importar';
+const P10 = 'lo que sigue no corrige';
 
 const robertoUtc = vm.runInContext("new Date('1973-05-29T05:30:00.000Z')", ctx);
 const lines = Astro.computeAllLines(robertoUtc);
@@ -126,20 +138,141 @@ function assert(label, ok, detail) {
   if (!ok) fail += 1;
 }
 
+function normFold(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function scanPlaceholders(norm) {
+  return PLACEHOLDER_BAN.filter(function (m) {
+    return norm.indexOf(normFold(m)) !== -1;
+  }).length;
+}
+
+function scanLeakMarkers(norm, markers) {
+  return markers.filter(function (m) {
+    return norm.indexOf(normFold(m)) !== -1;
+  }).length;
+}
+
+function composeReading(city, goal, slug) {
+  const input = buildInput(goal);
+  const ranked = Scorer.rankInfluences(city, input);
+  const influences = ranked.length ? ranked.slice(0, 5) : mockInfluences;
+  return Premium.composeCityReading({
+    city: city,
+    goal: goal,
+    relevantInfluences: influences,
+    bridgeProfile: bridgeProfile,
+    profile: { firstName: 'Roberto' }
+  });
+}
+
+function scanReading(reading, slug) {
+  const nc = reading.meta.narrativeContext || {};
+  const km = reading.meta.knowledgeMeta || {};
+  const full = (reading.sections || []).map(function (s) { return s.body; }).join('\n\n');
+  const norm = normFold(full);
+  const regionE = EFR.resolveEditorialFamily({
+    cityName: reading.meta.cityName || '',
+    countryId: slug
+  });
+  return {
+    ok: reading.ok,
+    words: reading.meta.wordCount,
+    regionN: nc.regionFamily || null,
+    regionK: km.regionFamily || null,
+    regionE: regionE,
+    norm: norm,
+    iberian: scanLeakMarkers(norm, IBERIAN_LEAK),
+    sea: scanLeakMarkers(norm, SEA_LEAK),
+    we: scanLeakMarkers(norm, WE_LEAK),
+    gn: scanLeakMarkers(norm, GN_LEAK),
+    placeholders: scanPlaceholders(norm),
+    p03: norm.indexOf(P03) !== -1,
+    p06: norm.indexOf(P06) !== -1,
+    p10: norm.indexOf(P10) !== -1
+  };
+}
+
 assert(
-  'LATAM en resolver (MX, AR, BR, PE, CO, CL, UY, EC)',
-  ['mexico', 'argentina', 'brazil', 'peru', 'colombia', 'chile', 'uruguay', 'ecuador'].every(function (slug) {
+  '44 ciudades / 43 países catálogo (F3.8c Wave A)',
+  Catalog.CITIES.length === 44 && Catalog.getCountries().length === 43,
+  'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
+);
+
+assert(
+  'SCHEMA catálogo f3.8c',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.8c-0.1',
+  Catalog.SCHEMA_VERSION
+);
+
+LATAM_PLUS_CITIES.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  assert(
+    'catálogo contiene ' + entry.name,
+    !!city,
+    'missing in KairosCitiesCatalog'
+  );
+  if (city) {
+    assert(
+      entry.name + ' countryId alineado resolver',
+      Catalog.resolveCountryId(city.country) === entry.slug,
+      Catalog.resolveCountryId(city.country)
+    );
+  }
+});
+
+assert(
+  'LATAM en resolver (10 slugs F3.8b)',
+  LATAM_COUNTRIES.every(function (slug) {
     return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'LATAM';
   }),
   JSON.stringify({
     mexico: EFR.COUNTRY_EDITORIAL_FAMILY.mexico,
-    argentina: EFR.COUNTRY_EDITORIAL_FAMILY.argentina,
-    brazil: EFR.COUNTRY_EDITORIAL_FAMILY.brazil,
-    peru: EFR.COUNTRY_EDITORIAL_FAMILY.peru,
-    colombia: EFR.COUNTRY_EDITORIAL_FAMILY.colombia,
-    chile: EFR.COUNTRY_EDITORIAL_FAMILY.chile,
-    uruguay: EFR.COUNTRY_EDITORIAL_FAMILY.uruguay,
-    ecuador: EFR.COUNTRY_EDITORIAL_FAMILY.ecuador
+    costa_rica: EFR.COUNTRY_EDITORIAL_FAMILY.costa_rica,
+    panama: EFR.COUNTRY_EDITORIAL_FAMILY.panama
+  })
+);
+
+assert(
+  '50 países resolver (F3.8b LATAM+)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 50,
+  'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
+);
+
+assert(
+  'SCHEMA f3.8b',
+  EFR.SCHEMA_VERSION === '3.8h.2-f3.8b-0.1',
+  EFR.SCHEMA_VERSION
+);
+
+assert(
+  'Costa Rica display → costa_rica → LATAM (F3.8b)',
+  EFR.coerceCountryId('Costa Rica') === 'costa_rica' &&
+    EFR.resolveEditorialFamily({ cityName: 'San José', countryDisplay: 'Costa Rica' }) === 'LATAM',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Costa Rica'),
+    family: EFR.resolveEditorialFamily({ cityName: 'San José', countryDisplay: 'Costa Rica' })
+  })
+);
+
+assert(
+  'Panamá display → panama → LATAM (F3.8b)',
+  EFR.coerceCountryId('Panamá') === 'panama' &&
+    EFR.resolveEditorialFamily({ cityName: 'Ciudad de Panamá', countryDisplay: 'Panamá' }) === 'LATAM',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Panamá'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Ciudad de Panamá', countryDisplay: 'Panamá' })
+  })
+);
+
+assert(
+  'Alias cr/pa → LATAM (F3.8b)',
+  EFR.resolveEditorialFamily({ cityName: 'San José', countryId: 'cr' }) === 'LATAM' &&
+    EFR.resolveEditorialFamily({ cityName: 'Ciudad de Panamá', countryId: 'pa' }) === 'LATAM',
+  JSON.stringify({
+    cr: EFR.resolveEditorialFamily({ cityName: 'San José', countryId: 'cr' }),
+    pa: EFR.resolveEditorialFamily({ cityName: 'Ciudad de Panamá', countryId: 'pa' })
   })
 );
 
@@ -263,10 +396,6 @@ if (cdmx) {
   console.log('  words:', cdmx.reading.meta.wordCount);
 }
 
-const P03 = 'puede que descubras una puerta';
-const P06 = 'el ritmo del cuerpo vuelve a importar';
-const P10 = 'lo que sigue no corrige';
-
 function scanWave1(reading, countryId) {
   const full = (reading.sections || []).map(function (s) { return s.body; }).join('\n\n');
   const norm = full.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -324,6 +453,112 @@ WAVE1_QA.forEach(function (c) {
     c.label + ' IBERIAN leak 0 · legacy 0',
     s.iberian === 0 && !s.p03 && !s.p06 && !s.p10,
     JSON.stringify({ iberian: s.iberian, p03: s.p03, p06: s.p06, p10: s.p10 })
+  );
+});
+
+function scanLatamPlus(reading, slug) {
+  return scanReading(reading, slug);
+}
+
+console.log('\n' + '═'.repeat(60));
+console.log('QA obligatorio F3.8c — San José · Ciudad de Panamá (catálogo)');
+console.log('═'.repeat(60));
+
+const latamPlusReadings = [];
+LATAM_PLUS_CITIES.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) throw new Error('catalog missing ' + entry.name);
+  GOALS.forEach(function (goal) {
+    const reading = composeReading(city, goal, entry.slug);
+    const s = scanLatamPlus(reading, entry.slug);
+    latamPlusReadings.push({
+      city: entry.name,
+      goal: goal,
+      slug: entry.slug,
+      scan: s
+    });
+    assert(
+      entry.name + ' / ' + goal + ' → ok:true',
+      s.ok === true,
+      'ok=' + s.ok
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → words 500–900',
+      s.words >= Premium.MIN_WORDS && s.words <= Premium.MAX_WORDS,
+      'words=' + s.words
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → LATAM (n=k=e)',
+      s.regionN === 'LATAM' && s.regionK === 'LATAM' && s.regionE === 'LATAM',
+      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → split-brain 0',
+      s.regionN === s.regionK && s.regionK === s.regionE,
+      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → leaks 0',
+      s.iberian === 0 && s.sea === 0 && s.we === 0,
+      JSON.stringify({ iberian: s.iberian, sea: s.sea, we: s.we })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → placeholders 0',
+      s.placeholders === 0,
+      'hits=' + s.placeholders
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → P03/P06/P10 = 0',
+      !s.p03 && !s.p06 && !s.p10,
+      'p03=' + s.p03 + ' p06=' + s.p06 + ' p10=' + s.p10
+    );
+    console.log(
+      ' ',
+      entry.slug + ' / ' + goal + ':',
+      'ok=' + s.ok,
+      'words=' + s.words,
+      'n=k=e=' + s.regionN,
+      'leaks=' + (s.iberian + s.sea + s.we),
+      'ph=' + s.placeholders,
+      'P03/P06/P10=' + (s.p03 ? 1 : 0) + '/' + (s.p06 ? 1 : 0) + '/' + (s.p10 ? 1 : 0)
+    );
+  });
+});
+
+assert('6 lecturas LATAM+ catálogo (2 ciudades × 3 goals)', latamPlusReadings.length === 6, 'count=' + latamPlusReadings.length);
+
+const QA_REGRESSION = [
+  { label: 'Nairobi / trabajo → AFRICAN_COASTAL', cityName: 'Nairobi', slug: 'kenya', goal: 'trabajo', expected: 'AFRICAN_COASTAL' },
+  { label: 'Ciudad de México / amor → LATAM', cityName: 'Ciudad de México', slug: 'mexico', goal: 'amor', expected: 'LATAM' },
+  { label: 'Delhi / amor → SOUTH_ASIAN', cityName: 'Delhi', slug: 'india', goal: 'amor', expected: 'SOUTH_ASIAN' },
+  { label: 'Bangkok / amor → SOUTHEAST_ASIAN', cityName: 'Bangkok', slug: 'thailand', goal: 'amor', expected: 'SOUTHEAST_ASIAN' },
+  { label: 'París / amor → WESTERN_EUROPE', cityName: 'París', slug: 'france', goal: 'amor', expected: 'WESTERN_EUROPE' },
+  { label: 'Lisboa / amor → IBERIAN', cityName: 'Lisboa', slug: 'portugal', goal: 'amor', expected: 'IBERIAN' },
+  { label: 'Oslo / amor → GLOBAL_NEUTRAL', cityName: 'Oslo', slug: 'norway', goal: 'amor', expected: 'GLOBAL_NEUTRAL' }
+];
+
+console.log('\n' + '═'.repeat(60));
+console.log('Regresiones F3.8c');
+console.log('═'.repeat(60));
+
+QA_REGRESSION.forEach(function (c) {
+  const city = Catalog.findCityByName(c.cityName) || { name: c.cityName, country: c.slug };
+  const reading = composeReading(city, c.goal, c.slug);
+  const s = scanReading(reading, c.slug);
+  assert(
+    c.label,
+    s.regionN === c.expected && s.regionK === c.expected && s.regionE === c.expected,
+    JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+  );
+  assert(
+    c.label + ' ok:true · words 500–900',
+    s.ok === true && s.words >= Premium.MIN_WORDS && s.words <= Premium.MAX_WORDS,
+    JSON.stringify({ ok: s.ok, words: s.words })
+  );
+  assert(
+    c.label + ' P03/P06/P10 = 0',
+    !s.p03 && !s.p06 && !s.p10,
+    JSON.stringify({ p03: s.p03, p06: s.p06, p10: s.p10 })
   );
 });
 

@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '42 ciudades (F3.7c SA+ Wave A)',
-  Catalog.CITIES.length === 42,
+  '44 ciudades (F3.8c LATAM+ Wave A)',
+  Catalog.CITIES.length === 44,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '41 países únicos (F3.7c SA+ Wave A)',
-  countries.length === 41,
+  '43 países únicos (F3.8c LATAM+ Wave A)',
+  countries.length === 43,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (41)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 41,
+  'COUNTRY_IDS alineados (43)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 43,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -210,9 +210,28 @@ saWaveA.forEach(function (entry) {
 });
 assert('SA+ Wave A ciudades + slugs (F3.7c)', saIssues.length === 0, saIssues.join(' · '));
 
+const latamWaveA = [
+  { name: 'San José', countryId: 'costa_rica', code: 'cr' },
+  { name: 'Ciudad de Panamá', countryId: 'panama', code: 'pa' }
+];
+const latamIssues = [];
+latamWaveA.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) latamIssues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      latamIssues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      latamIssues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('LATAM+ Wave A ciudades + slugs (F3.8c)', latamIssues.length === 0, latamIssues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f3.7c',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.7c-0.1',
+  'SCHEMA catálogo f3.8c',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.8c-0.1',
   Catalog.SCHEMA_VERSION
 );
 

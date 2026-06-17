@@ -234,13 +234,15 @@ assert(
 );
 
 assert(
-  'LATAM countries resolver',
-  ['mexico', 'argentina', 'brazil', 'peru'].every(function (slug) {
+  'LATAM countries resolver (F3.8b LATAM+)',
+  ['mexico', 'argentina', 'brazil', 'peru', 'colombia', 'chile', 'uruguay', 'ecuador', 'costa_rica', 'panama'].every(function (slug) {
     return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'LATAM';
   }),
   JSON.stringify({
     mexico: EFR.COUNTRY_EDITORIAL_FAMILY.mexico,
-    argentina: EFR.COUNTRY_EDITORIAL_FAMILY.argentina
+    argentina: EFR.COUNTRY_EDITORIAL_FAMILY.argentina,
+    costa_rica: EFR.COUNTRY_EDITORIAL_FAMILY.costa_rica,
+    panama: EFR.COUNTRY_EDITORIAL_FAMILY.panama
   })
 );
 

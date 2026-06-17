@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.7c-0.1';
-  var EXPECTED_CITY_COUNT = 42;
-  var EXPECTED_COUNTRY_COUNT = 41;
+  var SCHEMA_VERSION = '3.8f.1-f3.8c-0.1';
+  var EXPECTED_CITY_COUNT = 44;
+  var EXPECTED_COUNTRY_COUNT = 43;
 
   var CITIES = [
     // Europa
@@ -35,6 +35,8 @@
     { name: 'Santiago', country: 'Chile', lat: -33.4489, lon: -70.6693 },
     { name: 'Montevideo', country: 'Uruguay', lat: -34.9011, lon: -56.1645 },
     { name: 'Quito', country: 'Ecuador', lat: -0.1807, lon: -78.4678 },
+    { name: 'San José', country: 'Costa Rica', lat: 9.9281, lon: -84.0907 },
+    { name: 'Ciudad de Panamá', country: 'Panamá', lat: 8.9824, lon: -79.5199 },
     // Asia
     { name: 'Tokio', country: 'Japón', lat: 35.6762, lon: 139.6503 },
     { name: 'Seúl', country: 'Corea del Sur', lat: 37.5665, lon: 126.9780 },
@@ -82,6 +84,8 @@
     'Chile': 'cl',
     'Uruguay': 'uy',
     'Ecuador': 'ec',
+    'Costa Rica': 'cr',
+    'Panamá': 'pa',
     'Japón': 'jp',
     'Corea del Sur': 'kr',
     'Tailandia': 'th',
@@ -127,6 +131,8 @@
     'Chile': 'chile',
     'Uruguay': 'uruguay',
     'Ecuador': 'ecuador',
+    'Costa Rica': 'costa_rica',
+    'Panamá': 'panama',
     'Japón': 'japan',
     'Corea del Sur': 'south_korea',
     'Tailandia': 'thailand',
