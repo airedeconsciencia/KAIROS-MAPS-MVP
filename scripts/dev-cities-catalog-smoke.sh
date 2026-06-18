@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '44 ciudades (F3.8c LATAM+ Wave A)',
-  Catalog.CITIES.length === 44,
+  '45 ciudades (F3.9b WA Wave B)',
+  Catalog.CITIES.length === 45,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '43 países únicos (F3.8c LATAM+ Wave A)',
-  countries.length === 43,
+  '44 países únicos (F3.9b WA Wave B)',
+  countries.length === 44,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (43)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 43,
+  'COUNTRY_IDS alineados (44)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 44,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -229,9 +229,27 @@ latamWaveA.forEach(function (entry) {
 });
 assert('LATAM+ Wave A ciudades + slugs (F3.8c)', latamIssues.length === 0, latamIssues.join(' · '));
 
+const waWaveB = [
+  { name: 'Abidjan', countryId: 'ivory_coast', code: 'ci' }
+];
+const waIssues = [];
+waWaveB.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) waIssues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      waIssues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      waIssues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('WA Wave B ciudades + slugs (F3.9b)', waIssues.length === 0, waIssues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f3.8c',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.8c-0.1',
+  'SCHEMA catálogo f3.9b',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.9b-0.1',
   Catalog.SCHEMA_VERSION
 );
 

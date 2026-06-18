@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.8c-0.1';
-  var EXPECTED_CITY_COUNT = 44;
-  var EXPECTED_COUNTRY_COUNT = 43;
+  var SCHEMA_VERSION = '3.8f.1-f3.9b-0.1';
+  var EXPECTED_CITY_COUNT = 45;
+  var EXPECTED_COUNTRY_COUNT = 44;
 
   var CITIES = [
     // Europa
@@ -58,6 +58,7 @@
     { name: 'Lagos', country: 'Nigeria', lat: 6.5244, lon: 3.3792 },
     { name: 'Accra', country: 'Ghana', lat: 5.6037, lon: -0.1870 },
     { name: 'Dakar', country: 'Senegal', lat: 14.7167, lon: -17.4677 },
+    { name: 'Abidjan', country: 'Costa de Marfil', lat: 5.3600, lon: -4.0083 },
     // Oceanía
     { name: 'Sídney', country: 'Australia', lat: -33.8688, lon: 151.2093 },
     { name: 'Auckland', country: 'Nueva Zelanda', lat: -36.8485, lon: 174.7633 }
@@ -105,6 +106,7 @@
     'Nigeria': 'ng',
     'Ghana': 'gh',
     'Senegal': 'sn',
+    'Costa de Marfil': 'ci',
     'Australia': 'au',
     'Nueva Zelanda': 'nz'
   };
@@ -152,6 +154,7 @@
     'Nigeria': 'nigeria',
     'Ghana': 'ghana',
     'Senegal': 'senegal',
+    'Costa de Marfil': 'ivory_coast',
     'Australia': 'australia',
     'Nueva Zelanda': 'new_zealand'
   };

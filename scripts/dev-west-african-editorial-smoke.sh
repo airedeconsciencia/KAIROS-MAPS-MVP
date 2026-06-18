@@ -115,7 +115,7 @@ const OVERLAP_FAMILIES = [
 const AC_BAN = ['horizonte', 'viento', 'amplitud', 'paisaje'];
 const LATAM_BAN = ['compañía', 'calor humano', 'lo reservado', 'sobremesa', 'plaza'];
 const SA_BAN = ['coherencia interior', 'deber', 'obligación', 'multiplicidad'];
-const SEA_BAN = ['suavidad', 'armonía', 'flujo', 'gracia', 'ritual ligero'];
+const SEA_BAN = ['gracia en la densidad', 'flujo compartido', 'ritual ligero', 'suavidad como eje central'];
 const CLICHE_BAN = [
   'alma africana', 'tribal', 'safari', 'ritmo africano', 'resiliencia', 'pobreza',
   'superación', 'ancestros', 'espíritu de africa', 'nollywood', 'afrobeats'

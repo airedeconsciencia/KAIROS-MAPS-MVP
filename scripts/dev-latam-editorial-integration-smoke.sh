@@ -25,7 +25,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — LATAM editorial integration (F3.8c Wave A)"
-echo " Scope: 44/43 catálogo · CR/PA · amends · regresiones · anti-leak"
+echo " Scope: 45/44 catálogo · CR/PA · amends · regresiones · anti-leak"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -195,14 +195,14 @@ function scanReading(reading, slug) {
 }
 
 assert(
-  '44 ciudades / 43 países catálogo (F3.8c Wave A)',
-  Catalog.CITIES.length === 44 && Catalog.getCountries().length === 43,
+  '45 ciudades / 44 países catálogo (F3.9b baseline; LATAM Wave A intacto)',
+  Catalog.CITIES.length === 45 && Catalog.getCountries().length === 44,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.8c',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.8c-0.1',
+  'SCHEMA catálogo f3.9b',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.9b-0.1',
   Catalog.SCHEMA_VERSION
 );
 

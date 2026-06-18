@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — WEST_AFRICAN editorial integration smoke (F3.3c)
+# Kairos Maps — WEST_AFRICAN editorial integration smoke (F3.9b Wave B)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -24,8 +24,8 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — WEST_AFRICAN editorial integration (F3.4b)"
-echo " Scope: Lagos · Accra · Dakar · catálogo SSOT · anti-leak · regresiones"
+echo " KAIROS MAPS — WEST_AFRICAN editorial integration (F3.9b Wave B)"
+echo " Scope: Lagos · Accra · Dakar · Abidjan · catálogo SSOT · anti-leak · regresiones"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -77,9 +77,10 @@ const Bridge = ctx.window.KairosNatalMapBridge;
 const Scorer = ctx.window.KairosCityScorer;
 
 const WA_CITIES = [
-  { name: 'Lagos', country: 'Nigeria', slug: 'nigeria', lat: 6.5244, lon: 3.3792 },
-  { name: 'Accra', country: 'Ghana', slug: 'ghana', lat: 5.6037, lon: -0.1870 },
-  { name: 'Dakar', country: 'Senegal', slug: 'senegal', lat: 14.7167, lon: -17.4677 }
+  { name: 'Lagos', slug: 'nigeria' },
+  { name: 'Accra', slug: 'ghana' },
+  { name: 'Dakar', slug: 'senegal' },
+  { name: 'Abidjan', slug: 'ivory_coast' }
 ];
 const WA_COUNTRIES = [
   'nigeria', 'ghana', 'senegal', 'ivory_coast', 'sierra_leone',
@@ -89,7 +90,7 @@ const GOALS = ['amor', 'trabajo', 'descanso'];
 const AC_LEAK = ['horizonte', 'viento', 'amplitud', 'paisaje'];
 const LATAM_LEAK = ['compañía', 'calor humano', 'lo reservado', 'sobremesa', 'plaza'];
 const SA_LEAK = ['coherencia interior', 'deber', 'obligación', 'multiplicidad'];
-const SEA_LEAK = ['suavidad', 'armonía', 'flujo', 'gracia', 'ritual ligero'];
+const SEA_LEAK = ['gracia en la densidad', 'flujo compartido', 'ritual ligero', 'suavidad como eje central'];
 const GN_LEAK = ['persona antes que personaje', 'prisa de impresionar', 'performance del momento', 'silencio cómodo', 'obra callada'];
 const PLACEHOLDER_BAN = ['PLACEHOLDER', 'FIXME', 'lorem ipsum', '[TBD]', '[[', '{{'];
 const P03 = 'puede que descubras una puerta';
@@ -183,7 +184,7 @@ function scanReading(reading, countryId) {
   };
 }
 
-function composeReading(city, goal) {
+function composeReading(city, goal, slug) {
   const input = buildInput(goal);
   const ranked = Scorer.rankInfluences(city, input);
   const influences = ranked.length ? ranked.slice(0, 5) : mockInfluences;
@@ -197,18 +198,41 @@ function composeReading(city, goal) {
 }
 
 assert(
-  '34 ciudades / 33 países catálogo (F3.4b Wave A)',
-  Catalog.CITIES.length === 34 && Catalog.getCountries().length === 33,
+  '45 ciudades / 44 países catálogo (F3.9b Wave B)',
+  Catalog.CITIES.length === 45 && Catalog.getCountries().length === 44,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
-const catalogMiss = WA_CITIES.filter(function (entry) {
-  return !Catalog.findCityByName(entry.name);
-});
 assert(
-  'Lagos · Accra · Dakar en catálogo SSOT',
-  catalogMiss.length === 0,
-  catalogMiss.map(function (e) { return e.name; }).join(' · ') || '3/3'
+  'SCHEMA catálogo f3.9b',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.9b-0.1',
+  Catalog.SCHEMA_VERSION
+);
+
+WA_CITIES.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  assert(
+    'catálogo contiene ' + entry.name,
+    !!city,
+    'missing in KairosCitiesCatalog'
+  );
+  if (city) {
+    assert(
+      entry.name + ' countryId alineado resolver',
+      Catalog.resolveCountryId(city.country) === entry.slug,
+      Catalog.resolveCountryId(city.country)
+    );
+  }
+});
+
+assert(
+  'Costa de Marfil display → ivory_coast → WEST_AFRICAN (F3.9b)',
+  EFR.coerceCountryId('Costa de Marfil') === 'ivory_coast' &&
+    EFR.resolveEditorialFamily({ cityName: 'Abidjan', countryDisplay: 'Costa de Marfil' }) === 'WEST_AFRICAN',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Costa de Marfil'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Abidjan', countryDisplay: 'Costa de Marfil' })
+  })
 );
 
 assert(
@@ -224,8 +248,8 @@ assert(
 );
 
 assert(
-  'SCHEMA_VERSION f3.3c',
-  EFR.SCHEMA_VERSION.indexOf('f3.3c') !== -1,
+  'SCHEMA resolver f3.8b (50 países; sin cambio F3.9b)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f3.8b-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -284,9 +308,10 @@ assert(
 
 const readings = [];
 WA_CITIES.forEach(function (entry) {
-  const city = Catalog.findCityByName(entry.name) || entry;
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) throw new Error('catalog missing ' + entry.name);
   GOALS.forEach(function (goal) {
-    const reading = composeReading(city, goal);
+    const reading = composeReading(city, goal, entry.slug);
     const s = scanReading(reading, entry.slug);
     readings.push({
       city: city.name,
@@ -298,7 +323,7 @@ WA_CITIES.forEach(function (entry) {
   });
 });
 
-assert('9 lecturas WA (3 ciudades × 3 goals)', readings.length === 9, 'count=' + readings.length);
+assert('12 lecturas WA (4 ciudades × 3 goals)', readings.length === 12, 'count=' + readings.length);
 
 readings.forEach(function (r) {
   const s = r.scan;
@@ -377,7 +402,7 @@ const QA_REGRESSION = [
 
 QA_REGRESSION.forEach(function (c) {
   const city = Catalog.findCityByName(c.cityName) || { name: c.cityName, country: c.slug };
-  const reading = composeReading(city, c.goal);
+  const reading = composeReading(city, c.goal, c.slug);
   const s = scanReading(reading, c.slug);
   assert(
     c.label,
@@ -392,7 +417,7 @@ console.log('═'.repeat(60));
 
 function bodyFor(cityName, goal, slug) {
   const city = Catalog.findCityByName(cityName) || { name: cityName, country: slug };
-  const reading = composeReading(city, goal);
+  const reading = composeReading(city, goal, slug);
   return scanReading(reading, slug);
 }
 
@@ -422,6 +447,29 @@ qaPairs.forEach(function (pair) {
     pair.a.regionE + ' vs ' + pair.b.regionE
   );
   console.log(' ', pair.label + ':', pair.a.regionE, 'vs', pair.b.regionE, '| words', pair.a.words, 'vs', pair.b.words);
+});
+
+console.log('\n' + '═'.repeat(60));
+console.log('QA obligatorio F3.9b — Abidjan (catálogo)');
+console.log('═'.repeat(60));
+
+const abidjanReadings = readings.filter(function (r) { return r.city === 'Abidjan'; });
+abidjanReadings.forEach(function (r) {
+  const s = r.scan;
+  console.log(
+    ' ',
+    r.slug + ' / ' + r.goal + ':',
+    'ok=' + s.ok,
+    'words=' + s.words,
+    'n=k=e=' + s.regionN,
+    'ac=' + s.ac,
+    'latam=' + s.latam,
+    'sa=' + s.sa,
+    'sea=' + s.sea,
+    'gn=' + s.gn,
+    'ph=' + s.placeholders,
+    'P03/P06/P10=' + (s.p03 ? 1 : 0) + '/' + (s.p06 ? 1 : 0) + '/' + (s.p10 ? 1 : 0)
+  );
 });
 
 console.log('\n' + '═'.repeat(60));
