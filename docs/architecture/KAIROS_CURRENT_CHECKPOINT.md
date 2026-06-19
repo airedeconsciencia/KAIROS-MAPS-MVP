@@ -3,26 +3,28 @@
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
 **Rama:** `main`  
-**HEAD local:** F3.9g doc checkpoint (post F3.9f prod deploy)  
+**HEAD local:** F3.10b Densification Wave A (post F3.10b1 commit/checkpoint)  
+**Checkpoint F3.10:** `docs/architecture/F3.10B_DENSIFICATION_WAVE_A_CHECKPOINT.md`  
 **Checkpoint F3.9:** `docs/architecture/F3.9G_WEST_AFRICAN_WAVE_B_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint F3.8:** `docs/architecture/F3.8G_LATAM_PLUS_PRODUCTION_CHECKPOINT.md`  
-**Producción live:** catálogo **`3.8f.1-f3.9b-0.1`** · **45 ciudades / 44 países** · editorial EFR **`3.8h.2-f3.8b-0.1`** · **50 países** · **11 familias**
+**Producción live:** catálogo **`3.8f.1-f3.9b-0.1`** · **45 ciudades / 44 países** · editorial EFR **`3.8h.2-f3.8b-0.1`** · **50 países** · **11 familias**  
+**Local `src/`:** catálogo **`3.8f.1-f3.10b-0.1`** · **47 ciudades / 44 países**
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (**50 países** · **11 familias** live en prod), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, y catálogo **`45 ciudades / 44 países`** con **WA Wave B** (Abidjan) además de **WA Wave A** (Lagos · Accra · Dakar), **LATAM+ Wave A**, **SA+ Wave A** y **SEA+ Wave A**.
+KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (**50 países** · **11 familias** live en prod), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, y catálogo local **`47 ciudades / 44 países`** (Densification Wave A: Barcelona · Mumbai) además de **WA Wave B** (Abidjan), **WA Wave A**, **LATAM+ Wave A**, **SA+ Wave A** y **SEA+ Wave A**.
 
-**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3 serie cerrada** · **F3.4b catálogo WA Wave A cerrado** · **F3.6 SEA+ serie cerrada en producción** · **F3.7 SA+ serie cerrada en producción** · **F3.8 LATAM+ serie cerrada en producción** · **F3.9 WA Wave B serie cerrada en producción**.
+**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3 serie cerrada** · **F3.4b catálogo WA Wave A cerrado** · **F3.6 SEA+ serie cerrada en producción** · **F3.7 SA+ serie cerrada en producción** · **F3.8 LATAM+ serie cerrada en producción** · **F3.9 WA Wave B serie cerrada en producción** · **F3.10b Densification Wave A cerrado en `src/`**.
 
 **Producción** (https://kairos-maps-mvp.web.app) — resolver **`3.8h.2-f3.8b-0.1`** · catálogo **`3.8f.1-f3.9b-0.1`** · **45/44** live.
 
-**Smokes gate F3.9f:** **5/5 PASS** (pre-deploy prod).
+**Smokes gate F3.10b:** **7/7 PASS** (local pre-deploy).
 
-**QA prod F3.9f:** catálogo **45/44 PASS** · Abidjan **3/3 PASS** · regresiones **7/7 PASS**.
+**QA F3.10b:** Mumbai **3/3 PASS** · Barcelona **3/3 PASS** · diferenciación Delhi≠Mumbai · Madrid≠Barcelona.
 
-**Riesgos vivos:** homogeneización LATAM · homogeneización SA · homogeneización SEA · homogeneización WA · cache browser · **6 países WA sin ancla** · `dist/` sucio.
+**Riesgos vivos:** homogeneización LATAM · homogeneización SA · homogeneización SEA · homogeneización WA · Madrid/Barcelona misma familia · Delhi/Mumbai misma familia · Mumbai sin country archetype · São Paulo pendiente · cache browser · **6 países WA sin ancla** · `dist/` sucio.
 
 ---
 
@@ -57,11 +59,31 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 | **F3.7a–F3.7g** | ✅ Cerrado | SA+ prod 48/42/41 |
 | **F3.8a–F3.8g** | ✅ Cerrado | LATAM+ prod 50/44/43 |
 | **F3.9a–F3.9g** | ✅ Cerrado | WA Wave B prod 45/44 |
-| **F3.10a** | ⏳ Siguiente | **Densification Audit / São Paulo · Mumbai · Barcelona** |
+| **F3.10a** | ✅ Cerrado | Densification audit — Barcelona + Mumbai; São Paulo diferido |
+| **F3.10b** | ✅ Cerrado | Densification Wave A catálogo 47/44 |
+| **F3.10c** | ⏳ Siguiente | **Staging deploy + browser QA Wave A** |
 
 ---
 
-## V. F3.9 — qué cambió en producción
+## V. F3.10 — qué cambió en `src/` (Wave A)
+
+### Cambió (local `src/` @ F3.10b)
+
+- **Schema catálogo:** `3.8f.1-f3.9b-0.1` → **`3.8f.1-f3.10b-0.1`**
+- **Ciudades catálogo:** 45 → **47** (+ Barcelona · Mumbai)
+- **Países visibles:** **44** (sin cambio)
+- **Split-brain casos smoke:** 36 → **38**
+
+### No cambió
+
+- **Resolver** — **50 países** · `3.8h.2-f3.8b-0.1`
+- **Familias** — **11**
+- **Copy / packs / country-archetypes / interpretations.js** — intactos
+- **São Paulo** — no añadido (diferido F3.10c+)
+
+---
+
+## VI. F3.9 — qué cambió en producción
 
 ### Cambió (prod live @ F3.9f)
 
@@ -80,24 +102,24 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 ---
 
-## VI. Resolver + catálogo SSOT
+## VII. Resolver + catálogo SSOT
 
 | Métrica | Prod live | Staging | Local `src/` |
 |---------|-----------|---------|--------------|
 | Familias editoriales | **11** | **11** | **11** |
 | Países resolver | **50** | **50** | **50** |
-| Ciudades catálogo | **45** | **45** | **45** |
+| Ciudades catálogo | **45** | **45** | **47** |
 | Países catálogo visibles | **44** | **44** | **44** |
 | Schema resolver | **`3.8h.2-f3.8b-0.1`** | **`3.8h.2-f3.8b-0.1`** | **`3.8h.2-f3.8b-0.1`** |
-| Schema catálogo | **`3.8f.1-f3.9b-0.1`** | **`3.8f.1-f3.9b-0.1`** | **`3.8f.1-f3.9b-0.1`** |
+| Schema catálogo | **`3.8f.1-f3.9b-0.1`** | **`3.8f.1-f3.9b-0.1`** | **`3.8f.1-f3.10b-0.1`** |
 | Ciudades WA en catálogo | **4** | **4** | **4** |
 | Ciudades LATAM en catálogo | **10** | **10** | **10** |
 | Ciudades SEA en catálogo | **6** | **6** | **6** |
-| Ciudades SA en catálogo | **5** | **5** | **5** |
+| Ciudades SA en catálogo | **5** | **5** | **6** (+ Mumbai) |
 
 ---
 
-## VII. Smokes gate actuales
+## VIII. Smokes gate actuales
 
 ```bash
 ./scripts/dev-cities-catalog-smoke.sh
@@ -112,11 +134,23 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 ./scripts/dev-premium-ui-beta-smoke.sh
 ```
 
-**Estado F3.9f pre-deploy:** **5/5 PASS**.
+**Estado F3.10b local:** **7/7 PASS**.
 
 ---
 
-## VIII. QA F3.9f producción
+## IX. QA F3.10b local
+
+| Bloque | Resultado |
+|--------|-----------|
+| Catálogo 47/44 · validateCatalog | **PASS** |
+| Mumbai × amor · trabajo · descanso | **PASS** → SOUTH_ASIAN |
+| Barcelona × amor · trabajo · descanso | **PASS** → MEDITERRANEAN |
+| Delhi ≠ Mumbai (amor) | **PASS** — texto y conflicto distintos |
+| Madrid ≠ Barcelona (amor) | **PASS** — texto y conflicto distintos |
+
+---
+
+## X. QA F3.9f producción
 
 | Bloque | Resultado |
 |--------|-----------|
@@ -134,20 +168,24 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 ---
 
-## IX. Staging / producción
+## XI. Staging / producción
 
 | Entorno | URL | Catálogo | Editorial |
 |---------|-----|----------|-----------|
 | **Producción** | https://kairos-maps-mvp.web.app | **45** @ `3.8f.1-f3.9b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
 | **Staging** | https://kairos-maps-dev.web.app | **45** @ `3.8f.1-f3.9b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
-| **Local `src/`** | — | **45** @ `3.8f.1-f3.9b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
+| **Local `src/`** | — | **47** @ `3.8f.1-f3.10b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
 
 ---
 
-## X. Deuda / riesgos abiertos
+## XII. Deuda / riesgos abiertos
 
 | ID | Descripción |
 |----|-------------|
+| **R-F3.10b-1** | **Madrid/Barcelona misma familia** (MEDITERRANEAN) |
+| **R-F3.10b-2** | **Delhi/Mumbai misma familia** (SOUTH_ASIAN) |
+| **R-F3.10b-3** | **Mumbai sin country archetype** |
+| **R-F3.10b-4** | **São Paulo pendiente** — gate Rio≠SP |
 | **R-F3.9g-1** | **6 países WA sin ancla catálogo** |
 | **R-F3.9g-2** | **Homogeneización WA** — pack compartido 4 ciudades |
 | **R-F3.9g-3** | **Cache browser** post-deploy |
@@ -159,35 +197,37 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 ---
 
-## XI. Git status (post F3.9g)
+## XIII. Git status (post F3.10b1)
 
 ```
-HEAD local: F3.9g — f3.9g west african wave b production checkpoint
-Runtime prev: 75c8f36 — f3.9 west african wave b checkpoint
-origin/main: 75c8f36 (+1 doc commit local post-F3.9g)
+HEAD local: F3.10b1 — f3.10b densification wave a checkpoint
+Runtime: e81ead1 — f3.10b densification wave a catalog
+origin/main: e44c7a0 (+2 commits local post-F3.10b1)
 
 Rama: main
 src/: limpio
-docs/: +1 commit F3.9g
+docs/: +1 checkpoint F3.10b
 scripts/: limpio
 dist/: modificado / untracked (NO commiteado)
-Producción: 50 resolver / 45 catálogo live @ F3.9f
+Producción: 50 resolver / 45 catálogo live (pre-F3.10c deploy)
+Local src/: 47 catálogo @ 3.8f.1-f3.10b-0.1
 ```
 
 ---
 
-## XII. Siguiente fase
+## XIV. Siguiente fase
 
-### **F3.10a — Densification Audit / São Paulo · Mumbai · Barcelona**
+### **F3.10c — Staging deploy + browser QA Wave A**
 
-Auditoría READ-ONLY: ciudades tier-1 sin ancla catálogo · ROI densificación vs homogeneización · secuencia post-F3.9.
+Build `dist/` · deploy staging · QA Mumbai/Barcelona × 3 goals · diferenciación Delhi≠Mumbai · Madrid≠Barcelona · UI 47 markers.
 
 ---
 
-## XIII. Documentos relacionados
+## XV. Documentos relacionados
 
 | Documento | Contenido |
 |-----------|-----------|
+| `F3.10B_DENSIFICATION_WAVE_A_CHECKPOINT.md` | Cierre F3.10b runtime |
 | `F3.9G_WEST_AFRICAN_WAVE_B_PRODUCTION_CHECKPOINT.md` | Cierre F3.9 prod |
 | `F3.9_WEST_AFRICAN_WAVE_B_CHECKPOINT.md` | Cierre F3.9b+c runtime |
 | `F3.8G_LATAM_PLUS_PRODUCTION_CHECKPOINT.md` | Cierre F3.8 prod |
@@ -196,4 +236,4 @@ Auditoría READ-ONLY: ciudades tier-1 sin ancla catálogo · ROI densificación 
 
 ---
 
-*Checkpoint actualizado F3.9g · Prod 50/45/44 @ 3.8h.2-f3.8b-0.1 + 3.8f.1-f3.9b-0.1 · origin/main 75c8f36 · Siguiente F3.10a Densification Audit*
+*Checkpoint actualizado F3.10b1 · Local 50/47/44 @ 3.8h.2-f3.8b-0.1 + 3.8f.1-f3.10b-0.1 · Prod 45/44 · Siguiente F3.10c staging deploy*
