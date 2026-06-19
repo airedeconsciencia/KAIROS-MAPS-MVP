@@ -7,13 +7,14 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.9b-0.1';
-  var EXPECTED_CITY_COUNT = 45;
+  var SCHEMA_VERSION = '3.8f.1-f3.10b-0.1';
+  var EXPECTED_CITY_COUNT = 47;
   var EXPECTED_COUNTRY_COUNT = 44;
 
   var CITIES = [
     // Europa
     { name: 'Madrid', country: 'España', lat: 40.4168, lon: -3.7038 },
+    { name: 'Barcelona', country: 'España', lat: 41.3874, lon: 2.1686 },
     { name: 'Lisboa', country: 'Portugal', lat: 38.7223, lon: -9.1393 },
     { name: 'París', country: 'Francia', lat: 48.8566, lon: 2.3522 },
     { name: 'Londres', country: 'Reino Unido', lat: 51.5074, lon: -0.1278 },
@@ -47,6 +48,7 @@
     { name: 'Jakarta', country: 'Indonesia', lat: -6.2088, lon: 106.8456 },
     { name: 'Manila', country: 'Filipinas', lat: 14.5995, lon: 120.9842 },
     { name: 'Delhi', country: 'India', lat: 28.6139, lon: 77.2090 },
+    { name: 'Mumbai', country: 'India', lat: 19.0760, lon: 72.8777 },
     { name: 'Karachi', country: 'Pakistán', lat: 24.8607, lon: 67.0011 },
     { name: 'Dhaka', country: 'Bangladesh', lat: 23.8103, lon: 90.4125 },
     { name: 'Colombo', country: 'Sri Lanka', lat: 6.9271, lon: 79.8612 },

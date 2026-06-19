@@ -224,7 +224,7 @@ const PILOT_CITIES = [
   Catalog.findCityByName('Lisboa'),
   Catalog.findCityByName('Toronto'),
   Catalog.findCityByName('Ciudad del Cabo'),
-  { name: 'Barcelona', country: 'España', lat: 41.3874, lon: 2.1686 },
+  Catalog.findCityByName('Barcelona'),
   Catalog.findCityByName('Tokio')
 ];
 

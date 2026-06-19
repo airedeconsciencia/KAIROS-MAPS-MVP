@@ -84,14 +84,14 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '45 ciudades (F3.9b WA Wave B)',
-  Catalog.CITIES.length === 45,
+  '47 ciudades (F3.10b Densification Wave A)',
+  Catalog.CITIES.length === 47,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '44 países únicos (F3.9b WA Wave B)',
+  '44 países únicos (F3.10b Densification Wave A)',
   countries.length === 44,
   countries.map(function (c) { return c.name; }).join(', ')
 );
@@ -247,9 +247,28 @@ waWaveB.forEach(function (entry) {
 });
 assert('WA Wave B ciudades + slugs (F3.9b)', waIssues.length === 0, waIssues.join(' · '));
 
+const densificationWaveA = [
+  { name: 'Barcelona', countryId: 'spain', code: 'es' },
+  { name: 'Mumbai', countryId: 'india', code: 'in' }
+];
+const densificationIssues = [];
+densificationWaveA.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) densificationIssues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      densificationIssues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      densificationIssues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('Densification Wave A ciudades + slugs (F3.10b)', densificationIssues.length === 0, densificationIssues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f3.9b',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.9b-0.1',
+  'SCHEMA catálogo f3.10b',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.10b-0.1',
   Catalog.SCHEMA_VERSION
 );
 

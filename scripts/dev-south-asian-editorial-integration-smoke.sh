@@ -207,14 +207,14 @@ assert(
 );
 
 assert(
-  '45 ciudades / 44 países catálogo (F3.9b baseline; SA Wave A intacto)',
-  Catalog.CITIES.length === 45 && Catalog.getCountries().length === 44,
+  '47 ciudades / 44 países catálogo (F3.10b Densification Wave A; SA Wave A intacto)',
+  Catalog.CITIES.length === 47 && Catalog.getCountries().length === 44,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.9b',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.9b-0.1',
+  'SCHEMA catálogo f3.10b',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.10b-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -326,6 +326,73 @@ SA_PLUS_CITIES.forEach(function (entry) {
 
 assert('12 lecturas SA+ (4 países × 3 goals)', readings.length === 12, 'count=' + readings.length);
 
+const MUMBAI_CITY = { name: 'Mumbai', slug: 'india' };
+const mumbaiReadings = [];
+GOALS.forEach(function (goal) {
+  const city = Catalog.findCityByName(MUMBAI_CITY.name);
+  if (!city) throw new Error('catalog missing ' + MUMBAI_CITY.name);
+  const reading = composeReading(city, goal, MUMBAI_CITY.slug);
+  const s = scanReading(reading, MUMBAI_CITY.slug);
+  mumbaiReadings.push({
+    city: city.name,
+    goal: goal,
+    slug: MUMBAI_CITY.slug,
+    reading: reading,
+    scan: s
+  });
+});
+
+assert('3 lecturas Mumbai (F3.10b Densification Wave A)', mumbaiReadings.length === 3, 'count=' + mumbaiReadings.length);
+
+mumbaiReadings.forEach(function (r) {
+  const s = r.scan;
+  assert(
+    r.city + ' / ' + r.goal + ' → ok:true',
+    s.ok === true,
+    'ok=' + s.ok
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → words 500–900',
+    s.words >= Premium.MIN_WORDS && s.words <= Premium.MAX_WORDS,
+    'words=' + s.words
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → SOUTH_ASIAN (n=k=e)',
+    s.regionN === 'SOUTH_ASIAN' && s.regionK === 'SOUTH_ASIAN' && s.regionE === 'SOUTH_ASIAN',
+    JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → IBERIAN leak 0',
+    s.iberian === 0,
+    'hits=' + s.iberian
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → SEA leak 0',
+    s.sea === 0,
+    'hits=' + s.sea
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → WESTERN_EUROPE leak 0',
+    s.we === 0,
+    'hits=' + s.we
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → GLOBAL_NEUTRAL leak 0',
+    s.gn === 0,
+    'hits=' + s.gn
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → placeholders 0',
+    s.placeholders === 0,
+    'hits=' + s.placeholders
+  );
+  assert(
+    r.city + ' / ' + r.goal + ' → P03/P06/P10 = 0',
+    !s.p03 && !s.p06 && !s.p10,
+    'p03=' + s.p03 + ' p06=' + s.p06 + ' p10=' + s.p10
+  );
+});
+
 readings.forEach(function (r) {
   const s = r.scan;
   assert(
@@ -375,7 +442,7 @@ readings.forEach(function (r) {
   );
 });
 
-const splitBrain = readings.filter(function (r) {
+const splitBrain = readings.concat(mumbaiReadings).filter(function (r) {
   return r.scan.regionN !== r.scan.regionK || r.scan.regionN !== r.scan.regionE;
 });
 assert(
@@ -418,6 +485,7 @@ function bodyFor(cityName, goal, slug) {
 }
 
 const qaPairs = [
+  { label: 'Delhi amor ≠ Mumbai amor', intraRegion: true, a: bodyFor('Delhi', 'amor', 'india'), b: bodyFor('Mumbai', 'amor', 'india') },
   { label: 'Delhi amor ≠ Bangkok amor', a: bodyFor('Delhi', 'amor', 'india'), b: bodyFor('Bangkok', 'amor', 'thailand') },
   { label: 'Delhi amor ≠ París amor', a: bodyFor('Delhi', 'amor', 'india'), b: bodyFor('París', 'amor', 'france') },
   { label: 'Delhi amor ≠ Oslo amor', a: bodyFor('Delhi', 'amor', 'india'), b: bodyFor('Oslo', 'amor', 'norway') }
@@ -437,11 +505,13 @@ qaPairs.forEach(function (pair) {
     !sameConflict && pair.a.conflict && pair.b.conflict,
     sameConflict ? 'conflictos idénticos' : 'ok distintos'
   );
-  assert(
-    pair.label + ' (región distinta)',
-    !sameRegion,
-    pair.a.regionE + ' vs ' + pair.b.regionE
-  );
+  if (!pair.intraRegion) {
+    assert(
+      pair.label + ' (región distinta)',
+      !sameRegion,
+      pair.a.regionE + ' vs ' + pair.b.regionE
+    );
+  }
   console.log(' ', pair.label + ':', pair.a.regionE, 'vs', pair.b.regionE, '| words', pair.a.words, 'vs', pair.b.words);
 });
 

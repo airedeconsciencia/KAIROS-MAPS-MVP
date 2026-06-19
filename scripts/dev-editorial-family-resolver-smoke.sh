@@ -98,8 +98,8 @@ assert(
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '45 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 45,
+  '47 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 47,
   'cities=' + Catalog.CITIES.length
 );
 
@@ -126,14 +126,15 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '45 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 45,
+  '47 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 47,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
 const SPLIT_BRAIN_CASES = [
   { city: 'Londres', country: 'Reino Unido', expected: 'ANGLO' },
   { city: 'Atenas', country: 'Grecia', expected: 'MEDITERRANEAN' },
+  { city: 'Barcelona', country: 'España', expected: 'MEDITERRANEAN' },
   { city: 'Nueva York', country: 'EE. UU.', expected: 'ANGLO' },
   { city: 'Seúl', country: 'Corea del Sur', expected: 'EAST_ASIAN' },
   { city: 'Ciudad del Cabo', country: 'Sudáfrica', expected: 'AFRICAN_COASTAL' },
@@ -149,6 +150,7 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Bangkok', country: 'Tailandia', expected: 'SOUTHEAST_ASIAN' },
   { city: 'Singapur', country: 'Singapur', expected: 'SOUTHEAST_ASIAN' },
   { city: 'Delhi', country: 'India', expected: 'SOUTH_ASIAN' },
+  { city: 'Mumbai', country: 'India', expected: 'SOUTH_ASIAN' },
   { city: 'Karachi', country: 'Pakistán', expected: 'SOUTH_ASIAN' },
   { city: 'Dhaka', country: 'Bangladesh', expected: 'SOUTH_ASIAN' },
   { city: 'Colombo', country: 'Sri Lanka', expected: 'SOUTH_ASIAN' },
@@ -185,7 +187,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('36 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('38 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -276,9 +278,141 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (36 casos)',
+  'Pipeline knowledge ≡ narrative (38 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
+);
+
+const P03 = 'puede que descubras una puerta';
+const P06 = 'el ritmo del cuerpo vuelve a importar';
+const P10 = 'lo que sigue no corrige';
+const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
+const PLACEHOLDER_BAN = ['PLACEHOLDER', 'FIXME', 'lorem ipsum', '[TBD]', '[[', '{{'];
+
+function normFold(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function scanDensificationReading(reading, countryId, expectedFamily) {
+  const nc = reading.meta.narrativeContext || {};
+  const km = reading.meta.knowledgeMeta || {};
+  const full = (reading.sections || []).map(function (s) { return s.body; }).join('\n\n');
+  const norm = normFold(full);
+  const regionE = EFR.resolveEditorialFamily({
+    cityName: reading.meta.cityName || '',
+    countryId: countryId
+  });
+  const iberian = IBERIAN_LEAK.filter(function (m) {
+    return norm.indexOf(normFold(m)) !== -1;
+  }).length;
+  const placeholders = PLACEHOLDER_BAN.filter(function (m) {
+    return norm.indexOf(normFold(m)) !== -1;
+  }).length;
+  return {
+    ok: reading.ok,
+    words: reading.meta.wordCount,
+    regionN: nc.regionFamily || null,
+    regionK: km.regionFamily || null,
+    regionE: regionE,
+    expectedFamily: expectedFamily,
+    conflict: nc.humanConflict || '',
+    full: full,
+    iberian: iberian,
+    placeholders: placeholders,
+    p03: norm.indexOf(P03) !== -1,
+    p06: norm.indexOf(P06) !== -1,
+    p10: norm.indexOf(P10) !== -1,
+    splitBrain: (nc.regionFamily !== km.regionFamily) ||
+      (nc.regionFamily !== expectedFamily) ||
+      (km.regionFamily !== expectedFamily) ||
+      (regionE !== expectedFamily)
+  };
+}
+
+function composeDensificationReading(city, goal, slug) {
+  const input = buildInput(city, goal);
+  const ranked = Scorer.rankInfluences(city, input);
+  const influences = ranked.length ? ranked.slice(0, 5) : mockInfluences;
+  return Premium.composeCityReading({
+    city: city,
+    goal: goal,
+    relevantInfluences: influences,
+    bridgeProfile: bridgeProfile,
+    profile: { firstName: 'Roberto' }
+  });
+}
+
+console.log('\n' + '═'.repeat(60));
+console.log('F3.10b Densification Wave A — Barcelona MEDITERRANEAN');
+console.log('═'.repeat(60));
+
+const barcelona = Catalog.findCityByName('Barcelona');
+['amor', 'trabajo', 'descanso'].forEach(function (goal) {
+  const reading = composeDensificationReading(barcelona, goal, 'spain');
+  const s = scanDensificationReading(reading, 'spain', 'MEDITERRANEAN');
+  assert(
+    'Barcelona / ' + goal + ' → ok:true',
+    s.ok === true,
+    'ok=' + s.ok
+  );
+  assert(
+    'Barcelona / ' + goal + ' → words 500–900',
+    s.words >= Premium.MIN_WORDS && s.words <= Premium.MAX_WORDS,
+    'words=' + s.words
+  );
+  assert(
+    'Barcelona / ' + goal + ' → MEDITERRANEAN (n=k=e)',
+    s.regionN === 'MEDITERRANEAN' && s.regionK === 'MEDITERRANEAN' && s.regionE === 'MEDITERRANEAN',
+    JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+  );
+  assert(
+    'Barcelona / ' + goal + ' → split-brain 0',
+    !s.splitBrain,
+    JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+  );
+  assert(
+    'Barcelona / ' + goal + ' → placeholders 0',
+    s.placeholders === 0,
+    'hits=' + s.placeholders
+  );
+  assert(
+    'Barcelona / ' + goal + ' → P03/P06/P10 = 0',
+    !s.p03 && !s.p06 && !s.p10,
+    'p03=' + s.p03 + ' p06=' + s.p06 + ' p10=' + s.p10
+  );
+});
+
+const madridAmor = scanDensificationReading(
+  composeDensificationReading(Catalog.findCityByName('Madrid'), 'amor', 'spain'),
+  'spain',
+  'MEDITERRANEAN'
+);
+const barcelonaAmor = scanDensificationReading(
+  composeDensificationReading(barcelona, 'amor', 'spain'),
+  'spain',
+  'MEDITERRANEAN'
+);
+assert(
+  'Madrid amor ≠ Barcelona amor (texto distinto)',
+  madridAmor.full !== barcelonaAmor.full,
+  madridAmor.full === barcelonaAmor.full ? 'textos idénticos' : 'ok distintos'
+);
+assert(
+  'Madrid amor ≠ Barcelona amor (conflicto distinto)',
+  madridAmor.conflict !== barcelonaAmor.conflict &&
+    madridAmor.conflict &&
+    barcelonaAmor.conflict,
+  madridAmor.conflict === barcelonaAmor.conflict ? 'conflictos idénticos' : 'ok distintos'
+);
+console.log(
+  '  Madrid vs Barcelona amor:',
+  madridAmor.regionE,
+  'vs',
+  barcelonaAmor.regionE,
+  '| words',
+  madridAmor.words,
+  'vs',
+  barcelonaAmor.words
 );
 
 console.log('\n' + '═'.repeat(60));

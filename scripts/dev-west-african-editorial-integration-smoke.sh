@@ -198,14 +198,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '45 ciudades / 44 países catálogo (F3.9b Wave B)',
-  Catalog.CITIES.length === 45 && Catalog.getCountries().length === 44,
+  '47 ciudades / 44 países catálogo (F3.10b Densification Wave A)',
+  Catalog.CITIES.length === 47 && Catalog.getCountries().length === 44,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.9b',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.9b-0.1',
+  'SCHEMA catálogo f3.10b',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.10b-0.1',
   Catalog.SCHEMA_VERSION
 );
 
