@@ -3,7 +3,8 @@
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
 **Rama:** `main`  
-**HEAD local:** F3.10g doc checkpoint (post F3.10f prod deploy)  
+**HEAD local:** F3.10j-c1 doc checkpoint (post gate São Paulo)  
+**Checkpoint F3.10j:** `docs/architecture/F3.10J_C_SAO_PAULO_GATE_DECISION.md`  
 **Checkpoint F3.10:** `docs/architecture/F3.10G_DENSIFICATION_WAVE_A_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint F3.9:** `docs/architecture/F3.9G_WEST_AFRICAN_WAVE_B_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint F3.8:** `docs/architecture/F3.8G_LATAM_PLUS_PRODUCTION_CHECKPOINT.md`  
@@ -15,15 +16,15 @@
 
 KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (**50 países** · **11 familias** live en prod), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, y catálogo **`47 ciudades / 44 países`** con **Densification Wave A** (Barcelona · Mumbai) además de **WA Wave B** (Abidjan), **WA Wave A**, **LATAM+ Wave A**, **SA+ Wave A** y **SEA+ Wave A**.
 
-**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3 serie cerrada** · **F3.4b catálogo WA Wave A cerrado** · **F3.6 SEA+ serie cerrada en producción** · **F3.7 SA+ serie cerrada en producción** · **F3.8 LATAM+ serie cerrada en producción** · **F3.9 WA Wave B serie cerrada en producción** · **F3.10 Densification Wave A serie cerrada en producción**.
+**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3 serie cerrada** · **F3.4b catálogo WA Wave A cerrado** · **F3.6 SEA+ serie cerrada en producción** · **F3.7 SA+ serie cerrada en producción** · **F3.8 LATAM+ serie cerrada en producción** · **F3.9 WA Wave B serie cerrada en producción** · **F3.10 Densification Wave A serie cerrada en producción** · **F3.10 São Paulo gate cerrado (NO catálogo)**.
 
 **Producción** (https://kairos-maps-mvp.web.app) — resolver **`3.8h.2-f3.8b-0.1`** · catálogo **`3.8f.1-f3.10b-0.1`** · **47/44** live.
 
-**Smokes gate F3.10f:** **7/7 PASS** (pre-deploy prod).
+**São Paulo:** **NO catálogo** · **Wave B diferida** · gate numérico FAIL tras j-a/b local.
 
-**QA prod F3.10f:** catálogo **47/44 PASS** · búsqueda Barcelona/Mumbai **2/2 PASS** · premium **6/6 PASS** · diferenciación **2/2 PASS** · regresiones **6/6 PASS** · browser QA **21/21 PASS**.
+**Trabajo local aparcado (sin commit runtime):** `LATAM_CITY_MICRO` + `CITY_ATMOSPHERE` Rio/SP en `narrative-intelligence-service.js` · smoke `dev-latam-city-micro-smoke.sh`.
 
-**Riesgos vivos:** homogeneización LATAM · homogeneización SA · homogeneización SEA · homogeneización WA · Madrid/Barcelona misma familia · Delhi/Mumbai misma familia · Mumbai sin country archetype · São Paulo pendiente · cache browser · **6 países WA sin ancla** · `dist/` sucio.
+**Riesgos vivos:** homogeneización intra-Brasil · Madrid/Barcelona misma familia · Delhi/Mumbai misma familia · Mumbai sin country archetype · commit accidental runtime parcial · cache browser · **6 países WA sin ancla** · `dist/` sucio.
 
 ---
 
@@ -59,7 +60,8 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 | **F3.8a–F3.8g** | ✅ Cerrado | LATAM+ prod 50/44/43 |
 | **F3.9a–F3.9g** | ✅ Cerrado | WA Wave B prod 45/44 |
 | **F3.10a–F3.10g** | ✅ Cerrado | Densification Wave A prod 47/44 |
-| **F3.10h** | ⏳ Siguiente | **São Paulo Wave B Decision Gate** |
+| **F3.10h–F3.10j-c1** | ✅ Cerrado | Gate São Paulo · NO catálogo · doc F3.10j-c |
+| **F3.11a** | ⏳ Siguiente | **Territorial Densification Audit** |
 
 ---
 
@@ -70,48 +72,48 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 - **Schema catálogo:** `3.8f.1-f3.9b-0.1` → **`3.8f.1-f3.10b-0.1`**
 - **Ciudades catálogo:** 45 → **47** (+ Barcelona · Mumbai)
 - **Países visibles:** **44** (sin cambio)
-- **Ciudades SA en catálogo:** 5 → **6** (+ Mumbai)
-- **Split-brain casos smoke:** 36 → **38**
 
 ### No cambió
 
 - **Resolver** — **50 países** · `3.8h.2-f3.8b-0.1`
 - **Familias** — **11**
-- **Copy / packs / country-archetypes / interpretations.js** — intactos
-- **São Paulo** — no añadido (diferido F3.10h)
+- **São Paulo** — **no añadido** (gate FAIL · Wave B diferida)
 
 ---
 
-## VI. F3.9 — qué cambió en producción (histórico)
+## VI. F3.10j — gate São Paulo (decisión)
 
-### Cambió (prod @ F3.9f)
+| Criterio | Resultado |
+|----------|-----------|
+| Conflict distinct 3/3 | **PASS** (local j-a/b) |
+| Opportunity distinct 3/3 | **PASS** |
+| Atmosphere active | **PASS** |
+| Hygiene / split-brain | **PASS** |
+| Token full < 45% | **FAIL** (56.5%) |
+| Char-bigram full < 75% | **FAIL** (84.6%) |
 
-- **Schema catálogo:** `3.8f.1-f3.8c-0.1` → **`3.8f.1-f3.9b-0.1`**
-- **Ciudades catálogo:** 44 → **45** (+ Abidjan)
-- **Países visibles:** 43 → **44** (+ Costa de Marfil / `ivory_coast`)
-- **Países WA con ancla catálogo:** 3/10 → **4/10**
-- **Detector SEA smokes WA:** fingerprints frase (F3.9b.2 · smoke-only)
+**Decisión:** São Paulo **NO entra al catálogo** · Wave B **diferida** · gate **no relajado** · runtime j-a/b **aparcado** (sin commit).
+
+Ver `F3.10J_C_SAO_PAULO_GATE_DECISION.md`.
 
 ---
 
 ## VII. Resolver + catálogo SSOT
 
-| Métrica | Prod live | Staging | Local `src/` |
-|---------|-----------|---------|--------------|
-| Familias editoriales | **11** | **11** | **11** |
-| Países resolver | **50** | **50** | **50** |
-| Ciudades catálogo | **47** | **47** | **47** |
-| Países catálogo visibles | **44** | **44** | **44** |
-| Schema resolver | **`3.8h.2-f3.8b-0.1`** | **`3.8h.2-f3.8b-0.1`** | **`3.8h.2-f3.8b-0.1`** |
-| Schema catálogo | **`3.8f.1-f3.10b-0.1`** | **`3.8f.1-f3.10b-0.1`** | **`3.8f.1-f3.10b-0.1`** |
-| Ciudades WA en catálogo | **4** | **4** | **4** |
-| Ciudades LATAM en catálogo | **10** | **10** | **10** |
-| Ciudades SEA en catálogo | **6** | **6** | **6** |
-| Ciudades SA en catálogo | **6** | **6** | **6** |
+| Métrica | Prod live | Local `src/` committed |
+|---------|-----------|------------------------|
+| Familias editoriales | **11** | **11** |
+| Países resolver | **50** | **50** |
+| Ciudades catálogo | **47** | **47** |
+| Países catálogo visibles | **44** | **44** |
+| Schema resolver | **`3.8h.2-f3.8b-0.1`** | **`3.8h.2-f3.8b-0.1`** |
+| Schema catálogo | **`3.8f.1-f3.10b-0.1`** | **`3.8f.1-f3.10b-0.1`** |
+
+*Local working tree puede tener cambios j-a/b no commiteados en `narrative-intelligence-service.js`.*
 
 ---
 
-## VIII. Smokes gate actuales
+## VIII. Smokes gate actuales (prod)
 
 ```bash
 ./scripts/dev-cities-catalog-smoke.sh
@@ -126,92 +128,69 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 ./scripts/dev-premium-ui-beta-smoke.sh
 ```
 
-**Estado F3.10f pre-deploy:** **7/7 PASS**.
+**Smoke urbano local (no en prod):** `scripts/dev-latam-city-micro-smoke.sh` — untracked · gates numéricos FAIL.
 
 ---
 
-## IX. QA F3.10f producción
-
-| Bloque | Resultado |
-|--------|-----------|
-| Catálogo 47/44 · validateCatalog | **PASS** |
-| Búsqueda local Barcelona | **PASS** |
-| Búsqueda local Mumbai | **PASS** |
-| Mapa 47 markers | **PASS** |
-| Barcelona × amor · trabajo · descanso | **PASS** → MEDITERRANEAN |
-| Mumbai × amor · trabajo · descanso | **PASS** → SOUTH_ASIAN |
-| Madrid ≠ Barcelona (amor) | **PASS** |
-| Delhi ≠ Mumbai (amor) | **PASS** |
-| Regresiones 6/6 | **PASS** |
-
-**Browser QA prod:** **21/21 PASS** @ https://kairos-maps-mvp.web.app/?premium=1&debug=1
-
----
-
-## X. Staging / producción
+## IX. Staging / producción
 
 | Entorno | URL | Catálogo | Editorial |
 |---------|-----|----------|-----------|
 | **Producción** | https://kairos-maps-mvp.web.app | **47** @ `3.8f.1-f3.10b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
 | **Staging** | https://kairos-maps-dev.web.app | **47** @ `3.8f.1-f3.10b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
-| **Local `src/`** | — | **47** @ `3.8f.1-f3.10b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
+| **Runtime prod** | — | @ **`1ebae93`** | sin j-a/b |
 
 ---
 
-## XI. Deuda / riesgos abiertos
+## X. Deuda / riesgos abiertos
 
 | ID | Descripción |
 |----|-------------|
+| **R-F3.10j-c-1** | **Homogeneización intra-Brasil** · gate numérico FAIL |
+| **R-F3.10j-c-2** | **Runtime j-a/b aparcado** · no promovido a main |
+| **R-F3.10j-c-3** | **Commit accidental** runtime parcial |
 | **R-F3.10g-1** | **Madrid/Barcelona misma familia** (MEDITERRANEAN) |
 | **R-F3.10g-2** | **Delhi/Mumbai misma familia** (SOUTH_ASIAN) |
 | **R-F3.10g-3** | **Mumbai sin country archetype** |
-| **R-F3.10g-4** | **São Paulo pendiente Wave B** — gate Rio≠SP |
 | **R-F3.10g-5** | **Cache browser** post-deploy |
-| **R-F3.10g-6** | **`dist/` sucio local** post-deploy · no commiteado |
+| **R-F3.10g-6** | **`dist/` sucio local** · no commiteado |
 | **R-F3.9g-1** | **6 países WA sin ancla catálogo** |
-| **R-F3.9g-2** | **Homogeneización WA** |
-| **R-F3.8g-1** | **Homogeneización LATAM** |
-| **R-F3.7g-1** | **Homogeneización SA** |
-| **R-F3.6g-3** | **Homogeneización SEA** |
-| **OP-3** | **`dist/` sucio post-deploy** · no commiteado |
 
 ---
 
-## XII. Git status (post F3.10g)
+## XI. Git status (post F3.10j-c1)
 
 ```
-HEAD local: F3.10g — f3.10g densification wave a production checkpoint
-Runtime: ec46b81 — f3.10b densification wave a checkpoint
-origin/main: ec46b81 (+1 doc commit local post-F3.10g)
+HEAD local: F3.10j-c1 — f3.10j sao paulo gate decision checkpoint
+origin/main: 1ebae93 (+ doc commit local)
 
 Rama: main
-src/: limpio
-docs/: +1 checkpoint F3.10g
-scripts/: limpio
+src/: MODIFICADO (j-a/b aparcado — NO en este commit)
+scripts/: +dev-latam-city-micro-smoke.sh untracked (NO en este commit)
+docs/: +F3.10J_C + KAIROS_CURRENT actualizado
 dist/: modificado / untracked (NO commiteado)
-Producción: 50 resolver / 47 catálogo live @ F3.10f
+Producción runtime: 1ebae93 · 47/44 live
 ```
 
 ---
 
-## XIII. Siguiente fase
+## XII. Siguiente fase
 
-### **F3.10h — São Paulo Wave B Decision Gate**
+### **F3.11a — Territorial Densification Audit**
 
-Gate Rio≠São Paulo · evaluación homogeneización LATAM · decisión Wave B densificación Brasil post-Wave A.
+Candidatas tier-1 **sin par intra-país duplicado**. São Paulo fuera de scope Wave B hasta gate PASS.
 
 ---
 
-## XIV. Documentos relacionados
+## XIII. Documentos relacionados
 
 | Documento | Contenido |
 |-----------|-----------|
+| `F3.10J_C_SAO_PAULO_GATE_DECISION.md` | Decisión gate São Paulo |
 | `F3.10G_DENSIFICATION_WAVE_A_PRODUCTION_CHECKPOINT.md` | Cierre F3.10 prod |
-| `F3.10B_DENSIFICATION_WAVE_A_CHECKPOINT.md` | Cierre F3.10b runtime |
 | `F3.9G_WEST_AFRICAN_WAVE_B_PRODUCTION_CHECKPOINT.md` | Cierre F3.9 prod |
-| `F3.8G_LATAM_PLUS_PRODUCTION_CHECKPOINT.md` | Cierre F3.8 prod |
 | `KAIROS_MASTER_HANDOFF_F1.8.md` | Handoff PRE-F1 |
 
 ---
 
-*Checkpoint actualizado F3.10g · Prod 50/47/44 @ 3.8h.2-f3.8b-0.1 + 3.8f.1-f3.10b-0.1 · origin/main ec46b81 · Siguiente F3.10h São Paulo Wave B Decision Gate*
+*Checkpoint actualizado F3.10j-c1 · Prod 50/47/44 @ 1ebae93 · São Paulo NO catálogo · Siguiente F3.11a Territorial Densification Audit*
