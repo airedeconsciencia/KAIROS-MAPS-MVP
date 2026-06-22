@@ -196,17 +196,17 @@ assert(
 );
 
 assert(
-  '47 ciudades / 44 países catálogo (baseline F3.10b; SEA Wave A intacto)',
+  '50 ciudades / 47 países catálogo (baseline F3.11c Batch 1; SEA Wave A intacto)',
   Catalog.CITIES.length === Catalog.EXPECTED_CITY_COUNT &&
     Catalog.getCountries().length === Catalog.EXPECTED_COUNTRY_COUNT &&
-    Catalog.EXPECTED_CITY_COUNT === 47 &&
-    Catalog.EXPECTED_COUNTRY_COUNT === 44,
+    Catalog.EXPECTED_CITY_COUNT === 50 &&
+    Catalog.EXPECTED_COUNTRY_COUNT === 47,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.10b',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.10b-0.1',
+  'SCHEMA catálogo f3.11c',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11c-0.1',
   Catalog.SCHEMA_VERSION
 );
 

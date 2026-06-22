@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '47 ciudades (F3.10b Densification Wave A)',
-  Catalog.CITIES.length === 47,
+  '50 ciudades (F3.11c WEST_AFRICAN Wave C Batch 1)',
+  Catalog.CITIES.length === 50,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '44 países únicos (F3.10b Densification Wave A)',
-  countries.length === 44,
+  '47 países únicos (F3.11c WEST_AFRICAN Wave C Batch 1)',
+  countries.length === 47,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (44)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 44,
+  'COUNTRY_IDS alineados (47)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 47,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -266,9 +266,29 @@ densificationWaveA.forEach(function (entry) {
 });
 assert('Densification Wave A ciudades + slugs (F3.10b)', densificationIssues.length === 0, densificationIssues.join(' · '));
 
+const waWaveC = [
+  { name: 'Freetown', countryId: 'sierra_leone', code: 'sl' },
+  { name: 'Monrovia', countryId: 'liberia', code: 'lr' },
+  { name: 'Conakry', countryId: 'guinea', code: 'gn' }
+];
+const waWaveCIssues = [];
+waWaveC.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) waWaveCIssues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      waWaveCIssues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      waWaveCIssues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('WA Wave C ciudades + slugs (F3.11c)', waWaveCIssues.length === 0, waWaveCIssues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f3.10b',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.10b-0.1',
+  'SCHEMA catálogo f3.11c',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11c-0.1',
   Catalog.SCHEMA_VERSION
 );
 

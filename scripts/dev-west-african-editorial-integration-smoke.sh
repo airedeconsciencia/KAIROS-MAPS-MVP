@@ -25,7 +25,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — WEST_AFRICAN editorial integration (F3.9b Wave B)"
-echo " Scope: Lagos · Accra · Dakar · Abidjan · catálogo SSOT · anti-leak · regresiones"
+echo " Scope: Lagos · Accra · Dakar · Abidjan · Freetown · Monrovia · Conakry · catálogo SSOT · anti-leak · regresiones"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -80,7 +80,10 @@ const WA_CITIES = [
   { name: 'Lagos', slug: 'nigeria' },
   { name: 'Accra', slug: 'ghana' },
   { name: 'Dakar', slug: 'senegal' },
-  { name: 'Abidjan', slug: 'ivory_coast' }
+  { name: 'Abidjan', slug: 'ivory_coast' },
+  { name: 'Freetown', slug: 'sierra_leone' },
+  { name: 'Monrovia', slug: 'liberia' },
+  { name: 'Conakry', slug: 'guinea' }
 ];
 const WA_COUNTRIES = [
   'nigeria', 'ghana', 'senegal', 'ivory_coast', 'sierra_leone',
@@ -198,14 +201,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '47 ciudades / 44 países catálogo (F3.10b Densification Wave A)',
-  Catalog.CITIES.length === 47 && Catalog.getCountries().length === 44,
+  '50 ciudades / 47 países catálogo (F3.11c WEST_AFRICAN Wave C Batch 1)',
+  Catalog.CITIES.length === 50 && Catalog.getCountries().length === 47,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.10b',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.10b-0.1',
+  'SCHEMA catálogo f3.11c',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11c-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -232,6 +235,36 @@ assert(
   JSON.stringify({
     slug: EFR.coerceCountryId('Costa de Marfil'),
     family: EFR.resolveEditorialFamily({ cityName: 'Abidjan', countryDisplay: 'Costa de Marfil' })
+  })
+);
+
+assert(
+  'Sierra Leona display → sierra_leone → WEST_AFRICAN (F3.11c)',
+  EFR.coerceCountryId('Sierra Leona') === 'sierra_leone' &&
+    EFR.resolveEditorialFamily({ cityName: 'Freetown', countryDisplay: 'Sierra Leona' }) === 'WEST_AFRICAN',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Sierra Leona'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Freetown', countryDisplay: 'Sierra Leona' })
+  })
+);
+
+assert(
+  'Liberia display → liberia → WEST_AFRICAN (F3.11c)',
+  EFR.coerceCountryId('Liberia') === 'liberia' &&
+    EFR.resolveEditorialFamily({ cityName: 'Monrovia', countryDisplay: 'Liberia' }) === 'WEST_AFRICAN',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Liberia'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Monrovia', countryDisplay: 'Liberia' })
+  })
+);
+
+assert(
+  'Guinea display → guinea → WEST_AFRICAN (F3.11c)',
+  EFR.coerceCountryId('Guinea') === 'guinea' &&
+    EFR.resolveEditorialFamily({ cityName: 'Conakry', countryDisplay: 'Guinea' }) === 'WEST_AFRICAN',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Guinea'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Conakry', countryDisplay: 'Guinea' })
   })
 );
 
@@ -323,7 +356,7 @@ WA_CITIES.forEach(function (entry) {
   });
 });
 
-assert('12 lecturas WA (4 ciudades × 3 goals)', readings.length === 12, 'count=' + readings.length);
+assert('21 lecturas WA (7 ciudades × 3 goals)', readings.length === 21, 'count=' + readings.length);
 
 readings.forEach(function (r) {
   const s = r.scan;
@@ -470,6 +503,31 @@ abidjanReadings.forEach(function (r) {
     'ph=' + s.placeholders,
     'P03/P06/P10=' + (s.p03 ? 1 : 0) + '/' + (s.p06 ? 1 : 0) + '/' + (s.p10 ? 1 : 0)
   );
+});
+
+console.log('\n' + '═'.repeat(60));
+console.log('QA obligatorio F3.11c — Wave C Batch 1 (catálogo)');
+console.log('═'.repeat(60));
+
+['Freetown', 'Monrovia', 'Conakry'].forEach(function (cityName) {
+  const waveCReadings = readings.filter(function (r) { return r.city === cityName; });
+  waveCReadings.forEach(function (r) {
+    const s = r.scan;
+    console.log(
+      ' ',
+      r.city + ' / ' + r.slug + ' / ' + r.goal + ':',
+      'ok=' + s.ok,
+      'words=' + s.words,
+      'n=k=e=' + s.regionN,
+      'ac=' + s.ac,
+      'latam=' + s.latam,
+      'sa=' + s.sa,
+      'sea=' + s.sea,
+      'gn=' + s.gn,
+      'ph=' + s.placeholders,
+      'P03/P06/P10=' + (s.p03 ? 1 : 0) + '/' + (s.p06 ? 1 : 0) + '/' + (s.p10 ? 1 : 0)
+    );
+  });
 });
 
 console.log('\n' + '═'.repeat(60));

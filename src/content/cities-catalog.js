@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.10b-0.1';
-  var EXPECTED_CITY_COUNT = 47;
-  var EXPECTED_COUNTRY_COUNT = 44;
+  var SCHEMA_VERSION = '3.8f.1-f3.11c-0.1';
+  var EXPECTED_CITY_COUNT = 50;
+  var EXPECTED_COUNTRY_COUNT = 47;
 
   var CITIES = [
     // Europa
@@ -61,6 +61,9 @@
     { name: 'Accra', country: 'Ghana', lat: 5.6037, lon: -0.1870 },
     { name: 'Dakar', country: 'Senegal', lat: 14.7167, lon: -17.4677 },
     { name: 'Abidjan', country: 'Costa de Marfil', lat: 5.3600, lon: -4.0083 },
+    { name: 'Freetown', country: 'Sierra Leona', lat: 8.4657, lon: -13.2317 },
+    { name: 'Monrovia', country: 'Liberia', lat: 6.3156, lon: -10.8074 },
+    { name: 'Conakry', country: 'Guinea', lat: 9.6412, lon: -13.5784 },
     // Oceanía
     { name: 'Sídney', country: 'Australia', lat: -33.8688, lon: 151.2093 },
     { name: 'Auckland', country: 'Nueva Zelanda', lat: -36.8485, lon: 174.7633 }
@@ -109,6 +112,9 @@
     'Ghana': 'gh',
     'Senegal': 'sn',
     'Costa de Marfil': 'ci',
+    'Sierra Leona': 'sl',
+    'Liberia': 'lr',
+    'Guinea': 'gn',
     'Australia': 'au',
     'Nueva Zelanda': 'nz'
   };
@@ -157,6 +163,9 @@
     'Ghana': 'ghana',
     'Senegal': 'senegal',
     'Costa de Marfil': 'ivory_coast',
+    'Sierra Leona': 'sierra_leone',
+    'Liberia': 'liberia',
+    'Guinea': 'guinea',
     'Australia': 'australia',
     'Nueva Zelanda': 'new_zealand'
   };
