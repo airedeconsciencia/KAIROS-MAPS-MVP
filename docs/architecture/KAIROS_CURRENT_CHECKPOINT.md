@@ -3,28 +3,28 @@
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
 **Rama:** `main`  
-**HEAD local:** F3.10j-c1 doc checkpoint (post gate São Paulo)  
+**HEAD local:** F3.11d doc checkpoint (post Wave C Batch 1)  
+**Checkpoint F3.11:** `docs/architecture/F3.11D_WEST_AFRICAN_WAVE_C_BATCH_1_CHECKPOINT.md`  
 **Checkpoint F3.10j:** `docs/architecture/F3.10J_C_SAO_PAULO_GATE_DECISION.md`  
 **Checkpoint F3.10:** `docs/architecture/F3.10G_DENSIFICATION_WAVE_A_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint F3.9:** `docs/architecture/F3.9G_WEST_AFRICAN_WAVE_B_PRODUCTION_CHECKPOINT.md`  
-**Checkpoint F3.8:** `docs/architecture/F3.8G_LATAM_PLUS_PRODUCTION_CHECKPOINT.md`  
 **Producción live:** catálogo **`3.8f.1-f3.10b-0.1`** · **47 ciudades / 44 países** · editorial EFR **`3.8h.2-f3.8b-0.1`** · **50 países** · **11 familias**
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (**50 países** · **11 familias** live en prod), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, y catálogo **`47 ciudades / 44 países`** con **Densification Wave A** (Barcelona · Mumbai) además de **WA Wave B** (Abidjan), **WA Wave A**, **LATAM+ Wave A**, **SA+ Wave A** y **SEA+ Wave A**.
+KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (**50 países** · **11 familias** live en prod), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, y catálogo local **`50 ciudades / 47 países`** con **WA Wave C Batch 1** (Freetown · Monrovia · Conakry) además de **Densification Wave A** (Barcelona · Mumbai), **WA Wave B** (Abidjan), **WA Wave A**, **LATAM+ Wave A**, **SA+ Wave A** y **SEA+ Wave A**.
 
-**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3 serie cerrada** · **F3.4b catálogo WA Wave A cerrado** · **F3.6 SEA+ serie cerrada en producción** · **F3.7 SA+ serie cerrada en producción** · **F3.8 LATAM+ serie cerrada en producción** · **F3.9 WA Wave B serie cerrada en producción** · **F3.10 Densification Wave A serie cerrada en producción** · **F3.10 São Paulo gate cerrado (NO catálogo)**.
+**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3–F3.10 series cerradas en producción** · **F3.10 São Paulo gate cerrado (NO catálogo)** · **F3.11a–F3.11d WA Wave C Batch 1 cerrado en `src/`** (sin deploy).
 
 **Producción** (https://kairos-maps-mvp.web.app) — resolver **`3.8h.2-f3.8b-0.1`** · catálogo **`3.8f.1-f3.10b-0.1`** · **47/44** live.
 
-**São Paulo:** **NO catálogo** · **Wave B diferida** · gate numérico FAIL tras j-a/b local.
+**Local `src/` committed:** catálogo **`3.8f.1-f3.11c-0.1`** · **50/47** · WA anclas **7/10**.
 
-**Trabajo local aparcado (sin commit runtime):** `LATAM_CITY_MICRO` + `CITY_ATMOSPHERE` Rio/SP en `narrative-intelligence-service.js` · smoke `dev-latam-city-micro-smoke.sh`.
+**São Paulo:** **NO catálogo** · runtime j-a/b aparcado en rama `f3.10j-urban-layer` (sin merge a main).
 
-**Riesgos vivos:** homogeneización intra-Brasil · Madrid/Barcelona misma familia · Delhi/Mumbai misma familia · Mumbai sin country archetype · commit accidental runtime parcial · cache browser · **6 países WA sin ancla** · `dist/` sucio.
+**Riesgos vivos:** homogeneización WA · 3 países WA sin ancla · Mumbai sin archetype · Madrid/Barcelona · Delhi/Mumbai · `dist/` sucio · prod desincronizado hasta F3.11e.
 
 ---
 
@@ -59,133 +59,110 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 | **F3.7a–F3.7g** | ✅ Cerrado | SA+ prod 48/42/41 |
 | **F3.8a–F3.8g** | ✅ Cerrado | LATAM+ prod 50/44/43 |
 | **F3.9a–F3.9g** | ✅ Cerrado | WA Wave B prod 45/44 |
-| **F3.10a–F3.10g** | ✅ Cerrado | Densification Wave A prod 47/44 |
-| **F3.10h–F3.10j-c1** | ✅ Cerrado | Gate São Paulo · NO catálogo · doc F3.10j-c |
-| **F3.11a** | ⏳ Siguiente | **Territorial Densification Audit** |
+| **F3.10a–F3.10j-c1** | ✅ Cerrado | Densification Wave A prod 47/44 · São Paulo NO catálogo |
+| **F3.11a–F3.11d** | ✅ Cerrado | WA Wave C Batch 1 · 50/47 `src/` |
+| **F3.11e** | ⏳ Siguiente | **Staging deploy + browser QA Wave C Batch 1** |
 
 ---
 
-## V. F3.10 — qué cambió en producción
+## V. F3.11 — qué cambió en `src/` (sin deploy)
 
-### Cambió (prod live @ F3.10f)
+### Cambió (local @ F3.11c)
 
-- **Schema catálogo:** `3.8f.1-f3.9b-0.1` → **`3.8f.1-f3.10b-0.1`**
-- **Ciudades catálogo:** 45 → **47** (+ Barcelona · Mumbai)
-- **Países visibles:** **44** (sin cambio)
+- **Schema catálogo:** `3.8f.1-f3.10b-0.1` → **`3.8f.1-f3.11c-0.1`**
+- **Ciudades catálogo:** 47 → **50** (+ Freetown · Monrovia · Conakry)
+- **Países visibles:** 44 → **47**
+- **WA anclas catálogo:** 4/10 → **7/10**
 
 ### No cambió
 
 - **Resolver** — **50 países** · `3.8h.2-f3.8b-0.1`
 - **Familias** — **11**
-- **São Paulo** — **no añadido** (gate FAIL · Wave B diferida)
+- **Copy / packs / narrative** — sin cambio
+- **São Paulo** — no añadido
 
 ---
 
-## VI. F3.10j — gate São Paulo (decisión)
-
-| Criterio | Resultado |
-|----------|-----------|
-| Conflict distinct 3/3 | **PASS** (local j-a/b) |
-| Opportunity distinct 3/3 | **PASS** |
-| Atmosphere active | **PASS** |
-| Hygiene / split-brain | **PASS** |
-| Token full < 45% | **FAIL** (56.5%) |
-| Char-bigram full < 75% | **FAIL** (84.6%) |
-
-**Decisión:** São Paulo **NO entra al catálogo** · Wave B **diferida** · gate **no relajado** · runtime j-a/b **aparcado** (sin commit).
-
-Ver `F3.10J_C_SAO_PAULO_GATE_DECISION.md`.
-
----
-
-## VII. Resolver + catálogo SSOT
+## VI. Resolver + catálogo SSOT
 
 | Métrica | Prod live | Local `src/` committed |
 |---------|-----------|------------------------|
 | Familias editoriales | **11** | **11** |
 | Países resolver | **50** | **50** |
-| Ciudades catálogo | **47** | **47** |
-| Países catálogo visibles | **44** | **44** |
+| Ciudades catálogo | **47** | **50** |
+| Países catálogo visibles | **44** | **47** |
+| WA anclas catálogo | **4/10** | **7/10** |
 | Schema resolver | **`3.8h.2-f3.8b-0.1`** | **`3.8h.2-f3.8b-0.1`** |
-| Schema catálogo | **`3.8f.1-f3.10b-0.1`** | **`3.8f.1-f3.10b-0.1`** |
-
-*Local working tree puede tener cambios j-a/b no commiteados en `narrative-intelligence-service.js`.*
+| Schema catálogo | **`3.8f.1-f3.10b-0.1`** | **`3.8f.1-f3.11c-0.1`** |
 
 ---
 
-## VIII. Smokes gate actuales (prod)
+## VII. Smokes gate actuales (`src/` post-F3.11d)
 
 ```bash
 ./scripts/dev-cities-catalog-smoke.sh
 ./scripts/dev-editorial-family-resolver-smoke.sh
 ./scripts/dev-west-african-editorial-integration-smoke.sh
-./scripts/dev-west-african-editorial-smoke.sh
 ./scripts/dev-latam-editorial-integration-smoke.sh
 ./scripts/dev-south-asian-editorial-integration-smoke.sh
 ./scripts/dev-southeast-asian-editorial-integration-smoke.sh
-./scripts/dev-fallback-ssot-smoke.sh
-./scripts/dev-global-neutral-default-smoke.sh
-./scripts/dev-premium-ui-beta-smoke.sh
 ```
 
-**Smoke urbano local (no en prod):** `scripts/dev-latam-city-micro-smoke.sh` — untracked · gates numéricos FAIL.
+**Gate F3.11d:** **6/6 PASS** · Batch 1 QA **9/9 PASS** · regresiones **7/7 PASS**
 
 ---
 
-## IX. Staging / producción
+## VIII. Staging / producción
 
 | Entorno | URL | Catálogo | Editorial |
 |---------|-----|----------|-----------|
 | **Producción** | https://kairos-maps-mvp.web.app | **47** @ `3.8f.1-f3.10b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
 | **Staging** | https://kairos-maps-dev.web.app | **47** @ `3.8f.1-f3.10b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
-| **Runtime prod** | — | @ **`1ebae93`** | sin j-a/b |
+| **Local `src/`** | — | **50** @ `3.8f.1-f3.11c-0.1` | sin deploy |
 
 ---
 
-## X. Deuda / riesgos abiertos
+## IX. Deuda / riesgos abiertos
 
 | ID | Descripción |
 |----|-------------|
-| **R-F3.10j-c-1** | **Homogeneización intra-Brasil** · gate numérico FAIL |
-| **R-F3.10j-c-2** | **Runtime j-a/b aparcado** · no promovido a main |
-| **R-F3.10j-c-3** | **Commit accidental** runtime parcial |
-| **R-F3.10g-1** | **Madrid/Barcelona misma familia** (MEDITERRANEAN) |
-| **R-F3.10g-2** | **Delhi/Mumbai misma familia** (SOUTH_ASIAN) |
-| **R-F3.10g-3** | **Mumbai sin country archetype** |
-| **R-F3.10g-5** | **Cache browser** post-deploy |
+| **R-F3.11d-1** | **3 países WA sin ancla** — benin · togo · gambia |
+| **R-F3.11d-2** | **Homogeneización WA** — 7 anclas comparten pack |
+| **R-F3.11d-3** | **Sin country archetype** — sierra_leone · liberia · guinea |
+| **R-F3.11d-4** | **Prod desincronizado** — live 47/44 hasta F3.11e |
+| **R-F3.10j-c-1** | **São Paulo NO catálogo** · j-a/b en rama experimental |
+| **R-F3.10g-1** | **Madrid/Barcelona misma familia** |
+| **R-F3.10g-2** | **Delhi/Mumbai misma familia** |
 | **R-F3.10g-6** | **`dist/` sucio local** · no commiteado |
-| **R-F3.9g-1** | **6 países WA sin ancla catálogo** |
 
 ---
 
-## XI. Git status (post F3.10j-c1)
+## X. Git status (post F3.11d)
 
 ```
-HEAD local: F3.10j-c1 — f3.10j sao paulo gate decision checkpoint
-origin/main: 1ebae93 (+ doc commit local)
-
+HEAD local: F3.11d — f3.11d west african wave c batch 1 checkpoint
 Rama: main
-src/: MODIFICADO (j-a/b aparcado — NO en este commit)
-scripts/: +dev-latam-city-micro-smoke.sh untracked (NO en este commit)
-docs/: +F3.10J_C + KAIROS_CURRENT actualizado
+src/: catálogo 50/47 committed
+docs/: F3.11D + KAIROS_CURRENT actualizado
 dist/: modificado / untracked (NO commiteado)
-Producción runtime: 1ebae93 · 47/44 live
+Producción runtime: 47/44 @ e817e66 doc baseline
 ```
 
 ---
 
-## XII. Siguiente fase
+## XI. Siguiente fase
 
-### **F3.11a — Territorial Densification Audit**
+### **F3.11e — Staging deploy + browser QA Wave C Batch 1**
 
-Candidatas tier-1 **sin par intra-país duplicado**. São Paulo fuera de scope Wave B hasta gate PASS.
+QA Freetown · Monrovia · Conakry × 3 goals · regresiones · **50 markers** UI.
 
 ---
 
-## XIII. Documentos relacionados
+## XII. Documentos relacionados
 
 | Documento | Contenido |
 |-----------|-----------|
+| `F3.11D_WEST_AFRICAN_WAVE_C_BATCH_1_CHECKPOINT.md` | Cierre F3.11 Wave C Batch 1 |
 | `F3.10J_C_SAO_PAULO_GATE_DECISION.md` | Decisión gate São Paulo |
 | `F3.10G_DENSIFICATION_WAVE_A_PRODUCTION_CHECKPOINT.md` | Cierre F3.10 prod |
 | `F3.9G_WEST_AFRICAN_WAVE_B_PRODUCTION_CHECKPOINT.md` | Cierre F3.9 prod |
@@ -193,4 +170,4 @@ Candidatas tier-1 **sin par intra-país duplicado**. São Paulo fuera de scope W
 
 ---
 
-*Checkpoint actualizado F3.10j-c1 · Prod 50/47/44 @ 1ebae93 · São Paulo NO catálogo · Siguiente F3.11a Territorial Densification Audit*
+*Checkpoint actualizado F3.11d · Local src 50/47 @ f3.11c · Prod 47/44 · Siguiente F3.11e staging deploy*
