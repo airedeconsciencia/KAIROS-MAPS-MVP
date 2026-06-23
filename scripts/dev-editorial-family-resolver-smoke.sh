@@ -88,23 +88,23 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f3.8b',
-  EFR.SCHEMA_VERSION === '3.8h.2-f3.8b-0.1',
+  'SCHEMA f3.13a',
+  EFR.SCHEMA_VERSION === '3.8h.2-f3.13a-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
-  '50 países en COUNTRY_EDITORIAL_FAMILY',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 50,
+  '53 países en COUNTRY_EDITORIAL_FAMILY',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 53,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '53 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 53,
+  '56 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 56,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('50 países en catálogo', countries.length === 50, 'count=' + countries.length);
+assert('53 países en catálogo', countries.length === 53, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -126,8 +126,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '53 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 53,
+  '56 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 56,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -175,7 +175,10 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Ho Chi Minh City', country: 'Vietnam', expected: 'SOUTHEAST_ASIAN' },
   { city: 'Kuala Lumpur', country: 'Malasia', expected: 'SOUTHEAST_ASIAN' },
   { city: 'Jakarta', country: 'Indonesia', expected: 'SOUTHEAST_ASIAN' },
-  { city: 'Manila', country: 'Filipinas', expected: 'SOUTHEAST_ASIAN' }
+  { city: 'Manila', country: 'Filipinas', expected: 'SOUTHEAST_ASIAN' },
+  { city: 'Oslo', country: 'Noruega', expected: 'WESTERN_EUROPE' },
+  { city: 'Zúrich', country: 'Suiza', expected: 'WESTERN_EUROPE' },
+  { city: 'Viena', country: 'Austria', expected: 'WESTERN_EUROPE' }
 ];
 
 const splitBrainHits = [];
@@ -193,7 +196,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('44 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('47 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -284,7 +287,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (44 casos)',
+  'Pipeline knowledge ≡ narrative (47 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );

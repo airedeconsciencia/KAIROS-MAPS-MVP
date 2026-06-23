@@ -25,7 +25,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — GLOBAL_NEUTRAL DEFAULT smoke (F2.2d3)"
-echo " Scope: DEFAULT switch · Oslo · regresión LATAM · Lisboa"
+echo " Scope: DEFAULT switch · Reykjavik · regresión LATAM · Lisboa · Oslo WE"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -94,7 +94,8 @@ const P03 = 'puede que descubras una puerta';
 const P06 = 'el ritmo del cuerpo vuelve a importar';
 const P10 = 'lo que sigue no corrige';
 
-const OSLO = { name: 'Oslo', country: 'Norway', lat: 59.9139, lon: 10.7522 };
+const REYKJAVIK = { name: 'Reykjavik', country: 'Iceland', lat: 64.1466, lon: -21.9426 };
+const OSLO = Catalog.findCityByName('Oslo');
 const BOGOTA = { name: 'Bogotá', country: 'Colombia', lat: 4.711, lon: -74.0721 };
 
 assert(
@@ -112,13 +113,19 @@ assert(
     EFR.SCHEMA_VERSION.indexOf('f3.3c') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f3.6b') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f3.7b') !== -1 ||
-    EFR.SCHEMA_VERSION.indexOf('f3.8b') !== -1,
+    EFR.SCHEMA_VERSION.indexOf('f3.8b') !== -1 ||
+    EFR.SCHEMA_VERSION.indexOf('f3.13a') !== -1,
   EFR.SCHEMA_VERSION
 );
 
 assert(
-  'País no mapeado (Oslo/norway) → GLOBAL_NEUTRAL',
-  EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' }) === 'GLOBAL_NEUTRAL',
+  'País no mapeado (Reykjavik/iceland) → GLOBAL_NEUTRAL',
+  EFR.resolveEditorialFamily({ cityName: 'Reykjavik', countryId: 'iceland' }) === 'GLOBAL_NEUTRAL',
+  EFR.resolveEditorialFamily({ cityName: 'Reykjavik', countryId: 'iceland' })
+);
+assert(
+  'Oslo/norway → WESTERN_EUROPE (F3.13a E1a)',
+  EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' }) === 'WESTERN_EUROPE',
   EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' })
 );
 assert(
@@ -256,20 +263,20 @@ function composeReading(city, goal) {
 }
 
 ['amor', 'trabajo', 'descanso'].forEach(function (goal) {
-  const reading = composeReading(OSLO, goal);
+  const reading = composeReading(REYKJAVIK, goal);
   const s = scanReading(reading);
   assert(
-    'Oslo / ' + goal + ' → GLOBAL_NEUTRAL pipeline',
+    'Reykjavik / ' + goal + ' → GLOBAL_NEUTRAL pipeline',
     s.regionN === 'GLOBAL_NEUTRAL' && s.regionK === 'GLOBAL_NEUTRAL',
     JSON.stringify({ regionN: s.regionN, regionK: s.regionK })
   );
   assert(
-    'Oslo / ' + goal + ' ok:true · words 500–900',
+    'Reykjavik / ' + goal + ' ok:true · words 500–900',
     s.ok === true && s.words >= 500 && s.words <= 900,
     JSON.stringify({ ok: s.ok, words: s.words })
   );
   assert(
-    'Oslo / ' + goal + ' leak + legacy 0',
+    'Reykjavik / ' + goal + ' leak + legacy 0',
     s.iberian === 0 && s.latam === 0 && !s.p03 && !s.p06 && !s.p10,
     JSON.stringify({ iberian: s.iberian, latam: s.latam, p03: s.p03, p06: s.p06, p10: s.p10 })
   );
@@ -326,13 +333,13 @@ assert(
   JSON.stringify(lisboaScan)
 );
 
-const osloAmor = composeReading(OSLO, 'amor');
-const osloScan = scanReading(osloAmor);
+const reykjavikAmor = composeReading(REYKJAVIK, 'amor');
+const reykjavikScan = scanReading(reykjavikAmor);
 assert(
-  'QA comparativa Lisboa ≠ Oslo (humanConflict)',
-  lisboaScan.humanConflict && osloScan.humanConflict &&
-    lisboaScan.humanConflict !== osloScan.humanConflict,
-  'Lisboa=' + (lisboaScan.humanConflict || '').slice(0, 50) + ' · Oslo=' + (osloScan.humanConflict || '').slice(0, 50)
+  'QA comparativa Lisboa ≠ Reykjavik (humanConflict)',
+  lisboaScan.humanConflict && reykjavikScan.humanConflict &&
+    lisboaScan.humanConflict !== reykjavikScan.humanConflict,
+  'Lisboa=' + (lisboaScan.humanConflict || '').slice(0, 50) + ' · Reykjavik=' + (reykjavikScan.humanConflict || '').slice(0, 50)
 );
 
 const latamCases = [
@@ -351,10 +358,10 @@ latamCases.forEach(function (c) {
 });
 
 console.log('');
-console.log('QA neutral (Oslo amor sample):');
-console.log('  region:', osloScan.regionN);
-console.log('  humanConflict:', (osloScan.humanConflict || '').slice(0, 90) + '…');
-console.log('  words:', osloScan.words);
+console.log('QA neutral (Reykjavik amor sample):');
+console.log('  region:', reykjavikScan.regionN);
+console.log('  humanConflict:', (reykjavikScan.humanConflict || '').slice(0, 90) + '…');
+console.log('  words:', reykjavikScan.words);
 console.log('');
 console.log('QA IBERIAN (Lisboa amor sample):');
 console.log('  region:', lisboaScan.regionN);

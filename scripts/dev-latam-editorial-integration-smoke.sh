@@ -25,7 +25,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — LATAM editorial integration (F3.8c Wave A)"
-echo " Scope: 53/50 catálogo · CR/PA · amends · regresiones · anti-leak"
+echo " Scope: 56/53 catálogo · CR/PA · amends · regresiones · anti-leak"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -195,14 +195,14 @@ function scanReading(reading, slug) {
 }
 
 assert(
-  '53 ciudades / 50 países catálogo (F3.11j baseline; LATAM Wave A intacto)',
-  Catalog.CITIES.length === 53 && Catalog.getCountries().length === 50,
+  '56 ciudades / 53 países catálogo (F3.13a baseline; LATAM Wave A intacto)',
+  Catalog.CITIES.length === 56 && Catalog.getCountries().length === 53,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.11j',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11j-0.1',
+  'SCHEMA catálogo f3.13a',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.13a-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -235,14 +235,14 @@ assert(
 );
 
 assert(
-  '50 países resolver (F3.8b LATAM+)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 50,
+  '53 países resolver (F3.13a E1a)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 53,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
 assert(
-  'SCHEMA f3.8b',
-  EFR.SCHEMA_VERSION === '3.8h.2-f3.8b-0.1',
+  'SCHEMA f3.13a',
+  EFR.SCHEMA_VERSION === '3.8h.2-f3.13a-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -534,7 +534,7 @@ const QA_REGRESSION = [
   { label: 'Bangkok / amor → SOUTHEAST_ASIAN', cityName: 'Bangkok', slug: 'thailand', goal: 'amor', expected: 'SOUTHEAST_ASIAN' },
   { label: 'París / amor → WESTERN_EUROPE', cityName: 'París', slug: 'france', goal: 'amor', expected: 'WESTERN_EUROPE' },
   { label: 'Lisboa / amor → IBERIAN', cityName: 'Lisboa', slug: 'portugal', goal: 'amor', expected: 'IBERIAN' },
-  { label: 'Oslo / amor → GLOBAL_NEUTRAL', cityName: 'Oslo', slug: 'norway', goal: 'amor', expected: 'GLOBAL_NEUTRAL' }
+  { label: 'Reykjavik / amor → GLOBAL_NEUTRAL', cityName: 'Reykjavik', slug: 'iceland', goal: 'amor', expected: 'GLOBAL_NEUTRAL' }
 ];
 
 console.log('\n' + '═'.repeat(60));

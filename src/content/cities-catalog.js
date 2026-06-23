@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.11j-0.1';
-  var EXPECTED_CITY_COUNT = 53;
-  var EXPECTED_COUNTRY_COUNT = 50;
+  var SCHEMA_VERSION = '3.8f.1-f3.13a-0.1';
+  var EXPECTED_CITY_COUNT = 56;
+  var EXPECTED_COUNTRY_COUNT = 53;
 
   var CITIES = [
     // Europa
@@ -24,6 +24,9 @@
     { name: 'Atenas', country: 'Grecia', lat: 37.9838, lon: 23.7275 },
     { name: 'Estocolmo', country: 'Suecia', lat: 59.3293, lon: 18.0686 },
     { name: 'Estambul', country: 'Turquía', lat: 41.0082, lon: 28.9784 },
+    { name: 'Oslo', country: 'Noruega', lat: 59.9139, lon: 10.7522 },
+    { name: 'Zúrich', country: 'Suiza', lat: 47.3769, lon: 8.5417 },
+    { name: 'Viena', country: 'Austria', lat: 48.2082, lon: 16.3738 },
     // América
     { name: 'Nueva York', country: 'EE. UU.', lat: 40.7128, lon: -74.0060 },
     { name: 'Los Ángeles', country: 'EE. UU.', lat: 34.0522, lon: -118.2437 },
@@ -83,6 +86,9 @@
     'Grecia': 'gr',
     'Suecia': 'se',
     'Turquía': 'tr',
+    'Noruega': 'no',
+    'Suiza': 'ch',
+    'Austria': 'at',
     'EE. UU.': 'us',
     'Canadá': 'ca',
     'México': 'mx',
@@ -137,6 +143,9 @@
     'Grecia': 'greece',
     'Suecia': 'sweden',
     'Turquía': 'turkey',
+    'Noruega': 'norway',
+    'Suiza': 'switzerland',
+    'Austria': 'austria',
     'EE. UU.': 'united_states',
     'Canadá': 'canada',
     'México': 'mexico',

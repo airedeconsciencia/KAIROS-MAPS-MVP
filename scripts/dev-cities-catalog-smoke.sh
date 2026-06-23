@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '53 ciudades (F3.11j WEST_AFRICAN Wave C Batch 2)',
-  Catalog.CITIES.length === 53,
+  '56 ciudades (F3.13a E1a resolver expansion)',
+  Catalog.CITIES.length === 56,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '50 países únicos (F3.11j WEST_AFRICAN Wave C Batch 2)',
-  countries.length === 50,
+  '53 países únicos (F3.13a E1a resolver expansion)',
+  countries.length === 53,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (50)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 50,
+  'COUNTRY_IDS alineados (53)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 53,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -306,9 +306,29 @@ waWaveC2.forEach(function (entry) {
 });
 assert('WA Wave C Batch 2 ciudades + slugs (F3.11j)', waWaveC2Issues.length === 0, waWaveC2Issues.join(' · '));
 
+const e1aWave = [
+  { name: 'Oslo', countryId: 'norway', code: 'no' },
+  { name: 'Zúrich', countryId: 'switzerland', code: 'ch' },
+  { name: 'Viena', countryId: 'austria', code: 'at' }
+];
+const e1aIssues = [];
+e1aWave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) e1aIssues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      e1aIssues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      e1aIssues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('E1a ciudades + slugs (F3.13a)', e1aIssues.length === 0, e1aIssues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f3.11j',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11j-0.1',
+  'SCHEMA catálogo f3.13a',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.13a-0.1',
   Catalog.SCHEMA_VERSION
 );
 

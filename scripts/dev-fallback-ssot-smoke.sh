@@ -248,7 +248,12 @@ assert(
 
 assert(
   'País no mapeado → DEFAULT GLOBAL_NEUTRAL (F2.2d3)',
-  EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' }) === 'GLOBAL_NEUTRAL',
+  EFR.resolveEditorialFamily({ cityName: 'Reykjavik', countryId: 'iceland' }) === 'GLOBAL_NEUTRAL',
+  EFR.resolveEditorialFamily({ cityName: 'Reykjavik', countryId: 'iceland' })
+);
+assert(
+  'Oslo/norway → WESTERN_EUROPE (F3.13a E1a)',
+  EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' }) === 'WESTERN_EUROPE',
   EFR.resolveEditorialFamily({ cityName: 'Oslo', countryId: 'norway' })
 );
 

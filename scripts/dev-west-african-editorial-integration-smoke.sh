@@ -204,14 +204,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '53 ciudades / 50 países catálogo (F3.11j WEST_AFRICAN Wave C Batch 2)',
-  Catalog.CITIES.length === 53 && Catalog.getCountries().length === 50,
+  '56 ciudades / 53 países catálogo (F3.13a E1a)',
+  Catalog.CITIES.length === 56 && Catalog.getCountries().length === 53,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.11j',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11j-0.1',
+  'SCHEMA catálogo f3.13a',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.13a-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -314,8 +314,8 @@ assert(
 );
 
 assert(
-  'SCHEMA resolver f3.8b (50 países; sin cambio F3.9b)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f3.8b-0.1',
+  'SCHEMA resolver f3.13a (53 países)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f3.13a-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -463,7 +463,7 @@ const QA_REGRESSION = [
   { label: 'Lisboa / amor → IBERIAN', cityName: 'Lisboa', slug: 'portugal', goal: 'amor', expected: 'IBERIAN' },
   { label: 'Ciudad de México / amor → LATAM', cityName: 'Ciudad de México', slug: 'mexico', goal: 'amor', expected: 'LATAM' },
   { label: 'Nairobi / trabajo → AFRICAN_COASTAL', cityName: 'Nairobi', slug: 'kenya', goal: 'trabajo', expected: 'AFRICAN_COASTAL' },
-  { label: 'Oslo / amor → GLOBAL_NEUTRAL', cityName: 'Oslo', slug: 'norway', goal: 'amor', expected: 'GLOBAL_NEUTRAL' }
+  { label: 'Reykjavik / amor → GLOBAL_NEUTRAL', cityName: 'Reykjavik', slug: 'iceland', goal: 'amor', expected: 'GLOBAL_NEUTRAL' }
 ];
 
 QA_REGRESSION.forEach(function (c) {
@@ -490,7 +490,7 @@ function bodyFor(cityName, goal, slug) {
 const qaPairs = [
   { label: 'Lagos amor ≠ Delhi amor', a: bodyFor('Lagos', 'amor', 'nigeria'), b: bodyFor('Delhi', 'amor', 'india') },
   { label: 'Lagos amor ≠ Nairobi amor', a: bodyFor('Lagos', 'amor', 'nigeria'), b: bodyFor('Nairobi', 'amor', 'kenya') },
-  { label: 'Accra amor ≠ Oslo amor', a: bodyFor('Accra', 'amor', 'ghana'), b: bodyFor('Oslo', 'amor', 'norway') }
+  { label: 'Accra amor ≠ Reykjavik amor', a: bodyFor('Accra', 'amor', 'ghana'), b: bodyFor('Reykjavik', 'amor', 'iceland') }
 ];
 
 qaPairs.forEach(function (pair) {

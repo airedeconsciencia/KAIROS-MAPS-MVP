@@ -80,7 +80,10 @@ const WE_CITIES = [
   { name: 'París', country: 'Francia', slug: 'france' },
   { name: 'Berlín', country: 'Alemania', slug: 'germany' },
   { name: 'Ámsterdam', country: 'Países Bajos', slug: 'netherlands' },
-  { name: 'Estocolmo', country: 'Suecia', slug: 'sweden' }
+  { name: 'Estocolmo', country: 'Suecia', slug: 'sweden' },
+  { name: 'Oslo', country: 'Noruega', slug: 'norway' },
+  { name: 'Zúrich', country: 'Suiza', slug: 'switzerland' },
+  { name: 'Viena', country: 'Austria', slug: 'austria' }
 ];
 const GOALS = ['amor', 'trabajo', 'descanso'];
 const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
@@ -237,7 +240,7 @@ WE_CITIES.forEach(function (entry) {
   });
 });
 
-assert('12 lecturas WESTERN_EUROPE (4 ciudades × 3 goals)', readings.length === 12, 'count=' + readings.length);
+assert('21 lecturas WESTERN_EUROPE (7 ciudades × 3 goals)', readings.length === 21, 'count=' + readings.length);
 
 const splitBrain = readings.filter(function (r) {
   return r.regionN !== r.regionK ||
@@ -302,7 +305,7 @@ const wordFails = readings.filter(function (r) {
   return w < Premium.MIN_WORDS || w > Premium.MAX_WORDS;
 });
 assert(
-  'Longitud 500–900 palabras (12 lecturas)',
+  'Longitud 500–900 palabras (21 lecturas)',
   wordFails.length === 0,
   wordFails.map(function (r) {
     return r.city + '/' + r.goal + '=' + r.reading.meta.wordCount;
@@ -316,7 +319,7 @@ readings.forEach(function (r) {
     legacyFails.push(r.city + '/' + r.goal + ' p03=' + s.p03 + ' p06=' + s.p06 + ' p10=' + s.p10);
   }
 });
-assert('P03/P06/P10 = 0 (12 lecturas)', legacyFails.length === 0, legacyFails.join(' · '));
+assert('P03/P06/P10 = 0 (21 lecturas)', legacyFails.length === 0, legacyFails.join(' · '));
 
 function composeReading(city, goal) {
   return Premium.composeCityReading({
@@ -332,7 +335,10 @@ const QA_WE = [
   { label: 'París / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'París', slug: 'france', goals: GOALS },
   { label: 'Berlín / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Berlín', slug: 'germany', goals: GOALS },
   { label: 'Ámsterdam / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Ámsterdam', slug: 'netherlands', goals: GOALS },
-  { label: 'Estocolmo / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Estocolmo', slug: 'sweden', goals: GOALS }
+  { label: 'Estocolmo / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Estocolmo', slug: 'sweden', goals: GOALS },
+  { label: 'Oslo / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Oslo', slug: 'norway', goals: GOALS },
+  { label: 'Zúrich / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Zúrich', slug: 'switzerland', goals: GOALS },
+  { label: 'Viena / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Viena', slug: 'austria', goals: GOALS }
 ];
 
 QA_WE.forEach(function (entry) {
@@ -348,9 +354,37 @@ QA_WE.forEach(function (entry) {
   });
 });
 
+assert(
+  'Noruega display → norway slug → WESTERN_EUROPE (F3.13a)',
+  EFR.coerceCountryId('Noruega') === 'norway' &&
+    EFR.resolveEditorialFamily({ cityName: 'Oslo', countryDisplay: 'Noruega' }) === 'WESTERN_EUROPE',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Noruega'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Oslo', countryDisplay: 'Noruega' })
+  })
+);
+assert(
+  'Suiza display → switzerland slug → WESTERN_EUROPE (F3.13a)',
+  EFR.coerceCountryId('Suiza') === 'switzerland' &&
+    EFR.resolveEditorialFamily({ cityName: 'Zúrich', countryDisplay: 'Suiza' }) === 'WESTERN_EUROPE',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Suiza'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Zúrich', countryDisplay: 'Suiza' })
+  })
+);
+assert(
+  'Austria display → austria slug → WESTERN_EUROPE (F3.13a)',
+  EFR.coerceCountryId('Austria') === 'austria' &&
+    EFR.resolveEditorialFamily({ cityName: 'Viena', countryDisplay: 'Austria' }) === 'WESTERN_EUROPE',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Austria'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Viena', countryDisplay: 'Austria' })
+  })
+);
+
 const QA_REGRESSION = [
   { label: 'Lisboa / amor → IBERIAN', cityName: 'Lisboa', slug: 'portugal', goal: 'amor', expected: 'IBERIAN' },
-  { label: 'Oslo / amor → GLOBAL_NEUTRAL', cityName: 'Oslo', slug: 'norway', goal: 'amor', expected: 'GLOBAL_NEUTRAL' },
+  { label: 'Reykjavik / amor → GLOBAL_NEUTRAL', cityName: 'Reykjavik', slug: 'iceland', goal: 'amor', expected: 'GLOBAL_NEUTRAL' },
   { label: 'Ciudad de México / amor → LATAM', cityName: 'Ciudad de México', slug: 'mexico', goal: 'amor', expected: 'LATAM' }
 ];
 
