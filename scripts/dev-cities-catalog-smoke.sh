@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '50 ciudades (F3.11c WEST_AFRICAN Wave C Batch 1)',
-  Catalog.CITIES.length === 50,
+  '53 ciudades (F3.11j WEST_AFRICAN Wave C Batch 2)',
+  Catalog.CITIES.length === 53,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '47 países únicos (F3.11c WEST_AFRICAN Wave C Batch 1)',
-  countries.length === 47,
+  '50 países únicos (F3.11j WEST_AFRICAN Wave C Batch 2)',
+  countries.length === 50,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (47)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 47,
+  'COUNTRY_IDS alineados (50)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 50,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -284,11 +284,31 @@ waWaveC.forEach(function (entry) {
     }
   }
 });
-assert('WA Wave C ciudades + slugs (F3.11c)', waWaveCIssues.length === 0, waWaveCIssues.join(' · '));
+assert('WA Wave C Batch 1 ciudades + slugs (F3.11c)', waWaveCIssues.length === 0, waWaveCIssues.join(' · '));
+
+const waWaveC2 = [
+  { name: 'Cotonou', countryId: 'benin', code: 'bj' },
+  { name: 'Lomé', countryId: 'togo', code: 'tg' },
+  { name: 'Banjul', countryId: 'gambia', code: 'gm' }
+];
+const waWaveC2Issues = [];
+waWaveC2.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) waWaveC2Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      waWaveC2Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      waWaveC2Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('WA Wave C Batch 2 ciudades + slugs (F3.11j)', waWaveC2Issues.length === 0, waWaveC2Issues.join(' · '));
 
 assert(
-  'SCHEMA catálogo f3.11c',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11c-0.1',
+  'SCHEMA catálogo f3.11j',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11j-0.1',
   Catalog.SCHEMA_VERSION
 );
 

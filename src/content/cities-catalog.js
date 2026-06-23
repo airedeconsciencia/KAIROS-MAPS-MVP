@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.11c-0.1';
-  var EXPECTED_CITY_COUNT = 50;
-  var EXPECTED_COUNTRY_COUNT = 47;
+  var SCHEMA_VERSION = '3.8f.1-f3.11j-0.1';
+  var EXPECTED_CITY_COUNT = 53;
+  var EXPECTED_COUNTRY_COUNT = 50;
 
   var CITIES = [
     // Europa
@@ -64,6 +64,9 @@
     { name: 'Freetown', country: 'Sierra Leona', lat: 8.4657, lon: -13.2317 },
     { name: 'Monrovia', country: 'Liberia', lat: 6.3156, lon: -10.8074 },
     { name: 'Conakry', country: 'Guinea', lat: 9.6412, lon: -13.5784 },
+    { name: 'Cotonou', country: 'Benín', lat: 6.3703, lon: 2.3912 },
+    { name: 'Lomé', country: 'Togo', lat: 6.1256, lon: 1.2254 },
+    { name: 'Banjul', country: 'Gambia', lat: 13.4549, lon: -16.5790 },
     // Oceanía
     { name: 'Sídney', country: 'Australia', lat: -33.8688, lon: 151.2093 },
     { name: 'Auckland', country: 'Nueva Zelanda', lat: -36.8485, lon: 174.7633 }
@@ -115,6 +118,9 @@
     'Sierra Leona': 'sl',
     'Liberia': 'lr',
     'Guinea': 'gn',
+    'Benín': 'bj',
+    'Togo': 'tg',
+    'Gambia': 'gm',
     'Australia': 'au',
     'Nueva Zelanda': 'nz'
   };
@@ -166,6 +172,9 @@
     'Sierra Leona': 'sierra_leone',
     'Liberia': 'liberia',
     'Guinea': 'guinea',
+    'Benín': 'benin',
+    'Togo': 'togo',
+    'Gambia': 'gambia',
     'Australia': 'australia',
     'Nueva Zelanda': 'new_zealand'
   };

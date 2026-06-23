@@ -25,7 +25,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — WEST_AFRICAN editorial integration (F3.9b Wave B)"
-echo " Scope: Lagos · Accra · Dakar · Abidjan · Freetown · Monrovia · Conakry · catálogo SSOT · anti-leak · regresiones"
+echo " Scope: Lagos · Accra · Dakar · Abidjan · Freetown · Monrovia · Conakry · Cotonou · Lomé · Banjul · catálogo SSOT · anti-leak · regresiones"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -83,7 +83,10 @@ const WA_CITIES = [
   { name: 'Abidjan', slug: 'ivory_coast' },
   { name: 'Freetown', slug: 'sierra_leone' },
   { name: 'Monrovia', slug: 'liberia' },
-  { name: 'Conakry', slug: 'guinea' }
+  { name: 'Conakry', slug: 'guinea' },
+  { name: 'Cotonou', slug: 'benin' },
+  { name: 'Lomé', slug: 'togo' },
+  { name: 'Banjul', slug: 'gambia' }
 ];
 const WA_COUNTRIES = [
   'nigeria', 'ghana', 'senegal', 'ivory_coast', 'sierra_leone',
@@ -201,14 +204,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '50 ciudades / 47 países catálogo (F3.11c WEST_AFRICAN Wave C Batch 1)',
-  Catalog.CITIES.length === 50 && Catalog.getCountries().length === 47,
+  '53 ciudades / 50 países catálogo (F3.11j WEST_AFRICAN Wave C Batch 2)',
+  Catalog.CITIES.length === 53 && Catalog.getCountries().length === 50,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.11c',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11c-0.1',
+  'SCHEMA catálogo f3.11j',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11j-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -265,6 +268,36 @@ assert(
   JSON.stringify({
     slug: EFR.coerceCountryId('Guinea'),
     family: EFR.resolveEditorialFamily({ cityName: 'Conakry', countryDisplay: 'Guinea' })
+  })
+);
+
+assert(
+  'Benín display → benin → WEST_AFRICAN (F3.11j)',
+  EFR.coerceCountryId('Benín') === 'benin' &&
+    EFR.resolveEditorialFamily({ cityName: 'Cotonou', countryDisplay: 'Benín' }) === 'WEST_AFRICAN',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Benín'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Cotonou', countryDisplay: 'Benín' })
+  })
+);
+
+assert(
+  'Togo display → togo → WEST_AFRICAN (F3.11j)',
+  EFR.coerceCountryId('Togo') === 'togo' &&
+    EFR.resolveEditorialFamily({ cityName: 'Lomé', countryDisplay: 'Togo' }) === 'WEST_AFRICAN',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Togo'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Lomé', countryDisplay: 'Togo' })
+  })
+);
+
+assert(
+  'Gambia display → gambia → WEST_AFRICAN (F3.11j)',
+  EFR.coerceCountryId('Gambia') === 'gambia' &&
+    EFR.resolveEditorialFamily({ cityName: 'Banjul', countryDisplay: 'Gambia' }) === 'WEST_AFRICAN',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Gambia'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Banjul', countryDisplay: 'Gambia' })
   })
 );
 
@@ -356,7 +389,7 @@ WA_CITIES.forEach(function (entry) {
   });
 });
 
-assert('21 lecturas WA (7 ciudades × 3 goals)', readings.length === 21, 'count=' + readings.length);
+assert('30 lecturas WA (10 ciudades × 3 goals)', readings.length === 30, 'count=' + readings.length);
 
 readings.forEach(function (r) {
   const s = r.scan;
@@ -512,6 +545,31 @@ console.log('═'.repeat(60));
 ['Freetown', 'Monrovia', 'Conakry'].forEach(function (cityName) {
   const waveCReadings = readings.filter(function (r) { return r.city === cityName; });
   waveCReadings.forEach(function (r) {
+    const s = r.scan;
+    console.log(
+      ' ',
+      r.city + ' / ' + r.slug + ' / ' + r.goal + ':',
+      'ok=' + s.ok,
+      'words=' + s.words,
+      'n=k=e=' + s.regionN,
+      'ac=' + s.ac,
+      'latam=' + s.latam,
+      'sa=' + s.sa,
+      'sea=' + s.sea,
+      'gn=' + s.gn,
+      'ph=' + s.placeholders,
+      'P03/P06/P10=' + (s.p03 ? 1 : 0) + '/' + (s.p06 ? 1 : 0) + '/' + (s.p10 ? 1 : 0)
+    );
+  });
+});
+
+console.log('\n' + '═'.repeat(60));
+console.log('QA obligatorio F3.11j — Wave C Batch 2 (catálogo)');
+console.log('═'.repeat(60));
+
+['Cotonou', 'Lomé', 'Banjul'].forEach(function (cityName) {
+  const waveC2Readings = readings.filter(function (r) { return r.city === cityName; });
+  waveC2Readings.forEach(function (r) {
     const s = r.scan;
     console.log(
       ' ',

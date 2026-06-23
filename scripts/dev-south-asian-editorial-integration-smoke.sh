@@ -207,14 +207,14 @@ assert(
 );
 
 assert(
-  '50 ciudades / 47 países catálogo (F3.11c WEST_AFRICAN Wave C Batch 1; SA Wave A intacto)',
-  Catalog.CITIES.length === 50 && Catalog.getCountries().length === 47,
+  '53 ciudades / 50 países catálogo (F3.11j WEST_AFRICAN Wave C Batch 2; SA Wave A intacto)',
+  Catalog.CITIES.length === 53 && Catalog.getCountries().length === 50,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.11c',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11c-0.1',
+  'SCHEMA catálogo f3.11j',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.11j-0.1',
   Catalog.SCHEMA_VERSION
 );
 

@@ -98,13 +98,13 @@ assert(
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '50 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 50,
+  '53 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 53,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('47 países en catálogo', countries.length === 47, 'count=' + countries.length);
+assert('50 países en catálogo', countries.length === 50, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -126,8 +126,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '50 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 50,
+  '53 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 53,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -169,6 +169,9 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Freetown', country: 'Sierra Leona', expected: 'WEST_AFRICAN' },
   { city: 'Monrovia', country: 'Liberia', expected: 'WEST_AFRICAN' },
   { city: 'Conakry', country: 'Guinea', expected: 'WEST_AFRICAN' },
+  { city: 'Cotonou', country: 'Benín', expected: 'WEST_AFRICAN' },
+  { city: 'Lomé', country: 'Togo', expected: 'WEST_AFRICAN' },
+  { city: 'Banjul', country: 'Gambia', expected: 'WEST_AFRICAN' },
   { city: 'Ho Chi Minh City', country: 'Vietnam', expected: 'SOUTHEAST_ASIAN' },
   { city: 'Kuala Lumpur', country: 'Malasia', expected: 'SOUTHEAST_ASIAN' },
   { city: 'Jakarta', country: 'Indonesia', expected: 'SOUTHEAST_ASIAN' },
@@ -190,7 +193,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('41 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('44 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -281,7 +284,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (41 casos)',
+  'Pipeline knowledge ≡ narrative (44 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );
