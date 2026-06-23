@@ -3,12 +3,12 @@
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
 **Rama:** `main`  
-**HEAD local:** F3.11d doc checkpoint (post Wave C Batch 1)  
-**Checkpoint F3.11:** `docs/architecture/F3.11D_WEST_AFRICAN_WAVE_C_BATCH_1_CHECKPOINT.md`  
+**HEAD local:** F3.11g doc checkpoint (post Wave C Batch 1 prod)  
+**Checkpoint F3.11:** `docs/architecture/F3.11G_WEST_AFRICAN_WAVE_C_BATCH_1_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint F3.10j:** `docs/architecture/F3.10J_C_SAO_PAULO_GATE_DECISION.md`  
 **Checkpoint F3.10:** `docs/architecture/F3.10G_DENSIFICATION_WAVE_A_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint F3.9:** `docs/architecture/F3.9G_WEST_AFRICAN_WAVE_B_PRODUCTION_CHECKPOINT.md`  
-**Producción live:** catálogo **`3.8f.1-f3.10b-0.1`** · **47 ciudades / 44 países** · editorial EFR **`3.8h.2-f3.8b-0.1`** · **50 países** · **11 familias**
+**Producción live:** catálogo **`3.8f.1-f3.11c-0.1`** · **50 ciudades / 47 países** · editorial EFR **`3.8h.2-f3.8b-0.1`** · **50 países** · **11 familias**
 
 ---
 
@@ -16,15 +16,13 @@
 
 KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (**50 países** · **11 familias** live en prod), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, y catálogo local **`50 ciudades / 47 países`** con **WA Wave C Batch 1** (Freetown · Monrovia · Conakry) además de **Densification Wave A** (Barcelona · Mumbai), **WA Wave B** (Abidjan), **WA Wave A**, **LATAM+ Wave A**, **SA+ Wave A** y **SEA+ Wave A**.
 
-**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3–F3.10 series cerradas en producción** · **F3.10 São Paulo gate cerrado (NO catálogo)** · **F3.11a–F3.11d WA Wave C Batch 1 cerrado en `src/`** (sin deploy).
+**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3–F3.11 series cerradas en producción** · **F3.10 São Paulo gate cerrado (NO catálogo)** · **F3.11a–F3.11g WA Wave C Batch 1 cerrado en prod**.
 
-**Producción** (https://kairos-maps-mvp.web.app) — resolver **`3.8h.2-f3.8b-0.1`** · catálogo **`3.8f.1-f3.10b-0.1`** · **47/44** live.
-
-**Local `src/` committed:** catálogo **`3.8f.1-f3.11c-0.1`** · **50/47** · WA anclas **7/10**.
+**Producción** (https://kairos-maps-mvp.web.app) — resolver **`3.8h.2-f3.8b-0.1`** · catálogo **`3.8f.1-f3.11c-0.1`** · **50/47** live.
 
 **São Paulo:** **NO catálogo** · runtime j-a/b aparcado en rama `f3.10j-urban-layer` (sin merge a main).
 
-**Riesgos vivos:** homogeneización WA · 3 países WA sin ancla · Mumbai sin archetype · Madrid/Barcelona · Delhi/Mumbai · `dist/` sucio · prod desincronizado hasta F3.11e.
+**Riesgos vivos:** homogeneización WA · 3 países WA sin ancla (Benín · Togo · Gambia) · Mumbai sin archetype · Madrid/Barcelona · Delhi/Mumbai · `dist/` sucio · cache browser post-deploy.
 
 ---
 
@@ -60,14 +58,14 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 | **F3.8a–F3.8g** | ✅ Cerrado | LATAM+ prod 50/44/43 |
 | **F3.9a–F3.9g** | ✅ Cerrado | WA Wave B prod 45/44 |
 | **F3.10a–F3.10j-c1** | ✅ Cerrado | Densification Wave A prod 47/44 · São Paulo NO catálogo |
-| **F3.11a–F3.11d** | ✅ Cerrado | WA Wave C Batch 1 · 50/47 `src/` |
-| **F3.11e** | ⏳ Siguiente | **Staging deploy + browser QA Wave C Batch 1** |
+| **F3.11a–F3.11g** | ✅ Cerrado | WA Wave C Batch 1 prod **50/47** |
+| **F3.11h** | ⏳ Siguiente | **WA Wave C Batch 2 Audit** |
 
 ---
 
-## V. F3.11 — qué cambió en `src/` (sin deploy)
+## V. F3.11 — qué cambió en prod
 
-### Cambió (local @ F3.11c)
+### Cambió (live @ F3.11f)
 
 - **Schema catálogo:** `3.8f.1-f3.10b-0.1` → **`3.8f.1-f3.11c-0.1`**
 - **Ciudades catálogo:** 47 → **50** (+ Freetown · Monrovia · Conakry)
@@ -85,19 +83,23 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 ## VI. Resolver + catálogo SSOT
 
-| Métrica | Prod live | Local `src/` committed |
-|---------|-----------|------------------------|
-| Familias editoriales | **11** | **11** |
-| Países resolver | **50** | **50** |
-| Ciudades catálogo | **47** | **50** |
-| Países catálogo visibles | **44** | **47** |
-| WA anclas catálogo | **4/10** | **7/10** |
-| Schema resolver | **`3.8h.2-f3.8b-0.1`** | **`3.8h.2-f3.8b-0.1`** |
-| Schema catálogo | **`3.8f.1-f3.10b-0.1`** | **`3.8f.1-f3.11c-0.1`** |
+| Métrica | Prod live |
+|---------|-----------|
+| Familias editoriales | **11** |
+| Países resolver | **50** |
+| Ciudades catálogo | **50** |
+| Países catálogo visibles | **47** |
+| WA anclas catálogo | **7/10** |
+| Schema resolver | **`3.8h.2-f3.8b-0.1`** |
+| Schema catálogo | **`3.8f.1-f3.11c-0.1`** |
+
+**WA anclas:** Lagos · Accra · Dakar · Abidjan · Freetown · Monrovia · Conakry
+
+**WA gap (3/10):** benin · togo · gambia
 
 ---
 
-## VII. Smokes gate actuales (`src/` post-F3.11d)
+## VII. Smokes gate actuales
 
 ```bash
 ./scripts/dev-cities-catalog-smoke.sh
@@ -108,7 +110,7 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 ./scripts/dev-southeast-asian-editorial-integration-smoke.sh
 ```
 
-**Gate F3.11d:** **6/6 PASS** · Batch 1 QA **9/9 PASS** · regresiones **7/7 PASS**
+**Gate F3.11f pre-deploy:** **6/6 PASS** · QA prod **16/16 PASS**
 
 ---
 
@@ -116,9 +118,8 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 | Entorno | URL | Catálogo | Editorial |
 |---------|-----|----------|-----------|
-| **Producción** | https://kairos-maps-mvp.web.app | **47** @ `3.8f.1-f3.10b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
-| **Staging** | https://kairos-maps-dev.web.app | **47** @ `3.8f.1-f3.10b-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
-| **Local `src/`** | — | **50** @ `3.8f.1-f3.11c-0.1` | sin deploy |
+| **Producción** | https://kairos-maps-mvp.web.app | **50** @ `3.8f.1-f3.11c-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
+| **Staging** | https://kairos-maps-dev.web.app | **50** @ `3.8f.1-f3.11c-0.1` | **`3.8h.2-f3.8b-0.1`** · 50 países |
 
 ---
 
@@ -126,35 +127,35 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 | ID | Descripción |
 |----|-------------|
-| **R-F3.11d-1** | **3 países WA sin ancla** — benin · togo · gambia |
-| **R-F3.11d-2** | **Homogeneización WA** — 7 anclas comparten pack |
-| **R-F3.11d-3** | **Sin country archetype** — sierra_leone · liberia · guinea |
-| **R-F3.11d-4** | **Prod desincronizado** — live 47/44 hasta F3.11e |
+| **R-F3.11g-1** | **3 países WA sin ancla** — Benín · Togo · Gambia |
+| **R-F3.11g-2** | **Homogeneización WA** — 7 anclas comparten pack |
+| **R-F3.11g-3** | **Cache browser** — hard refresh post-deploy |
+| **R-F3.11g-4** | **`dist/` sucio local** — no commiteado |
+| **R-F3.11g-5** | **Sin country archetype** — sierra_leone · liberia · guinea |
 | **R-F3.10j-c-1** | **São Paulo NO catálogo** · j-a/b en rama experimental |
 | **R-F3.10g-1** | **Madrid/Barcelona misma familia** |
 | **R-F3.10g-2** | **Delhi/Mumbai misma familia** |
-| **R-F3.10g-6** | **`dist/` sucio local** · no commiteado |
 
 ---
 
-## X. Git status (post F3.11d)
+## X. Git status (post F3.11g)
 
 ```
-HEAD local: F3.11d — f3.11d west african wave c batch 1 checkpoint
+HEAD local: F3.11g — f3.11g west african wave c batch 1 production checkpoint
 Rama: main
-src/: catálogo 50/47 committed
-docs/: F3.11D + KAIROS_CURRENT actualizado
+src/: limpio (sin cambios desde F3.11c)
+docs/: F3.11G + KAIROS_CURRENT actualizado
 dist/: modificado / untracked (NO commiteado)
-Producción runtime: 47/44 @ e817e66 doc baseline
+Producción runtime: 50/47 @ 3.8f.1-f3.11c-0.1
 ```
 
 ---
 
 ## XI. Siguiente fase
 
-### **F3.11e — Staging deploy + browser QA Wave C Batch 1**
+### **F3.11h — WEST_AFRICAN Wave C Batch 2 Audit**
 
-QA Freetown · Monrovia · Conakry × 3 goals · regresiones · **50 markers** UI.
+Auditoría READ-ONLY: Cotonou · Lomé · Banjul (benin · togo · gambia) · cierre gap WA 7/10 → 10/10.
 
 ---
 
@@ -162,7 +163,8 @@ QA Freetown · Monrovia · Conakry × 3 goals · regresiones · **50 markers** U
 
 | Documento | Contenido |
 |-----------|-----------|
-| `F3.11D_WEST_AFRICAN_WAVE_C_BATCH_1_CHECKPOINT.md` | Cierre F3.11 Wave C Batch 1 |
+| `F3.11G_WEST_AFRICAN_WAVE_C_BATCH_1_PRODUCTION_CHECKPOINT.md` | Cierre F3.11 prod |
+| `F3.11D_WEST_AFRICAN_WAVE_C_BATCH_1_CHECKPOINT.md` | Cierre F3.11 `src/` |
 | `F3.10J_C_SAO_PAULO_GATE_DECISION.md` | Decisión gate São Paulo |
 | `F3.10G_DENSIFICATION_WAVE_A_PRODUCTION_CHECKPOINT.md` | Cierre F3.10 prod |
 | `F3.9G_WEST_AFRICAN_WAVE_B_PRODUCTION_CHECKPOINT.md` | Cierre F3.9 prod |
@@ -170,4 +172,4 @@ QA Freetown · Monrovia · Conakry × 3 goals · regresiones · **50 markers** U
 
 ---
 
-*Checkpoint actualizado F3.11d · Local src 50/47 @ f3.11c · Prod 47/44 · Siguiente F3.11e staging deploy*
+*Checkpoint actualizado F3.11g · Prod 50/47 @ f3.11c · WA 7/10 · Siguiente F3.11h Batch 2 audit*
