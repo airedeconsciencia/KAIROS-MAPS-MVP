@@ -3,21 +3,21 @@
 **Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
 **Rama:** `main`  
-**HEAD local:** F3.13e doc checkpoint (post E1a prod)  
-**Checkpoint F3.13:** `docs/architecture/F3.13E_RESOLVER_EXPANSION_E1A_PRODUCTION_CHECKPOINT.md`  
+**HEAD local:** F3.13j doc checkpoint (post E1b prod)  
+**Checkpoint F3.13:** `docs/architecture/F3.13J_RESOLVER_EXPANSION_E1B_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint F3.11:** `docs/architecture/F3.11N_WEST_AFRICAN_WAVE_C_BATCH_2_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint F3.10j:** `docs/architecture/F3.10J_C_SAO_PAULO_GATE_DECISION.md`  
-**Producción live:** catálogo **`3.8f.1-f3.13a-0.1`** · **56 ciudades / 53 países** · editorial EFR **`3.8h.2-f3.13a-0.1`** · **53 países** · **11 familias** · **WA 10/10**
+**Producción live:** catálogo **`3.8f.1-f3.13b-0.1`** · **59 ciudades / 56 países** · editorial EFR **`3.8h.2-f3.13b-0.1`** · **56 países** · **11 familias** · **WA 10/10**
 
 ---
 
 ## I. Resumen ejecutivo
 
-KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (**53 países** · **11 familias** live en prod), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, y catálogo **`56 ciudades / 53 países`** con **E1a WE expansion** (Oslo · Zúrich · Viena) además de **WA Wave C 10/10**, **Densification Wave A**, **LATAM+**, **SA+** y **SEA+**.
+KAIROS MAPS MVP incluye **lectura premium beta** (`?premium=1`), **resolver editorial unificado** (**56 países** · **11 familias** live en prod), dedup P0–P2, **SSOT de fallback** (`resolveRegionalPack`), **`DEFAULT_FAMILY = GLOBAL_NEUTRAL`**, y catálogo **`59 ciudades / 56 países`** con **E1b WE expansion** (Bruselas · Varsovia · Praga) además de **E1a** (Oslo · Zúrich · Viena), **WA Wave C 10/10**, **Densification Wave A**, **LATAM+**, **SA+** y **SEA+**.
 
-**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3–F3.11 series cerradas** · **F3.13 E1a cerrada en prod** · **F3.10 São Paulo gate cerrado (NO catálogo)**.
+**PRE-F1 cerrado** · **F2.2–F2.9 serie cerrada** · **F3.3–F3.11 series cerradas** · **F3.13 E1a + E1b cerradas en prod** · **F3.10 São Paulo gate cerrado (NO catálogo)**.
 
-**Producción** (https://kairos-maps-mvp.web.app) — resolver **`3.8h.2-f3.13a-0.1`** · catálogo **`3.8f.1-f3.13a-0.1`** · **56/53** live · **WA 10/10**.
+**Producción** (https://kairos-maps-mvp.web.app) — resolver **`3.8h.2-f3.13b-0.1`** · catálogo **`3.8f.1-f3.13b-0.1`** · **59/56** live · **WA 10/10**.
 
 **São Paulo:** **NO catálogo** · runtime j-a/b aparcado en rama `f3.10j-urban-layer` (sin merge a main).
 
@@ -59,11 +59,12 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 | **F3.11a–F3.11n** | ✅ Cerrado | WA Wave C prod **53/50** · **10/10** |
 | **F3.12a** | ✅ Audit | Global Coverage Audit |
 | **F3.13a–F3.13e** | ✅ Cerrado | **E1a prod 56/53** · resolver **+3** |
-| **F3.13f** | ⏳ Siguiente | **Resolver Expansion E1b Audit** |
+| **F3.13f–F3.13j** | ✅ Cerrado | **E1b prod 59/56** · resolver **+3** |
+| **F3.13k** | ⏳ Siguiente | **Resolver Expansion E1c Audit** |
 
 ---
 
-## V. F3.13 — qué cambió en prod (E1a)
+## V. F3.13 — qué cambió en prod (E1a + E1b)
 
 ### Resolver + catálogo E1a (F3.13d)
 
@@ -72,10 +73,17 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 - **Schema resolver:** `3.8h.2-f3.8b-0.1` → **`3.8h.2-f3.13a-0.1`**
 - **Schema catálogo:** `3.8f.1-f3.11j-0.1` → **`3.8f.1-f3.13a-0.1`**
 
+### Resolver + catálogo E1b (F3.13i)
+
+- **53→56 países resolver** · **56→59 ciudades** · **53→56 países visibles**
+- Bruselas · Varsovia · Praga → **`WESTERN_EUROPE`**
+- **Schema resolver:** `3.8h.2-f3.13a-0.1` → **`3.8h.2-f3.13b-0.1`**
+- **Schema catálogo:** `3.8f.1-f3.13a-0.1` → **`3.8f.1-f3.13b-0.1`**
+
 ### Canario GLOBAL_NEUTRAL
 
-- **Oslo** deja de ser canario GN (ahora país mapeado WE)
-- **Reykjavik / Iceland** → canario GN en smokes
+- **Reykjavik / Iceland** → canario GN en smokes (sin cambio en E1b)
+- E1a migró canario de Oslo → Reykjavik; E1b no alteró GN
 
 ### No cambió
 
@@ -91,12 +99,14 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 | Métrica | Prod live |
 |---------|-----------|
 | Familias editoriales | **11** |
-| Países resolver | **53** |
-| Ciudades catálogo | **56** |
-| Países catálogo visibles | **53** |
+| Países resolver | **56** |
+| Ciudades catálogo | **59** |
+| Países catálogo visibles | **56** |
 | WA anclas catálogo | **10/10** |
-| Schema resolver | **`3.8h.2-f3.13a-0.1`** |
-| Schema catálogo | **`3.8f.1-f3.13a-0.1`** |
+| Schema resolver | **`3.8h.2-f3.13b-0.1`** |
+| Schema catálogo | **`3.8f.1-f3.13b-0.1`** |
+
+**E1b anclas:** Bruselas · Varsovia · Praga
 
 **E1a anclas:** Oslo · Zúrich · Viena
 
@@ -118,7 +128,7 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 ./scripts/dev-southeast-asian-editorial-integration-smoke.sh
 ```
 
-**Gate F3.13d pre-deploy:** **9/9 PASS** · QA prod curl **f3.13a PASS**
+**Gate F3.13i pre-deploy:** **9/9 PASS** · QA prod curl **f3.13b PASS**
 
 ---
 
@@ -126,8 +136,8 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 | Entorno | URL | Catálogo | Editorial |
 |---------|-----|----------|-----------|
-| **Producción** | https://kairos-maps-mvp.web.app | **56** @ `3.8f.1-f3.13a-0.1` | **`3.8h.2-f3.13a-0.1`** · 53 países |
-| **Staging** | https://kairos-maps-dev.web.app | **56** @ `3.8f.1-f3.13a-0.1` | **`3.8h.2-f3.13a-0.1`** · 53 países |
+| **Producción** | https://kairos-maps-mvp.web.app | **59** @ `3.8f.1-f3.13b-0.1` | **`3.8h.2-f3.13b-0.1`** · 56 países |
+| **Staging** | https://kairos-maps-dev.web.app | **59** @ `3.8f.1-f3.13b-0.1` | **`3.8h.2-f3.13b-0.1`** · 56 países |
 
 ---
 
@@ -135,34 +145,34 @@ Ver `KAIROS_MASTER_HANDOFF_F1.8.md`.
 
 | ID | Descripción |
 |----|-------------|
-| **R-F3.13e-1** | **Cache browser** — `cities-catalog.js` sin query version |
-| **R-F3.13e-2** | **5 smokes globales drift 6→11 familias** — preexistentes |
-| **R-F3.13e-3** | **`dist/` sucio local** — no commiteado |
-| **R-F3.13e-4** | **Homogeneización WE** — E1a comparte pack con París/Berlín |
+| **R-F3.13j-1** | **Cache browser** — `cities-catalog.js` sin query version |
+| **R-F3.13j-2** | **5 smokes globales drift 6→11 familias** — preexistentes |
+| **R-F3.13j-3** | **`dist/` sucio local** — no commiteado |
+| **R-F3.13j-4** | **Homogeneización WE** — 10 ciudades comparten pack |
 | **R-F3.11n-1** | **Homogeneización WA 10/10** |
 | **R-F3.10j-c-1** | **São Paulo NO catálogo** |
 
 ---
 
-## X. Git status (post F3.13e)
+## X. Git status (post F3.13j)
 
 ```
-HEAD runtime: 0d924cc — f3.13b resolver expansion pilot e1a
-HEAD doc: F3.13e — f3.13e resolver expansion e1a production checkpoint
+HEAD runtime: be5aca5 — f3.13g resolver expansion e1b
+HEAD doc: F3.13j — f3.13j resolver expansion e1b production checkpoint
 Rama: main
-src/: limpio (committed @ 0d924cc)
-docs/: F3.13E + KAIROS_CURRENT actualizado
+src/: limpio (committed @ be5aca5)
+docs/: F3.13J + KAIROS_CURRENT actualizado
 dist/: modificado / untracked (NO commiteado)
-Producción runtime: 56/53 @ 3.8f.1-f3.13a-0.1
+Producción runtime: 59/56 @ 3.8f.1-f3.13b-0.1
 ```
 
 ---
 
 ## XI. Siguiente fase
 
-### **F3.13f — Resolver Expansion E1b Audit**
+### **F3.13k — Resolver Expansion E1c Audit**
 
-Auditoría READ-ONLY: Bélgica · Polonia · República Checa (siguiente trío WE europeo).
+Auditoría READ-ONLY: Dinamarca · Finlandia (siguiente batch WE europeo).
 
 ---
 
@@ -170,11 +180,12 @@ Auditoría READ-ONLY: Bélgica · Polonia · República Checa (siguiente trío W
 
 | Documento | Contenido |
 |-----------|-----------|
-| `F3.13E_RESOLVER_EXPANSION_E1A_PRODUCTION_CHECKPOINT.md` | Cierre F3.13 E1a prod |
+| `F3.13J_RESOLVER_EXPANSION_E1B_PRODUCTION_CHECKPOINT.md` | Cierre F3.13 E1b prod |
+| `F3.13E_RESOLVER_EXPANSION_E1A_PRODUCTION_CHECKPOINT.md` | Checkpoint E1a prod 56/53 |
 | `F3.11N_WEST_AFRICAN_WAVE_C_BATCH_2_PRODUCTION_CHECKPOINT.md` | Checkpoint previo 53/50 |
 | `F3.10J_C_SAO_PAULO_GATE_DECISION.md` | Decisión gate São Paulo |
 | `KAIROS_MASTER_HANDOFF_F1.8.md` | Handoff PRE-F1 |
 
 ---
 
-*Checkpoint actualizado F3.13e · Prod 56/53 @ f3.13a · resolver 53 · WA 10/10 · Siguiente F3.13f E1b audit*
+*Checkpoint actualizado F3.13j · Prod 59/56 @ f3.13b · resolver 56 · WA 10/10 · Siguiente F3.13k E1c audit*
