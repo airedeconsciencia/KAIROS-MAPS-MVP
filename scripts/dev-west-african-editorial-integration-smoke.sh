@@ -204,14 +204,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '59 ciudades / 56 países catálogo (F3.13b E1b)',
-  Catalog.CITIES.length === 59 && Catalog.getCountries().length === 56,
+  '61 ciudades / 58 países catálogo (F3.13c E1c)',
+  Catalog.CITIES.length === 61 && Catalog.getCountries().length === 58,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.13b',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.13b-0.1',
+  'SCHEMA catálogo f3.13c',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.13c-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -314,8 +314,8 @@ assert(
 );
 
 assert(
-  'SCHEMA resolver f3.13b (56 países)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f3.13b-0.1',
+  'SCHEMA resolver f3.13c (58 países)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f3.13c-0.1',
   EFR.SCHEMA_VERSION
 );
 

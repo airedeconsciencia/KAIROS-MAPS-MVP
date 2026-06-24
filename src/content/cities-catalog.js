@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.13b-0.1';
-  var EXPECTED_CITY_COUNT = 59;
-  var EXPECTED_COUNTRY_COUNT = 56;
+  var SCHEMA_VERSION = '3.8f.1-f3.13c-0.1';
+  var EXPECTED_CITY_COUNT = 61;
+  var EXPECTED_COUNTRY_COUNT = 58;
 
   var CITIES = [
     // Europa
@@ -30,6 +30,8 @@
     { name: 'Bruselas', country: 'Bélgica', lat: 50.8503, lon: 4.3517 },
     { name: 'Varsovia', country: 'Polonia', lat: 52.2297, lon: 21.0122 },
     { name: 'Praga', country: 'República Checa', lat: 50.0755, lon: 14.4378 },
+    { name: 'Copenhague', country: 'Dinamarca', lat: 55.6761, lon: 12.5683 },
+    { name: 'Helsinki', country: 'Finlandia', lat: 60.1699, lon: 24.9384 },
     // América
     { name: 'Nueva York', country: 'EE. UU.', lat: 40.7128, lon: -74.0060 },
     { name: 'Los Ángeles', country: 'EE. UU.', lat: 34.0522, lon: -118.2437 },
@@ -95,6 +97,8 @@
     'Bélgica': 'be',
     'Polonia': 'pl',
     'República Checa': 'cz',
+    'Dinamarca': 'dk',
+    'Finlandia': 'fi',
     'EE. UU.': 'us',
     'Canadá': 'ca',
     'México': 'mx',
@@ -155,6 +159,8 @@
     'Bélgica': 'belgium',
     'Polonia': 'poland',
     'República Checa': 'czech_republic',
+    'Dinamarca': 'denmark',
+    'Finlandia': 'finland',
     'EE. UU.': 'united_states',
     'Canadá': 'canada',
     'México': 'mexico',

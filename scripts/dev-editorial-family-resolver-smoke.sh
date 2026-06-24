@@ -88,23 +88,23 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f3.13b',
-  EFR.SCHEMA_VERSION === '3.8h.2-f3.13b-0.1',
+  'SCHEMA f3.13c',
+  EFR.SCHEMA_VERSION === '3.8h.2-f3.13c-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
-  '56 países en COUNTRY_EDITORIAL_FAMILY',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 56,
+  '58 países en COUNTRY_EDITORIAL_FAMILY',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 58,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '59 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 59,
+  '61 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 61,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('56 países en catálogo', countries.length === 56, 'count=' + countries.length);
+assert('58 países en catálogo', countries.length === 58, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -126,8 +126,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '59 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 59,
+  '61 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 61,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -181,7 +181,9 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Viena', country: 'Austria', expected: 'WESTERN_EUROPE' },
   { city: 'Bruselas', country: 'Bélgica', expected: 'WESTERN_EUROPE' },
   { city: 'Varsovia', country: 'Polonia', expected: 'WESTERN_EUROPE' },
-  { city: 'Praga', country: 'República Checa', expected: 'WESTERN_EUROPE' }
+  { city: 'Praga', country: 'República Checa', expected: 'WESTERN_EUROPE' },
+  { city: 'Copenhague', country: 'Dinamarca', expected: 'WESTERN_EUROPE' },
+  { city: 'Helsinki', country: 'Finlandia', expected: 'WESTERN_EUROPE' }
 ];
 
 const splitBrainHits = [];
@@ -199,7 +201,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('50 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('52 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -290,7 +292,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (50 casos)',
+  'Pipeline knowledge ≡ narrative (52 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );

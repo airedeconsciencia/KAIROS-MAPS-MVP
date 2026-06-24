@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '59 ciudades (F3.13b E1b resolver expansion)',
-  Catalog.CITIES.length === 59,
+  '61 ciudades (F3.13c E1c resolver expansion)',
+  Catalog.CITIES.length === 61,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '56 países únicos (F3.13b E1b resolver expansion)',
-  countries.length === 56,
+  '58 países únicos (F3.13c E1c resolver expansion)',
+  countries.length === 58,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (56)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 56,
+  'COUNTRY_IDS alineados (58)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 58,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -346,9 +346,28 @@ e1bWave.forEach(function (entry) {
 });
 assert('E1b ciudades + slugs (F3.13b)', e1bIssues.length === 0, e1bIssues.join(' · '));
 
+const e1cWave = [
+  { name: 'Copenhague', countryId: 'denmark', code: 'dk' },
+  { name: 'Helsinki', countryId: 'finland', code: 'fi' }
+];
+const e1cIssues = [];
+e1cWave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) e1cIssues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      e1cIssues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      e1cIssues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('E1c ciudades + slugs (F3.13c)', e1cIssues.length === 0, e1cIssues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f3.13b',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.13b-0.1',
+  'SCHEMA catálogo f3.13c',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.13c-0.1',
   Catalog.SCHEMA_VERSION
 );
 

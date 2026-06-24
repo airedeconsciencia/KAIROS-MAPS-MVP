@@ -86,7 +86,9 @@ const WE_CITIES = [
   { name: 'Viena', country: 'Austria', slug: 'austria' },
   { name: 'Bruselas', country: 'Bélgica', slug: 'belgium' },
   { name: 'Varsovia', country: 'Polonia', slug: 'poland' },
-  { name: 'Praga', country: 'República Checa', slug: 'czech_republic' }
+  { name: 'Praga', country: 'República Checa', slug: 'czech_republic' },
+  { name: 'Copenhague', country: 'Dinamarca', slug: 'denmark' },
+  { name: 'Helsinki', country: 'Finlandia', slug: 'finland' }
 ];
 const GOALS = ['amor', 'trabajo', 'descanso'];
 const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
@@ -243,7 +245,7 @@ WE_CITIES.forEach(function (entry) {
   });
 });
 
-assert('30 lecturas WESTERN_EUROPE (10 ciudades × 3 goals)', readings.length === 30, 'count=' + readings.length);
+assert('36 lecturas WESTERN_EUROPE (12 ciudades × 3 goals)', readings.length === 36, 'count=' + readings.length);
 
 const splitBrain = readings.filter(function (r) {
   return r.regionN !== r.regionK ||
@@ -308,7 +310,7 @@ const wordFails = readings.filter(function (r) {
   return w < Premium.MIN_WORDS || w > Premium.MAX_WORDS;
 });
 assert(
-  'Longitud 500–900 palabras (30 lecturas)',
+  'Longitud 500–900 palabras (36 lecturas)',
   wordFails.length === 0,
   wordFails.map(function (r) {
     return r.city + '/' + r.goal + '=' + r.reading.meta.wordCount;
@@ -322,7 +324,7 @@ readings.forEach(function (r) {
     legacyFails.push(r.city + '/' + r.goal + ' p03=' + s.p03 + ' p06=' + s.p06 + ' p10=' + s.p10);
   }
 });
-assert('P03/P06/P10 = 0 (30 lecturas)', legacyFails.length === 0, legacyFails.join(' · '));
+assert('P03/P06/P10 = 0 (36 lecturas)', legacyFails.length === 0, legacyFails.join(' · '));
 
 function composeReading(city, goal) {
   return Premium.composeCityReading({
@@ -344,7 +346,9 @@ const QA_WE = [
   { label: 'Viena / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Viena', slug: 'austria', goals: GOALS },
   { label: 'Bruselas / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Bruselas', slug: 'belgium', goals: GOALS },
   { label: 'Varsovia / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Varsovia', slug: 'poland', goals: GOALS },
-  { label: 'Praga / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Praga', slug: 'czech_republic', goals: GOALS }
+  { label: 'Praga / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Praga', slug: 'czech_republic', goals: GOALS },
+  { label: 'Copenhague / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Copenhague', slug: 'denmark', goals: GOALS },
+  { label: 'Helsinki / amor-trabajo-descanso → WESTERN_EUROPE', cityName: 'Helsinki', slug: 'finland', goals: GOALS }
 ];
 
 QA_WE.forEach(function (entry) {
@@ -412,6 +416,24 @@ assert(
   JSON.stringify({
     slug: EFR.coerceCountryId('República Checa'),
     family: EFR.resolveEditorialFamily({ cityName: 'Praga', countryDisplay: 'República Checa' })
+  })
+);
+assert(
+  'Dinamarca display → denmark slug → WESTERN_EUROPE (F3.13c)',
+  EFR.coerceCountryId('Dinamarca') === 'denmark' &&
+    EFR.resolveEditorialFamily({ cityName: 'Copenhague', countryDisplay: 'Dinamarca' }) === 'WESTERN_EUROPE',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Dinamarca'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Copenhague', countryDisplay: 'Dinamarca' })
+  })
+);
+assert(
+  'Finlandia display → finland slug → WESTERN_EUROPE (F3.13c)',
+  EFR.coerceCountryId('Finlandia') === 'finland' &&
+    EFR.resolveEditorialFamily({ cityName: 'Helsinki', countryDisplay: 'Finlandia' }) === 'WESTERN_EUROPE',
+  JSON.stringify({
+    slug: EFR.coerceCountryId('Finlandia'),
+    family: EFR.resolveEditorialFamily({ cityName: 'Helsinki', countryDisplay: 'Finlandia' })
   })
 );
 
