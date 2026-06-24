@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.13a-0.1';
-  var EXPECTED_CITY_COUNT = 56;
-  var EXPECTED_COUNTRY_COUNT = 53;
+  var SCHEMA_VERSION = '3.8f.1-f3.13b-0.1';
+  var EXPECTED_CITY_COUNT = 59;
+  var EXPECTED_COUNTRY_COUNT = 56;
 
   var CITIES = [
     // Europa
@@ -27,6 +27,9 @@
     { name: 'Oslo', country: 'Noruega', lat: 59.9139, lon: 10.7522 },
     { name: 'Zúrich', country: 'Suiza', lat: 47.3769, lon: 8.5417 },
     { name: 'Viena', country: 'Austria', lat: 48.2082, lon: 16.3738 },
+    { name: 'Bruselas', country: 'Bélgica', lat: 50.8503, lon: 4.3517 },
+    { name: 'Varsovia', country: 'Polonia', lat: 52.2297, lon: 21.0122 },
+    { name: 'Praga', country: 'República Checa', lat: 50.0755, lon: 14.4378 },
     // América
     { name: 'Nueva York', country: 'EE. UU.', lat: 40.7128, lon: -74.0060 },
     { name: 'Los Ángeles', country: 'EE. UU.', lat: 34.0522, lon: -118.2437 },
@@ -89,6 +92,9 @@
     'Noruega': 'no',
     'Suiza': 'ch',
     'Austria': 'at',
+    'Bélgica': 'be',
+    'Polonia': 'pl',
+    'República Checa': 'cz',
     'EE. UU.': 'us',
     'Canadá': 'ca',
     'México': 'mx',
@@ -146,6 +152,9 @@
     'Noruega': 'norway',
     'Suiza': 'switzerland',
     'Austria': 'austria',
+    'Bélgica': 'belgium',
+    'Polonia': 'poland',
+    'República Checa': 'czech_republic',
     'EE. UU.': 'united_states',
     'Canadá': 'canada',
     'México': 'mexico',
