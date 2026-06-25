@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.14-0.1';
-  var EXPECTED_CITY_COUNT = 63;
-  var EXPECTED_COUNTRY_COUNT = 60;
+  var SCHEMA_VERSION = '3.8f.1-f3.15-0.1';
+  var EXPECTED_CITY_COUNT = 65;
+  var EXPECTED_COUNTRY_COUNT = 62;
 
   var CITIES = [
     // Europa
@@ -49,6 +49,8 @@
     // Asia
     { name: 'Tokio', country: 'Japón', lat: 35.6762, lon: 139.6503 },
     { name: 'Seúl', country: 'Corea del Sur', lat: 37.5665, lon: 126.9780 },
+    { name: 'Shanghái', country: 'China', lat: 31.2304, lon: 121.4737 },
+    { name: 'Taipéi', country: 'Taiwán', lat: 25.0330, lon: 121.5654 },
     { name: 'Bangkok', country: 'Tailandia', lat: 13.7563, lon: 100.5018 },
     { name: 'Singapur', country: 'Singapur', lat: 1.3521, lon: 103.8198 },
     { name: 'Ho Chi Minh City', country: 'Vietnam', lat: 10.8231, lon: 106.6297 },
@@ -117,6 +119,8 @@
     'Panamá': 'pa',
     'Japón': 'jp',
     'Corea del Sur': 'kr',
+    'China': 'cn',
+    'Taiwán': 'tw',
     'Tailandia': 'th',
     'Singapur': 'sg',
     'Vietnam': 'vn',
@@ -181,6 +185,8 @@
     'Panamá': 'panama',
     'Japón': 'japan',
     'Corea del Sur': 'south_korea',
+    'China': 'china',
+    'Taiwán': 'taiwan',
     'Tailandia': 'thailand',
     'Singapur': 'singapore',
     'Vietnam': 'vietnam',
