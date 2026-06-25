@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f5.1-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f5.2-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -24,7 +24,7 @@
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (97 países) */
+  /** @type {Record<string, string>} slug canónico → familia (99 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -63,6 +63,7 @@
     laos: 'SOUTHEAST_ASIAN',
     myanmar: 'SOUTHEAST_ASIAN',
     brunei: 'SOUTHEAST_ASIAN',
+    timor_leste: 'SOUTHEAST_ASIAN',
     india: 'SOUTH_ASIAN',
     pakistan: 'SOUTH_ASIAN',
     bangladesh: 'SOUTH_ASIAN',
@@ -98,6 +99,7 @@
     south_korea: 'EAST_ASIAN',
     china: 'EAST_ASIAN',
     taiwan: 'EAST_ASIAN',
+    mongolia: 'EAST_ASIAN',
     south_africa: 'AFRICAN_COASTAL',
     egypt: 'AFRICAN_COASTAL',
     kenya: 'AFRICAN_COASTAL',
@@ -254,6 +256,9 @@
     bn: 'brunei',
     brunei: 'brunei',
     brunei_darussalam: 'brunei',
+    tl: 'timor_leste',
+    timor_leste: 'timor_leste',
+    timor_oriental: 'timor_leste',
     in: 'india',
     india: 'india',
     pk: 'pakistan',
@@ -321,6 +326,8 @@
     china: 'china',
     tw: 'taiwan',
     taiwan: 'taiwan',
+    mn: 'mongolia',
+    mongolia: 'mongolia',
     za: 'south_africa',
     south_africa: 'south_africa',
     sudafrica: 'south_africa',

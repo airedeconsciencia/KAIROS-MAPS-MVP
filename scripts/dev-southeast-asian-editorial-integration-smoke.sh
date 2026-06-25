@@ -90,7 +90,10 @@ const SEA_F47_CITIES = [
   { name: 'Yangón', slug: 'myanmar' },
   { name: 'Bandar Seri Begawan', slug: 'brunei' }
 ];
-const SEA_COUNTRIES = ['thailand', 'singapore', 'vietnam', 'malaysia', 'indonesia', 'philippines', 'cambodia', 'laos', 'myanmar', 'brunei'];
+const SEA_F52_CITIES = [
+  { name: 'Dili', slug: 'timor_leste' }
+];
+const SEA_COUNTRIES = ['thailand', 'singapore', 'vietnam', 'malaysia', 'indonesia', 'philippines', 'cambodia', 'laos', 'myanmar', 'brunei', 'timor_leste'];
 const GOALS = ['amor', 'trabajo', 'descanso'];
 const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
 const EAST_ASIAN_LEAK = ['secuencia', 'detalle observado', 'rutina precisa', 'proceso callado', 'gesto mínimo'];
@@ -204,17 +207,17 @@ assert(
 );
 
 assert(
-  '100 ciudades / 97 países catálogo (baseline F5.1; SEA Wave A intacto)',
+  '102 ciudades / 99 países catálogo (baseline F5.2; SEA Wave A intacto)',
   Catalog.CITIES.length === Catalog.EXPECTED_CITY_COUNT &&
     Catalog.getCountries().length === Catalog.EXPECTED_COUNTRY_COUNT &&
-    Catalog.EXPECTED_CITY_COUNT === 100 &&
-    Catalog.EXPECTED_COUNTRY_COUNT === 97,
+    Catalog.EXPECTED_CITY_COUNT === 102 &&
+    Catalog.EXPECTED_COUNTRY_COUNT === 99,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f5.1',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f5.1-0.1',
+  'SCHEMA catálogo f5.2',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f5.2-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -227,8 +230,8 @@ SEA_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert(
-  'SCHEMA resolver f5.1 (97 países; SEA+ intacto)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f5.1-0.1',
+  'SCHEMA resolver f5.2 (99 países; SEA+ intacto)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f5.2-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -288,8 +291,8 @@ assert(
 );
 
 assert(
-  '97 países resolver (F5.1 ANGLO Caribbean II; incl. SEA 10/10)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 97,
+  '99 países resolver (F5.2 East Asia + SEA closure; incl. SEA 11/11)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 99,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
@@ -429,6 +432,29 @@ SEA_F47_CITIES.forEach(function (entry) {
 
 assert('6 lecturas F4.7 SEA residual final (2 ciudades × 3 goals)', seaF47Readings.length === 6, 'count=' + seaF47Readings.length);
 
+const seaF52Readings = [];
+SEA_F52_CITIES.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) throw new Error('catalog missing ' + entry.name);
+  GOALS.forEach(function (goal) {
+    const reading = composeReading(city, goal);
+    const s = scanReading(reading, entry.slug);
+    seaF52Readings.push({ city: entry.name, goal: goal, slug: entry.slug, scan: s });
+    assert(
+      entry.name + ' / ' + goal + ' → SOUTHEAST_ASIAN (n=k=e)',
+      s.regionN === 'SOUTHEAST_ASIAN' && s.regionK === 'SOUTHEAST_ASIAN' && s.regionE === 'SOUTHEAST_ASIAN',
+      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → split-brain 0',
+      s.regionN === s.regionK && s.regionK === s.regionE,
+      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+    );
+  });
+});
+
+assert('3 lecturas F5.2 SEA closure (1 ciudad × 3 goals)', seaF52Readings.length === 3, 'count=' + seaF52Readings.length);
+
 assert(
   'Myanmar display → myanmar → SOUTHEAST_ASIAN (F4.7)',
   EFR.coerceCountryId('Myanmar') === 'myanmar' &&
@@ -448,6 +474,19 @@ assert(
   EFR.resolveEditorialFamily({ cityName: 'Yangón', countryId: 'mm' }) === 'SOUTHEAST_ASIAN' &&
     EFR.resolveEditorialFamily({ cityName: 'Bandar Seri Begawan', countryId: 'bn' }) === 'SOUTHEAST_ASIAN',
   'mm/bn'
+);
+
+assert(
+  'Timor-Leste display → timor_leste → SOUTHEAST_ASIAN (F5.2)',
+  EFR.coerceCountryId('Timor-Leste') === 'timor_leste' &&
+    EFR.resolveEditorialFamily({ cityName: 'Dili', countryDisplay: 'Timor-Leste' }) === 'SOUTHEAST_ASIAN',
+  'timor_leste'
+);
+
+assert(
+  'Alias tl → SOUTHEAST_ASIAN (F5.2)',
+  EFR.resolveEditorialFamily({ cityName: 'Dili', countryId: 'tl' }) === 'SOUTHEAST_ASIAN',
+  'tl'
 );
 
 readings.forEach(function (r) {

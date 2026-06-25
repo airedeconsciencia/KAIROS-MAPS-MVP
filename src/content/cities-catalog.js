@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f5.1-0.1';
-  var EXPECTED_CITY_COUNT = 100;
-  var EXPECTED_COUNTRY_COUNT = 97;
+  var SCHEMA_VERSION = '3.8f.1-f5.2-0.1';
+  var EXPECTED_CITY_COUNT = 102;
+  var EXPECTED_COUNTRY_COUNT = 99;
 
   var CITIES = [
     // Europa
@@ -62,6 +62,7 @@
     { name: 'Seúl', country: 'Corea del Sur', lat: 37.5665, lon: 126.9780 },
     { name: 'Shanghái', country: 'China', lat: 31.2304, lon: 121.4737 },
     { name: 'Taipéi', country: 'Taiwán', lat: 25.0330, lon: 121.5654 },
+    { name: 'Ulán Bator', country: 'Mongolia', lat: 47.8864, lon: 106.9057 },
     { name: 'Bangkok', country: 'Tailandia', lat: 13.7563, lon: 100.5018 },
     { name: 'Singapur', country: 'Singapur', lat: 1.3521, lon: 103.8198 },
     { name: 'Ho Chi Minh City', country: 'Vietnam', lat: 10.8231, lon: 106.6297 },
@@ -72,6 +73,7 @@
     { name: 'Vientián', country: 'Laos', lat: 17.9757, lon: 102.6331 },
     { name: 'Yangón', country: 'Myanmar', lat: 16.8661, lon: 96.1951 },
     { name: 'Bandar Seri Begawan', country: 'Brunéi', lat: 4.9031, lon: 114.9398 },
+    { name: 'Dili', country: 'Timor-Leste', lat: -8.5569, lon: 125.5603 },
     { name: 'Delhi', country: 'India', lat: 28.6139, lon: 77.2090 },
     { name: 'Mumbai', country: 'India', lat: 19.0760, lon: 72.8777 },
     { name: 'Karachi', country: 'Pakistán', lat: 24.8607, lon: 67.0011 },
@@ -167,6 +169,7 @@
     'Corea del Sur': 'kr',
     'China': 'cn',
     'Taiwán': 'tw',
+    'Mongolia': 'mn',
     'Tailandia': 'th',
     'Singapur': 'sg',
     'Vietnam': 'vn',
@@ -177,6 +180,7 @@
     'Laos': 'la',
     'Myanmar': 'mm',
     'Brunéi': 'bn',
+    'Timor-Leste': 'tl',
     'India': 'in',
     'Pakistán': 'pk',
     'Bangladesh': 'bd',
@@ -268,6 +272,7 @@
     'Corea del Sur': 'south_korea',
     'China': 'china',
     'Taiwán': 'taiwan',
+    'Mongolia': 'mongolia',
     'Tailandia': 'thailand',
     'Singapur': 'singapore',
     'Vietnam': 'vietnam',
@@ -278,6 +283,7 @@
     'Laos': 'laos',
     'Myanmar': 'myanmar',
     'Brunéi': 'brunei',
+    'Timor-Leste': 'timor_leste',
     'India': 'india',
     'Pakistán': 'pakistan',
     'Bangladesh': 'bangladesh',

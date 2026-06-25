@@ -207,14 +207,14 @@ assert(
 );
 
 assert(
-  '100 ciudades / 97 países catálogo (F5.1 ANGLO Caribbean II; SA Wave A intacto)',
-  Catalog.CITIES.length === 100 && Catalog.getCountries().length === 97,
+  '102 ciudades / 99 países catálogo (F5.2 East Asia + SEA closure; SA Wave A intacto)',
+  Catalog.CITIES.length === 102 && Catalog.getCountries().length === 99,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f5.1',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f5.1-0.1',
+  'SCHEMA catálogo f5.2',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f5.2-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -227,14 +227,14 @@ SA_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert(
-  '97 países resolver (F5.1 ANGLO Caribbean II)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 97,
+  '99 países resolver (F5.2 East Asia + SEA closure)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 99,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
 assert(
-  'SCHEMA f5.1',
-  EFR.SCHEMA_VERSION === '3.8h.2-f5.1-0.1',
+  'SCHEMA f5.2',
+  EFR.SCHEMA_VERSION === '3.8h.2-f5.2-0.1',
   EFR.SCHEMA_VERSION
 );
 

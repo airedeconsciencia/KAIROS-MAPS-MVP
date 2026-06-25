@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '100 ciudades (F5.1 ANGLO Caribbean II expansion)',
-  Catalog.CITIES.length === 100,
+  '102 ciudades (F5.2 East Asia + SEA closure)',
+  Catalog.CITIES.length === 102,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '97 países únicos (F5.1 ANGLO Caribbean II expansion)',
-  countries.length === 97,
+  '99 países únicos (F5.2 East Asia + SEA closure)',
+  countries.length === 99,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (97)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 97,
+  'COUNTRY_IDS alineados (99)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 99,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -676,9 +676,28 @@ f51Wave.forEach(function (entry) {
 });
 assert('F5.1 ANGLO Caribbean II ciudades + slugs', f51Issues.length === 0, f51Issues.join(' · '));
 
+const f52Wave = [
+  { name: 'Ulán Bator', countryId: 'mongolia', code: 'mn' },
+  { name: 'Dili', countryId: 'timor_leste', code: 'tl' }
+];
+const f52Issues = [];
+f52Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f52Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f52Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f52Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F5.2 EAST_ASIAN + SOUTHEAST_ASIAN closure ciudades + slugs', f52Issues.length === 0, f52Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f5.1',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f5.1-0.1',
+  'SCHEMA catálogo f5.2',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f5.2-0.1',
   Catalog.SCHEMA_VERSION
 );
 

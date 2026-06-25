@@ -208,14 +208,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '100 ciudades / 97 países catálogo (F5.1 ANGLO Caribbean II)',
-  Catalog.CITIES.length === 100 && Catalog.getCountries().length === 97,
+  '102 ciudades / 99 países catálogo (F5.2 East Asia + SEA closure)',
+  Catalog.CITIES.length === 102 && Catalog.getCountries().length === 99,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f5.1',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f5.1-0.1',
+  'SCHEMA catálogo f5.2',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f5.2-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -339,8 +339,8 @@ assert(
 );
 
 assert(
-  'SCHEMA resolver f5.1 (97 países)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f5.1-0.1',
+  'SCHEMA resolver f5.2 (99 países)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f5.2-0.1',
   EFR.SCHEMA_VERSION
 );
 

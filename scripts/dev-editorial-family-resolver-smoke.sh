@@ -88,23 +88,23 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f5.1',
-  EFR.SCHEMA_VERSION === '3.8h.2-f5.1-0.1',
+  'SCHEMA f5.2',
+  EFR.SCHEMA_VERSION === '3.8h.2-f5.2-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
-  '97 países en COUNTRY_EDITORIAL_FAMILY',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 97,
+  '99 países en COUNTRY_EDITORIAL_FAMILY',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 99,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '100 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 100,
+  '102 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 102,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('97 países en catálogo', countries.length === 97, 'count=' + countries.length);
+assert('99 países en catálogo', countries.length === 99, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -126,8 +126,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '100 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 100,
+  '102 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 102,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -222,7 +222,9 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Windhoek', country: 'Namibia', expected: 'AFRICAN_COASTAL' },
   { city: 'Nassau', country: 'Bahamas', expected: 'ANGLO' },
   { city: 'Belmopán', country: 'Belice', expected: 'ANGLO' },
-  { city: 'Georgetown', country: 'Guyana', expected: 'ANGLO' }
+  { city: 'Georgetown', country: 'Guyana', expected: 'ANGLO' },
+  { city: 'Ulán Bator', country: 'Mongolia', expected: 'EAST_ASIAN' },
+  { city: 'Dili', country: 'Timor-Leste', expected: 'SOUTHEAST_ASIAN' }
 ];
 
 const splitBrainHits = [];
@@ -240,7 +242,36 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('91 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('93 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+
+assert(
+  'mongolia → EAST_ASIAN (F5.2)',
+  EFR.COUNTRY_EDITORIAL_FAMILY.mongolia === 'EAST_ASIAN' &&
+    EFR.resolveEditorialFamily({ cityName: 'Ulán Bator', countryId: 'mongolia' }) === 'EAST_ASIAN',
+  EFR.COUNTRY_EDITORIAL_FAMILY.mongolia
+);
+assert(
+  'timor_leste → SOUTHEAST_ASIAN (F5.2)',
+  EFR.COUNTRY_EDITORIAL_FAMILY.timor_leste === 'SOUTHEAST_ASIAN' &&
+    EFR.resolveEditorialFamily({ cityName: 'Dili', countryId: 'timor_leste' }) === 'SOUTHEAST_ASIAN',
+  EFR.COUNTRY_EDITORIAL_FAMILY.timor_leste
+);
+assert(
+  'Alias mn/tl (F5.2)',
+  EFR.resolveEditorialFamily({ cityName: 'Ulán Bator', countryId: 'mn' }) === 'EAST_ASIAN' &&
+    EFR.resolveEditorialFamily({ cityName: 'Dili', countryId: 'tl' }) === 'SOUTHEAST_ASIAN',
+  'mn/tl'
+);
+assert(
+  'EAST_ASIAN 5/5 intact (jp/kr/cn/tw/mn)',
+  ['japan', 'south_korea', 'china', 'taiwan', 'mongolia'].every(function (slug) {
+    return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'EAST_ASIAN';
+  }),
+  JSON.stringify({
+    japan: EFR.COUNTRY_EDITORIAL_FAMILY.japan,
+    mongolia: EFR.COUNTRY_EDITORIAL_FAMILY.mongolia
+  })
+);
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
