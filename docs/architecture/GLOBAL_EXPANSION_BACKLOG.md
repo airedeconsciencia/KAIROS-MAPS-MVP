@@ -2,7 +2,7 @@
 
 **Fase:** F4.0 — Global Expansion Framework  
 **SSOT expansión territorial** · solo documentación  
-**Baseline prod:** `f4.1` · **72 ciudades / 69 países** · **11 familias**  
+**Baseline prod:** `f4.3` · **74 ciudades / 71 países** · **11 familias**  
 **Última revisión:** 26 mayo 2026
 
 > Este documento es la fuente de verdad para **qué falta**, **en qué wave** y **con qué dependencias**.  
@@ -32,7 +32,7 @@ Todos con **status: `live`** · wave histórica F2–F3 · catálogo + resolver 
 | Asia oriental | `japan` `south_korea` `china` `taiwan` | EAST_ASIAN |
 | Sudeste asiático | `thailand` `singapore` `vietnam` `malaysia` `indonesia` `philippines` | SOUTHEAST_ASIAN |
 | Asia meridional | `india` `pakistan` `bangladesh` `sri_lanka` `nepal` | SOUTH_ASIAN |
-| África no-WA | `south_africa` `egypt` `kenya` `ethiopia` `tanzania` | AFRICAN_COASTAL |
+| África no-WA | `south_africa` `egypt` `kenya` `ethiopia` `tanzania` `uganda` `rwanda` | AFRICAN_COASTAL |
 | África occidental | `nigeria` `ghana` `senegal` `ivory_coast` `sierra_leone` `liberia` `benin` `togo` `guinea` `gambia` | WEST_AFRICAN |
 | Oceanía | `australia` `new_zealand` | ANGLO |
 
@@ -51,6 +51,13 @@ Ordenado por **prioridad global** (ROI × cobertura × riesgo arquitectónico).
 | Israel | `israel` | F4.1 | `live` |
 | Jordania | `jordan` | F4.1 | `live` |
 
+### Cerrados F4.3 (live @ f4.3)
+
+| País | slug | Wave | status |
+|------|------|------|--------|
+| Uganda | `uganda` | F4.3 | `live` |
+| Ruanda | `rwanda` | F4.3 | `live` |
+
 ### P2 — Media prioridad
 
 | País | slug | Región | Familia propuesta | Ciudad ancla | Wave | Prioridad | Dependencias |
@@ -58,8 +65,6 @@ Ordenado por **prioridad global** (ROI × cobertura × riesgo arquitectónico).
 | Irlanda | `ireland` | Europa occidental | WESTERN_EUROPE | Dublín | **F4.2** | P2 | — |
 | Croacia | `croatia` | Europa meridional | MEDITERRANEAN | Zagreb | **F4.2** | P2 | — |
 | Hungría | `hungary` | Europa central | WESTERN_EUROPE | Budapest | **F4.2** | P2 | — |
-| Uganda | `uganda` | África oriental | AFRICAN_COASTAL | Kampala | **F4.3** | P2 | — |
-| Ruanda | `rwanda` | África oriental | AFRICAN_COASTAL | Kigali | **F4.3** | P2 | — |
 | Líbano | `lebanon` | Levante | MEDITERRANEAN | Beirut | **F4.4** | P2 | **EDITORIAL-OK** |
 | Kuwait | `kuwait` | Golfo | MEDITERRANEAN | Ciudad de Kuwait | **F4.4** | P2 | — |
 
@@ -102,7 +107,7 @@ Modo **densificación** — no incrementa países resolver; solo ciudades.
 
 | Hito | Ciudades | Países | Notas |
 |------|----------|--------|-------|
-| **Actual (F4.1)** | 72 | 69 | Baseline |
+| **Actual (F4.3)** | 74 | 71 | Baseline |
 | **F4 Q1 target** | ~78 | ~75 | F4.2 + F4.3 + F4.4 |
 | **F4 Q2 target** | ~82 | ~78 | F4.4–F4.6 + densificación selecta |
 | **Arquetipo layer (ref.)** | — | 51 | Objetivo diseño original; superado en prod |
@@ -118,4 +123,4 @@ Modo **densificación** — no incrementa países resolver; solo ciudades.
 
 ---
 
-*Backlog F4.1 · baseline prod 72/69 @ f4.1*
+*Backlog F4.3 · baseline prod 74/71 @ f4.3*
