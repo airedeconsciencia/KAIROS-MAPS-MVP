@@ -2,7 +2,7 @@
 
 **Fase:** F5.x — Global Expansion Framework  
 **SSOT expansión territorial** · solo documentación  
-**Baseline prod:** `f5.1` · **100 ciudades / 97 países** · **11 familias**  
+**Baseline prod:** `f5.2` · **102 ciudades / 99 países** · **11 familias**  
 **Última revisión:** 26 mayo 2026
 
 > Este documento es la fuente de verdad para **qué falta**, **en qué wave** y **con qué dependencias**.  
@@ -20,9 +20,9 @@
 
 ---
 
-## I. Registro live (97 países — referencia @ f5.1)
+## I. Registro live (99 países — referencia @ f5.2)
 
-Todos con **status: `live`** · waves F2–F5.1 · catálogo + resolver sincronizados @ `f5.1`.
+Todos con **status: `live`** · waves F2–F5.2 · catálogo + resolver sincronizados @ `f5.2`.
 
 | Región | Países live (slug) | Familia |
 |--------|-------------------|---------|
@@ -31,8 +31,8 @@ Todos con **status: `live`** · waves F2–F5.1 · catálogo + resolver sincroni
 | Iberia | `portugal` | IBERIAN |
 | Anglo / Caribe / Oceanía | `united_kingdom` `united_states` `canada` `australia` `new_zealand` `jamaica` `trinidad_and_tobago` `barbados` `bahamas` `belize` `guyana` | ANGLO |
 | América Latina | `mexico` `argentina` `brazil` `peru` `colombia` `chile` `uruguay` `ecuador` `costa_rica` `panama` `paraguay` `bolivia` | LATAM |
-| Asia oriental | `japan` `south_korea` `china` `taiwan` | EAST_ASIAN |
-| Sudeste asiático | `thailand` `singapore` `vietnam` `malaysia` `indonesia` `philippines` `cambodia` `laos` `myanmar` `brunei` | SOUTHEAST_ASIAN |
+| Asia oriental | `japan` `south_korea` `china` `taiwan` `mongolia` | EAST_ASIAN |
+| Sudeste asiático | `thailand` `singapore` `vietnam` `malaysia` `indonesia` `philippines` `cambodia` `laos` `myanmar` `brunei` `timor_leste` | SOUTHEAST_ASIAN |
 | Asia meridional | `india` `pakistan` `bangladesh` `sri_lanka` `nepal` `bhutan` `maldives` `afghanistan` | SOUTH_ASIAN |
 | África no-WA | `south_africa` `egypt` `kenya` `ethiopia` `tanzania` `uganda` `rwanda` `angola` `mozambique` `madagascar` `mauritius` `namibia` | AFRICAN_COASTAL |
 | África occidental | `nigeria` `ghana` `senegal` `ivory_coast` `sierra_leone` `liberia` `benin` `togo` `guinea` `gambia` `mali` `burkina_faso` `niger` | WEST_AFRICAN |
@@ -45,7 +45,14 @@ Todos con **status: `live`** · waves F2–F5.1 · catálogo + resolver sincroni
 
 Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 
-### Cerrados F5.1 (live @ f5.1)
+### Cerrados F5.2 (live @ f5.2)
+
+| País | slug | Wave | status |
+|------|------|------|--------|
+| Mongolia | `mongolia` | F5.2 | `live` |
+| Timor-Leste | `timor_leste` | F5.2 | `live` |
+
+### Cerrados F5.1 (live @ f5.2 prod bundle)
 
 | País | slug | Wave | status |
 |------|------|------|--------|
@@ -53,7 +60,7 @@ Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 | Belice | `belize` | F5.1 | `live` |
 | Guyana | `guyana` | F5.1 | `live` |
 
-### Cerrados F4.11 (live @ f5.1 prod bundle)
+### Cerrados F4.11 (live @ f5.2 prod bundle)
 
 | País | slug | Wave | status |
 |------|------|------|--------|
@@ -61,7 +68,7 @@ Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 | Mauricio | `mauritius` | F4.11 | `live` |
 | Namibia | `namibia` | F4.11 | `live` |
 
-### Cerrados F4.8–F4.10 (live @ f5.1 prod bundle)
+### Cerrados F4.8–F4.10 (live @ f5.2 prod bundle)
 
 | País | slug | Wave | status |
 |------|------|------|--------|
@@ -75,7 +82,7 @@ Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 | Burkina Faso | `burkina_faso` | F4.10 | `live` |
 | Níger | `niger` | F4.10 | `live` |
 
-### Cerrados F4.7 (live @ f5.1 prod bundle)
+### Cerrados F4.7 (live @ f5.2 prod bundle)
 
 | País | slug | Wave | status |
 |------|------|------|--------|
@@ -86,10 +93,8 @@ Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 
 | País | slug | Región | Familia propuesta | Ciudad ancla | Wave | Prioridad | Dependencias |
 |------|------|--------|-------------------|--------------|------|-----------|--------------|
-| Mongolia | `mongolia` | Asia oriental | EAST_ASIAN | Ulán Bator | **F5.2** | P1 | — |
-| Timor-Leste | `timor_leste` | ASEAN | SOUTHEAST_ASIAN | Dili | **F5.2** | P1 | — |
 | Surinam | `suriname` | Caribe | ANGLO | Paramaribo | **F5.3** | P1 | último slot ANGLO @ 12 |
-| Corea del Norte | `north_korea` | Asia oriental | EAST_ASIAN | Pyongyang | **F5.2** | P1 | **EDITORIAL-OK** |
+| Corea del Norte | `north_korea` | Asia oriental | EAST_ASIAN | Pyongyang | **F5.4** | P1 | **EDITORIAL-OK** |
 
 ### P2 — Requiere familia nueva (F6.0+)
 
@@ -125,8 +130,8 @@ Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 
 | Hito | Ciudades | Países | Notas |
 |------|----------|--------|-------|
-| **Actual (F5.1)** | 100 | 97 | ✅ Baseline prod |
-| **F5 plateau** | ~103 | ~100 | F5.2–F5.3 reutilización |
+| **Actual (F5.2)** | 102 | 99 | ✅ Baseline prod |
+| **F5 plateau** | ~103 | ~100 | F5.3 Surinam |
 | **F6 MENA** | ~109 | ~106 | +6 tras sprint F6.0 |
 | **F7 CENTRAL_ASIAN** | ~115 | ~112 | +5 tras sprint F7.0 |
 | **Target 120** | ~123 | ~120 | requiere 2 familias nuevas |
@@ -142,4 +147,4 @@ Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 
 ---
 
-*Backlog F5.1 · baseline prod 100/97 @ f5.1*
+*Backlog F5.2 · baseline prod 102/99 @ f5.2*

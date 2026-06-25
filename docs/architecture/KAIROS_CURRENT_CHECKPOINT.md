@@ -1,9 +1,9 @@
 # KAIROS MAPS — Current Checkpoint
 
 **Fecha:** 26 mayo 2026  
-**HEAD runtime:** `a83a371` — F5.1 ANGLO Caribbean II  
-**Checkpoint prod:** `docs/architecture/F5.1_ANGLO_CARIBBEAN_II_PRODUCTION_CHECKPOINT.md`  
-**Producción / Staging:** **`3.8f.1-f5.1-0.1`** · **100 ciudades / 97 países** · EFR **`3.8h.2-f5.1-0.1`** · **97 países resolver** · **11 familias**
+**HEAD runtime:** `0b42bad` — F5.2 East Asia + SEA Closure  
+**Checkpoint prod:** `docs/architecture/F5.2_EAST_ASIA_SEA_CLOSURE_PRODUCTION_CHECKPOINT.md`  
+**Producción / Staging:** **`3.8f.1-f5.2-0.1`** · **102 ciudades / 99 países** · EFR **`3.8h.2-f5.2-0.1`** · **99 países resolver** · **11 familias**
 
 ---
 
@@ -22,6 +22,7 @@
 - **Wave F4.10 WEST_AFRICAN Sahel:** cerrada (`f4.10` · ML/BF/NE)
 - **Wave F4.11 AFRICAN_COASTAL Southern:** cerrada (`f4.11` · MG/MU/NA)
 - **Wave F5.1 ANGLO Caribbean II:** cerrada (`f5.1` · BS/BZ/GY)
+- **Wave F5.2 East Asia + SEA Closure:** cerrada (`f5.2` · MN/TL)
 - **F5.0 Family Architecture Audit:** entregada (READ-ONLY)
 - **WA 13/13** · São Paulo NO catálogo · Maó/Menorca aparcado
 
@@ -41,10 +42,11 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Ciudades | **100** |
-| Países visibles / resolver | **97** |
+| Ciudades | **102** |
+| Países visibles / resolver | **99** |
+| EAST_ASIAN países resolver | **5** |
+| SOUTHEAST_ASIAN países resolver | **11** (ASEAN completo) |
 | ANGLO países resolver | **11** (⚠️ vigilancia umbral 12) |
-| SOUTHEAST_ASIAN países resolver | **10** |
 | SOUTH_ASIAN países resolver | **8** |
 | WEST_AFRICAN países resolver | **13** (🔒 congelada) |
 | AFRICAN_COASTAL países resolver | **12** (🔒 congelada) |
@@ -57,7 +59,7 @@
 
 ## Smokes
 
-Suite estándar **9/9 PASS** (@ F5.1 prod).
+Suite estándar **9/9 PASS** (@ F5.2 prod).
 
 ---
 
@@ -65,7 +67,7 @@ Suite estándar **9/9 PASS** (@ F5.1 prod).
 
 - Cache browser `cities-catalog.js`
 - `dist/` sucio local (rsync deploy-prod; no commitear)
-- ANGLO @ 11 países — congelar tras Surinam o F5.2
+- ANGLO @ 11 países — 1 slot Surinam antes de umbral 12
 - Familias congeladas: WE · MED · LATAM · WA · AC
 - MENA sprint (F6.0) pendiente antes de Líbano/Kuwait/Omán
 - Corea del Norte requiere `EDITORIAL-OK` si wave EAST_ASIAN
@@ -74,9 +76,9 @@ Suite estándar **9/9 PASS** (@ F5.1 prod).
 
 ## Siguiente
 
-**F5.2** — EAST_ASIAN residual (Mongolia) + SEA cierre (Timor-Leste) o Surinam ANGLO (último slot umbral 12).  
+**F5.3** — Surinam ANGLO (último slot umbral 12).  
 **F6.0** — sprint arquitectura MENA @ plateau ~100 países.
 
 ---
 
-*Checkpoint F5.1 · Prod 100/97 @ f5.1 · F5.1 COMPLETADA*
+*Checkpoint F5.2 · Prod 102/99 @ f5.2 · F5.2 COMPLETADA*
