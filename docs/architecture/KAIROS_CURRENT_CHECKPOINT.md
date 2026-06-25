@@ -1,9 +1,9 @@
 # KAIROS MAPS — Current Checkpoint
 
 **Fecha:** 26 mayo 2026  
-**HEAD runtime:** `0025dda` — F4.5 LATAM residual  
-**Checkpoint prod:** `docs/architecture/F4.5_LATAM_RESIDUAL_PRODUCTION_CHECKPOINT.md`  
-**Producción / Staging:** **`3.8f.1-f4.5-0.1`** · **81 ciudades / 78 países** · EFR **`3.8h.2-f4.5-0.1`** · **78 países resolver** · **11 familias**
+**HEAD runtime:** `a963f5d` — F4.6 SEA residual  
+**Checkpoint prod:** `docs/architecture/F4.6_SEA_RESIDUAL_PRODUCTION_CHECKPOINT.md`  
+**Producción / Staging:** **`3.8f.1-f4.6-0.1`** · **83 ciudades / 80 países** · EFR **`3.8h.2-f4.6-0.1`** · **80 países resolver** · **11 familias**
 
 ---
 
@@ -15,6 +15,7 @@
 - **Wave F4.3 África Este+:** cerrada (`f4.3`)
 - **Wave F4.4 África Austral:** cerrada (`f4.4` · AO/MZ)
 - **Wave F4.5 LATAM residual:** cerrada (`f4.5` · PY/BO)
+- **Wave F4.6 SEA residual:** cerrada (`f4.6` · KH/LA)
 - **WA 10/10** · São Paulo NO catálogo · Maó/Menorca aparcado
 
 ---
@@ -33,8 +34,9 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Ciudades | **81** |
-| Países visibles / resolver | **78** |
+| Ciudades | **83** |
+| Países visibles / resolver | **80** |
+| SOUTHEAST_ASIAN países resolver | **8** |
 | LATAM países resolver | **12** (⚠️ vigilancia umbral) |
 | AFRICAN_COASTAL países resolver | **9** (⚠️ vigilancia) |
 | WESTERN_EUROPE países resolver | **14** (⚠️ saturación) |
@@ -45,7 +47,7 @@
 
 ## Smokes
 
-Suite estándar **9/9 PASS** (@ F4.5 prod).
+Suite estándar **9/9 PASS** (@ F4.6 prod).
 
 ---
 
@@ -55,15 +57,16 @@ Suite estándar **9/9 PASS** (@ F4.5 prod).
 - 5 smokes drift 6→11 (pre-existente)
 - `dist/` sucio local
 - WESTERN_EUROPE + MEDITERRANEAN saturación editorial
-- LATAM en umbral 12 países (vigilancia post-F4.5)
+- LATAM en umbral 12 países
 - AFRICAN_COASTAL heterogeneidad sur/este/norte
+- F4.7 bloqueada sin `EDITORIAL-OK` (Myanmar · Venezuela)
 
 ---
 
 ## Siguiente
 
-**F4.6 SEA residual** (Camboya · Laos) — alternancia regional; Levante+/Golfo pospuesto hasta plan MENA.
+**F5.0 Editorial Family Saturation Audit** — READ-ONLY; no wave territorial hasta decisión post-auditoría.
 
 ---
 
-*Checkpoint F4.5 · Prod 81/78 @ f4.5 · F4.5 COMPLETADA*
+*Checkpoint F4.6 · Prod 83/80 @ f4.6 · F4.6 COMPLETADA*

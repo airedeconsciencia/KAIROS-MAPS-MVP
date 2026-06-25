@@ -2,7 +2,7 @@
 
 **Fase:** F4.0 — Global Expansion Framework  
 **SSOT expansión territorial** · solo documentación  
-**Baseline prod:** `f4.5` · **81 ciudades / 78 países** · **11 familias**  
+**Baseline prod:** `f4.6` · **83 ciudades / 80 países** · **11 familias**  
 **Última revisión:** 26 mayo 2026
 
 > Este documento es la fuente de verdad para **qué falta**, **en qué wave** y **con qué dependencias**.  
@@ -30,7 +30,7 @@ Todos con **status: `live`** · wave histórica F2–F3 · catálogo + resolver 
 | Europa / OM / Levante | `turkey` `morocco` `tunisia` `united_arab_emirates` `qatar` `saudi_arabia` `israel` `jordan` `croatia` | MEDITERRANEAN |
 | América | `united_states` `canada` `mexico` `argentina` `brazil` `peru` `colombia` `chile` `uruguay` `ecuador` `costa_rica` `panama` `paraguay` `bolivia` | LATAM / ANGLO |
 | Asia oriental | `japan` `south_korea` `china` `taiwan` | EAST_ASIAN |
-| Sudeste asiático | `thailand` `singapore` `vietnam` `malaysia` `indonesia` `philippines` | SOUTHEAST_ASIAN |
+| Sudeste asiático | `thailand` `singapore` `vietnam` `malaysia` `indonesia` `philippines` `cambodia` `laos` | SOUTHEAST_ASIAN |
 | Asia meridional | `india` `pakistan` `bangladesh` `sri_lanka` `nepal` | SOUTH_ASIAN |
 | África no-WA | `south_africa` `egypt` `kenya` `ethiopia` `tanzania` `uganda` `rwanda` `angola` `mozambique` | AFRICAN_COASTAL |
 | África occidental | `nigeria` `ghana` `senegal` `ivory_coast` `sierra_leone` `liberia` `benin` `togo` `guinea` `gambia` | WEST_AFRICAN |
@@ -50,6 +50,13 @@ Ordenado por **prioridad global** (ROI × cobertura × riesgo arquitectónico).
 |------|------|------|--------|
 | Israel | `israel` | F4.1 | `live` |
 | Jordania | `jordan` | F4.1 | `live` |
+
+### Cerrados F4.6 (live @ f4.6)
+
+| País | slug | Wave | status |
+|------|------|------|--------|
+| Camboya | `cambodia` | F4.6 | `live` |
+| Laos | `laos` | F4.6 | `live` |
 
 ### Cerrados F4.5 (live @ f4.5)
 
@@ -91,10 +98,8 @@ Ordenado por **prioridad global** (ROI × cobertura × riesgo arquitectónico).
 
 | País | slug | Región | Familia propuesta | Ciudad ancla | Wave | Prioridad | Dependencias |
 |------|------|--------|-------------------|--------------|------|-----------|--------------|
-| Camboya | `cambodia` | Sudeste asiático | SOUTHEAST_ASIAN | Phnom Penh | **F4.6** | P3 | — |
-| Laos | `laos` | Sudeste asiático | SOUTHEAST_ASIAN | Vientián | **F4.6** | P3 | — |
-| Venezuela | `venezuela` | América del Sur | LATAM | Caracas | **F4.7** | P3 | **EDITORIAL-OK** |
-| Myanmar | `myanmar` | Sudeste asiático | SOUTHEAST_ASIAN | Yangón | **F4.7** | P3 | **EDITORIAL-OK** |
+| Venezuela | `venezuela` | América del Sur | LATAM | Caracas | **F4.7** | P3 | **EDITORIAL-OK** · post F5.0 audit |
+| Myanmar | `myanmar` | Sudeste asiático | SOUTHEAST_ASIAN | Yangón | **F4.7** | P3 | **EDITORIAL-OK** · post F5.0 audit |
 
 ### Parked — fuera de expansión territorial F4
 
@@ -124,9 +129,9 @@ Modo **densificación** — no incrementa países resolver; solo ciudades.
 
 | Hito | Ciudades | Países | Notas |
 |------|----------|--------|-------|
-| **Actual (F4.5)** | 81 | 78 | Baseline |
+| **Actual (F4.6)** | 83 | 80 | Baseline |
 | **F4 Q1 target** | ~79 | ~76 | ✅ F4.2 + F4.3 + F4.4 |
-| **F4 Q2 target** | ~82 | ~78 | ✅ F4.5 · pendiente F4.6 + densificación |
+| **F4 Q2 target** | ~82 | ~78 | ✅ F4.5 + F4.6 |
 | **Arquetipo layer (ref.)** | — | 51 | Objetivo diseño original; superado en prod |
 
 ---
@@ -140,4 +145,4 @@ Modo **densificación** — no incrementa países resolver; solo ciudades.
 
 ---
 
-*Backlog F4.5 · baseline prod 81/78 @ f4.5*
+*Backlog F4.6 · baseline prod 83/80 @ f4.6*
