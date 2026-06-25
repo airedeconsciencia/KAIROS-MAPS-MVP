@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f4.5-0.1';
-  var EXPECTED_CITY_COUNT = 81;
-  var EXPECTED_COUNTRY_COUNT = 78;
+  var SCHEMA_VERSION = '3.8f.1-f4.6-0.1';
+  var EXPECTED_CITY_COUNT = 83;
+  var EXPECTED_COUNTRY_COUNT = 80;
 
   var CITIES = [
     // Europa
@@ -62,6 +62,8 @@
     { name: 'Kuala Lumpur', country: 'Malasia', lat: 3.1390, lon: 101.6869 },
     { name: 'Jakarta', country: 'Indonesia', lat: -6.2088, lon: 106.8456 },
     { name: 'Manila', country: 'Filipinas', lat: 14.5995, lon: 120.9842 },
+    { name: 'Phnom Penh', country: 'Camboya', lat: 11.5564, lon: 104.9282 },
+    { name: 'Vientián', country: 'Laos', lat: 17.9757, lon: 102.6331 },
     { name: 'Delhi', country: 'India', lat: 28.6139, lon: 77.2090 },
     { name: 'Mumbai', country: 'India', lat: 19.0760, lon: 72.8777 },
     { name: 'Karachi', country: 'Pakistán', lat: 24.8607, lon: 67.0011 },
@@ -148,6 +150,8 @@
     'Malasia': 'my',
     'Indonesia': 'id',
     'Filipinas': 'ph',
+    'Camboya': 'kh',
+    'Laos': 'la',
     'India': 'in',
     'Pakistán': 'pk',
     'Bangladesh': 'bd',
@@ -230,6 +234,8 @@
     'Malasia': 'malaysia',
     'Indonesia': 'indonesia',
     'Filipinas': 'philippines',
+    'Camboya': 'cambodia',
+    'Laos': 'laos',
     'India': 'india',
     'Pakistán': 'pakistan',
     'Bangladesh': 'bangladesh',

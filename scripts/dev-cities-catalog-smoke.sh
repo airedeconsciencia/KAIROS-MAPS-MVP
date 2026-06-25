@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '81 ciudades (F4.5 LATAM residual expansion)',
-  Catalog.CITIES.length === 81,
+  '83 ciudades (F4.6 SEA residual expansion)',
+  Catalog.CITIES.length === 83,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '78 países únicos (F4.5 LATAM residual expansion)',
-  countries.length === 78,
+  '80 países únicos (F4.6 SEA residual expansion)',
+  countries.length === 80,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (78)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 78,
+  'COUNTRY_IDS alineados (80)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 80,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -538,9 +538,28 @@ f45Wave.forEach(function (entry) {
 });
 assert('F4.5 LATAM residual ciudades + slugs', f45Issues.length === 0, f45Issues.join(' · '));
 
+const f46Wave = [
+  { name: 'Phnom Penh', countryId: 'cambodia', code: 'kh' },
+  { name: 'Vientián', countryId: 'laos', code: 'la' }
+];
+const f46Issues = [];
+f46Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f46Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f46Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f46Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F4.6 SEA residual ciudades + slugs', f46Issues.length === 0, f46Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f4.5',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.5-0.1',
+  'SCHEMA catálogo f4.6',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.6-0.1',
   Catalog.SCHEMA_VERSION
 );
 

@@ -82,7 +82,11 @@ const SEA_PLUS_CITIES = [
   { name: 'Jakarta', slug: 'indonesia' },
   { name: 'Manila', slug: 'philippines' }
 ];
-const SEA_COUNTRIES = ['thailand', 'singapore', 'vietnam', 'malaysia', 'indonesia', 'philippines'];
+const SEA_F46_CITIES = [
+  { name: 'Phnom Penh', slug: 'cambodia' },
+  { name: 'Vientián', slug: 'laos' }
+];
+const SEA_COUNTRIES = ['thailand', 'singapore', 'vietnam', 'malaysia', 'indonesia', 'philippines', 'cambodia', 'laos'];
 const GOALS = ['amor', 'trabajo', 'descanso'];
 const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
 const EAST_ASIAN_LEAK = ['secuencia', 'detalle observado', 'rutina precisa', 'proceso callado', 'gesto mínimo'];
@@ -196,17 +200,17 @@ assert(
 );
 
 assert(
-  '81 ciudades / 78 países catálogo (baseline F4.5; SEA Wave A intacto)',
+  '83 ciudades / 80 países catálogo (baseline F4.6; SEA Wave A intacto)',
   Catalog.CITIES.length === Catalog.EXPECTED_CITY_COUNT &&
     Catalog.getCountries().length === Catalog.EXPECTED_COUNTRY_COUNT &&
-    Catalog.EXPECTED_CITY_COUNT === 81 &&
-    Catalog.EXPECTED_COUNTRY_COUNT === 78,
+    Catalog.EXPECTED_CITY_COUNT === 83 &&
+    Catalog.EXPECTED_COUNTRY_COUNT === 80,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.5',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.5-0.1',
+  'SCHEMA catálogo f4.6',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.6-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -219,8 +223,8 @@ SEA_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert(
-  'SCHEMA resolver f4.5 (78 países; SEA+ intacto)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.5-0.1',
+  'SCHEMA resolver f4.6 (80 países; SEA+ intacto)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.6-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -280,8 +284,8 @@ assert(
 );
 
 assert(
-  '78 países resolver (F4.5 LATAM residual; incl. SEA+ 6/6)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 78,
+  '80 países resolver (F4.6 SEA residual; incl. SEA 8/8)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 80,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
@@ -303,6 +307,95 @@ SEA_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert('12 lecturas SEA+ (4 países × 3 goals)', readings.length === 12, 'count=' + readings.length);
+
+console.log('\n' + '═'.repeat(60));
+console.log('QA obligatorio F4.6 — Phnom Penh · Vientián (catálogo)');
+console.log('═'.repeat(60));
+
+const seaF46Readings = [];
+SEA_F46_CITIES.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) throw new Error('catalog missing ' + entry.name);
+  GOALS.forEach(function (goal) {
+    const reading = composeReading(city, goal);
+    const s = scanReading(reading, entry.slug);
+    seaF46Readings.push({
+      city: city.name,
+      goal: goal,
+      slug: entry.slug,
+      reading: reading,
+      scan: s
+    });
+    assert(
+      entry.name + ' / ' + goal + ' → ok:true',
+      s.ok === true,
+      'ok=' + s.ok
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → words 500–900',
+      s.words >= Premium.MIN_WORDS && s.words <= Premium.MAX_WORDS,
+      'words=' + s.words
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → SOUTHEAST_ASIAN (n=k=e)',
+      s.regionN === 'SOUTHEAST_ASIAN' && s.regionK === 'SOUTHEAST_ASIAN' && s.regionE === 'SOUTHEAST_ASIAN',
+      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → split-brain 0',
+      s.regionN === s.regionK && s.regionK === s.regionE,
+      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → leaks 0',
+      s.iberian === 0 && s.eastAsian === 0 && s.we === 0,
+      JSON.stringify({ iberian: s.iberian, eastAsian: s.eastAsian, we: s.we })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → placeholders 0',
+      s.placeholders === 0,
+      'hits=' + s.placeholders
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → P03/P06/P10 = 0',
+      !s.p03 && !s.p06 && !s.p10,
+      'p03=' + s.p03 + ' p06=' + s.p06 + ' p10=' + s.p10
+    );
+    console.log(
+      ' ',
+      entry.slug + ' / ' + goal + ':',
+      'ok=' + s.ok,
+      'words=' + s.words,
+      'n=k=e=' + s.regionN,
+      'leaks=' + (s.iberian + s.eastAsian + s.we),
+      'ph=' + s.placeholders,
+      'P03/P06/P10=' + (s.p03 ? 1 : 0) + '/' + (s.p06 ? 1 : 0) + '/' + (s.p10 ? 1 : 0)
+    );
+  });
+});
+
+assert('6 lecturas F4.6 SEA residual (2 ciudades × 3 goals)', seaF46Readings.length === 6, 'count=' + seaF46Readings.length);
+
+assert(
+  'Camboya display → cambodia → SOUTHEAST_ASIAN (F4.6)',
+  EFR.coerceCountryId('Camboya') === 'cambodia' &&
+    EFR.resolveEditorialFamily({ cityName: 'Phnom Penh', countryDisplay: 'Camboya' }) === 'SOUTHEAST_ASIAN',
+  'cambodia'
+);
+
+assert(
+  'Laos display → laos → SOUTHEAST_ASIAN (F4.6)',
+  EFR.coerceCountryId('Laos') === 'laos' &&
+    EFR.resolveEditorialFamily({ cityName: 'Vientián', countryDisplay: 'Laos' }) === 'SOUTHEAST_ASIAN',
+  'laos'
+);
+
+assert(
+  'Alias kh/la → SOUTHEAST_ASIAN (F4.6)',
+  EFR.resolveEditorialFamily({ cityName: 'Phnom Penh', countryId: 'kh' }) === 'SOUTHEAST_ASIAN' &&
+    EFR.resolveEditorialFamily({ cityName: 'Vientián', countryId: 'la' }) === 'SOUTHEAST_ASIAN',
+  'kh/la'
+);
 
 readings.forEach(function (r) {
   const s = r.scan;
@@ -354,6 +447,8 @@ const QA_REGRESSION = [
   { label: 'Ciudad de México / amor → LATAM', cityName: 'Ciudad de México', slug: 'mexico', goal: 'amor', expected: 'LATAM' },
   { label: 'Delhi / amor → SOUTH_ASIAN', cityName: 'Delhi', slug: 'india', goal: 'amor', expected: 'SOUTH_ASIAN' },
   { label: 'Bangkok / amor → SOUTHEAST_ASIAN', cityName: 'Bangkok', slug: 'thailand', goal: 'amor', expected: 'SOUTHEAST_ASIAN' },
+  { label: 'Singapur / amor → SOUTHEAST_ASIAN', cityName: 'Singapur', slug: 'singapore', goal: 'amor', expected: 'SOUTHEAST_ASIAN' },
+  { label: 'Atenas / amor → MEDITERRANEAN', cityName: 'Atenas', slug: 'greece', goal: 'amor', expected: 'MEDITERRANEAN' },
   { label: 'París / amor → WESTERN_EUROPE', cityName: 'París', slug: 'france', goal: 'amor', expected: 'WESTERN_EUROPE' },
   { label: 'Lisboa / amor → IBERIAN', cityName: 'Lisboa', slug: 'portugal', goal: 'amor', expected: 'IBERIAN' },
   { label: 'Reykjavik / amor → GLOBAL_NEUTRAL', cityName: 'Reykjavik', slug: 'iceland', goal: 'amor', expected: 'GLOBAL_NEUTRAL' }

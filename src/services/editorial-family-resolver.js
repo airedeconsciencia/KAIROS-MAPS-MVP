@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f4.5-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f4.6-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -24,7 +24,7 @@
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (78 países) */
+  /** @type {Record<string, string>} slug canónico → familia (80 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -59,6 +59,8 @@
     malaysia: 'SOUTHEAST_ASIAN',
     indonesia: 'SOUTHEAST_ASIAN',
     philippines: 'SOUTHEAST_ASIAN',
+    cambodia: 'SOUTHEAST_ASIAN',
+    laos: 'SOUTHEAST_ASIAN',
     india: 'SOUTH_ASIAN',
     pakistan: 'SOUTH_ASIAN',
     bangladesh: 'SOUTH_ASIAN',
@@ -225,6 +227,11 @@
     ph: 'philippines',
     philippines: 'philippines',
     filipinas: 'philippines',
+    kh: 'cambodia',
+    cambodia: 'cambodia',
+    camboya: 'cambodia',
+    la: 'laos',
+    laos: 'laos',
     in: 'india',
     india: 'india',
     pk: 'pakistan',
