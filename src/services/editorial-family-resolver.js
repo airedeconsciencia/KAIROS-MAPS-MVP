@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f6.0-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f6.1-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -80,11 +80,11 @@
     turkey: 'MEDITERRANEAN',
     morocco: 'MEDITERRANEAN',
     tunisia: 'MEDITERRANEAN',
-    united_arab_emirates: 'MEDITERRANEAN',
-    qatar: 'MEDITERRANEAN',
-    saudi_arabia: 'MEDITERRANEAN',
-    israel: 'MEDITERRANEAN',
-    jordan: 'MEDITERRANEAN',
+    united_arab_emirates: 'MENA',
+    qatar: 'MENA',
+    saudi_arabia: 'MENA',
+    israel: 'MENA',
+    jordan: 'MENA',
     united_kingdom: 'ANGLO',
     united_states: 'ANGLO',
     canada: 'ANGLO',

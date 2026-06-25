@@ -26,7 +26,7 @@ BLOCKS="$ROOT/src/content/premium-blocks.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — MENA architecture smoke (F6.0)"
-echo " Scope: 12 familias · 14 packs MENA explicit · 0 países MENA"
+echo " Scope: 12 familias · 14 packs MENA explicit · 5 países MENA · 7 MED"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -80,8 +80,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'SCHEMA f6.0',
-  EFR.SCHEMA_VERSION === '3.8h.2-f6.0-0.1',
+  'SCHEMA f6.1',
+  EFR.SCHEMA_VERSION === '3.8h.2-f6.1-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
@@ -101,9 +101,21 @@ const menaCountries = Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).filter(function 
   return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MENA';
 });
 assert(
-  '0 countries MENA (scaffold only)',
-  menaCountries.length === 0,
-  'count=' + menaCountries.length + (menaCountries.length ? ' slugs=' + menaCountries.join(',') : '')
+  '5 countries MENA (F6.1 migration)',
+  menaCountries.length === 5 &&
+    ['united_arab_emirates', 'qatar', 'saudi_arabia', 'israel', 'jordan'].every(function (slug) {
+      return menaCountries.indexOf(slug) !== -1;
+    }),
+  'count=' + menaCountries.length + ' slugs=' + menaCountries.join(',')
+);
+
+const medCountries = Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).filter(function (slug) {
+  return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MEDITERRANEAN';
+});
+assert(
+  '7 countries MEDITERRANEAN post-F6.1',
+  medCountries.length === 7,
+  'count=' + medCountries.length + ' slugs=' + medCountries.join(',')
 );
 
 const PACK_MAPS = [

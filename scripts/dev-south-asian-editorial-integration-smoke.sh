@@ -234,7 +234,7 @@ assert(
 
 assert(
   'SCHEMA f5.2',
-  EFR.SCHEMA_VERSION === '3.8h.2-f6.0-0.1',
+  EFR.SCHEMA_VERSION === '3.8h.2-f6.1-0.1',
   EFR.SCHEMA_VERSION
 );
 

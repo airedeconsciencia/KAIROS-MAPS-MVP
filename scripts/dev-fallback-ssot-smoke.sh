@@ -193,6 +193,18 @@ assert(
   packMenaMissing.join(' · ') || '14/14 explicit MENA'
 );
 
+const menaSlugs = Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).filter(function (slug) {
+  return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MENA';
+});
+assert(
+  '5 countries MENA (F6.1 migration)',
+  menaSlugs.length === 5 &&
+    ['united_arab_emirates', 'qatar', 'saudi_arabia', 'israel', 'jordan'].every(function (slug) {
+      return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MENA';
+    }),
+  'slugs=' + menaSlugs.join(',')
+);
+
 assert(
   'SOUTHEAST_ASIAN countries resolver (F3.6b SEA+)',
   ['thailand', 'singapore', 'vietnam', 'malaysia', 'indonesia', 'philippines'].every(function (slug) {

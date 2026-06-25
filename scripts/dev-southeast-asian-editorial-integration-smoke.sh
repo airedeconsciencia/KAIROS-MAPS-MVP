@@ -231,7 +231,7 @@ SEA_PLUS_CITIES.forEach(function (entry) {
 
 assert(
   'SCHEMA resolver f5.2 (99 países; SEA+ intacto)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f6.0-0.1',
+  EFR.SCHEMA_VERSION === '3.8h.2-f6.1-0.1',
   EFR.SCHEMA_VERSION
 );
 

@@ -88,22 +88,48 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f6.0',
-  EFR.SCHEMA_VERSION === '3.8h.2-f6.0-0.1',
+  'SCHEMA f6.1',
+  EFR.SCHEMA_VERSION === '3.8h.2-f6.1-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
-  '12 familias registradas (F6.0)',
+  '12 familias registradas (F6.1)',
   EFR.REGISTERED_FAMILIES.length === 12 && EFR.isRegisteredFamily('MENA') === true,
   'count=' + EFR.REGISTERED_FAMILIES.length + ' mena=' + EFR.isRegisteredFamily('MENA')
 );
 const menaCountries = Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).filter(function (slug) {
   return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MENA';
 });
+const medCountries = Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).filter(function (slug) {
+  return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MEDITERRANEAN';
+});
 assert(
-  '0 countries MENA (F6.0 scaffold)',
-  menaCountries.length === 0,
-  'count=' + menaCountries.length + (menaCountries.length ? ' slugs=' + menaCountries.join(',') : '')
+  '5 countries MENA (F6.1 migration)',
+  menaCountries.length === 5 &&
+    ['united_arab_emirates', 'qatar', 'saudi_arabia', 'israel', 'jordan'].every(function (slug) {
+      return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MENA';
+    }),
+  'count=' + menaCountries.length + ' slugs=' + menaCountries.join(',')
+);
+assert(
+  '7 countries MEDITERRANEAN post-F6.1',
+  medCountries.length === 7,
+  'count=' + medCountries.length + ' slugs=' + medCountries.join(',')
+);
+assert(
+  'MEDITERRANEAN regresión ES/IT/GR/MA/TN (F6.1)',
+  EFR.COUNTRY_EDITORIAL_FAMILY.spain === 'MEDITERRANEAN' &&
+    EFR.COUNTRY_EDITORIAL_FAMILY.italy === 'MEDITERRANEAN' &&
+    EFR.COUNTRY_EDITORIAL_FAMILY.greece === 'MEDITERRANEAN' &&
+    EFR.COUNTRY_EDITORIAL_FAMILY.morocco === 'MEDITERRANEAN' &&
+    EFR.COUNTRY_EDITORIAL_FAMILY.tunisia === 'MEDITERRANEAN',
+  JSON.stringify({
+    spain: EFR.COUNTRY_EDITORIAL_FAMILY.spain,
+    italy: EFR.COUNTRY_EDITORIAL_FAMILY.italy,
+    greece: EFR.COUNTRY_EDITORIAL_FAMILY.greece,
+    morocco: EFR.COUNTRY_EDITORIAL_FAMILY.morocco,
+    tunisia: EFR.COUNTRY_EDITORIAL_FAMILY.tunisia
+  })
 );
 assert(
   '99 países en COUNTRY_EDITORIAL_FAMILY',
@@ -201,13 +227,13 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Túnez', country: 'Túnez', expected: 'MEDITERRANEAN' },
   { city: 'Shanghái', country: 'China', expected: 'EAST_ASIAN' },
   { city: 'Taipéi', country: 'Taiwán', expected: 'EAST_ASIAN' },
-  { city: 'Dubái', country: 'Emiratos Árabes Unidos', expected: 'MEDITERRANEAN' },
-  { city: 'Doha', country: 'Catar', expected: 'MEDITERRANEAN' },
-  { city: 'Riad', country: 'Arabia Saudí', expected: 'MEDITERRANEAN' },
+  { city: 'Dubái', country: 'Emiratos Árabes Unidos', expected: 'MENA' },
+  { city: 'Doha', country: 'Catar', expected: 'MENA' },
+  { city: 'Riad', country: 'Arabia Saudí', expected: 'MENA' },
   { city: 'Addis Abeba', country: 'Etiopía', expected: 'AFRICAN_COASTAL' },
   { city: 'Dar es Salaam', country: 'Tanzania', expected: 'AFRICAN_COASTAL' },
-  { city: 'Tel Aviv', country: 'Israel', expected: 'MEDITERRANEAN' },
-  { city: 'Amán', country: 'Jordania', expected: 'MEDITERRANEAN' },
+  { city: 'Tel Aviv', country: 'Israel', expected: 'MENA' },
+  { city: 'Amán', country: 'Jordania', expected: 'MENA' },
   { city: 'Kampala', country: 'Uganda', expected: 'AFRICAN_COASTAL' },
   { city: 'Kigali', country: 'Ruanda', expected: 'AFRICAN_COASTAL' },
   { city: 'Dublín', country: 'Irlanda', expected: 'WESTERN_EUROPE' },
