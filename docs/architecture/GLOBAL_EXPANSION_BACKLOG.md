@@ -2,7 +2,7 @@
 
 **Fase:** F4.0 — Global Expansion Framework  
 **SSOT expansión territorial** · solo documentación  
-**Baseline prod:** `f4.3` · **74 ciudades / 71 países** · **11 familias**  
+**Baseline prod:** `f4.2` · **77 ciudades / 74 países** · **11 familias**  
 **Última revisión:** 26 mayo 2026
 
 > Este documento es la fuente de verdad para **qué falta**, **en qué wave** y **con qué dependencias**.  
@@ -26,8 +26,8 @@ Todos con **status: `live`** · wave histórica F2–F3 · catálogo + resolver 
 
 | Región | Países live (slug) | Familia |
 |--------|-------------------|---------|
-| Europa occidental/central/nórdica | `spain` `portugal` `france` `united_kingdom` `italy` `germany` `netherlands` `belgium` `switzerland` `austria` `poland` `czech_republic` `denmark` `sweden` `norway` `finland` `greece` | MED / WE / IBERIAN / ANGLO |
-| Europa / OM / Levante | `turkey` `morocco` `tunisia` `united_arab_emirates` `qatar` `saudi_arabia` `israel` `jordan` | MEDITERRANEAN |
+| Europa occidental/central/nórdica | `spain` `portugal` `france` `united_kingdom` `italy` `germany` `netherlands` `belgium` `switzerland` `austria` `poland` `czech_republic` `denmark` `sweden` `norway` `finland` `greece` `ireland` `hungary` | MED / WE / IBERIAN / ANGLO |
+| Europa / OM / Levante | `turkey` `morocco` `tunisia` `united_arab_emirates` `qatar` `saudi_arabia` `israel` `jordan` `croatia` | MEDITERRANEAN |
 | América | `united_states` `canada` `mexico` `argentina` `brazil` `peru` `colombia` `chile` `uruguay` `ecuador` `costa_rica` `panama` | LATAM / ANGLO |
 | Asia oriental | `japan` `south_korea` `china` `taiwan` | EAST_ASIAN |
 | Sudeste asiático | `thailand` `singapore` `vietnam` `malaysia` `indonesia` `philippines` | SOUTHEAST_ASIAN |
@@ -58,13 +58,18 @@ Ordenado por **prioridad global** (ROI × cobertura × riesgo arquitectónico).
 | Uganda | `uganda` | F4.3 | `live` |
 | Ruanda | `rwanda` | F4.3 | `live` |
 
+### Cerrados F4.2 (live @ f4.2)
+
+| País | slug | Wave | status |
+|------|------|------|--------|
+| Irlanda | `ireland` | F4.2 | `live` |
+| Croacia | `croatia` | F4.2 | `live` |
+| Hungría | `hungary` | F4.2 | `live` |
+
 ### P2 — Media prioridad
 
 | País | slug | Región | Familia propuesta | Ciudad ancla | Wave | Prioridad | Dependencias |
 |------|------|--------|-------------------|--------------|------|-----------|--------------|
-| Irlanda | `ireland` | Europa occidental | WESTERN_EUROPE | Dublín | **F4.2** | P2 | — |
-| Croacia | `croatia` | Europa meridional | MEDITERRANEAN | Zagreb | **F4.2** | P2 | — |
-| Hungría | `hungary` | Europa central | WESTERN_EUROPE | Budapest | **F4.2** | P2 | — |
 | Líbano | `lebanon` | Levante | MEDITERRANEAN | Beirut | **F4.4** | P2 | **EDITORIAL-OK** |
 | Kuwait | `kuwait` | Golfo | MEDITERRANEAN | Ciudad de Kuwait | **F4.4** | P2 | — |
 
@@ -107,7 +112,7 @@ Modo **densificación** — no incrementa países resolver; solo ciudades.
 
 | Hito | Ciudades | Países | Notas |
 |------|----------|--------|-------|
-| **Actual (F4.3)** | 74 | 71 | Baseline |
+| **Actual (F4.2)** | 77 | 74 | Baseline |
 | **F4 Q1 target** | ~78 | ~75 | F4.2 + F4.3 + F4.4 |
 | **F4 Q2 target** | ~82 | ~78 | F4.4–F4.6 + densificación selecta |
 | **Arquetipo layer (ref.)** | — | 51 | Objetivo diseño original; superado en prod |
@@ -123,4 +128,4 @@ Modo **densificación** — no incrementa países resolver; solo ciudades.
 
 ---
 
-*Backlog F4.3 · baseline prod 74/71 @ f4.3*
+*Backlog F4.2 · baseline prod 77/74 @ f4.2*
