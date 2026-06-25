@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f4.9-0.1';
-  var EXPECTED_CITY_COUNT = 91;
-  var EXPECTED_COUNTRY_COUNT = 88;
+  var SCHEMA_VERSION = '3.8f.1-f4.10-0.1';
+  var EXPECTED_CITY_COUNT = 94;
+  var EXPECTED_COUNTRY_COUNT = 91;
 
   var CITIES = [
     // Europa
@@ -105,6 +105,9 @@
     { name: 'Cotonou', country: 'Benín', lat: 6.3703, lon: 2.3912 },
     { name: 'Lomé', country: 'Togo', lat: 6.1256, lon: 1.2254 },
     { name: 'Banjul', country: 'Gambia', lat: 13.4549, lon: -16.5790 },
+    { name: 'Bamako', country: 'Mali', lat: 12.6392, lon: -8.0029 },
+    { name: 'Uagadugú', country: 'Burkina Faso', lat: 12.3714, lon: -1.5197 },
+    { name: 'Niamey', country: 'Níger', lat: 13.5127, lon: 2.1128 },
     // Oceanía
     { name: 'Sídney', country: 'Australia', lat: -33.8688, lon: 151.2093 },
     { name: 'Auckland', country: 'Nueva Zelanda', lat: -36.8485, lon: 174.7633 }
@@ -197,6 +200,9 @@
     'Benín': 'bj',
     'Togo': 'tg',
     'Gambia': 'gm',
+    'Mali': 'ml',
+    'Burkina Faso': 'bf',
+    'Níger': 'ne',
     'Australia': 'au',
     'Nueva Zelanda': 'nz'
   };
@@ -289,6 +295,9 @@
     'Benín': 'benin',
     'Togo': 'togo',
     'Gambia': 'gambia',
+    'Mali': 'mali',
+    'Burkina Faso': 'burkina_faso',
+    'Níger': 'niger',
     'Australia': 'australia',
     'Nueva Zelanda': 'new_zealand'
   };

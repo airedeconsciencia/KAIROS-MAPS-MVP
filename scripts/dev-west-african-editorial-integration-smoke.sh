@@ -86,11 +86,15 @@ const WA_CITIES = [
   { name: 'Conakry', slug: 'guinea' },
   { name: 'Cotonou', slug: 'benin' },
   { name: 'Lomé', slug: 'togo' },
-  { name: 'Banjul', slug: 'gambia' }
+  { name: 'Banjul', slug: 'gambia' },
+  { name: 'Bamako', slug: 'mali' },
+  { name: 'Uagadugú', slug: 'burkina_faso' },
+  { name: 'Niamey', slug: 'niger' }
 ];
 const WA_COUNTRIES = [
   'nigeria', 'ghana', 'senegal', 'ivory_coast', 'sierra_leone',
-  'liberia', 'benin', 'togo', 'guinea', 'gambia'
+  'liberia', 'benin', 'togo', 'guinea', 'gambia',
+  'mali', 'burkina_faso', 'niger'
 ];
 const GOALS = ['amor', 'trabajo', 'descanso'];
 const AC_LEAK = ['horizonte', 'viento', 'amplitud', 'paisaje'];
@@ -204,14 +208,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '91 ciudades / 88 países catálogo (F4.9 SOUTH_ASIAN residual)',
-  Catalog.CITIES.length === 91 && Catalog.getCountries().length === 88,
+  '94 ciudades / 91 países catálogo (F4.10 WEST_AFRICAN Sahel)',
+  Catalog.CITIES.length === 94 && Catalog.getCountries().length === 91,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.9',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.9-0.1',
+  'SCHEMA catálogo f4.10',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.10-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -302,6 +306,27 @@ assert(
 );
 
 assert(
+  'Mali display → mali → WEST_AFRICAN (F4.10)',
+  EFR.coerceCountryId('Mali') === 'mali' &&
+    EFR.resolveEditorialFamily({ cityName: 'Bamako', countryDisplay: 'Mali' }) === 'WEST_AFRICAN',
+  'mali'
+);
+
+assert(
+  'Burkina Faso display → burkina_faso → WEST_AFRICAN (F4.10)',
+  EFR.coerceCountryId('Burkina Faso') === 'burkina_faso' &&
+    EFR.resolveEditorialFamily({ cityName: 'Uagadugú', countryDisplay: 'Burkina Faso' }) === 'WEST_AFRICAN',
+  'burkina_faso'
+);
+
+assert(
+  'Níger display → niger → WEST_AFRICAN (F4.10)',
+  EFR.coerceCountryId('Níger') === 'niger' &&
+    EFR.resolveEditorialFamily({ cityName: 'Niamey', countryDisplay: 'Níger' }) === 'WEST_AFRICAN',
+  'niger'
+);
+
+assert(
   '11 familias registradas',
   EFR.REGISTERED_FAMILIES.length === 11 && EFR.isRegisteredFamily('WEST_AFRICAN') === true,
   'count=' + EFR.REGISTERED_FAMILIES.length + ' registered=' + EFR.isRegisteredFamily('WEST_AFRICAN')
@@ -314,8 +339,8 @@ assert(
 );
 
 assert(
-  'SCHEMA resolver f4.9 (88 países)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.9-0.1',
+  'SCHEMA resolver f4.10 (91 países)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.10-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -323,7 +348,7 @@ const countryMiss = WA_COUNTRIES.filter(function (slug) {
   return EFR.COUNTRY_EDITORIAL_FAMILY[slug] !== 'WEST_AFRICAN';
 });
 assert(
-  '10 países v1 → WEST_AFRICAN',
+  '13 países WA → WEST_AFRICAN',
   countryMiss.length === 0,
   countryMiss.join(' · ') || WA_COUNTRIES.join(', ')
 );
@@ -389,7 +414,7 @@ WA_CITIES.forEach(function (entry) {
   });
 });
 
-assert('30 lecturas WA (10 ciudades × 3 goals)', readings.length === 30, 'count=' + readings.length);
+assert('39 lecturas WA (13 ciudades × 3 goals)', readings.length === 39, 'count=' + readings.length);
 
 readings.forEach(function (r) {
   const s = r.scan;

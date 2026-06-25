@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '91 ciudades (F4.9 SOUTH_ASIAN residual expansion)',
-  Catalog.CITIES.length === 91,
+  '94 ciudades (F4.10 WEST_AFRICAN Sahel expansion)',
+  Catalog.CITIES.length === 94,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '88 países únicos (F4.9 SOUTH_ASIAN residual expansion)',
-  countries.length === 88,
+  '91 países únicos (F4.10 WEST_AFRICAN Sahel expansion)',
+  countries.length === 91,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (88)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 88,
+  'COUNTRY_IDS alineados (91)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 91,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -616,9 +616,29 @@ f49Wave.forEach(function (entry) {
 });
 assert('F4.9 SOUTH_ASIAN residual ciudades + slugs', f49Issues.length === 0, f49Issues.join(' · '));
 
+const f410Wave = [
+  { name: 'Bamako', countryId: 'mali', code: 'ml' },
+  { name: 'Uagadugú', countryId: 'burkina_faso', code: 'bf' },
+  { name: 'Niamey', countryId: 'niger', code: 'ne' }
+];
+const f410Issues = [];
+f410Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f410Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f410Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f410Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F4.10 WEST_AFRICAN Sahel ciudades + slugs', f410Issues.length === 0, f410Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f4.9',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.9-0.1',
+  'SCHEMA catálogo f4.10',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.10-0.1',
   Catalog.SCHEMA_VERSION
 );
 

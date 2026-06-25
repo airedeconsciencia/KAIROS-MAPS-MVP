@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f4.9-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f4.10-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -24,7 +24,7 @@
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (88 países) */
+  /** @type {Record<string, string>} slug canónico → familia (91 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -113,7 +113,10 @@
     benin: 'WEST_AFRICAN',
     togo: 'WEST_AFRICAN',
     guinea: 'WEST_AFRICAN',
-    gambia: 'WEST_AFRICAN'
+    gambia: 'WEST_AFRICAN',
+    mali: 'WEST_AFRICAN',
+    burkina_faso: 'WEST_AFRICAN',
+    niger: 'WEST_AFRICAN'
   };
 
   /** @type {Record<string, string>} slug de ciudad → familia (overrides) */
@@ -350,7 +353,13 @@
     gn: 'guinea',
     guinea: 'guinea',
     gm: 'gambia',
-    gambia: 'gambia'
+    gambia: 'gambia',
+    ml: 'mali',
+    mali: 'mali',
+    bf: 'burkina_faso',
+    burkina_faso: 'burkina_faso',
+    ne: 'niger',
+    niger: 'niger'
   };
 
   function normalizeKey(value) {
