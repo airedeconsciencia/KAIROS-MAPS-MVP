@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f4.10-0.1';
-  var EXPECTED_CITY_COUNT = 94;
-  var EXPECTED_COUNTRY_COUNT = 91;
+  var SCHEMA_VERSION = '3.8f.1-f4.11-0.1';
+  var EXPECTED_CITY_COUNT = 97;
+  var EXPECTED_COUNTRY_COUNT = 94;
 
   var CITIES = [
     // Europa
@@ -95,6 +95,9 @@
     { name: 'Kigali', country: 'Ruanda', lat: -1.9403, lon: 29.8739 },
     { name: 'Luanda', country: 'Angola', lat: -8.8390, lon: 13.2894 },
     { name: 'Maputo', country: 'Mozambique', lat: -25.9692, lon: 32.5732 },
+    { name: 'Antananarivo', country: 'Madagascar', lat: -18.8792, lon: 47.5079 },
+    { name: 'Port Louis', country: 'Mauricio', lat: -20.1609, lon: 57.5012 },
+    { name: 'Windhoek', country: 'Namibia', lat: -22.5609, lon: 17.0658 },
     { name: 'Lagos', country: 'Nigeria', lat: 6.5244, lon: 3.3792 },
     { name: 'Accra', country: 'Ghana', lat: 5.6037, lon: -0.1870 },
     { name: 'Dakar', country: 'Senegal', lat: 14.7167, lon: -17.4677 },
@@ -190,6 +193,9 @@
     'Ruanda': 'rw',
     'Angola': 'ao',
     'Mozambique': 'mz',
+    'Madagascar': 'mg',
+    'Mauricio': 'mu',
+    'Namibia': 'na',
     'Nigeria': 'ng',
     'Ghana': 'gh',
     'Senegal': 'sn',
@@ -285,6 +291,9 @@
     'Ruanda': 'rwanda',
     'Angola': 'angola',
     'Mozambique': 'mozambique',
+    'Madagascar': 'madagascar',
+    'Mauricio': 'mauritius',
+    'Namibia': 'namibia',
     'Nigeria': 'nigeria',
     'Ghana': 'ghana',
     'Senegal': 'senegal',

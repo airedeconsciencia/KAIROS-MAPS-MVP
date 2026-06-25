@@ -207,14 +207,14 @@ assert(
 );
 
 assert(
-  '94 ciudades / 91 países catálogo (F4.10 WEST_AFRICAN Sahel; SA Wave A intacto)',
-  Catalog.CITIES.length === 94 && Catalog.getCountries().length === 91,
+  '97 ciudades / 94 países catálogo (F4.11 AFRICAN_COASTAL Southern; SA Wave A intacto)',
+  Catalog.CITIES.length === 97 && Catalog.getCountries().length === 94,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.10',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.10-0.1',
+  'SCHEMA catálogo f4.11',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.11-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -227,14 +227,14 @@ SA_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert(
-  '91 países resolver (F4.10 WEST_AFRICAN Sahel)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 91,
+  '94 países resolver (F4.11 AFRICAN_COASTAL Southern)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 94,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
 assert(
-  'SCHEMA f4.10',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.10-0.1',
+  'SCHEMA f4.11',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.11-0.1',
   EFR.SCHEMA_VERSION
 );
 

@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '94 ciudades (F4.10 WEST_AFRICAN Sahel expansion)',
-  Catalog.CITIES.length === 94,
+  '97 ciudades (F4.11 AFRICAN_COASTAL Southern expansion)',
+  Catalog.CITIES.length === 97,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '91 países únicos (F4.10 WEST_AFRICAN Sahel expansion)',
-  countries.length === 91,
+  '94 países únicos (F4.11 AFRICAN_COASTAL Southern expansion)',
+  countries.length === 94,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (91)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 91,
+  'COUNTRY_IDS alineados (94)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 94,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -636,9 +636,29 @@ f410Wave.forEach(function (entry) {
 });
 assert('F4.10 WEST_AFRICAN Sahel ciudades + slugs', f410Issues.length === 0, f410Issues.join(' · '));
 
+const f411Wave = [
+  { name: 'Antananarivo', countryId: 'madagascar', code: 'mg' },
+  { name: 'Port Louis', countryId: 'mauritius', code: 'mu' },
+  { name: 'Windhoek', countryId: 'namibia', code: 'na' }
+];
+const f411Issues = [];
+f411Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f411Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f411Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f411Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F4.11 AFRICAN_COASTAL Southern ciudades + slugs', f411Issues.length === 0, f411Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f4.10',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.10-0.1',
+  'SCHEMA catálogo f4.11',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.11-0.1',
   Catalog.SCHEMA_VERSION
 );
 

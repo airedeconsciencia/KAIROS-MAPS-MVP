@@ -208,14 +208,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '94 ciudades / 91 países catálogo (F4.10 WEST_AFRICAN Sahel)',
-  Catalog.CITIES.length === 94 && Catalog.getCountries().length === 91,
+  '97 ciudades / 94 países catálogo (F4.11 AFRICAN_COASTAL Southern)',
+  Catalog.CITIES.length === 97 && Catalog.getCountries().length === 94,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.10',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.10-0.1',
+  'SCHEMA catálogo f4.11',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.11-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -339,8 +339,8 @@ assert(
 );
 
 assert(
-  'SCHEMA resolver f4.10 (91 países)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.10-0.1',
+  'SCHEMA resolver f4.11 (94 países)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.11-0.1',
   EFR.SCHEMA_VERSION
 );
 

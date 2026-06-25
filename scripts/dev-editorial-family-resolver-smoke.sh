@@ -88,23 +88,23 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f4.10',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.10-0.1',
+  'SCHEMA f4.11',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.11-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
-  '91 países en COUNTRY_EDITORIAL_FAMILY',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 91,
+  '94 países en COUNTRY_EDITORIAL_FAMILY',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 94,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '94 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 94,
+  '97 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 97,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('91 países en catálogo', countries.length === 91, 'count=' + countries.length);
+assert('94 países en catálogo', countries.length === 94, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -126,8 +126,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '94 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 94,
+  '97 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 97,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -216,7 +216,10 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Kabul', country: 'Afganistán', expected: 'SOUTH_ASIAN' },
   { city: 'Bamako', country: 'Mali', expected: 'WEST_AFRICAN' },
   { city: 'Uagadugú', country: 'Burkina Faso', expected: 'WEST_AFRICAN' },
-  { city: 'Niamey', country: 'Níger', expected: 'WEST_AFRICAN' }
+  { city: 'Niamey', country: 'Níger', expected: 'WEST_AFRICAN' },
+  { city: 'Antananarivo', country: 'Madagascar', expected: 'AFRICAN_COASTAL' },
+  { city: 'Port Louis', country: 'Mauricio', expected: 'AFRICAN_COASTAL' },
+  { city: 'Windhoek', country: 'Namibia', expected: 'AFRICAN_COASTAL' }
 ];
 
 const splitBrainHits = [];
@@ -234,7 +237,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('85 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('88 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -325,7 +328,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (85 casos)',
+  'Pipeline knowledge ≡ narrative (88 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );
