@@ -1,70 +1,50 @@
 # KAIROS MAPS — Current Checkpoint
 
-**Documento:** snapshot de estado del proyecto  
 **Fecha:** 26 mayo 2026  
-**Rama:** `main`  
-**HEAD runtime:** `671a576` — F3.13l E1c  
-**Checkpoint F3.13:** `docs/architecture/F3.13P_RESOLVER_EXPANSION_E1C_PRODUCTION_CHECKPOINT.md` (Wave E1 CLOSED)  
-**Producción live:** catálogo **`3.8f.1-f3.13c-0.1`** · **61 ciudades / 58 países** · EFR **`3.8h.2-f3.13c-0.1`** · **58 países resolver** · **11 familias** · **WA 10/10**
+**HEAD runtime:** `f1bde2b` — F3.14 E2 Maghreb  
+**Checkpoint:** `docs/architecture/F3.14_E2_MAGHREB_PRODUCTION_CHECKPOINT.md`  
+**Producción / Staging:** **`3.8f.1-f3.14-0.1`** · **63 ciudades / 60 países** · EFR **`3.8h.2-f3.14-0.1`** · **60 países resolver** · **11 familias**
 
 ---
 
-## I. Resumen ejecutivo
+## Estado
 
-KAIROS MAPS MVP — resolver **58 países** · catálogo **61/58** · **Wave E1 cerrada** (8 países WE: E1a+E1b+E1c). Premium beta · 11 familias · WA 10/10 · São Paulo NO catálogo.
-
-**Producción / Staging:** https://kairos-maps-mvp.web.app · https://kairos-maps-dev.web.app — ambos **`f3.13c` · 61/58**.
-
-**Siguiente wave:** **F3.14 — E2 Magreb** (ROI territorial alto · posible familia distinta a WE).
-
----
-
-## II. Wave E1 — cerrada
-
-| Batch | Commit | Prod |
-|-------|--------|------|
-| E1a | `0d924cc` | Oslo · Zúrich · Viena |
-| E1b | `be5aca5` | Bruselas · Varsovia · Praga |
-| E1c | `671a576` | Copenhague · Helsinki |
-
-**Conteo acumulado:** 50→**58** resolver · 53→**61** ciudades · 50→**58** países visibles.
+- **Wave E1:** cerrada (`f3.13c` · 8 países WE)
+- **Wave E2 Maghreb:** cerrada (`f3.14` · Marruecos · Túnez → MEDITERRANEAN)
+- **WA 10/10** · São Paulo NO catálogo
+- **Maó/Menorca:** aparcado — futura fase ciudades secundarias (no prioridad)
 
 ---
 
-## III. SSOT prod
+## SSOT prod
 
 | Métrica | Valor |
 |---------|-------|
-| Schema resolver | `3.8h.2-f3.13c-0.1` |
-| Schema catálogo | `3.8f.1-f3.13c-0.1` |
-| WE países resolver | **12** |
+| Ciudades | **63** |
+| Países visibles / resolver | **60** |
+| MED países resolver | **6** (ES/IT/GR/TR + MA/TN) |
 | GN canary | Reykjavik / `iceland` |
 
 ---
 
-## IV. Smokes gate
+## Smokes
 
-Suite E1/E1c — **9/9 PASS** (catálogo · resolver · WE · GN · fallback · WA · LATAM · SA · SEA).
+Suite estándar **9/9 PASS**.
 
 ---
 
-## V. Riesgos vivos
+## Riesgos vivos
 
 - Cache browser `cities-catalog.js`
-- Homogeneización WE (12 países)
 - 5 smokes drift 6→11 (pre-existente)
 - `dist/` sucio local
 
 ---
 
-## VI. Git
+## Siguiente wave sugerida
 
-```
-HEAD runtime: 671a576
-HEAD doc: F3.13p (post push)
-Producción: 61/58 @ f3.13c
-```
+**F3.15 — E3 Europa Central/Occidental residual:** Irlanda · Croacia · Hungría (ROI territorial · familia existente probable).
 
 ---
 
-*Checkpoint F3.13p · Wave E1 CLOSED · Siguiente F3.14 E2 Magreb*
+*Checkpoint F3.14 · Prod 63/60 @ f3.14*
