@@ -1,9 +1,9 @@
 # KAIROS MAPS — Current Checkpoint
 
 **Fecha:** 26 mayo 2026  
-**HEAD runtime:** `f1bde2b` — F3.14 E2 Maghreb  
-**Checkpoint:** `docs/architecture/F3.14_E2_MAGHREB_PRODUCTION_CHECKPOINT.md`  
-**Producción / Staging:** **`3.8f.1-f3.14-0.1`** · **63 ciudades / 60 países** · EFR **`3.8h.2-f3.14-0.1`** · **60 países resolver** · **11 familias**
+**HEAD runtime:** `070bd7a` — F3.15 Asia Oriental  
+**Checkpoint:** `docs/architecture/F3.15_ASIA_ORIENTAL_PRODUCTION_CHECKPOINT.md`  
+**Producción / Staging:** **`3.8f.1-f3.15-0.1`** · **65 ciudades / 62 países** · EFR **`3.8h.2-f3.15-0.1`** · **62 países resolver** · **11 familias**
 
 ---
 
@@ -11,6 +11,7 @@
 
 - **Wave E1:** cerrada (`f3.13c` · 8 países WE)
 - **Wave E2 Maghreb:** cerrada (`f3.14` · Marruecos · Túnez → MEDITERRANEAN)
+- **Wave F3.15 Asia Oriental:** cerrada (`f3.15` · China · Taiwán → EAST_ASIAN)
 - **WA 10/10** · São Paulo NO catálogo
 - **Maó/Menorca:** aparcado — futura fase ciudades secundarias (no prioridad)
 
@@ -20,9 +21,9 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Ciudades | **63** |
-| Países visibles / resolver | **60** |
-| MED países resolver | **6** (ES/IT/GR/TR + MA/TN) |
+| Ciudades | **65** |
+| Países visibles / resolver | **62** |
+| EAST_ASIAN países resolver | **4** (JP · KR · CN · TW) |
 | GN canary | Reykjavik / `iceland` |
 
 ---
@@ -43,8 +44,8 @@ Suite estándar **9/9 PASS**.
 
 ## Siguiente wave sugerida
 
-**F3.15 — E3 Europa Central/Occidental residual:** Irlanda · Croacia · Hungría (ROI territorial · familia existente probable).
+**F3.16 — Oriente Medio (UAE · Dubái):** máximo ROI global; familia `MEDITERRANEAN` probable. Alternativa: **F3.17 África Este** (Etiopía · Tanzania). Europa residual depriorizada.
 
 ---
 
-*Checkpoint F3.14 · Prod 63/60 @ f3.14*
+*Checkpoint F3.15 · Prod 65/62 @ f3.15*
