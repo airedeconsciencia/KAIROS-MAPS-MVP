@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f4.2-0.1';
-  var EXPECTED_CITY_COUNT = 77;
-  var EXPECTED_COUNTRY_COUNT = 74;
+  var SCHEMA_VERSION = '3.8f.1-f4.4-0.1';
+  var EXPECTED_CITY_COUNT = 79;
+  var EXPECTED_COUNTRY_COUNT = 76;
 
   var CITIES = [
     // Europa
@@ -81,6 +81,8 @@
     { name: 'Dar es Salaam', country: 'Tanzania', lat: -6.7924, lon: 39.2083 },
     { name: 'Kampala', country: 'Uganda', lat: 0.3476, lon: 32.5825 },
     { name: 'Kigali', country: 'Ruanda', lat: -1.9403, lon: 29.8739 },
+    { name: 'Luanda', country: 'Angola', lat: -8.8390, lon: 13.2894 },
+    { name: 'Maputo', country: 'Mozambique', lat: -25.9692, lon: 32.5732 },
     { name: 'Lagos', country: 'Nigeria', lat: 6.5244, lon: 3.3792 },
     { name: 'Accra', country: 'Ghana', lat: 5.6037, lon: -0.1870 },
     { name: 'Dakar', country: 'Senegal', lat: 14.7167, lon: -17.4677 },
@@ -159,6 +161,8 @@
     'Tanzania': 'tz',
     'Uganda': 'ug',
     'Ruanda': 'rw',
+    'Angola': 'ao',
+    'Mozambique': 'mz',
     'Nigeria': 'ng',
     'Ghana': 'gh',
     'Senegal': 'sn',
@@ -237,6 +241,8 @@
     'Tanzania': 'tanzania',
     'Uganda': 'uganda',
     'Ruanda': 'rwanda',
+    'Angola': 'angola',
+    'Mozambique': 'mozambique',
     'Nigeria': 'nigeria',
     'Ghana': 'ghana',
     'Senegal': 'senegal',

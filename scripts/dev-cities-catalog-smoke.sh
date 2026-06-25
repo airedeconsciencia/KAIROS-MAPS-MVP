@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '77 ciudades (F4.2 Europa residual expansion)',
-  Catalog.CITIES.length === 77,
+  '79 ciudades (F4.4 África Austral expansion)',
+  Catalog.CITIES.length === 79,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '74 países únicos (F4.2 Europa residual expansion)',
-  countries.length === 74,
+  '76 países únicos (F4.4 África Austral expansion)',
+  countries.length === 76,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (74)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 74,
+  'COUNTRY_IDS alineados (76)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 76,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -500,9 +500,28 @@ f42Wave.forEach(function (entry) {
 });
 assert('F4.2 Europa residual ciudades + slugs', f42Issues.length === 0, f42Issues.join(' · '));
 
+const f44Wave = [
+  { name: 'Luanda', countryId: 'angola', code: 'ao' },
+  { name: 'Maputo', countryId: 'mozambique', code: 'mz' }
+];
+const f44Issues = [];
+f44Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f44Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f44Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f44Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F4.4 África Austral ciudades + slugs', f44Issues.length === 0, f44Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f4.2',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.2-0.1',
+  'SCHEMA catálogo f4.4',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.4-0.1',
   Catalog.SCHEMA_VERSION
 );
 
