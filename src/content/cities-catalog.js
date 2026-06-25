@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.13c-0.1';
-  var EXPECTED_CITY_COUNT = 61;
-  var EXPECTED_COUNTRY_COUNT = 58;
+  var SCHEMA_VERSION = '3.8f.1-f3.14-0.1';
+  var EXPECTED_CITY_COUNT = 63;
+  var EXPECTED_COUNTRY_COUNT = 60;
 
   var CITIES = [
     // Europa
@@ -62,6 +62,8 @@
     { name: 'Colombo', country: 'Sri Lanka', lat: 6.9271, lon: 79.8612 },
     { name: 'Kathmandu', country: 'Nepal', lat: 27.7172, lon: 85.3240 },
     // África
+    { name: 'Casablanca', country: 'Marruecos', lat: 33.5731, lon: -7.5898 },
+    { name: 'Túnez', country: 'Túnez', lat: 36.8065, lon: 10.1815 },
     { name: 'Ciudad del Cabo', country: 'Sudáfrica', lat: -33.9249, lon: 18.4241 },
     { name: 'El Cairo', country: 'Egipto', lat: 30.0444, lon: 31.2357 },
     { name: 'Nairobi', country: 'Kenia', lat: -1.2921, lon: 36.8219 },
@@ -99,6 +101,8 @@
     'República Checa': 'cz',
     'Dinamarca': 'dk',
     'Finlandia': 'fi',
+    'Marruecos': 'ma',
+    'Túnez': 'tn',
     'EE. UU.': 'us',
     'Canadá': 'ca',
     'México': 'mx',
@@ -161,6 +165,8 @@
     'República Checa': 'czech_republic',
     'Dinamarca': 'denmark',
     'Finlandia': 'finland',
+    'Marruecos': 'morocco',
+    'Túnez': 'tunisia',
     'EE. UU.': 'united_states',
     'Canadá': 'canada',
     'México': 'mexico',
