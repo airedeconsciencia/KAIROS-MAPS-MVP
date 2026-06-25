@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.17-0.1';
-  var EXPECTED_CITY_COUNT = 70;
-  var EXPECTED_COUNTRY_COUNT = 67;
+  var SCHEMA_VERSION = '3.8f.1-f4.1-0.1';
+  var EXPECTED_CITY_COUNT = 72;
+  var EXPECTED_COUNTRY_COUNT = 69;
 
   var CITIES = [
     // Europa
@@ -71,6 +71,8 @@
     { name: 'Dubái', country: 'Emiratos Árabes Unidos', lat: 25.2048, lon: 55.2708 },
     { name: 'Doha', country: 'Catar', lat: 25.2854, lon: 51.5310 },
     { name: 'Riad', country: 'Arabia Saudí', lat: 24.7136, lon: 46.6753 },
+    { name: 'Tel Aviv', country: 'Israel', lat: 32.0853, lon: 34.7818 },
+    { name: 'Amán', country: 'Jordania', lat: 31.9454, lon: 35.9284 },
     { name: 'Nairobi', country: 'Kenia', lat: -1.2921, lon: 36.8219 },
     { name: 'Addis Abeba', country: 'Etiopía', lat: 9.0320, lon: 38.7469 },
     { name: 'Dar es Salaam', country: 'Tanzania', lat: -6.7924, lon: 39.2083 },
@@ -142,6 +144,8 @@
     'Emiratos Árabes Unidos': 'ae',
     'Catar': 'qa',
     'Arabia Saudí': 'sa',
+    'Israel': 'il',
+    'Jordania': 'jo',
     'Kenia': 'ke',
     'Etiopía': 'et',
     'Tanzania': 'tz',
@@ -213,6 +217,8 @@
     'Emiratos Árabes Unidos': 'united_arab_emirates',
     'Catar': 'qatar',
     'Arabia Saudí': 'saudi_arabia',
+    'Israel': 'israel',
+    'Jordania': 'jordan',
     'Kenia': 'kenya',
     'Etiopía': 'ethiopia',
     'Tanzania': 'tanzania',

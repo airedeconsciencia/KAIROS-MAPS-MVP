@@ -25,7 +25,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — LATAM editorial integration (F3.8c Wave A)"
-echo " Scope: 70/67 catálogo · CR/PA · amends · regresiones · anti-leak"
+echo " Scope: 72/69 catálogo · CR/PA · amends · regresiones · anti-leak"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -195,14 +195,14 @@ function scanReading(reading, slug) {
 }
 
 assert(
-  '70 ciudades / 67 países catálogo (F3.17 baseline; LATAM Wave A intacto)',
-  Catalog.CITIES.length === 70 && Catalog.getCountries().length === 67,
+  '72 ciudades / 69 países catálogo (F4.1 baseline; LATAM Wave A intacto)',
+  Catalog.CITIES.length === 72 && Catalog.getCountries().length === 69,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.17',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.17-0.1',
+  'SCHEMA catálogo f4.1',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.1-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -235,14 +235,14 @@ assert(
 );
 
 assert(
-  '67 países resolver (F3.17 África Este)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 67,
+  '69 países resolver (F4.1 Levante)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 69,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
 assert(
-  'SCHEMA f3.17',
-  EFR.SCHEMA_VERSION === '3.8h.2-f3.17-0.1',
+  'SCHEMA f4.1',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.1-0.1',
   EFR.SCHEMA_VERSION
 );
 
