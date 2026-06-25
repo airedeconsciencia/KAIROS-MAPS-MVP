@@ -1,8 +1,8 @@
 # GLOBAL EXPANSION BACKLOG
 
-**Fase:** F4.0 — Global Expansion Framework  
+**Fase:** F5.x — Global Expansion Framework  
 **SSOT expansión territorial** · solo documentación  
-**Baseline prod:** `f4.6` · **83 ciudades / 80 países** · **11 familias**  
+**Baseline prod:** `f5.1` · **100 ciudades / 97 países** · **11 familias**  
 **Última revisión:** 26 mayo 2026
 
 > Este documento es la fuente de verdad para **qué falta**, **en qué wave** y **con qué dependencias**.  
@@ -20,21 +20,22 @@
 
 ---
 
-## I. Registro live (67 países — referencia)
+## I. Registro live (97 países — referencia @ f5.1)
 
-Todos con **status: `live`** · wave histórica F2–F3 · catálogo + resolver sincronizados @ `f3.17`.
+Todos con **status: `live`** · waves F2–F5.1 · catálogo + resolver sincronizados @ `f5.1`.
 
 | Región | Países live (slug) | Familia |
 |--------|-------------------|---------|
-| Europa occidental/central/nórdica | `spain` `portugal` `france` `united_kingdom` `italy` `germany` `netherlands` `belgium` `switzerland` `austria` `poland` `czech_republic` `denmark` `sweden` `norway` `finland` `greece` `ireland` `hungary` | MED / WE / IBERIAN / ANGLO |
-| Europa / OM / Levante | `turkey` `morocco` `tunisia` `united_arab_emirates` `qatar` `saudi_arabia` `israel` `jordan` `croatia` | MEDITERRANEAN |
-| América | `united_states` `canada` `mexico` `argentina` `brazil` `peru` `colombia` `chile` `uruguay` `ecuador` `costa_rica` `panama` `paraguay` `bolivia` | LATAM / ANGLO |
+| Europa occidental/central/nórdica | `france` `germany` `netherlands` `belgium` `switzerland` `austria` `poland` `czech_republic` `denmark` `sweden` `norway` `finland` `ireland` `hungary` | WESTERN_EUROPE |
+| Europa / OM / Levante / Magreb | `spain` `italy` `greece` `croatia` `turkey` `morocco` `tunisia` `united_arab_emirates` `qatar` `saudi_arabia` `israel` `jordan` | MEDITERRANEAN |
+| Iberia | `portugal` | IBERIAN |
+| Anglo / Caribe / Oceanía | `united_kingdom` `united_states` `canada` `australia` `new_zealand` `jamaica` `trinidad_and_tobago` `barbados` `bahamas` `belize` `guyana` | ANGLO |
+| América Latina | `mexico` `argentina` `brazil` `peru` `colombia` `chile` `uruguay` `ecuador` `costa_rica` `panama` `paraguay` `bolivia` | LATAM |
 | Asia oriental | `japan` `south_korea` `china` `taiwan` | EAST_ASIAN |
-| Sudeste asiático | `thailand` `singapore` `vietnam` `malaysia` `indonesia` `philippines` `cambodia` `laos` | SOUTHEAST_ASIAN |
-| Asia meridional | `india` `pakistan` `bangladesh` `sri_lanka` `nepal` | SOUTH_ASIAN |
-| África no-WA | `south_africa` `egypt` `kenya` `ethiopia` `tanzania` `uganda` `rwanda` `angola` `mozambique` | AFRICAN_COASTAL |
-| África occidental | `nigeria` `ghana` `senegal` `ivory_coast` `sierra_leone` `liberia` `benin` `togo` `guinea` `gambia` | WEST_AFRICAN |
-| Oceanía | `australia` `new_zealand` | ANGLO |
+| Sudeste asiático | `thailand` `singapore` `vietnam` `malaysia` `indonesia` `philippines` `cambodia` `laos` `myanmar` `brunei` | SOUTHEAST_ASIAN |
+| Asia meridional | `india` `pakistan` `bangladesh` `sri_lanka` `nepal` `bhutan` `maldives` `afghanistan` | SOUTH_ASIAN |
+| África no-WA | `south_africa` `egypt` `kenya` `ethiopia` `tanzania` `uganda` `rwanda` `angola` `mozambique` `madagascar` `mauritius` `namibia` | AFRICAN_COASTAL |
+| África occidental | `nigeria` `ghana` `senegal` `ivory_coast` `sierra_leone` `liberia` `benin` `togo` `guinea` `gambia` `mali` `burkina_faso` `niger` | WEST_AFRICAN |
 
 **Densificación live (mismo país, >1 ciudad):** `spain` (Madrid · Barcelona) · `united_states` (NYC · LA) · `india` (Delhi · Mumbai).
 
@@ -42,107 +43,103 @@ Todos con **status: `live`** · wave histórica F2–F3 · catálogo + resolver 
 
 ## II. Backlog territorial — países pendientes
 
-Ordenado por **prioridad global** (ROI × cobertura × riesgo arquitectónico).
+Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 
-### Cerrados F4.1 (live @ f4.1)
-
-| País | slug | Wave | status |
-|------|------|------|--------|
-| Israel | `israel` | F4.1 | `live` |
-| Jordania | `jordan` | F4.1 | `live` |
-
-### Cerrados F4.6 (live @ f4.6)
+### Cerrados F5.1 (live @ f5.1)
 
 | País | slug | Wave | status |
 |------|------|------|--------|
-| Camboya | `cambodia` | F4.6 | `live` |
-| Laos | `laos` | F4.6 | `live` |
+| Bahamas | `bahamas` | F5.1 | `live` |
+| Belice | `belize` | F5.1 | `live` |
+| Guyana | `guyana` | F5.1 | `live` |
 
-### Cerrados F4.5 (live @ f4.5)
-
-| País | slug | Wave | status |
-|------|------|------|--------|
-| Paraguay | `paraguay` | F4.5 | `live` |
-| Bolivia | `bolivia` | F4.5 | `live` |
-
-### Cerrados F4.4 (live @ f4.4)
+### Cerrados F4.11 (live @ f5.1 prod bundle)
 
 | País | slug | Wave | status |
 |------|------|------|--------|
-| Angola | `angola` | F4.4 | `live` |
-| Mozambique | `mozambique` | F4.4 | `live` |
+| Madagascar | `madagascar` | F4.11 | `live` |
+| Mauricio | `mauritius` | F4.11 | `live` |
+| Namibia | `namibia` | F4.11 | `live` |
 
-### Cerrados F4.3 (live @ f4.3)
-
-| País | slug | Wave | status |
-|------|------|------|--------|
-| Uganda | `uganda` | F4.3 | `live` |
-| Ruanda | `rwanda` | F4.3 | `live` |
-
-### Cerrados F4.2 (live @ f4.2)
+### Cerrados F4.8–F4.10 (live @ f5.1 prod bundle)
 
 | País | slug | Wave | status |
 |------|------|------|--------|
-| Irlanda | `ireland` | F4.2 | `live` |
-| Croacia | `croatia` | F4.2 | `live` |
-| Hungría | `hungary` | F4.2 | `live` |
+| Jamaica | `jamaica` | F4.8 | `live` |
+| Trinidad y Tobago | `trinidad_and_tobago` | F4.8 | `live` |
+| Barbados | `barbados` | F4.8 | `live` |
+| Bután | `bhutan` | F4.9 | `live` |
+| Maldivas | `maldives` | F4.9 | `live` |
+| Afganistán | `afghanistan` | F4.9 | `live` |
+| Mali | `mali` | F4.10 | `live` |
+| Burkina Faso | `burkina_faso` | F4.10 | `live` |
+| Níger | `niger` | F4.10 | `live` |
 
-### P2 — Media prioridad
+### Cerrados F4.7 (live @ f5.1 prod bundle)
+
+| País | slug | Wave | status |
+|------|------|------|--------|
+| Myanmar | `myanmar` | F4.7 | `live` |
+| Brunéi | `brunei` | F4.7 | `live` |
+
+### P1 — Reutilizable (familias con margen)
 
 | País | slug | Región | Familia propuesta | Ciudad ancla | Wave | Prioridad | Dependencias |
 |------|------|--------|-------------------|--------------|------|-----------|--------------|
-| Líbano | `lebanon` | Levante | MENA (futuro) / MED | Beirut | **F4.8+** | P2 | **EDITORIAL-OK** · plan MENA |
-| Kuwait | `kuwait` | Golfo | MENA (futuro) / MED | Ciudad de Kuwait | **F4.8+** | P2 | plan MENA |
+| Mongolia | `mongolia` | Asia oriental | EAST_ASIAN | Ulán Bator | **F5.2** | P1 | — |
+| Timor-Leste | `timor_leste` | ASEAN | SOUTHEAST_ASIAN | Dili | **F5.2** | P1 | — |
+| Surinam | `suriname` | Caribe | ANGLO | Paramaribo | **F5.3** | P1 | último slot ANGLO @ 12 |
+| Corea del Norte | `north_korea` | Asia oriental | EAST_ASIAN | Pyongyang | **F5.2** | P1 | **EDITORIAL-OK** |
 
-### P3 — Baja prioridad / riesgo editorial
+### P2 — Requiere familia nueva (F6.0+)
 
 | País | slug | Región | Familia propuesta | Ciudad ancla | Wave | Prioridad | Dependencias |
 |------|------|--------|-------------------|--------------|------|-----------|--------------|
-| Venezuela | `venezuela` | América del Sur | LATAM | Caracas | **F4.7** | P3 | **EDITORIAL-OK** · post F5.0 audit |
-| Myanmar | `myanmar` | Sudeste asiático | SOUTHEAST_ASIAN | Yangón | **F4.7** | P3 | **EDITORIAL-OK** · post F5.0 audit |
+| Líbano | `lebanon` | Levante | **MENA** | Beirut | **F6.1** | P2 | **F6.0** sprint + `EDITORIAL-OK` |
+| Kuwait | `kuwait` | Golfo | **MENA** | Ciudad de Kuwait | **F6.1** | P2 | **F6.0** |
+| Omán | `oman` | Golfo | **MENA** | Mascate | **F6.1** | P2 | **F6.0** |
+| Baréin | `bahrain` | Golfo | **MENA** | Manama | **F6.2** | P2 | **F6.0** |
+| Irak | `iraq` | Golfo | **MENA** | Bagdad | **F6.2** | P2 | **F6.0** |
+| Yemen | `yemen` | Golfo | **MENA** | Saná | **F6.2** | P2 | **F6.0** |
+| Kazajistán | `kazakhstan` | Asia Central | **CENTRAL_ASIAN** | Astaná | **F7.1** | P2 | **F7.0** sprint |
 
-### Parked — fuera de expansión territorial F4
+### P3 — Bloqueados (familias congeladas)
+
+| País | slug | Familia forzada | Wave | Dependencias |
+|------|------|-----------------|------|--------------|
+| Venezuela | `venezuela` | LATAM @ 12 | — | excepción arquitectónica |
+| Botsuana | `botswana` | AC @ 12 | — | familia congelada |
+| Camerún | `cameroon` | WA/AC | — | decisión editorial |
+
+### Parked
 
 | Item | Motivo | status |
 |------|--------|--------|
-| Maó / Menorca | Ciudades secundarias / lugares personales — no expansión país | `parked` |
-| São Paulo | Explícitamente fuera de catálogo SSOT | `parked` |
-| Islandia (`iceland`) | Canario GN — no país catálogo | `parked` |
+| Maó / Menorca | Ciudades secundarias — no expansión país | `parked` |
+| São Paulo | Fuera de catálogo SSOT | `parked` |
+| Islandia (`iceland`) | Canario GN | `parked` |
 
 ---
 
-## III. Backlog densificación (mismo país, nueva ciudad)
-
-Modo **densificación** — no incrementa países resolver; solo ciudades.
-
-| País live | Ciudad propuesta | Familia | Wave | Prioridad | Dependencias |
-|-----------|------------------|---------|------|-----------|--------------|
-| `indonesia` | Denpasar (Bali) | SOUTHEAST_ASIAN | F4.D1 | P2 | — |
-| `brazil` | São Paulo | LATAM | — | `parked` | decisión producto |
-| `mexico` | Guadalajara | LATAM | F4.D2 | P3 | — |
-| `australia` | Melbourne | ANGLO | F4.D2 | P3 | — |
-| `united_kingdom` | Manchester | ANGLO | F4.D3 | P3 | — |
-
----
-
-## IV. Objetivos numéricos F4
+## III. Objetivos numéricos F5
 
 | Hito | Ciudades | Países | Notas |
 |------|----------|--------|-------|
-| **Actual (F4.6)** | 83 | 80 | Baseline |
-| **F4 Q1 target** | ~79 | ~76 | ✅ F4.2 + F4.3 + F4.4 |
-| **F4 Q2 target** | ~82 | ~78 | ✅ F4.5 + F4.6 |
-| **Arquetipo layer (ref.)** | — | 51 | Objetivo diseño original; superado en prod |
+| **Actual (F5.1)** | 100 | 97 | ✅ Baseline prod |
+| **F5 plateau** | ~103 | ~100 | F5.2–F5.3 reutilización |
+| **F6 MENA** | ~109 | ~106 | +6 tras sprint F6.0 |
+| **F7 CENTRAL_ASIAN** | ~115 | ~112 | +5 tras sprint F7.0 |
+| **Target 120** | ~123 | ~120 | requiere 2 familias nuevas |
 
 ---
 
-## V. Reglas de mantenimiento
+## IV. Reglas de mantenimiento
 
 1. Al cerrar una wave en prod, cambiar `planned` → `live` y anotar wave real.
-2. No añadir país sin fila en este backlog (evita drift resolver↔catálogo).
-3. Cambios de familia requieren entrada en `EDITORIAL_FAMILY_POLICY.md`.
-4. Waves sensibles no arrancan sin gate `EDITORIAL-OK` registrado.
+2. No añadir país sin fila en este backlog.
+3. Familias congeladas (WE · MED · LATAM · WA · AC): no wave territorial sin excepción documentada.
+4. MENA / CENTRAL_ASIAN: sprint arquitectura antes de wave territorial.
 
 ---
 
-*Backlog F4.6 · baseline prod 83/80 @ f4.6*
+*Backlog F5.1 · baseline prod 100/97 @ f5.1*
