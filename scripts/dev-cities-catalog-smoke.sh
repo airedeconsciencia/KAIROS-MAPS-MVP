@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '65 ciudades (F3.15 Asia Oriental expansion)',
-  Catalog.CITIES.length === 65,
+  '68 ciudades (F3.16 Golfo expansion)',
+  Catalog.CITIES.length === 68,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '62 países únicos (F3.15 Asia Oriental expansion)',
-  countries.length === 62,
+  '65 países únicos (F3.16 Golfo expansion)',
+  countries.length === 65,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (62)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 62,
+  'COUNTRY_IDS alineados (65)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 65,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -403,9 +403,29 @@ f315Wave.forEach(function (entry) {
 });
 assert('F3.15 Asia Oriental ciudades + slugs', f315Issues.length === 0, f315Issues.join(' · '));
 
+const f316Wave = [
+  { name: 'Dubái', countryId: 'united_arab_emirates', code: 'ae' },
+  { name: 'Doha', countryId: 'qatar', code: 'qa' },
+  { name: 'Riad', countryId: 'saudi_arabia', code: 'sa' }
+];
+const f316Issues = [];
+f316Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f316Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f316Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f316Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F3.16 Golfo ciudades + slugs', f316Issues.length === 0, f316Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f3.15',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.15-0.1',
+  'SCHEMA catálogo f3.16',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.16-0.1',
   Catalog.SCHEMA_VERSION
 );
 

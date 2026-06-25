@@ -207,14 +207,14 @@ assert(
 );
 
 assert(
-  '65 ciudades / 62 países catálogo (F3.15 Asia Oriental; SA Wave A intacto)',
-  Catalog.CITIES.length === 65 && Catalog.getCountries().length === 62,
+  '68 ciudades / 65 países catálogo (F3.16 Golfo; SA Wave A intacto)',
+  Catalog.CITIES.length === 68 && Catalog.getCountries().length === 65,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.15',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.15-0.1',
+  'SCHEMA catálogo f3.16',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.16-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -227,14 +227,14 @@ SA_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert(
-  '62 países resolver (F3.15 Asia Oriental)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 62,
+  '65 países resolver (F3.16 Golfo)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 65,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
 assert(
-  'SCHEMA f3.15',
-  EFR.SCHEMA_VERSION === '3.8h.2-f3.15-0.1',
+  'SCHEMA f3.16',
+  EFR.SCHEMA_VERSION === '3.8h.2-f3.16-0.1',
   EFR.SCHEMA_VERSION
 );
 

@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.15-0.1';
-  var EXPECTED_CITY_COUNT = 65;
-  var EXPECTED_COUNTRY_COUNT = 62;
+  var SCHEMA_VERSION = '3.8f.1-f3.16-0.1';
+  var EXPECTED_CITY_COUNT = 68;
+  var EXPECTED_COUNTRY_COUNT = 65;
 
   var CITIES = [
     // Europa
@@ -68,6 +68,9 @@
     { name: 'Túnez', country: 'Túnez', lat: 36.8065, lon: 10.1815 },
     { name: 'Ciudad del Cabo', country: 'Sudáfrica', lat: -33.9249, lon: 18.4241 },
     { name: 'El Cairo', country: 'Egipto', lat: 30.0444, lon: 31.2357 },
+    { name: 'Dubái', country: 'Emiratos Árabes Unidos', lat: 25.2048, lon: 55.2708 },
+    { name: 'Doha', country: 'Catar', lat: 25.2854, lon: 51.5310 },
+    { name: 'Riad', country: 'Arabia Saudí', lat: 24.7136, lon: 46.6753 },
     { name: 'Nairobi', country: 'Kenia', lat: -1.2921, lon: 36.8219 },
     { name: 'Lagos', country: 'Nigeria', lat: 6.5244, lon: 3.3792 },
     { name: 'Accra', country: 'Ghana', lat: 5.6037, lon: -0.1870 },
@@ -134,6 +137,9 @@
     'Nepal': 'np',
     'Sudáfrica': 'za',
     'Egipto': 'eg',
+    'Emiratos Árabes Unidos': 'ae',
+    'Catar': 'qa',
+    'Arabia Saudí': 'sa',
     'Kenia': 'ke',
     'Nigeria': 'ng',
     'Ghana': 'gh',
@@ -200,6 +206,9 @@
     'Nepal': 'nepal',
     'Sudáfrica': 'south_africa',
     'Egipto': 'egypt',
+    'Emiratos Árabes Unidos': 'united_arab_emirates',
+    'Catar': 'qatar',
+    'Arabia Saudí': 'saudi_arabia',
     'Kenia': 'kenya',
     'Nigeria': 'nigeria',
     'Ghana': 'ghana',
