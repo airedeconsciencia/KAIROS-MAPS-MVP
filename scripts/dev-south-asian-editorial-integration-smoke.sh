@@ -207,14 +207,14 @@ assert(
 );
 
 assert(
-  '83 ciudades / 80 países catálogo (F4.6 SEA residual; SA Wave A intacto)',
-  Catalog.CITIES.length === 83 && Catalog.getCountries().length === 80,
+  '85 ciudades / 82 países catálogo (F4.7 SEA residual final; SA Wave A intacto)',
+  Catalog.CITIES.length === 85 && Catalog.getCountries().length === 82,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.6',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.6-0.1',
+  'SCHEMA catálogo f4.7',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.7-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -227,14 +227,14 @@ SA_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert(
-  '80 países resolver (F4.6 SEA residual)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 80,
+  '82 países resolver (F4.7 SEA residual final)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 82,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
 assert(
-  'SCHEMA f4.6',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.6-0.1',
+  'SCHEMA f4.7',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.7-0.1',
   EFR.SCHEMA_VERSION
 );
 

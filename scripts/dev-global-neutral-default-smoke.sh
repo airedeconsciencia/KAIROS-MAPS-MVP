@@ -114,6 +114,7 @@ assert(
     EFR.SCHEMA_VERSION.indexOf('f3.6b') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f3.7b') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f3.8b') !== -1 ||
+    EFR.SCHEMA_VERSION.indexOf('f4.7') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f4.6') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f4.5') !== -1 ||
     EFR.SCHEMA_VERSION.indexOf('f4.4') !== -1 ||

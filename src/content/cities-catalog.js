@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f4.6-0.1';
-  var EXPECTED_CITY_COUNT = 83;
-  var EXPECTED_COUNTRY_COUNT = 80;
+  var SCHEMA_VERSION = '3.8f.1-f4.7-0.1';
+  var EXPECTED_CITY_COUNT = 85;
+  var EXPECTED_COUNTRY_COUNT = 82;
 
   var CITIES = [
     // Europa
@@ -64,6 +64,8 @@
     { name: 'Manila', country: 'Filipinas', lat: 14.5995, lon: 120.9842 },
     { name: 'Phnom Penh', country: 'Camboya', lat: 11.5564, lon: 104.9282 },
     { name: 'Vientián', country: 'Laos', lat: 17.9757, lon: 102.6331 },
+    { name: 'Yangón', country: 'Myanmar', lat: 16.8661, lon: 96.1951 },
+    { name: 'Bandar Seri Begawan', country: 'Brunéi', lat: 4.9031, lon: 114.9398 },
     { name: 'Delhi', country: 'India', lat: 28.6139, lon: 77.2090 },
     { name: 'Mumbai', country: 'India', lat: 19.0760, lon: 72.8777 },
     { name: 'Karachi', country: 'Pakistán', lat: 24.8607, lon: 67.0011 },
@@ -152,6 +154,8 @@
     'Filipinas': 'ph',
     'Camboya': 'kh',
     'Laos': 'la',
+    'Myanmar': 'mm',
+    'Brunéi': 'bn',
     'India': 'in',
     'Pakistán': 'pk',
     'Bangladesh': 'bd',
@@ -236,6 +240,8 @@
     'Filipinas': 'philippines',
     'Camboya': 'cambodia',
     'Laos': 'laos',
+    'Myanmar': 'myanmar',
+    'Brunéi': 'brunei',
     'India': 'india',
     'Pakistán': 'pakistan',
     'Bangladesh': 'bangladesh',

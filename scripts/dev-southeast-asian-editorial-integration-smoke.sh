@@ -86,7 +86,11 @@ const SEA_F46_CITIES = [
   { name: 'Phnom Penh', slug: 'cambodia' },
   { name: 'Vientián', slug: 'laos' }
 ];
-const SEA_COUNTRIES = ['thailand', 'singapore', 'vietnam', 'malaysia', 'indonesia', 'philippines', 'cambodia', 'laos'];
+const SEA_F47_CITIES = [
+  { name: 'Yangón', slug: 'myanmar' },
+  { name: 'Bandar Seri Begawan', slug: 'brunei' }
+];
+const SEA_COUNTRIES = ['thailand', 'singapore', 'vietnam', 'malaysia', 'indonesia', 'philippines', 'cambodia', 'laos', 'myanmar', 'brunei'];
 const GOALS = ['amor', 'trabajo', 'descanso'];
 const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
 const EAST_ASIAN_LEAK = ['secuencia', 'detalle observado', 'rutina precisa', 'proceso callado', 'gesto mínimo'];
@@ -200,17 +204,17 @@ assert(
 );
 
 assert(
-  '83 ciudades / 80 países catálogo (baseline F4.6; SEA Wave A intacto)',
+  '85 ciudades / 82 países catálogo (baseline F4.7; SEA Wave A intacto)',
   Catalog.CITIES.length === Catalog.EXPECTED_CITY_COUNT &&
     Catalog.getCountries().length === Catalog.EXPECTED_COUNTRY_COUNT &&
-    Catalog.EXPECTED_CITY_COUNT === 83 &&
-    Catalog.EXPECTED_COUNTRY_COUNT === 80,
+    Catalog.EXPECTED_CITY_COUNT === 85 &&
+    Catalog.EXPECTED_COUNTRY_COUNT === 82,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.6',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.6-0.1',
+  'SCHEMA catálogo f4.7',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.7-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -223,8 +227,8 @@ SEA_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert(
-  'SCHEMA resolver f4.6 (80 países; SEA+ intacto)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.6-0.1',
+  'SCHEMA resolver f4.7 (82 países; SEA+ intacto)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.7-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -284,8 +288,8 @@ assert(
 );
 
 assert(
-  '80 países resolver (F4.6 SEA residual; incl. SEA 8/8)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 80,
+  '82 países resolver (F4.7 SEA residual final; incl. SEA 10/10)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 82,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
@@ -395,6 +399,55 @@ assert(
   EFR.resolveEditorialFamily({ cityName: 'Phnom Penh', countryId: 'kh' }) === 'SOUTHEAST_ASIAN' &&
     EFR.resolveEditorialFamily({ cityName: 'Vientián', countryId: 'la' }) === 'SOUTHEAST_ASIAN',
   'kh/la'
+);
+
+console.log('\n' + '═'.repeat(60));
+console.log('QA obligatorio F4.7 — Yangón · Bandar Seri Begawan (catálogo)');
+console.log('═'.repeat(60));
+
+const seaF47Readings = [];
+SEA_F47_CITIES.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) throw new Error('catalog missing ' + entry.name);
+  GOALS.forEach(function (goal) {
+    const reading = composeReading(city, goal);
+    const s = scanReading(reading, entry.slug);
+    seaF47Readings.push({ city: entry.name, goal: goal, slug: entry.slug, scan: s });
+    assert(entry.name + ' / ' + goal + ' → ok:true', s.ok === true, 'ok=' + s.ok);
+    assert(
+      entry.name + ' / ' + goal + ' → SOUTHEAST_ASIAN (n=k=e)',
+      s.regionN === 'SOUTHEAST_ASIAN' && s.regionK === 'SOUTHEAST_ASIAN' && s.regionE === 'SOUTHEAST_ASIAN',
+      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → split-brain 0',
+      s.regionN === s.regionK && s.regionK === s.regionE,
+      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+    );
+  });
+});
+
+assert('6 lecturas F4.7 SEA residual final (2 ciudades × 3 goals)', seaF47Readings.length === 6, 'count=' + seaF47Readings.length);
+
+assert(
+  'Myanmar display → myanmar → SOUTHEAST_ASIAN (F4.7)',
+  EFR.coerceCountryId('Myanmar') === 'myanmar' &&
+    EFR.resolveEditorialFamily({ cityName: 'Yangón', countryDisplay: 'Myanmar' }) === 'SOUTHEAST_ASIAN',
+  'myanmar'
+);
+
+assert(
+  'Brunéi display → brunei → SOUTHEAST_ASIAN (F4.7)',
+  EFR.coerceCountryId('Brunéi') === 'brunei' &&
+    EFR.resolveEditorialFamily({ cityName: 'Bandar Seri Begawan', countryDisplay: 'Brunéi' }) === 'SOUTHEAST_ASIAN',
+  'brunei'
+);
+
+assert(
+  'Alias mm/bn → SOUTHEAST_ASIAN (F4.7)',
+  EFR.resolveEditorialFamily({ cityName: 'Yangón', countryId: 'mm' }) === 'SOUTHEAST_ASIAN' &&
+    EFR.resolveEditorialFamily({ cityName: 'Bandar Seri Begawan', countryId: 'bn' }) === 'SOUTHEAST_ASIAN',
+  'mm/bn'
 );
 
 readings.forEach(function (r) {

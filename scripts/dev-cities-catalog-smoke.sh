@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '83 ciudades (F4.6 SEA residual expansion)',
-  Catalog.CITIES.length === 83,
+  '85 ciudades (F4.7 SEA residual final expansion)',
+  Catalog.CITIES.length === 85,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '80 países únicos (F4.6 SEA residual expansion)',
-  countries.length === 80,
+  '82 países únicos (F4.7 SEA residual final expansion)',
+  countries.length === 82,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (80)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 80,
+  'COUNTRY_IDS alineados (82)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 82,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -557,9 +557,28 @@ f46Wave.forEach(function (entry) {
 });
 assert('F4.6 SEA residual ciudades + slugs', f46Issues.length === 0, f46Issues.join(' · '));
 
+const f47Wave = [
+  { name: 'Yangón', countryId: 'myanmar', code: 'mm' },
+  { name: 'Bandar Seri Begawan', countryId: 'brunei', code: 'bn' }
+];
+const f47Issues = [];
+f47Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f47Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f47Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f47Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F4.7 SEA residual final ciudades + slugs', f47Issues.length === 0, f47Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f4.6',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.6-0.1',
+  'SCHEMA catálogo f4.7',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.7-0.1',
   Catalog.SCHEMA_VERSION
 );
 
