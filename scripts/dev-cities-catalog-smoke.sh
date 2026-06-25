@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '97 ciudades (F4.11 AFRICAN_COASTAL Southern expansion)',
-  Catalog.CITIES.length === 97,
+  '100 ciudades (F5.1 ANGLO Caribbean II expansion)',
+  Catalog.CITIES.length === 100,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '94 países únicos (F4.11 AFRICAN_COASTAL Southern expansion)',
-  countries.length === 94,
+  '97 países únicos (F5.1 ANGLO Caribbean II expansion)',
+  countries.length === 97,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (94)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 94,
+  'COUNTRY_IDS alineados (97)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 97,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -656,9 +656,29 @@ f411Wave.forEach(function (entry) {
 });
 assert('F4.11 AFRICAN_COASTAL Southern ciudades + slugs', f411Issues.length === 0, f411Issues.join(' · '));
 
+const f51Wave = [
+  { name: 'Nassau', countryId: 'bahamas', code: 'bs' },
+  { name: 'Belmopán', countryId: 'belize', code: 'bz' },
+  { name: 'Georgetown', countryId: 'guyana', code: 'gy' }
+];
+const f51Issues = [];
+f51Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f51Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f51Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f51Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F5.1 ANGLO Caribbean II ciudades + slugs', f51Issues.length === 0, f51Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f4.11',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.11-0.1',
+  'SCHEMA catálogo f5.1',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f5.1-0.1',
   Catalog.SCHEMA_VERSION
 );
 

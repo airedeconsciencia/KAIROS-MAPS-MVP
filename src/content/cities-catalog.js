@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f4.11-0.1';
-  var EXPECTED_CITY_COUNT = 97;
-  var EXPECTED_COUNTRY_COUNT = 94;
+  var SCHEMA_VERSION = '3.8f.1-f5.1-0.1';
+  var EXPECTED_CITY_COUNT = 100;
+  var EXPECTED_COUNTRY_COUNT = 97;
 
   var CITIES = [
     // Europa
@@ -54,6 +54,9 @@
     { name: 'Kingston', country: 'Jamaica', lat: 17.9714, lon: -76.7926 },
     { name: 'Port of Spain', country: 'Trinidad y Tobago', lat: 10.6596, lon: -61.5089 },
     { name: 'Bridgetown', country: 'Barbados', lat: 13.0975, lon: -59.6167 },
+    { name: 'Nassau', country: 'Bahamas', lat: 25.0443, lon: -77.3504 },
+    { name: 'Belmopán', country: 'Belice', lat: 17.2510, lon: -88.7590 },
+    { name: 'Georgetown', country: 'Guyana', lat: 6.8013, lon: -58.1551 },
     // Asia
     { name: 'Tokio', country: 'Japón', lat: 35.6762, lon: 139.6503 },
     { name: 'Seúl', country: 'Corea del Sur', lat: 37.5665, lon: 126.9780 },
@@ -157,6 +160,9 @@
     'Jamaica': 'jm',
     'Trinidad y Tobago': 'tt',
     'Barbados': 'bb',
+    'Bahamas': 'bs',
+    'Belice': 'bz',
+    'Guyana': 'gy',
     'Japón': 'jp',
     'Corea del Sur': 'kr',
     'China': 'cn',
@@ -255,6 +261,9 @@
     'Jamaica': 'jamaica',
     'Trinidad y Tobago': 'trinidad_and_tobago',
     'Barbados': 'barbados',
+    'Bahamas': 'bahamas',
+    'Belice': 'belize',
+    'Guyana': 'guyana',
     'Japón': 'japan',
     'Corea del Sur': 'south_korea',
     'China': 'china',

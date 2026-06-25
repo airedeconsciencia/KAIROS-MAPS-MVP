@@ -208,14 +208,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '97 ciudades / 94 países catálogo (F4.11 AFRICAN_COASTAL Southern)',
-  Catalog.CITIES.length === 97 && Catalog.getCountries().length === 94,
+  '100 ciudades / 97 países catálogo (F5.1 ANGLO Caribbean II)',
+  Catalog.CITIES.length === 100 && Catalog.getCountries().length === 97,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.11',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.11-0.1',
+  'SCHEMA catálogo f5.1',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f5.1-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -339,8 +339,8 @@ assert(
 );
 
 assert(
-  'SCHEMA resolver f4.11 (94 países)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.11-0.1',
+  'SCHEMA resolver f5.1 (97 países)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f5.1-0.1',
   EFR.SCHEMA_VERSION
 );
 

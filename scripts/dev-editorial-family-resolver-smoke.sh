@@ -88,23 +88,23 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f4.11',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.11-0.1',
+  'SCHEMA f5.1',
+  EFR.SCHEMA_VERSION === '3.8h.2-f5.1-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
-  '94 países en COUNTRY_EDITORIAL_FAMILY',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 94,
+  '97 países en COUNTRY_EDITORIAL_FAMILY',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 97,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '97 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 97,
+  '100 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 100,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('94 países en catálogo', countries.length === 94, 'count=' + countries.length);
+assert('97 países en catálogo', countries.length === 97, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -126,8 +126,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '97 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 97,
+  '100 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 100,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -219,7 +219,10 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Niamey', country: 'Níger', expected: 'WEST_AFRICAN' },
   { city: 'Antananarivo', country: 'Madagascar', expected: 'AFRICAN_COASTAL' },
   { city: 'Port Louis', country: 'Mauricio', expected: 'AFRICAN_COASTAL' },
-  { city: 'Windhoek', country: 'Namibia', expected: 'AFRICAN_COASTAL' }
+  { city: 'Windhoek', country: 'Namibia', expected: 'AFRICAN_COASTAL' },
+  { city: 'Nassau', country: 'Bahamas', expected: 'ANGLO' },
+  { city: 'Belmopán', country: 'Belice', expected: 'ANGLO' },
+  { city: 'Georgetown', country: 'Guyana', expected: 'ANGLO' }
 ];
 
 const splitBrainHits = [];
@@ -237,7 +240,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('88 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('91 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -328,7 +331,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (88 casos)',
+  'Pipeline knowledge ≡ narrative (91 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );
