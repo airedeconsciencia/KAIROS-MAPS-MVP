@@ -2,7 +2,7 @@
 
 **Fase:** F4.0 — Global Expansion Framework  
 **SSOT expansión territorial** · solo documentación  
-**Baseline prod:** `f4.2` · **77 ciudades / 74 países** · **11 familias**  
+**Baseline prod:** `f4.4` · **79 ciudades / 76 países** · **11 familias**  
 **Última revisión:** 26 mayo 2026
 
 > Este documento es la fuente de verdad para **qué falta**, **en qué wave** y **con qué dependencias**.  
@@ -32,7 +32,7 @@ Todos con **status: `live`** · wave histórica F2–F3 · catálogo + resolver 
 | Asia oriental | `japan` `south_korea` `china` `taiwan` | EAST_ASIAN |
 | Sudeste asiático | `thailand` `singapore` `vietnam` `malaysia` `indonesia` `philippines` | SOUTHEAST_ASIAN |
 | Asia meridional | `india` `pakistan` `bangladesh` `sri_lanka` `nepal` | SOUTH_ASIAN |
-| África no-WA | `south_africa` `egypt` `kenya` `ethiopia` `tanzania` `uganda` `rwanda` | AFRICAN_COASTAL |
+| África no-WA | `south_africa` `egypt` `kenya` `ethiopia` `tanzania` `uganda` `rwanda` `angola` `mozambique` | AFRICAN_COASTAL |
 | África occidental | `nigeria` `ghana` `senegal` `ivory_coast` `sierra_leone` `liberia` `benin` `togo` `guinea` `gambia` | WEST_AFRICAN |
 | Oceanía | `australia` `new_zealand` | ANGLO |
 
@@ -50,6 +50,13 @@ Ordenado por **prioridad global** (ROI × cobertura × riesgo arquitectónico).
 |------|------|------|--------|
 | Israel | `israel` | F4.1 | `live` |
 | Jordania | `jordan` | F4.1 | `live` |
+
+### Cerrados F4.4 (live @ f4.4)
+
+| País | slug | Wave | status |
+|------|------|------|--------|
+| Angola | `angola` | F4.4 | `live` |
+| Mozambique | `mozambique` | F4.4 | `live` |
 
 ### Cerrados F4.3 (live @ f4.3)
 
@@ -70,8 +77,8 @@ Ordenado por **prioridad global** (ROI × cobertura × riesgo arquitectónico).
 
 | País | slug | Región | Familia propuesta | Ciudad ancla | Wave | Prioridad | Dependencias |
 |------|------|--------|-------------------|--------------|------|-----------|--------------|
-| Líbano | `lebanon` | Levante | MEDITERRANEAN | Beirut | **F4.4** | P2 | **EDITORIAL-OK** |
-| Kuwait | `kuwait` | Golfo | MEDITERRANEAN | Ciudad de Kuwait | **F4.4** | P2 | — |
+| Líbano | `lebanon` | Levante | MENA (futuro) / MED | Beirut | **F4.8+** | P2 | **EDITORIAL-OK** · plan MENA |
+| Kuwait | `kuwait` | Golfo | MENA (futuro) / MED | Ciudad de Kuwait | **F4.8+** | P2 | plan MENA |
 
 ### P3 — Baja prioridad / riesgo editorial
 
@@ -112,8 +119,8 @@ Modo **densificación** — no incrementa países resolver; solo ciudades.
 
 | Hito | Ciudades | Países | Notas |
 |------|----------|--------|-------|
-| **Actual (F4.2)** | 77 | 74 | Baseline |
-| **F4 Q1 target** | ~78 | ~75 | F4.2 + F4.3 + F4.4 |
+| **Actual (F4.4)** | 79 | 76 | Baseline |
+| **F4 Q1 target** | ~79 | ~76 | ✅ F4.2 + F4.3 + F4.4 |
 | **F4 Q2 target** | ~82 | ~78 | F4.4–F4.6 + densificación selecta |
 | **Arquetipo layer (ref.)** | — | 51 | Objetivo diseño original; superado en prod |
 
@@ -128,4 +135,4 @@ Modo **densificación** — no incrementa países resolver; solo ciudades.
 
 ---
 
-*Backlog F4.2 · baseline prod 77/74 @ f4.2*
+*Backlog F4.4 · baseline prod 79/76 @ f4.4*
