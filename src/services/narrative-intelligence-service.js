@@ -305,6 +305,23 @@
         'En {ciudad}, el descanso madura cuando aflojas sin desaparecer de quien cuenta contigo.'
       ]
     },
+    MENA: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en el cruce de tránsitos — rostro humano antes que escena.',
+        'En {ciudad}, la cercanía madura cuando la conexión entre llegadas no pide permiso para mostrarse.',
+        'En {ciudad}, el amor respira en intercambio urbano — pertenencia sin convertir el nodo en teatro.'
+      ],
+      trabajo: [
+        'En {ciudad}, la obra gana sentido en movilidad cotidiana — antes de volver a lo visible.',
+        'En {ciudad}, conviene leer la dirección en el nodo entre trayectos — el intercambio distrae y también orienta.',
+        'En {ciudad}, el propósito respira cuando separas lo que transita y lo que habitas por dentro — antes del siguiente paso.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo habla en adaptación al pasaje — sin convertir la pausa en culpa funcional.',
+        'En {ciudad}, la calma se gana entre trayecto y pausa — un alivio que no compite con la movilidad.',
+        'En {ciudad}, el descanso madura cuando aflojas sin perder la conexión entre llegadas.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, el vínculo se prueba en atención sostenida — persona antes que personaje.',
@@ -496,6 +513,20 @@
       descanso: [
         'En el ritmo entre red y pausa en {ciudad}, con {goalPhrase}, el cuerpo responde:',
         'En la estabilidad flexible de {ciudad}, leyendo {goalPhrase}, el alivio advierte:'
+      ]
+    },
+    MENA: {
+      amor: [
+        'En el cruce de tránsitos de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        'Desde el intercambio urbano en {ciudad}, leyendo {goalPhrase}, la cercanía marca:'
+      ],
+      trabajo: [
+        'En el nodo entre trayectos de {ciudad}, con {goalPhrase}, la obra susurra:',
+        'Antes del bullicio del pasaje en {ciudad}, leyendo {goalPhrase}, conviene leer el sentido:'
+      ],
+      descanso: [
+        'En la movilidad cotidiana de {ciudad}, con {goalPhrase}, el cuerpo responde:',
+        'En la adaptación al pasaje en {ciudad}, leyendo {goalPhrase}, el alivio advierte:'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -699,6 +730,20 @@
       descanso: [
         ' La pausa breve entre conexiones en {ciudad} suele afinar lo que el cuerpo pide sin otra exigencia.',
         ' En la constancia relacional del día, {ciudad} devuelve calma que la prisa no alcanza a nombrar.'
+      ]
+    },
+    MENA: {
+      amor: [
+        ' La conexión entre llegadas en {ciudad} suele afinar lo que el vínculo aún no ha nombrado.',
+        ' En el intercambio urbano del cruce, {ciudad} devuelve matices que la primera movilidad no mostró.'
+      ],
+      trabajo: [
+        ' Lo que orientas en el nodo en {ciudad} suele afinar lo que la obra aún no ha articulado en voz alta.',
+        ' En la tensión entre tránsito y sentido, {ciudad} devuelve dirección que el intercambio visible no alcanza a mostrar.'
+      ],
+      descanso: [
+        ' La pausa breve en el cruce de {ciudad} suele afinar lo que el cuerpo pide sin otra exigencia.',
+        ' En la adaptación al pasaje, {ciudad} devuelve calma que la movilidad no alcanza a nombrar.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -1846,6 +1891,77 @@
           'esta semana, guarda un tramo de pausa breve — sin desaparecer de quien cuenta contigo.',
           'esta semana, prueba un alivio real — no el que suena bien al contarlo.',
           'esta semana, deja una tarde sin rendir — habitar {ciudad} con constancia relacional.',
+        ],
+      }
+    },
+    MENA: {
+      conflictByGoal: {
+        amor: 'En {ciudad}, el vínculo se prueba en el cruce de tránsitos — si la cercanía aguanta cuando muchos pasan y pocos se quedan de verdad.',
+        trabajo: 'En {ciudad}, el intercambio visible compite con lo que tu obra aún madura por dentro — a veces confundes transitar con tener dirección.',
+        descanso: 'En {ciudad}, aflojar puede sentirse como quedar fuera del ritmo del pasaje — aunque el cuerpo ya pida una pausa breve y real.',
+      },
+      opportunityByGoal: {
+        amor: 'sostener el vínculo con conexión entre llegadas — sin convertir la cercanía en prueba de intensidad.',
+        trabajo: 'separar movilidad visible y sentido propio — antes de volver al nodo negociado.',
+        descanso: 'quedarte en la pausa sin perder la adaptación al pasaje — sin convertir el descanso en abandono.',
+      },
+      summaryFrame: {
+        amor: 'En el cruce de tránsitos de {ciudad}, con {goalPhrase}, el vínculo deja ver:',
+        trabajo: 'En el nodo entre trayectos de {ciudad}, leyendo {goalPhrase}, la obra susurra:',
+        descanso: 'En la movilidad cotidiana de {ciudad}, con {goalPhrase}, el cuerpo responde:',
+      },
+      guiding: {
+        amor: {
+          AC: '¿Quién eres en {ciudad} cuando el cruce no pide demostrar nada?',
+          DC: '¿Qué verdad compartes en {ciudad} antes de pedirle al otro que encaje en tu movilidad?',
+          MC: '¿Qué gesto del amor quieres que {ciudad} recuerde en la conexión entre llegadas?',
+          default: '¿Qué te pide {ciudad} en amor si sueltas la necesidad de impresionar a quien solo transita?',
+        },
+        trabajo: {
+          IC: '¿Qué parte de tu obra en {ciudad} sigue viva cuando el intercambio visible no está cerca?',
+          MC: '¿Tu impulso en {ciudad} busca nodo o sentido propio?',
+          AC: '¿Cómo sostendrías tu obra en {ciudad} si no necesitara ser vista en cada trayecto?',
+          default: '¿Qué sentido habitas en {ciudad} antes de volver a medirte por lo que transita?',
+        },
+        descanso: {
+          AC: '¿Puedes aflojar en {ciudad} sin sentir que abandonas la adaptación al pasaje?',
+          MC: '¿Tu descanso en {ciudad} es alivio ganado o culpa por frenar la movilidad?',
+          IC: '¿Qué calma te pide {ciudad} entre el cruce y la conexión entre llegadas?',
+          default: '¿Qué ritmo corporal te devuelve {ciudad} si habitas la pausa sin desaparecer del nodo?',
+        },
+      },
+      closingByGoal: {
+        amor: [
+          'Si algo queda de {ciudad}, que sea conexión entre llegadas — no escena.',
+          'Llévate de {ciudad} la presencia que no pidió permiso para ser verdadera.',
+          'Si el vínculo permanece, que sea en el intercambio urbano — no en la historia que contarías.',
+        ],
+        trabajo: [
+          'De {ciudad} puede quedarte esto: la dirección puede ser tuya aunque el nodo empuje hacia lo visible.',
+          'Que te quede la obra que respira cuando baja la necesidad de transitar con prisa.',
+          'Pregúntate en voz baja: ¿para quién trabajas cuando el intercambio urbano se aquieta?',
+        ],
+        descanso: [
+          'Quédate con el cuerpo que en {ciudad} volvió a hablar sin perder la adaptación al pasaje.',
+          'Que permanezca una pausa breve — tomada y tuya.',
+          'Llévate un alivio útil: la pausa que no compitió con la movilidad cotidiana.',
+        ],
+      },
+      actionByGoal: {
+        amor: [
+          'esta semana, elige un encuentro donde importe más habitar la conexión entre llegadas que impresionar — pequeño y real.',
+          'esta semana, comparte un rato sencillo con alguien en el cruce — el rostro importa más que la intensidad.',
+          'esta semana, deja que el intercambio urbano te reconozca sin pedir permiso performativo.',
+        ],
+        trabajo: [
+          'esta semana, anota en privado qué sentido tiene tu obra — antes de volver al nodo visible.',
+          'esta semana, guarda una hora en movilidad interior para orientar la dirección — no para la vitrina del pasaje.',
+          'esta semana, elige una tarea mínima con sentido — aunque quede fuera de lo que transita.',
+        ],
+        descanso: [
+          'esta semana, guarda un tramo de pausa breve — sin perder la adaptación al pasaje.',
+          'esta semana, prueba un alivio real — no el que suena bien al contarlo.',
+          'esta semana, deja una tarde sin rendir — habitar {ciudad} con movilidad ganada.',
         ],
       }
     },

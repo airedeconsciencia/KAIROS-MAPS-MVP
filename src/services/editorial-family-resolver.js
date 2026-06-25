@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f5.2-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f6.0-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -21,6 +21,7 @@
     'SOUTHEAST_ASIAN',
     'SOUTH_ASIAN',
     'WEST_AFRICAN',
+    'MENA',
     'GLOBAL_NEUTRAL'
   ];
 

@@ -88,9 +88,22 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f5.2',
-  EFR.SCHEMA_VERSION === '3.8h.2-f5.2-0.1',
+  'SCHEMA f6.0',
+  EFR.SCHEMA_VERSION === '3.8h.2-f6.0-0.1',
   EFR.SCHEMA_VERSION
+);
+assert(
+  '12 familias registradas (F6.0)',
+  EFR.REGISTERED_FAMILIES.length === 12 && EFR.isRegisteredFamily('MENA') === true,
+  'count=' + EFR.REGISTERED_FAMILIES.length + ' mena=' + EFR.isRegisteredFamily('MENA')
+);
+const menaCountries = Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).filter(function (slug) {
+  return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MENA';
+});
+assert(
+  '0 countries MENA (F6.0 scaffold)',
+  menaCountries.length === 0,
+  'count=' + menaCountries.length + (menaCountries.length ? ' slugs=' + menaCountries.join(',') : '')
 );
 assert(
   '99 países en COUNTRY_EDITORIAL_FAMILY',

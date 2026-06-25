@@ -373,6 +373,42 @@
         },
       }
     },
+    MENA: {
+      doc17: {
+        t1: {
+          amor: 'En {ciudad}, lo compartido puede abrirse antes que la escena — te reconocen en la conexión entre llegadas, no en el personaje.',
+          trabajo: 'En {ciudad}, lo habitado en movilidad interior puede pesar más — te miden en la obra, no solo en lo que transita.',
+          descanso: 'En {ciudad}, tomar pausa en el cruce puede devolver calma — el cuerpo habla antes que la movilidad del día.'
+        },
+        t2: {
+          amor: 'El vínculo puede probarse en el intercambio urbano — no fallo, sino cercanía que aún no ha encontrado tono.',
+          trabajo: 'Lo visible puede adelantarse a lo que madura en el nodo — no fracaso, sino impulso que aún no ha encontrado dirección.',
+          descanso: 'La densidad del pasaje puede empujar cuando pides pausa — no pereza, sino fatiga que pide alivio sin disculpa.'
+        },
+        t3: {
+          amor: 'Puede abrirse un vínculo más honesto si habitas la conexión antes de demostrar — la condición es intercambio urbano, no espectáculo.',
+          trabajo: 'Puede abrirse sentido si trabajas la obra en movilidad interior — la condición es sustancia, no visibilidad del tránsito.',
+          descanso: 'Puede abrirse calma si cruzas hacia la pausa con adaptación al pasaje — la condición es alivio, no rendición.'
+        },
+        t4: {
+          amor: 'Esta semana, elige un encuentro donde importe más habitar la conexión entre llegadas que impresionar — pequeño y real.',
+          trabajo: 'Esta semana, separa intercambio visible y sentido propio — pequeño y real.',
+          descanso: 'Esta semana, guarda un tramo de pausa breve en el cruce — pequeño y real.'
+        }
+      },
+      byBlockId: {
+        doc6_intensidad_linea_cercana: {
+          amor: 'Esta línea puede sentirse en el vínculo con conexión entre llegadas — notable sin exigir dominar el tono al primer día.',
+          trabajo: 'Esta línea puede sentirse en la obra habitada — señal clara sin la exigencia de transitar con prisa, más sostenible para orientar sentido.',
+          descanso: 'Esta línea puede sentirse en el ritmo del pasaje — sostener la pausa sin sobreexigencia, más sostenible para una estancia media.'
+        },
+        doc6_intensidad_linea_exacta: {
+          amor: 'Muy cerca del trazo el vínculo puede sentirse sin filtro — intensidad en el cruce; conviene ir despacio si el nodo te desborda.',
+          trabajo: 'Muy cerca del trazo la obra puede sentirse sin filtro — impulso y visibilidad al máximo; modera ritmo si el intercambio urbano te agota.',
+          descanso: 'Muy cerca del trazo la exigencia puede registrar la señal sin filtro — ritmo al máximo; conviene moderar si la movilidad te agota.'
+        }
+      }
+    },
     GLOBAL_NEUTRAL: {
       doc17: {
         t1: {

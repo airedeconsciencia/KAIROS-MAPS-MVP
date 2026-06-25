@@ -247,7 +247,7 @@ assert(
 
 assert(
   'SCHEMA f5.2',
-  EFR.SCHEMA_VERSION === '3.8h.2-f5.2-0.1',
+  EFR.SCHEMA_VERSION === '3.8h.2-f6.0-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -286,8 +286,8 @@ assert(
 );
 
 assert(
-  '11 familias en pools narrativos (incl. GLOBAL_NEUTRAL scaffold)',
-  Narrative.NARRATIVE_SPINE_BY_REGION && Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION).length === 11,
+  '12 familias en pools narrativos (incl. GLOBAL_NEUTRAL scaffold)',
+  Narrative.NARRATIVE_SPINE_BY_REGION && Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION).length === 12,
   'spine=' + Object.keys(Narrative.NARRATIVE_SPINE_BY_REGION || {}).length
 );
 

@@ -68,6 +68,8 @@
     LATAM: ['compañía', 'calor humano', 'lo reservado', 'sobremesa', 'plaza'],
     SOUTH_ASIAN: ['coherencia interior', 'multiplicidad habitada'],
     SOUTHEAST_ASIAN: ['gracia en la densidad', 'ritual ligero', 'flujo compartido'],
+    WEST_AFRICAN: ['red habitada', 'presencia verificable', 'apretón urbano'],
+    MENA: ['cruce de tránsitos', 'intercambio urbano', 'nodo entre trayectos', 'movilidad cotidiana'],
     GLOBAL_NEUTRAL: ['persona antes que personaje', 'prisa de impresionar', 'obra callada']
   };
 
@@ -181,6 +183,14 @@
       'Donde la visibilidad se negocia, la oportunidad aparece sin escena: ',
       'Con estabilidad flexible, conviene mirar esto: ',
       'En la obra en movimiento, la oportunidad se deja leer así: '
+    ],
+    MENA: [
+      'En el cruce de tránsitos, conviene leer la oportunidad así: ',
+      'Desde el intercambio urbano, la oportunidad se presenta sin prisa: ',
+      'En el nodo entre trayectos, puede abrirse esto: ',
+      'Donde la movilidad cotidiana afloja, la oportunidad aparece sin escena: ',
+      'Con adaptación al pasaje, conviene mirar esto: ',
+      'En la conexión entre llegadas, la oportunidad se deja leer así: '
     ],
     GLOBAL_NEUTRAL: [
       'Al ralentizar, conviene leer la oportunidad así: ',
@@ -445,6 +455,23 @@
         'Quizá notes que un alivio breve deja de incomodarte en el apretón urbano.'
       ]
     },
+    MENA: {
+      amor: [
+        'Puede que una charla en el cruce de tránsitos dure más de lo previsto y no quieras que termine.',
+        'Tal vez notes calma al pensar en alguien — sin prisa de cerrar la escena del pasaje.',
+        'A veces ocurre que te sientas sin necesidad de demostrar — conexión antes que espectáculo.'
+      ],
+      trabajo: [
+        'Quizá notes una decisión que llevas semanas evitando y que aquí pide paso en movilidad interior.',
+        'Puede que vuelvas del nodo con una idea que por fin encaja — sin prisa de mostrarla.',
+        'Tal vez te sorprenda sentarte sin necesidad de producir nada — sin medirte por el intercambio visible.'
+      ],
+      descanso: [
+        'Puede que te sorprenda aflojar el ritmo sin sentir que abandonas la adaptación al pasaje.',
+        'A veces ocurre que el cuerpo pide pausa antes que la mente lo autorice entre trayectos.',
+        'Quizá notes que un alivio breve deja de incomodarte en la movilidad cotidiana.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'Puede que una charla sin reloj dure más de lo previsto y no quieras que termine.',
@@ -609,6 +636,20 @@
       descanso: [
         'Mira si te sientes más entero o más expuesto al tomar pausa sin desaparecer; ambas respuestas informan.',
         'Fíjate si el alivio breve te sostiene o te desnuda; las dos lecturas valen.'
+      ]
+    },
+    MENA: {
+      amor: [
+        'Mira si te sientes más entero o más expuesto al habitar el cruce de tránsitos; ambas respuestas informan.',
+        'Fíjate si la conexión entre llegadas te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      trabajo: [
+        'Mira si te sientes más entero o más expuesto al orientar la dirección en el nodo; ambas respuestas informan.',
+        'Fíjate si la obra en movilidad interior te sostiene o te desnuda; las dos lecturas valen.'
+      ],
+      descanso: [
+        'Mira si te sientes más entero o más expuesto al tomar pausa en el pasaje; ambas respuestas informan.',
+        'Fíjate si la adaptación al pasaje te sostiene o te desnuda; las dos lecturas valen.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -1090,6 +1131,47 @@
         'Hay momentos en que {ciudad} habla por quien te nombra, no por confirmación.',
         'Puede que lo que pide la oportunidad no pida lo mismo en ti.',
         'Hay señales que se entienden mejor al volver sobre el mismo rostro.'
+      ]
+    },
+    MENA: {
+      matiz: [
+        'Detrás del cruce hay otra lectura, más humana.',
+        'Con el tiempo, el intercambio urbano aclara lo que la primera capa no decía.',
+        'Lo que continúa completa la adaptación al pasaje sin pedir prisa.',
+        'Hay un matiz en el nodo que no es oposición: es conexión entre llegadas.'
+      ],
+      contradiccion: [
+        'La segunda mirada en el cruce de tránsitos suele ser más honesta que la primera.',
+        'Entre intercambio visible y sentido propio hay un nodo estrecho — no contradicción, tensión.',
+        'Quizá notes dos ritmos conviviendo entre movilidad y pertenencia sin pedir permiso.',
+        'A veces el pasaje choca con la prisa de transitar — ahí está la fricción.'
+      ],
+      capa: [
+        'Hay una capa que solo aparece cuando aflojas la necesidad de seguir el flujo.',
+        'Lo que continúa no es anexo: es otra cara de lo que habitas en movilidad cotidiana.',
+        'Detrás del impulso hay una pregunta más lenta — casi en alivio breve.',
+        'Hay un hilo que conecta lo que transita con lo no dicho en la conexión entre llegadas.'
+      ],
+      advertencia: [
+        'Si te quedas un poco más en el nodo, el tono cambia.',
+        'Algo se mueve cuando dejas de exigirte respuesta inmediata al intercambio visible.',
+        'Detrás de la movilidad hay algo que pide adaptación, no conclusión.',
+        'La escena cambia cuando dejas de medirla con la prisa del pasaje.'
+      ],
+      cierre: [
+        'Entre una señal y otra hay espacio para elegir cómo habitas el cruce.',
+        'Lo repetido confirma o matiza lo que intuías en el intercambio urbano del día.',
+        'Hay un giro pequeño en el nodo que altera el sentido de todo.'
+      ],
+      cuerpo: [
+        'La lectura se afina cuando el cuerpo también opina entre trayectos.',
+        'Algo se revela cuando sueltas la necesidad de demostrar en cada llegada.',
+        'No todo lo que se activa en el intercambio urbano apunta al mismo norte.'
+      ],
+      ciudad: [
+        'Hay momentos en que {ciudad} habla por conexión entre llegadas, no por confirmación.',
+        'Puede que lo que pide el nodo no pida lo mismo en ti.',
+        'Hay señales que se entienden mejor al volver sobre el mismo cruce de tránsitos.'
       ]
     },
     GLOBAL_NEUTRAL: {
@@ -2602,6 +2684,38 @@ function metaphorFingerprint(text) {
         'Lo que hoy acelera el cuerpo puede aflojarse si habitas la pausa sin desaparecer de quien te nombra.'
       ]
     },
+    MENA: {
+      amor: [
+        'En {ciudad}, el vínculo se afina en el cruce de tránsitos — sin prisa de demostrar.',
+        'Registra un encuentro concreto en el nodo y vuelve a él sin prisa de cerrar la escena del pasaje.',
+        'El amor aquí no pide vitrina: pide conexión entre llegadas que el cuerpo pueda sostener.',
+        'Si algo incomoda en el vínculo, obsérvalo en el intercambio urbano — no como fallo personal.',
+        'Lo dicho con honestidad en la movilidad cotidiana suele orientar mejor que los planes demasiado pulidos.',
+        'Un gesto breve en el cruce vale más que una noche perfecta para contar.',
+        'Mira si el vínculo respira cuando baja la necesidad de impresionar en el nodo.',
+        'Lo que hoy tensa el vínculo puede aclararse si aflojas la prisa de transitar.'
+      ],
+      trabajo: [
+        'En {ciudad}, el sentido del trabajo madura en movilidad interior — no en lo que transita.',
+        'Anota en privado qué parte de tu obra sigue viva cuando el intercambio visible no está cerca.',
+        'El propósito aquí no pide espectáculo: pide dirección que respire antes de volver al nodo.',
+        'Si algo incomoda en la trayectoria, obsérvalo en la visibilidad del pasaje — no como fracaso.',
+        'Lo orientado en calma interior suele guiar mejor que las urgencias demasiado visibles.',
+        'Separa intercambio visible y sentido propio antes de volver a mostrarlo.',
+        'Mira si el cansancio es de obra o de postureo — la diferencia importa en la movilidad cotidiana.',
+        'Lo que hoy confunde la trayectoria puede aclararse si aflojas la prisa de seguir el flujo.'
+      ],
+      descanso: [
+        'En {ciudad}, el cuerpo recupera en pausa breve: un paso lento, una tarde sin prisa.',
+        'Guarda un tramo de alivio real — no el que suena bien contarlo.',
+        'El descanso aquí no pide disculpa: pide tregua sin rendir cuentas al ritmo del pasaje.',
+        'Si algo incomoda en la pausa, obsérvalo en la adaptación al pasaje — no como pereza.',
+        'El ritmo honesto entre trayectos suele orientar mejor que los planes demasiado rígidos.',
+        'Un alivio breve y ganado vale más que una semana de pausa teatral.',
+        'Mira si la calma aguanta cuando vuelves al cruce — ahí está la prueba.',
+        'Lo que hoy acelera el cuerpo puede aflojarse si habitas la pausa sin perder la conexión entre llegadas.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, el vínculo se afina en atención sostenida — una mirada, un silencio cómodo.',
@@ -2811,6 +2925,20 @@ function metaphorFingerprint(text) {
         'La tregua breve puede sostener lo anterior un poco más.'
       ]
     },
+    MENA: {
+      amor: [
+        'En el cruce de tránsitos de {ciudad}, a veces basta habitar la conexión entre llegadas sin concluir la escena.',
+        'El intercambio urbano puede sostener lo anterior un poco más.'
+      ],
+      trabajo: [
+        'En el nodo entre trayectos de {ciudad}, a veces basta orientar la dirección antes de volver al pasaje.',
+        'La obra en movilidad interior puede sostener lo anterior un poco más.'
+      ],
+      descanso: [
+        'En la adaptación al pasaje de {ciudad}, a veces basta aflojar sin perder la movilidad ganada.',
+        'La pausa breve en el cruce puede sostener lo anterior un poco más.'
+      ]
+    },
     GLOBAL_NEUTRAL: {
       amor: [
         'En {ciudad}, a veces basta alargar la conversación sin concluirla.',
@@ -2927,6 +3055,16 @@ function metaphorFingerprint(text) {
       'Cuando algo incomoda, obsérvalo en el apretón del cuerpo — no en el juicio rápido.',
       'Deja que la constancia relacional te devuelva su ritmo — sin prisa de concluir.',
       'Un paso en movimiento interno puede bastarte para seguir caminando {ciudad} con verdad.'
+    ],
+    MENA: [
+      'A veces lo esencial aparece en el cruce de tránsitos — una verdad que no pide escena.',
+      '{ciudad} enseña en el intercambio urbano, sin pedirte prisa de entenderlo todo.',
+      'Habitar la adaptación al pasaje puede bastarte para seguir explorando {ciudad} con verdad.',
+      'Lo hermoso vive en la conexión entre llegadas, no solo en el gran gesto.',
+      'No necesitas resolver el flujo: basta nodo antes que exposición.',
+      'Cuando algo incomoda, obsérvalo en la movilidad cotidiana — no en el juicio rápido.',
+      'Deja que el cruce te devuelva su ritmo — sin prisa de concluir.',
+      'Un paso en movilidad interior puede bastarte para seguir caminando {ciudad} con verdad.'
     ],
     GLOBAL_NEUTRAL: [
       'A veces lo esencial aparece en el margen — una conversación que no pide conclusión.',
@@ -3060,6 +3198,18 @@ function metaphorFingerprint(text) {
       'Puede que notes el lugar en matices: un apretón, un rostro distinto, una pausa ganada.',
       'Deja que la adaptación te devuelva su ritmo — sin prisa de concluir.',
       'Un tramo en constancia relacional puede bastarte para seguir explorando {ciudad} con verdad.'
+    ],
+    MENA: [
+      'Puede que notes que {ciudad} se afina cuando el cruce de tránsitos también orienta.',
+      'Las voces honestas del intercambio urbano suelen guiar mejor que las urgencias demasiado visibles.',
+      'Vuelve a esta lectura en unas semanas — no para validarla, sino para notar qué mudó en el nodo del día.',
+      'Quizá la clave no sea hacer más, sino escuchar cuál señal sigue viva en la movilidad cotidiana.',
+      'A veces hay que cruzar otro nodo del mapa para entender qué pide el paso.',
+      'Tal vez baste una conexión entre llegadas que te sostenga — sin tenerlo todo resuelto.',
+      'Tal vez notes que algunas lecturas maduran despacio, como una adaptación al pasaje ganada.',
+      'Puede que notes el lugar en matices: un cruce, un trayecto distinto, una pausa ganada.',
+      'Deja que el intercambio urbano te devuelva su ritmo — sin prisa de concluir.',
+      'Un tramo en movilidad interior puede bastarte para seguir explorando {ciudad} con verdad.'
     ],
     GLOBAL_NEUTRAL: [
       'Puede que notes que {ciudad} se afina cuando la atención también orienta.',

@@ -145,6 +145,7 @@ assert('isRegisteredFamily(WESTERN_EUROPE)', EFR.isRegisteredFamily('WESTERN_EUR
 assert('isRegisteredFamily(SOUTHEAST_ASIAN)', EFR.isRegisteredFamily('SOUTHEAST_ASIAN') === true, 'F2.6c');
 assert('isRegisteredFamily(SOUTH_ASIAN)', EFR.isRegisteredFamily('SOUTH_ASIAN') === true, 'F2.7c');
 assert('isRegisteredFamily(WEST_AFRICAN)', EFR.isRegisteredFamily('WEST_AFRICAN') === true, 'F3.3c');
+assert('isRegisteredFamily(MENA)', EFR.isRegisteredFamily('MENA') === true, 'F6.0');
 assert('isRegisteredFamily(GLOBAL_NEUTRAL)', EFR.isRegisteredFamily('GLOBAL_NEUTRAL') === true, 'F2.2d1');
 
 const Narrative = ctx.window.KairosNarrativeIntelligence;
@@ -177,6 +178,19 @@ assert(
   'resolveRegionalPack(GLOBAL_NEUTRAL) never missing (14 maps)',
   packMissing.length === 0,
   packMissing.join(' · ') || '14/14 explicit'
+);
+
+const packMenaMissing = [];
+PACK_MAPS.forEach(function (entry) {
+  const resolved = EFR.resolveRegionalPack(entry.map, 'MENA');
+  if (!resolved.pack || resolved.meta.resolvedFrom !== 'explicit') {
+    packMenaMissing.push(entry.label + ':' + resolved.meta.resolvedFrom);
+  }
+});
+assert(
+  'resolveRegionalPack(MENA) never missing (14 maps)',
+  packMenaMissing.length === 0,
+  packMenaMissing.join(' · ') || '14/14 explicit MENA'
 );
 
 assert(
