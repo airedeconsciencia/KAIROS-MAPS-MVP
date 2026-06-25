@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f4.3-0.1';
-  var EXPECTED_CITY_COUNT = 74;
-  var EXPECTED_COUNTRY_COUNT = 71;
+  var SCHEMA_VERSION = '3.8f.1-f4.2-0.1';
+  var EXPECTED_CITY_COUNT = 77;
+  var EXPECTED_COUNTRY_COUNT = 74;
 
   var CITIES = [
     // Europa
@@ -32,6 +32,9 @@
     { name: 'Praga', country: 'República Checa', lat: 50.0755, lon: 14.4378 },
     { name: 'Copenhague', country: 'Dinamarca', lat: 55.6761, lon: 12.5683 },
     { name: 'Helsinki', country: 'Finlandia', lat: 60.1699, lon: 24.9384 },
+    { name: 'Dublín', country: 'Irlanda', lat: 53.3498, lon: -6.2603 },
+    { name: 'Zagreb', country: 'Croacia', lat: 45.8150, lon: 15.9819 },
+    { name: 'Budapest', country: 'Hungría', lat: 47.4979, lon: 19.0402 },
     // América
     { name: 'Nueva York', country: 'EE. UU.', lat: 40.7128, lon: -74.0060 },
     { name: 'Los Ángeles', country: 'EE. UU.', lat: 34.0522, lon: -118.2437 },
@@ -112,6 +115,9 @@
     'República Checa': 'cz',
     'Dinamarca': 'dk',
     'Finlandia': 'fi',
+    'Irlanda': 'ie',
+    'Croacia': 'hr',
+    'Hungría': 'hu',
     'Marruecos': 'ma',
     'Túnez': 'tn',
     'EE. UU.': 'us',
@@ -187,6 +193,9 @@
     'República Checa': 'czech_republic',
     'Dinamarca': 'denmark',
     'Finlandia': 'finland',
+    'Irlanda': 'ireland',
+    'Croacia': 'croatia',
+    'Hungría': 'hungary',
     'Marruecos': 'morocco',
     'Túnez': 'tunisia',
     'EE. UU.': 'united_states',

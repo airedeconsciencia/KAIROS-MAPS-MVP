@@ -204,14 +204,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '74 ciudades / 71 países catálogo (F4.3 África Este+)',
-  Catalog.CITIES.length === 74 && Catalog.getCountries().length === 71,
+  '77 ciudades / 74 países catálogo (F4.2 Europa residual)',
+  Catalog.CITIES.length === 77 && Catalog.getCountries().length === 74,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.3',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.3-0.1',
+  'SCHEMA catálogo f4.2',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.2-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -314,8 +314,8 @@ assert(
 );
 
 assert(
-  'SCHEMA resolver f4.3 (71 países)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.3-0.1',
+  'SCHEMA resolver f4.2 (74 países)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.2-0.1',
   EFR.SCHEMA_VERSION
 );
 

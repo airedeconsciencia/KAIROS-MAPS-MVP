@@ -25,7 +25,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — LATAM editorial integration (F3.8c Wave A)"
-echo " Scope: 74/71 catálogo · CR/PA · amends · regresiones · anti-leak"
+echo " Scope: 77/74 catálogo · CR/PA · amends · regresiones · anti-leak"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -195,14 +195,14 @@ function scanReading(reading, slug) {
 }
 
 assert(
-  '74 ciudades / 71 países catálogo (F4.3 baseline; LATAM Wave A intacto)',
-  Catalog.CITIES.length === 74 && Catalog.getCountries().length === 71,
+  '77 ciudades / 74 países catálogo (F4.2 baseline; LATAM Wave A intacto)',
+  Catalog.CITIES.length === 77 && Catalog.getCountries().length === 74,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.3',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.3-0.1',
+  'SCHEMA catálogo f4.2',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.2-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -235,14 +235,14 @@ assert(
 );
 
 assert(
-  '71 países resolver (F4.3 África Este+)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 71,
+  '74 países resolver (F4.2 Europa residual)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 74,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
 assert(
-  'SCHEMA f4.3',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.3-0.1',
+  'SCHEMA f4.2',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.2-0.1',
   EFR.SCHEMA_VERSION
 );
 

@@ -88,23 +88,23 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f4.3',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.3-0.1',
+  'SCHEMA f4.2',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.2-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
-  '71 países en COUNTRY_EDITORIAL_FAMILY',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 71,
+  '74 países en COUNTRY_EDITORIAL_FAMILY',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 74,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '74 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 74,
+  '77 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 77,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('71 países en catálogo', countries.length === 71, 'count=' + countries.length);
+assert('74 países en catálogo', countries.length === 74, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -126,8 +126,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '74 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 74,
+  '77 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 77,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -196,7 +196,10 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Tel Aviv', country: 'Israel', expected: 'MEDITERRANEAN' },
   { city: 'Amán', country: 'Jordania', expected: 'MEDITERRANEAN' },
   { city: 'Kampala', country: 'Uganda', expected: 'AFRICAN_COASTAL' },
-  { city: 'Kigali', country: 'Ruanda', expected: 'AFRICAN_COASTAL' }
+  { city: 'Kigali', country: 'Ruanda', expected: 'AFRICAN_COASTAL' },
+  { city: 'Dublín', country: 'Irlanda', expected: 'WESTERN_EUROPE' },
+  { city: 'Zagreb', country: 'Croacia', expected: 'MEDITERRANEAN' },
+  { city: 'Budapest', country: 'Hungría', expected: 'WESTERN_EUROPE' }
 ];
 
 const splitBrainHits = [];
@@ -214,7 +217,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('65 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('68 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -305,7 +308,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (65 casos)',
+  'Pipeline knowledge ≡ narrative (68 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );

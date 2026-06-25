@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '74 ciudades (F4.3 África Este+ expansion)',
-  Catalog.CITIES.length === 74,
+  '77 ciudades (F4.2 Europa residual expansion)',
+  Catalog.CITIES.length === 77,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '71 países únicos (F4.3 África Este+ expansion)',
-  countries.length === 71,
+  '74 países únicos (F4.2 Europa residual expansion)',
+  countries.length === 74,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (71)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 71,
+  'COUNTRY_IDS alineados (74)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 74,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -480,9 +480,29 @@ f43Wave.forEach(function (entry) {
 });
 assert('F4.3 África Este+ ciudades + slugs', f43Issues.length === 0, f43Issues.join(' · '));
 
+const f42Wave = [
+  { name: 'Dublín', countryId: 'ireland', code: 'ie' },
+  { name: 'Zagreb', countryId: 'croatia', code: 'hr' },
+  { name: 'Budapest', countryId: 'hungary', code: 'hu' }
+];
+const f42Issues = [];
+f42Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f42Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f42Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f42Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F4.2 Europa residual ciudades + slugs', f42Issues.length === 0, f42Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f4.3',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.3-0.1',
+  'SCHEMA catálogo f4.2',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.2-0.1',
   Catalog.SCHEMA_VERSION
 );
 

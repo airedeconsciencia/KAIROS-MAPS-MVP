@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f4.3-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f4.2-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -24,7 +24,7 @@
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (71 países) */
+  /** @type {Record<string, string>} slug canónico → familia (74 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -39,6 +39,8 @@
     czech_republic: 'WESTERN_EUROPE',
     denmark: 'WESTERN_EUROPE',
     finland: 'WESTERN_EUROPE',
+    ireland: 'WESTERN_EUROPE',
+    hungary: 'WESTERN_EUROPE',
     mexico: 'LATAM',
     argentina: 'LATAM',
     brazil: 'LATAM',
@@ -63,6 +65,7 @@
     spain: 'MEDITERRANEAN',
     italy: 'MEDITERRANEAN',
     greece: 'MEDITERRANEAN',
+    croatia: 'MEDITERRANEAN',
     turkey: 'MEDITERRANEAN',
     morocco: 'MEDITERRANEAN',
     tunisia: 'MEDITERRANEAN',
@@ -146,6 +149,15 @@
     fi: 'finland',
     finland: 'finland',
     finlandia: 'finland',
+    ie: 'ireland',
+    ireland: 'ireland',
+    irlanda: 'ireland',
+    hr: 'croatia',
+    croatia: 'croatia',
+    croacia: 'croatia',
+    hu: 'hungary',
+    hungary: 'hungary',
+    hungria: 'hungary',
     ma: 'morocco',
     morocco: 'morocco',
     marruecos: 'morocco',
