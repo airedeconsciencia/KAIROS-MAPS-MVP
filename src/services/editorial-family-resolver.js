@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f3.16-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f3.17-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -24,7 +24,7 @@
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (65 países) */
+  /** @type {Record<string, string>} slug canónico → familia (67 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -81,6 +81,8 @@
     south_africa: 'AFRICAN_COASTAL',
     egypt: 'AFRICAN_COASTAL',
     kenya: 'AFRICAN_COASTAL',
+    ethiopia: 'AFRICAN_COASTAL',
+    tanzania: 'AFRICAN_COASTAL',
     nigeria: 'WEST_AFRICAN',
     ghana: 'WEST_AFRICAN',
     senegal: 'WEST_AFRICAN',
@@ -251,6 +253,11 @@
     ke: 'kenya',
     kenya: 'kenya',
     kenia: 'kenya',
+    et: 'ethiopia',
+    ethiopia: 'ethiopia',
+    etiopia: 'ethiopia',
+    tz: 'tanzania',
+    tanzania: 'tanzania',
     ng: 'nigeria',
     nigeria: 'nigeria',
     gh: 'ghana',

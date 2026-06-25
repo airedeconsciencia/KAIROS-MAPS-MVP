@@ -204,14 +204,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '68 ciudades / 65 países catálogo (F3.16 Golfo)',
-  Catalog.CITIES.length === 68 && Catalog.getCountries().length === 65,
+  '70 ciudades / 67 países catálogo (F3.17 África Este)',
+  Catalog.CITIES.length === 70 && Catalog.getCountries().length === 67,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.16',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.16-0.1',
+  'SCHEMA catálogo f3.17',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.17-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -314,8 +314,8 @@ assert(
 );
 
 assert(
-  'SCHEMA resolver f3.16 (65 países)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f3.16-0.1',
+  'SCHEMA resolver f3.17 (67 países)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f3.17-0.1',
   EFR.SCHEMA_VERSION
 );
 

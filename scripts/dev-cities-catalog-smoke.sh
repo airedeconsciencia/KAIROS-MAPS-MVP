@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '68 ciudades (F3.16 Golfo expansion)',
-  Catalog.CITIES.length === 68,
+  '70 ciudades (F3.17 África Este expansion)',
+  Catalog.CITIES.length === 70,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '65 países únicos (F3.16 Golfo expansion)',
-  countries.length === 65,
+  '67 países únicos (F3.17 África Este expansion)',
+  countries.length === 67,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (65)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 65,
+  'COUNTRY_IDS alineados (67)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 67,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -423,9 +423,28 @@ f316Wave.forEach(function (entry) {
 });
 assert('F3.16 Golfo ciudades + slugs', f316Issues.length === 0, f316Issues.join(' · '));
 
+const f317Wave = [
+  { name: 'Addis Abeba', countryId: 'ethiopia', code: 'et' },
+  { name: 'Dar es Salaam', countryId: 'tanzania', code: 'tz' }
+];
+const f317Issues = [];
+f317Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f317Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f317Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f317Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F3.17 África Este ciudades + slugs', f317Issues.length === 0, f317Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f3.16',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.16-0.1',
+  'SCHEMA catálogo f3.17',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.17-0.1',
   Catalog.SCHEMA_VERSION
 );
 

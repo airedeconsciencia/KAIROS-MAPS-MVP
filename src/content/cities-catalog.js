@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f3.16-0.1';
-  var EXPECTED_CITY_COUNT = 68;
-  var EXPECTED_COUNTRY_COUNT = 65;
+  var SCHEMA_VERSION = '3.8f.1-f3.17-0.1';
+  var EXPECTED_CITY_COUNT = 70;
+  var EXPECTED_COUNTRY_COUNT = 67;
 
   var CITIES = [
     // Europa
@@ -72,6 +72,8 @@
     { name: 'Doha', country: 'Catar', lat: 25.2854, lon: 51.5310 },
     { name: 'Riad', country: 'Arabia Saudí', lat: 24.7136, lon: 46.6753 },
     { name: 'Nairobi', country: 'Kenia', lat: -1.2921, lon: 36.8219 },
+    { name: 'Addis Abeba', country: 'Etiopía', lat: 9.0320, lon: 38.7469 },
+    { name: 'Dar es Salaam', country: 'Tanzania', lat: -6.7924, lon: 39.2083 },
     { name: 'Lagos', country: 'Nigeria', lat: 6.5244, lon: 3.3792 },
     { name: 'Accra', country: 'Ghana', lat: 5.6037, lon: -0.1870 },
     { name: 'Dakar', country: 'Senegal', lat: 14.7167, lon: -17.4677 },
@@ -141,6 +143,8 @@
     'Catar': 'qa',
     'Arabia Saudí': 'sa',
     'Kenia': 'ke',
+    'Etiopía': 'et',
+    'Tanzania': 'tz',
     'Nigeria': 'ng',
     'Ghana': 'gh',
     'Senegal': 'sn',
@@ -210,6 +214,8 @@
     'Catar': 'qatar',
     'Arabia Saudí': 'saudi_arabia',
     'Kenia': 'kenya',
+    'Etiopía': 'ethiopia',
+    'Tanzania': 'tanzania',
     'Nigeria': 'nigeria',
     'Ghana': 'ghana',
     'Senegal': 'senegal',

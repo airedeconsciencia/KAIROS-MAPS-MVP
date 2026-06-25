@@ -196,17 +196,17 @@ assert(
 );
 
 assert(
-  '68 ciudades / 65 países catálogo (baseline F3.16; SEA Wave A intacto)',
+  '70 ciudades / 67 países catálogo (baseline F3.17; SEA Wave A intacto)',
   Catalog.CITIES.length === Catalog.EXPECTED_CITY_COUNT &&
     Catalog.getCountries().length === Catalog.EXPECTED_COUNTRY_COUNT &&
-    Catalog.EXPECTED_CITY_COUNT === 68 &&
-    Catalog.EXPECTED_COUNTRY_COUNT === 65,
+    Catalog.EXPECTED_CITY_COUNT === 70 &&
+    Catalog.EXPECTED_COUNTRY_COUNT === 67,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f3.16',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f3.16-0.1',
+  'SCHEMA catálogo f3.17',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f3.17-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -219,8 +219,8 @@ SEA_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert(
-  'SCHEMA resolver f3.16 (65 países; SEA+ intacto)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f3.16-0.1',
+  'SCHEMA resolver f3.17 (67 países; SEA+ intacto)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f3.17-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -280,8 +280,8 @@ assert(
 );
 
 assert(
-  '65 países resolver (F3.16 Golfo; incl. SEA+ 6/6)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 65,
+  '67 países resolver (F3.17 África Este; incl. SEA+ 6/6)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 67,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
