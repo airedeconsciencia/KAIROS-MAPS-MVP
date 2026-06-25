@@ -25,7 +25,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — LATAM editorial integration (F3.8c Wave A)"
-echo " Scope: 79/76 catálogo · CR/PA · amends · regresiones · anti-leak"
+echo " Scope: 81/78 catálogo · CR/PA/PY/BO · amends · regresiones · anti-leak"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -76,7 +76,7 @@ const compose = ctx.window.KairosNatalComposition.composeNatalLiteReading;
 const Bridge = ctx.window.KairosNatalMapBridge;
 const Scorer = ctx.window.KairosCityScorer;
 
-const LATAM_COUNTRIES = ['mexico', 'argentina', 'brazil', 'peru', 'colombia', 'chile', 'uruguay', 'ecuador', 'costa_rica', 'panama'];
+const LATAM_COUNTRIES = ['mexico', 'argentina', 'brazil', 'peru', 'colombia', 'chile', 'uruguay', 'ecuador', 'costa_rica', 'panama', 'paraguay', 'bolivia'];
 const LATAM_CITIES = [
   { name: 'Ciudad de México', country: 'México' },
   { name: 'Buenos Aires', country: 'Argentina' },
@@ -86,6 +86,10 @@ const LATAM_CITIES = [
 const LATAM_PLUS_CITIES = [
   { name: 'San José', slug: 'costa_rica' },
   { name: 'Ciudad de Panamá', slug: 'panama' }
+];
+const LATAM_F45_CITIES = [
+  { name: 'Asunción', slug: 'paraguay' },
+  { name: 'La Paz', slug: 'bolivia' }
 ];
 const GOALS = ['amor', 'trabajo', 'descanso'];
 const IBERIAN_LEAK = ['plaza', 'sobremesa', 'barrio', 'compañía cotidiana'];
@@ -195,14 +199,14 @@ function scanReading(reading, slug) {
 }
 
 assert(
-  '79 ciudades / 76 países catálogo (F4.4 baseline; LATAM Wave A intacto)',
-  Catalog.CITIES.length === 79 && Catalog.getCountries().length === 76,
+  '81 ciudades / 78 países catálogo (F4.5 LATAM residual; Wave A intacto)',
+  Catalog.CITIES.length === 81 && Catalog.getCountries().length === 78,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.4',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.4-0.1',
+  'SCHEMA catálogo f4.5',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.5-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -223,26 +227,27 @@ LATAM_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert(
-  'LATAM en resolver (10 slugs F3.8b)',
+  'LATAM en resolver (12 slugs F4.5)',
   LATAM_COUNTRIES.every(function (slug) {
     return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'LATAM';
   }),
   JSON.stringify({
     mexico: EFR.COUNTRY_EDITORIAL_FAMILY.mexico,
-    costa_rica: EFR.COUNTRY_EDITORIAL_FAMILY.costa_rica,
+    paraguay: EFR.COUNTRY_EDITORIAL_FAMILY.paraguay,
+    bolivia: EFR.COUNTRY_EDITORIAL_FAMILY.bolivia,
     panama: EFR.COUNTRY_EDITORIAL_FAMILY.panama
   })
 );
 
 assert(
-  '76 países resolver (F4.4 África Austral)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 76,
+  '78 países resolver (F4.5 LATAM residual)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 78,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
 assert(
-  'SCHEMA f4.4',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.4-0.1',
+  'SCHEMA f4.5',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.5-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -267,12 +272,16 @@ assert(
 );
 
 assert(
-  'Alias cr/pa → LATAM (F3.8b)',
+  'Alias cr/pa/py/bo → LATAM (F4.5)',
   EFR.resolveEditorialFamily({ cityName: 'San José', countryId: 'cr' }) === 'LATAM' &&
-    EFR.resolveEditorialFamily({ cityName: 'Ciudad de Panamá', countryId: 'pa' }) === 'LATAM',
+    EFR.resolveEditorialFamily({ cityName: 'Ciudad de Panamá', countryId: 'pa' }) === 'LATAM' &&
+    EFR.resolveEditorialFamily({ cityName: 'Asunción', countryId: 'py' }) === 'LATAM' &&
+    EFR.resolveEditorialFamily({ cityName: 'La Paz', countryId: 'bo' }) === 'LATAM',
   JSON.stringify({
     cr: EFR.resolveEditorialFamily({ cityName: 'San José', countryId: 'cr' }),
-    pa: EFR.resolveEditorialFamily({ cityName: 'Ciudad de Panamá', countryId: 'pa' })
+    pa: EFR.resolveEditorialFamily({ cityName: 'Ciudad de Panamá', countryId: 'pa' }),
+    py: EFR.resolveEditorialFamily({ cityName: 'Asunción', countryId: 'py' }),
+    bo: EFR.resolveEditorialFamily({ cityName: 'La Paz', countryId: 'bo' })
   })
 );
 
@@ -527,9 +536,99 @@ LATAM_PLUS_CITIES.forEach(function (entry) {
 
 assert('6 lecturas LATAM+ catálogo (2 ciudades × 3 goals)', latamPlusReadings.length === 6, 'count=' + latamPlusReadings.length);
 
+console.log('\n' + '═'.repeat(60));
+console.log('QA obligatorio F4.5 — Asunción · La Paz (catálogo)');
+console.log('═'.repeat(60));
+
+const latamF45Readings = [];
+LATAM_F45_CITIES.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) throw new Error('catalog missing ' + entry.name);
+  GOALS.forEach(function (goal) {
+    const reading = composeReading(city, goal, entry.slug);
+    const s = scanLatamPlus(reading, entry.slug);
+    latamF45Readings.push({
+      city: entry.name,
+      goal: goal,
+      slug: entry.slug,
+      scan: s
+    });
+    assert(
+      entry.name + ' / ' + goal + ' → ok:true',
+      s.ok === true,
+      'ok=' + s.ok
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → words 500–900',
+      s.words >= Premium.MIN_WORDS && s.words <= Premium.MAX_WORDS,
+      'words=' + s.words
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → LATAM (n=k=e)',
+      s.regionN === 'LATAM' && s.regionK === 'LATAM' && s.regionE === 'LATAM',
+      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → split-brain 0',
+      s.regionN === s.regionK && s.regionK === s.regionE,
+      JSON.stringify({ regionN: s.regionN, regionK: s.regionK, regionE: s.regionE })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → leaks 0',
+      s.iberian === 0 && s.sea === 0 && s.we === 0,
+      JSON.stringify({ iberian: s.iberian, sea: s.sea, we: s.we })
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → placeholders 0',
+      s.placeholders === 0,
+      'hits=' + s.placeholders
+    );
+    assert(
+      entry.name + ' / ' + goal + ' → P03/P06/P10 = 0',
+      !s.p03 && !s.p06 && !s.p10,
+      'p03=' + s.p03 + ' p06=' + s.p06 + ' p10=' + s.p10
+    );
+    console.log(
+      ' ',
+      entry.slug + ' / ' + goal + ':',
+      'ok=' + s.ok,
+      'words=' + s.words,
+      'n=k=e=' + s.regionN,
+      'leaks=' + (s.iberian + s.sea + s.we),
+      'ph=' + s.placeholders,
+      'P03/P06/P10=' + (s.p03 ? 1 : 0) + '/' + (s.p06 ? 1 : 0) + '/' + (s.p10 ? 1 : 0)
+    );
+  });
+});
+
+assert('6 lecturas F4.5 LATAM residual (2 ciudades × 3 goals)', latamF45Readings.length === 6, 'count=' + latamF45Readings.length);
+
+assert(
+  'Paraguay display → paraguay → LATAM (F4.5)',
+  EFR.coerceCountryId('Paraguay') === 'paraguay' &&
+    EFR.resolveEditorialFamily({ cityName: 'Asunción', countryDisplay: 'Paraguay' }) === 'LATAM',
+  'paraguay'
+);
+
+assert(
+  'Bolivia display → bolivia → LATAM (F4.5)',
+  EFR.coerceCountryId('Bolivia') === 'bolivia' &&
+    EFR.resolveEditorialFamily({ cityName: 'La Paz', countryDisplay: 'Bolivia' }) === 'LATAM',
+  'bolivia'
+);
+
+assert(
+  'São Paulo ausente del catálogo (bloqueada)',
+  Catalog.findCityByName('São Paulo') === null,
+  'catalog must not include São Paulo'
+);
+
 const QA_REGRESSION = [
   { label: 'Nairobi / trabajo → AFRICAN_COASTAL', cityName: 'Nairobi', slug: 'kenya', goal: 'trabajo', expected: 'AFRICAN_COASTAL' },
   { label: 'Ciudad de México / amor → LATAM', cityName: 'Ciudad de México', slug: 'mexico', goal: 'amor', expected: 'LATAM' },
+  { label: 'Buenos Aires / amor → LATAM', cityName: 'Buenos Aires', slug: 'argentina', goal: 'amor', expected: 'LATAM' },
+  { label: 'Santiago / amor → LATAM', cityName: 'Santiago', slug: 'chile', goal: 'amor', expected: 'LATAM' },
+  { label: 'Lima / amor → LATAM', cityName: 'Lima', slug: 'peru', goal: 'amor', expected: 'LATAM' },
   { label: 'Delhi / amor → SOUTH_ASIAN', cityName: 'Delhi', slug: 'india', goal: 'amor', expected: 'SOUTH_ASIAN' },
   { label: 'Bangkok / amor → SOUTHEAST_ASIAN', cityName: 'Bangkok', slug: 'thailand', goal: 'amor', expected: 'SOUTHEAST_ASIAN' },
   { label: 'París / amor → WESTERN_EUROPE', cityName: 'París', slug: 'france', goal: 'amor', expected: 'WESTERN_EUROPE' },

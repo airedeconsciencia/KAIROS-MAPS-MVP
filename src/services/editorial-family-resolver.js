@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f4.4-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f4.5-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -24,7 +24,7 @@
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (76 países) */
+  /** @type {Record<string, string>} slug canónico → familia (78 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -51,6 +51,8 @@
     ecuador: 'LATAM',
     costa_rica: 'LATAM',
     panama: 'LATAM',
+    paraguay: 'LATAM',
+    bolivia: 'LATAM',
     thailand: 'SOUTHEAST_ASIAN',
     singapore: 'SOUTHEAST_ASIAN',
     vietnam: 'SOUTHEAST_ASIAN',
@@ -203,6 +205,10 @@
     costa_rica: 'costa_rica',
     pa: 'panama',
     panama: 'panama',
+    py: 'paraguay',
+    paraguay: 'paraguay',
+    bo: 'bolivia',
+    bolivia: 'bolivia',
     th: 'thailand',
     thailand: 'thailand',
     tailandia: 'thailand',

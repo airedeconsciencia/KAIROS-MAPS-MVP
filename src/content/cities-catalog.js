@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f4.4-0.1';
-  var EXPECTED_CITY_COUNT = 79;
-  var EXPECTED_COUNTRY_COUNT = 76;
+  var SCHEMA_VERSION = '3.8f.1-f4.5-0.1';
+  var EXPECTED_CITY_COUNT = 81;
+  var EXPECTED_COUNTRY_COUNT = 78;
 
   var CITIES = [
     // Europa
@@ -49,6 +49,8 @@
     { name: 'Quito', country: 'Ecuador', lat: -0.1807, lon: -78.4678 },
     { name: 'San José', country: 'Costa Rica', lat: 9.9281, lon: -84.0907 },
     { name: 'Ciudad de Panamá', country: 'Panamá', lat: 8.9824, lon: -79.5199 },
+    { name: 'Asunción', country: 'Paraguay', lat: -25.2637, lon: -57.5759 },
+    { name: 'La Paz', country: 'Bolivia', lat: -16.4897, lon: -68.1193 },
     // Asia
     { name: 'Tokio', country: 'Japón', lat: 35.6762, lon: 139.6503 },
     { name: 'Seúl', country: 'Corea del Sur', lat: 37.5665, lon: 126.9780 },
@@ -134,6 +136,8 @@
     'Ecuador': 'ec',
     'Costa Rica': 'cr',
     'Panamá': 'pa',
+    'Paraguay': 'py',
+    'Bolivia': 'bo',
     'Japón': 'jp',
     'Corea del Sur': 'kr',
     'China': 'cn',
@@ -214,6 +218,8 @@
     'Ecuador': 'ecuador',
     'Costa Rica': 'costa_rica',
     'Panamá': 'panama',
+    'Paraguay': 'paraguay',
+    'Bolivia': 'bolivia',
     'Japón': 'japan',
     'Corea del Sur': 'south_korea',
     'China': 'china',
