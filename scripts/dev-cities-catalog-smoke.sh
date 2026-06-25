@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '85 ciudades (F4.7 SEA residual final expansion)',
-  Catalog.CITIES.length === 85,
+  '88 ciudades (F4.8 ANGLO Caribe expansion)',
+  Catalog.CITIES.length === 88,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '82 países únicos (F4.7 SEA residual final expansion)',
-  countries.length === 82,
+  '85 países únicos (F4.8 ANGLO Caribe expansion)',
+  countries.length === 85,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (82)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 82,
+  'COUNTRY_IDS alineados (85)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 85,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -576,9 +576,29 @@ f47Wave.forEach(function (entry) {
 });
 assert('F4.7 SEA residual final ciudades + slugs', f47Issues.length === 0, f47Issues.join(' · '));
 
+const f48Wave = [
+  { name: 'Kingston', countryId: 'jamaica', code: 'jm' },
+  { name: 'Port of Spain', countryId: 'trinidad_and_tobago', code: 'tt' },
+  { name: 'Bridgetown', countryId: 'barbados', code: 'bb' }
+];
+const f48Issues = [];
+f48Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f48Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f48Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f48Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F4.8 ANGLO Caribe ciudades + slugs', f48Issues.length === 0, f48Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f4.7',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.7-0.1',
+  'SCHEMA catálogo f4.8',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.8-0.1',
   Catalog.SCHEMA_VERSION
 );
 

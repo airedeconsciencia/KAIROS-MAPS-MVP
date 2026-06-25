@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f4.7-0.1';
-  var EXPECTED_CITY_COUNT = 85;
-  var EXPECTED_COUNTRY_COUNT = 82;
+  var SCHEMA_VERSION = '3.8f.1-f4.8-0.1';
+  var EXPECTED_CITY_COUNT = 88;
+  var EXPECTED_COUNTRY_COUNT = 85;
 
   var CITIES = [
     // Europa
@@ -51,6 +51,9 @@
     { name: 'Ciudad de Panamá', country: 'Panamá', lat: 8.9824, lon: -79.5199 },
     { name: 'Asunción', country: 'Paraguay', lat: -25.2637, lon: -57.5759 },
     { name: 'La Paz', country: 'Bolivia', lat: -16.4897, lon: -68.1193 },
+    { name: 'Kingston', country: 'Jamaica', lat: 17.9714, lon: -76.7926 },
+    { name: 'Port of Spain', country: 'Trinidad y Tobago', lat: 10.6596, lon: -61.5089 },
+    { name: 'Bridgetown', country: 'Barbados', lat: 13.0975, lon: -59.6167 },
     // Asia
     { name: 'Tokio', country: 'Japón', lat: 35.6762, lon: 139.6503 },
     { name: 'Seúl', country: 'Corea del Sur', lat: 37.5665, lon: 126.9780 },
@@ -142,6 +145,9 @@
     'Panamá': 'pa',
     'Paraguay': 'py',
     'Bolivia': 'bo',
+    'Jamaica': 'jm',
+    'Trinidad y Tobago': 'tt',
+    'Barbados': 'bb',
     'Japón': 'jp',
     'Corea del Sur': 'kr',
     'China': 'cn',
@@ -228,6 +234,9 @@
     'Panamá': 'panama',
     'Paraguay': 'paraguay',
     'Bolivia': 'bolivia',
+    'Jamaica': 'jamaica',
+    'Trinidad y Tobago': 'trinidad_and_tobago',
+    'Barbados': 'barbados',
     'Japón': 'japan',
     'Corea del Sur': 'south_korea',
     'China': 'china',

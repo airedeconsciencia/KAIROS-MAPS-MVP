@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f4.7-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f4.8-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -24,7 +24,7 @@
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (82 países) */
+  /** @type {Record<string, string>} slug canónico → familia (85 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -85,6 +85,9 @@
     canada: 'ANGLO',
     australia: 'ANGLO',
     new_zealand: 'ANGLO',
+    jamaica: 'ANGLO',
+    trinidad_and_tobago: 'ANGLO',
+    barbados: 'ANGLO',
     japan: 'EAST_ASIAN',
     south_korea: 'EAST_ASIAN',
     china: 'EAST_ASIAN',
@@ -277,6 +280,12 @@
     nz: 'new_zealand',
     new_zealand: 'new_zealand',
     nueva_zelandia: 'new_zealand',
+    jm: 'jamaica',
+    jamaica: 'jamaica',
+    tt: 'trinidad_and_tobago',
+    trinidad_and_tobago: 'trinidad_and_tobago',
+    bb: 'barbados',
+    barbados: 'barbados',
     jp: 'japan',
     japan: 'japan',
     japon: 'japan',
