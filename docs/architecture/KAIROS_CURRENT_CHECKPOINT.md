@@ -1,22 +1,28 @@
 # KAIROS MAPS — Current Checkpoint
 
 **Fecha:** 26 mayo 2026  
-**HEAD runtime:** `ce27836` — F3.17 África Este  
-**Checkpoint:** `docs/architecture/F3.17_AFRICA_ESTE_PRODUCTION_CHECKPOINT.md`  
-**Producción / Staging:** **`3.8f.1-f3.17-0.1`** · **70 ciudades / 67 países** · EFR **`3.8h.2-f3.17-0.1`** · **67 países resolver** · **11 familias**
+**HEAD runtime:** `36f9906` — F4.1 Levante  
+**Checkpoint prod:** `docs/architecture/F4.1_LEVANTE_PRODUCTION_CHECKPOINT.md`  
+**Producción / Staging:** **`3.8f.1-f4.1-0.1`** · **72 ciudades / 69 países** · EFR **`3.8h.2-f4.1-0.1`** · **69 países resolver** · **11 familias**
 
 ---
 
 ## Estado
 
-- **Wave E1:** cerrada (`f3.13c` · 8 países WE)
-- **Wave E2 Maghreb:** cerrada (`f3.14`)
-- **Wave F3.15 Asia Oriental:** cerrada (`f3.15`)
-- **Wave F3.16 Golfo:** cerrada (`f3.16`)
-- **Wave F3.17 África Este:** cerrada (`f3.17` · ET · TZ → AFRICAN_COASTAL)
-- **Fase 3 territorial:** cerrada — prod **70/67**
-- **WA 10/10** · São Paulo NO catálogo
-- **Maó/Menorca:** aparcado
+- **F4.0 Global Expansion Framework:** activo (SSOT docs)
+- **Wave F4.1 Levante:** cerrada (`f4.1` · IL · JO → MEDITERRANEAN · `EDITORIAL-OK`)
+- **Fase 3 territorial:** cerrada
+- **WA 10/10** · São Paulo NO catálogo · Maó/Menorca aparcado
+
+---
+
+## F4 — Documentación SSOT
+
+| Documento | Rol |
+|-----------|-----|
+| `GLOBAL_EXPANSION_BACKLOG.md` | Países pendientes · waves · dependencias |
+| `EDITORIAL_FAMILY_POLICY.md` | Reutilizar / crear / saturación familia |
+| `WAVE_PLANNER.md` | Reglas batch · gates · pipeline · STOP |
 
 ---
 
@@ -24,16 +30,16 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Ciudades | **70** |
-| Países visibles / resolver | **67** |
-| AFRICAN_COASTAL países resolver | **5** (ZA · EG · KE · ET · TZ) |
+| Ciudades | **72** |
+| Países visibles / resolver | **69** |
+| MEDITERRANEAN países resolver | **11** (vigilancia saturación) |
 | GN canary | Reykjavik / `iceland` |
 
 ---
 
 ## Smokes
 
-Suite estándar **9/9 PASS**.
+Suite estándar **9/9 PASS** (@ F4.1 prod).
 
 ---
 
@@ -42,14 +48,14 @@ Suite estándar **9/9 PASS**.
 - Cache browser `cities-catalog.js`
 - 5 smokes drift 6→11 (pre-existente)
 - `dist/` sucio local
-- Israel/Levante pendiente — requiere `EDITORIAL-OK`
+- MEDITERRANEAN saturación vigilancia (11 países)
 
 ---
 
 ## Siguiente
 
-**F4 — Global Expansion Framework.** Primera wave: **F4.1 Levante** (Israel · Jordania).
+**F4.3 África Este+** (Uganda · Ruanda) — prioridad backlog; alternancia regional post-Levante.
 
 ---
 
-*Checkpoint F3.17 · Prod 70/67 @ f3.17*
+*Checkpoint F4.1 · Prod 72/69 @ f4.1*
