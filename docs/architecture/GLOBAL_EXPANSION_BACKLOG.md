@@ -2,7 +2,7 @@
 
 **Fase:** F4.0 — Global Expansion Framework  
 **SSOT expansión territorial** · solo documentación  
-**Baseline prod:** `f4.4` · **79 ciudades / 76 países** · **11 familias**  
+**Baseline prod:** `f4.5` · **81 ciudades / 78 países** · **11 familias**  
 **Última revisión:** 26 mayo 2026
 
 > Este documento es la fuente de verdad para **qué falta**, **en qué wave** y **con qué dependencias**.  
@@ -28,7 +28,7 @@ Todos con **status: `live`** · wave histórica F2–F3 · catálogo + resolver 
 |--------|-------------------|---------|
 | Europa occidental/central/nórdica | `spain` `portugal` `france` `united_kingdom` `italy` `germany` `netherlands` `belgium` `switzerland` `austria` `poland` `czech_republic` `denmark` `sweden` `norway` `finland` `greece` `ireland` `hungary` | MED / WE / IBERIAN / ANGLO |
 | Europa / OM / Levante | `turkey` `morocco` `tunisia` `united_arab_emirates` `qatar` `saudi_arabia` `israel` `jordan` `croatia` | MEDITERRANEAN |
-| América | `united_states` `canada` `mexico` `argentina` `brazil` `peru` `colombia` `chile` `uruguay` `ecuador` `costa_rica` `panama` | LATAM / ANGLO |
+| América | `united_states` `canada` `mexico` `argentina` `brazil` `peru` `colombia` `chile` `uruguay` `ecuador` `costa_rica` `panama` `paraguay` `bolivia` | LATAM / ANGLO |
 | Asia oriental | `japan` `south_korea` `china` `taiwan` | EAST_ASIAN |
 | Sudeste asiático | `thailand` `singapore` `vietnam` `malaysia` `indonesia` `philippines` | SOUTHEAST_ASIAN |
 | Asia meridional | `india` `pakistan` `bangladesh` `sri_lanka` `nepal` | SOUTH_ASIAN |
@@ -50,6 +50,13 @@ Ordenado por **prioridad global** (ROI × cobertura × riesgo arquitectónico).
 |------|------|------|--------|
 | Israel | `israel` | F4.1 | `live` |
 | Jordania | `jordan` | F4.1 | `live` |
+
+### Cerrados F4.5 (live @ f4.5)
+
+| País | slug | Wave | status |
+|------|------|------|--------|
+| Paraguay | `paraguay` | F4.5 | `live` |
+| Bolivia | `bolivia` | F4.5 | `live` |
 
 ### Cerrados F4.4 (live @ f4.4)
 
@@ -84,8 +91,6 @@ Ordenado por **prioridad global** (ROI × cobertura × riesgo arquitectónico).
 
 | País | slug | Región | Familia propuesta | Ciudad ancla | Wave | Prioridad | Dependencias |
 |------|------|--------|-------------------|--------------|------|-----------|--------------|
-| Paraguay | `paraguay` | América del Sur | LATAM | Asunción | **F4.5** | P3 | — |
-| Bolivia | `bolivia` | América del Sur | LATAM | La Paz | **F4.5** | P3 | — |
 | Camboya | `cambodia` | Sudeste asiático | SOUTHEAST_ASIAN | Phnom Penh | **F4.6** | P3 | — |
 | Laos | `laos` | Sudeste asiático | SOUTHEAST_ASIAN | Vientián | **F4.6** | P3 | — |
 | Venezuela | `venezuela` | América del Sur | LATAM | Caracas | **F4.7** | P3 | **EDITORIAL-OK** |
@@ -119,9 +124,9 @@ Modo **densificación** — no incrementa países resolver; solo ciudades.
 
 | Hito | Ciudades | Países | Notas |
 |------|----------|--------|-------|
-| **Actual (F4.4)** | 79 | 76 | Baseline |
+| **Actual (F4.5)** | 81 | 78 | Baseline |
 | **F4 Q1 target** | ~79 | ~76 | ✅ F4.2 + F4.3 + F4.4 |
-| **F4 Q2 target** | ~82 | ~78 | F4.4–F4.6 + densificación selecta |
+| **F4 Q2 target** | ~82 | ~78 | ✅ F4.5 · pendiente F4.6 + densificación |
 | **Arquetipo layer (ref.)** | — | 51 | Objetivo diseño original; superado en prod |
 
 ---
@@ -135,4 +140,4 @@ Modo **densificación** — no incrementa países resolver; solo ciudades.
 
 ---
 
-*Backlog F4.4 · baseline prod 79/76 @ f4.4*
+*Backlog F4.5 · baseline prod 81/78 @ f4.5*
