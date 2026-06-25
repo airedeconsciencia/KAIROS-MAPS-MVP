@@ -82,7 +82,7 @@ const SA_PLUS_CITIES = [
   { name: 'Colombo', slug: 'sri_lanka' },
   { name: 'Kathmandu', slug: 'nepal' }
 ];
-const SA_COUNTRIES = ['india', 'pakistan', 'bangladesh', 'sri_lanka', 'nepal'];
+const SA_COUNTRIES = ['india', 'pakistan', 'bangladesh', 'sri_lanka', 'nepal', 'bhutan', 'maldives', 'afghanistan'];
 const DELHI_CITY = { name: 'Delhi', country: 'India', slug: 'india' };
 const GOALS = ['amor', 'trabajo', 'descanso'];
 const PLACEHOLDER_BAN = ['PLACEHOLDER', 'FIXME', 'lorem ipsum', '[TBD]', '[[', '{{'];
@@ -207,14 +207,14 @@ assert(
 );
 
 assert(
-  '88 ciudades / 85 países catálogo (F4.8 ANGLO Caribe; SA Wave A intacto)',
-  Catalog.CITIES.length === 88 && Catalog.getCountries().length === 85,
+  '91 ciudades / 88 países catálogo (F4.9 SOUTH_ASIAN residual; SA Wave A intacto)',
+  Catalog.CITIES.length === 91 && Catalog.getCountries().length === 88,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.8',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.8-0.1',
+  'SCHEMA catálogo f4.9',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.9-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -227,14 +227,14 @@ SA_PLUS_CITIES.forEach(function (entry) {
 });
 
 assert(
-  '85 países resolver (F4.8 ANGLO Caribe)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 85,
+  '88 países resolver (F4.9 SOUTH_ASIAN residual)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 88,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
 assert(
-  'SCHEMA f4.8',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.8-0.1',
+  'SCHEMA f4.9',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.9-0.1',
   EFR.SCHEMA_VERSION
 );
 
@@ -261,6 +261,27 @@ assert(
   EFR.coerceCountryId('Sri Lanka') === 'sri_lanka' &&
     EFR.resolveEditorialFamily({ cityName: 'Colombo', countryDisplay: 'Sri Lanka' }) === 'SOUTH_ASIAN',
   EFR.resolveEditorialFamily({ cityName: 'Colombo', countryDisplay: 'Sri Lanka' })
+);
+
+assert(
+  'Bután display → bhutan → SOUTH_ASIAN (F4.9)',
+  EFR.coerceCountryId('Bután') === 'bhutan' &&
+    EFR.resolveEditorialFamily({ cityName: 'Thimphu', countryDisplay: 'Bután' }) === 'SOUTH_ASIAN',
+  'bhutan'
+);
+
+assert(
+  'Maldivas display → maldives → SOUTH_ASIAN (F4.9)',
+  EFR.coerceCountryId('Maldivas') === 'maldives' &&
+    EFR.resolveEditorialFamily({ cityName: 'Malé', countryDisplay: 'Maldivas' }) === 'SOUTH_ASIAN',
+  'maldives'
+);
+
+assert(
+  'Afganistán display → afghanistan → SOUTH_ASIAN (F4.9)',
+  EFR.coerceCountryId('Afganistán') === 'afghanistan' &&
+    EFR.resolveEditorialFamily({ cityName: 'Kabul', countryDisplay: 'Afganistán' }) === 'SOUTH_ASIAN',
+  'afghanistan'
 );
 
 assert(

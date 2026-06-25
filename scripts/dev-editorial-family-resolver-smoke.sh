@@ -88,23 +88,23 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f4.8',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.8-0.1',
+  'SCHEMA f4.9',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.9-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
-  '85 países en COUNTRY_EDITORIAL_FAMILY',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 85,
+  '88 países en COUNTRY_EDITORIAL_FAMILY',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 88,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '88 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 88,
+  '91 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 91,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('85 países en catálogo', countries.length === 85, 'count=' + countries.length);
+assert('88 países en catálogo', countries.length === 88, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -126,8 +126,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '88 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 88,
+  '91 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 91,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -210,7 +210,10 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Bandar Seri Begawan', country: 'Brunéi', expected: 'SOUTHEAST_ASIAN' },
   { city: 'Kingston', country: 'Jamaica', expected: 'ANGLO' },
   { city: 'Port of Spain', country: 'Trinidad y Tobago', expected: 'ANGLO' },
-  { city: 'Bridgetown', country: 'Barbados', expected: 'ANGLO' }
+  { city: 'Bridgetown', country: 'Barbados', expected: 'ANGLO' },
+  { city: 'Thimphu', country: 'Bután', expected: 'SOUTH_ASIAN' },
+  { city: 'Malé', country: 'Maldivas', expected: 'SOUTH_ASIAN' },
+  { city: 'Kabul', country: 'Afganistán', expected: 'SOUTH_ASIAN' }
 ];
 
 const splitBrainHits = [];
@@ -228,7 +231,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('79 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('82 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 const resolverDuplicates = [
   typeof Narrative.resolveRegionFamily === 'function',
@@ -319,7 +322,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (79 casos)',
+  'Pipeline knowledge ≡ narrative (82 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );

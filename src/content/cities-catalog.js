@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8f.1-f4.8-0.1';
-  var EXPECTED_CITY_COUNT = 88;
-  var EXPECTED_COUNTRY_COUNT = 85;
+  var SCHEMA_VERSION = '3.8f.1-f4.9-0.1';
+  var EXPECTED_CITY_COUNT = 91;
+  var EXPECTED_COUNTRY_COUNT = 88;
 
   var CITIES = [
     // Europa
@@ -75,6 +75,9 @@
     { name: 'Dhaka', country: 'Bangladesh', lat: 23.8103, lon: 90.4125 },
     { name: 'Colombo', country: 'Sri Lanka', lat: 6.9271, lon: 79.8612 },
     { name: 'Kathmandu', country: 'Nepal', lat: 27.7172, lon: 85.3240 },
+    { name: 'Thimphu', country: 'Bután', lat: 27.4712, lon: 89.6339 },
+    { name: 'Malé', country: 'Maldivas', lat: 4.1755, lon: 73.5093 },
+    { name: 'Kabul', country: 'Afganistán', lat: 34.5553, lon: 69.2075 },
     // África
     { name: 'Casablanca', country: 'Marruecos', lat: 33.5731, lon: -7.5898 },
     { name: 'Túnez', country: 'Túnez', lat: 36.8065, lon: 10.1815 },
@@ -167,6 +170,9 @@
     'Bangladesh': 'bd',
     'Sri Lanka': 'lk',
     'Nepal': 'np',
+    'Bután': 'bt',
+    'Maldivas': 'mv',
+    'Afganistán': 'af',
     'Sudáfrica': 'za',
     'Egipto': 'eg',
     'Emiratos Árabes Unidos': 'ae',
@@ -256,6 +262,9 @@
     'Bangladesh': 'bangladesh',
     'Sri Lanka': 'sri_lanka',
     'Nepal': 'nepal',
+    'Bután': 'bhutan',
+    'Maldivas': 'maldives',
+    'Afganistán': 'afghanistan',
     'Sudáfrica': 'south_africa',
     'Egipto': 'egypt',
     'Emiratos Árabes Unidos': 'united_arab_emirates',

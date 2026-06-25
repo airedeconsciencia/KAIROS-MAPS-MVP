@@ -25,7 +25,7 @@ PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
 echo ""
 echo "══════════════════════════════════════════════════════════"
 echo " KAIROS MAPS — LATAM editorial integration (F3.8c Wave A)"
-echo " Scope: 88/85 catálogo · CR/PA/PY/BO · amends · regresiones · anti-leak"
+echo " Scope: 91/88 catálogo · CR/PA/PY/BO · amends · regresiones · anti-leak"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -199,14 +199,14 @@ function scanReading(reading, slug) {
 }
 
 assert(
-  '88 ciudades / 85 países catálogo (F4.8 ANGLO Caribe; LATAM Wave A intacto)',
-  Catalog.CITIES.length === 88 && Catalog.getCountries().length === 85,
+  '91 ciudades / 88 países catálogo (F4.9 SOUTH_ASIAN residual; LATAM Wave A intacto)',
+  Catalog.CITIES.length === 91 && Catalog.getCountries().length === 88,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.8',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.8-0.1',
+  'SCHEMA catálogo f4.9',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.9-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -240,14 +240,14 @@ assert(
 );
 
 assert(
-  '85 países resolver (F4.8 ANGLO Caribe)',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 85,
+  '88 países resolver (F4.9 SOUTH_ASIAN residual)',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 88,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 
 assert(
-  'SCHEMA f4.8',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.8-0.1',
+  'SCHEMA f4.9',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.9-0.1',
   EFR.SCHEMA_VERSION
 );
 

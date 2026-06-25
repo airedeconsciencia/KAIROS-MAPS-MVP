@@ -204,14 +204,14 @@ function composeReading(city, goal, slug) {
 }
 
 assert(
-  '88 ciudades / 85 países catálogo (F4.8 ANGLO Caribe)',
-  Catalog.CITIES.length === 88 && Catalog.getCountries().length === 85,
+  '91 ciudades / 88 países catálogo (F4.9 SOUTH_ASIAN residual)',
+  Catalog.CITIES.length === 91 && Catalog.getCountries().length === 88,
   'cities=' + Catalog.CITIES.length + ' countries=' + Catalog.getCountries().length
 );
 
 assert(
-  'SCHEMA catálogo f4.8',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f4.8-0.1',
+  'SCHEMA catálogo f4.9',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f4.9-0.1',
   Catalog.SCHEMA_VERSION
 );
 
@@ -314,8 +314,8 @@ assert(
 );
 
 assert(
-  'SCHEMA resolver f4.8 (85 países)',
-  EFR.SCHEMA_VERSION === '3.8h.2-f4.8-0.1',
+  'SCHEMA resolver f4.9 (88 países)',
+  EFR.SCHEMA_VERSION === '3.8h.2-f4.9-0.1',
   EFR.SCHEMA_VERSION
 );
 
