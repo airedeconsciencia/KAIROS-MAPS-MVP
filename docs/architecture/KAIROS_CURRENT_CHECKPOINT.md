@@ -1,34 +1,26 @@
 # KAIROS MAPS — Current Checkpoint
 
 **Fecha:** 26 mayo 2026  
-**HEAD runtime:** `0b42bad` — F5.2 East Asia + SEA Closure  
-**Checkpoint prod:** `docs/architecture/F5.2_EAST_ASIA_SEA_CLOSURE_PRODUCTION_CHECKPOINT.md`  
-**Producción / Staging:** **`3.8f.1-f5.2-0.1`** · **102 ciudades / 99 países** · EFR **`3.8h.2-f5.2-0.1`** · **99 países resolver** · **11 familias**
+**HEAD runtime:** `e7ca4a7` — F6.1 MENA Migration  
+**Checkpoint prod:** `docs/architecture/F6.1_MENA_MIGRATION_PRODUCTION_CHECKPOINT.md`  
+**Producción / Staging:** catálogo **`3.8f.1-f5.2-0.1`** · resolver **`3.8h.2-f6.1-0.1`** · **102 ciudades / 99 países** · **12 familias**
 
 ---
 
 ## Estado
 
 - **F4.0 Global Expansion Framework:** activo (SSOT docs)
-- **Wave F4.1 Levante:** cerrada (`f4.1`)
-- **Wave F4.2 Europa residual:** cerrada (`f4.2` · IE/HR/HU)
-- **Wave F4.3 África Este+:** cerrada (`f4.3`)
-- **Wave F4.4 África Austral:** cerrada (`f4.4` · AO/MZ)
-- **Wave F4.5 LATAM residual:** cerrada (`f4.5` · PY/BO)
-- **Wave F4.6 SEA residual:** cerrada (`f4.6` · KH/LA)
-- **Wave F4.7 SEA residual final:** cerrada (`f4.7` · MM/BN)
-- **Wave F4.8 ANGLO Caribe:** cerrada (`f4.8` · JM/TT/BB)
-- **Wave F4.9 SOUTH_ASIAN residual:** cerrada (`f4.9` · BT/MV/AF)
-- **Wave F4.10 WEST_AFRICAN Sahel:** cerrada (`f4.10` · ML/BF/NE)
-- **Wave F4.11 AFRICAN_COASTAL Southern:** cerrada (`f4.11` · MG/MU/NA)
-- **Wave F5.1 ANGLO Caribbean II:** cerrada (`f5.1` · BS/BZ/GY)
-- **Wave F5.2 East Asia + SEA Closure:** cerrada (`f5.2` · MN/TL)
+- **Wave F4.1–F4.11:** cerradas
+- **Wave F5.1 ANGLO Caribbean II:** cerrada (`f5.1`)
+- **Wave F5.2 East Asia + SEA Closure:** cerrada (`f5.2`)
+- **F6.0 MENA Architecture Sprint:** cerrada (`f6.0` · packs · 0 países)
+- **Wave F6.1 MENA Migration:** cerrada (`f6.1` · AE/QA/SA/IL/JO)
 - **F5.0 Family Architecture Audit:** entregada (READ-ONLY)
 - **WA 13/13** · São Paulo NO catálogo · Maó/Menorca aparcado
 
 ---
 
-## F4/F5 — Documentación SSOT
+## F4/F5/F6 — Documentación SSOT
 
 | Documento | Rol |
 |-----------|-----|
@@ -44,6 +36,8 @@
 |---------|-------|
 | Ciudades | **102** |
 | Países visibles / resolver | **99** |
+| **MENA** países resolver | **5** |
+| **MEDITERRANEAN** países resolver | **7** |
 | EAST_ASIAN países resolver | **5** |
 | SOUTHEAST_ASIAN países resolver | **11** (ASEAN completo) |
 | ANGLO países resolver | **11** (⚠️ vigilancia umbral 12) |
@@ -52,33 +46,33 @@
 | AFRICAN_COASTAL países resolver | **12** (🔒 congelada) |
 | LATAM países resolver | **12** (🔒 congelada) |
 | WESTERN_EUROPE países resolver | **14** (🔒 congelada) |
-| MEDITERRANEAN países resolver | **12** (🔒 congelada) |
-| GN canary | Reykjavik / `iceland` |
+| GN canario | Reykjavik / `iceland` |
 
 ---
 
 ## Smokes
 
-Suite estándar **9/9 PASS** (@ F5.2 prod).
+Suite **10/10 PASS** (@ F6.1 prod): 9 estándar + `dev-mena-architecture-smoke.sh`
 
 ---
 
 ## Riesgos vivos
 
-- Cache browser `cities-catalog.js`
+- Cache browser `cities-catalog.js` / `editorial-family-resolver.js`
 - `dist/` sucio local (rsync deploy-prod; no commitear)
-- ANGLO @ 11 países — 1 slot Surinam antes de umbral 12
-- Familias congeladas: WE · MED · LATAM · WA · AC
-- MENA sprint (F6.0) pendiente antes de Líbano/Kuwait/Omán
-- Corea del Norte requiere `EDITORIAL-OK` si wave EAST_ASIAN
+- Lecturas MENA live en Dubái/Tel Aviv — monitorizar anti-leak post-migración
+- Israel — país sensible; vigilancia editorial continua
+- ANGLO @ 11 — 1 slot Surinam antes de umbral 12
+- Familias congeladas: WE · LATAM · WA · AC
+- Líbano requiere `EDITORIAL-OK` antes de F6.2 territorial
 
 ---
 
 ## Siguiente
 
-**F5.3** — Surinam ANGLO (último slot umbral 12).  
-**F6.0** — sprint arquitectura MENA @ plateau ~100 países.
+**F6.2** — expansión territorial MENA (LB/KW/OM).  
+**F5.3** — Surinam ANGLO (último slot umbral 12).
 
 ---
 
-*Checkpoint F5.2 · Prod 102/99 @ f5.2 · F5.2 COMPLETADA*
+*Checkpoint F6.1 · Prod 102/99 @ f6.1 · F6.1 COMPLETADA*

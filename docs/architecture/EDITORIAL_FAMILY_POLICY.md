@@ -1,20 +1,22 @@
 # EDITORIAL FAMILY POLICY
 
-**Fase:** F4.0 — Global Expansion Framework  
+**Fase:** F4.0 — Global Expansion Framework (actualizado F6.1)  
 **Ámbito:** decisiones de familia editorial en expansión territorial  
-**Runtime afectado (futuro):** `editorial-family-resolver.js` + servicios narrativa/premium/knowledge  
+**Runtime afectado:** `editorial-family-resolver.js` + servicios narrativa/premium/knowledge  
 **Última revisión:** 26 mayo 2026
 
-> Las **11 familias registradas** son el set cerrado hasta nueva decisión explícita.  
+> Las **12 familias registradas** son el set actual.  
 > Esta política define **cuándo reutilizar**, **cuándo crear** y **cuándo una familia está saturada**.
 
 ---
 
-## I. Familias registradas (estado actual)
+## I. Familias registradas (estado actual @ f6.1)
 
-`IBERIAN` · `MEDITERRANEAN` · `ANGLO` · `EAST_ASIAN` · `AFRICAN_COASTAL` · `LATAM` · `WESTERN_EUROPE` · `SOUTHEAST_ASIAN` · `SOUTH_ASIAN` · `WEST_AFRICAN` · `GLOBAL_NEUTRAL`
+`IBERIAN` · `MEDITERRANEAN` · `ANGLO` · `EAST_ASIAN` · `AFRICAN_COASTAL` · `LATAM` · `WESTERN_EUROPE` · `SOUTHEAST_ASIAN` · `SOUTH_ASIAN` · `WEST_AFRICAN` · **`MENA`** · `GLOBAL_NEUTRAL`
 
 **DEFAULT:** `GLOBAL_NEUTRAL` — países no mapeados (canario: Reykjavik / `iceland`).
+
+**MENA live (5):** `united_arab_emirates` · `qatar` · `saudi_arabia` · `israel` · `jordan`
 
 ---
 
@@ -26,16 +28,16 @@
 |---|-------------------|--------|
 | 1 | **Precedente resolver** | ≥1 país del mismo macro-corredor ya mapeado a esa familia |
 | 2 | **Packs editoriales** | Familia tiene tablas completas en narrative + premium + knowledge |
-| 3 | **Smoke split-brain** | País nuevo no genera slug/display mismatch en suite 9 smokes |
+| 3 | **Smoke split-brain** | País nuevo no genera slug/display mismatch en suite smokes |
 | 4 | **Anti-leak** | Lecturas de ciudad ancla no activan `REGIONAL_FALLBACK_BAN_MARKERS` de otra familia |
 | 5 | **Riesgo editorial** | Sin conflicto geopolítico/cultural que requiera copy dedicado |
 
-### Precedentes F3 validados
+### Precedentes validados
 
 | Decisión | Familia elegida | Motivo |
 |----------|-----------------|--------|
 | Marruecos · Túnez | MEDITERRANEAN (no AFRICAN_COASTAL) | Corredor mediterráneo; decisión estratégica explícita |
-| UAE · QA · SA | MEDITERRANEAN | Precedente Turquía; sin familia Golfo |
+| UAE · QA · SA · IL · JO | **MENA** (F6.1) | Migrados desde MED; packs MENA F6.0 |
 | China · Taiwán | EAST_ASIAN | Japón/Corea ya anclan |
 | Etiopía · Tanzania | AFRICAN_COASTAL (no EAST_AFRICAN) | Kenia ya ancla; packs AC completos |
 
@@ -44,7 +46,8 @@
 | Macro-región | Familia default |
 |--------------|-----------------|
 | Europa occidental/central/nórdica | WESTERN_EUROPE |
-| Europa meridional / Levante / Golfo / Magreb | MEDITERRANEAN |
+| Europa meridional / Magreb | MEDITERRANEAN |
+| Golfo / Levante | **MENA** |
 | Iberia | IBERIAN (solo PT; ES → MED por país) |
 | Anglo / Oceanía | ANGLO |
 | Asia oriental | EAST_ASIAN |
@@ -73,15 +76,16 @@
 2. Propuesta de slug familia + lista `REGISTERED_FAMILIES`.
 3. Implementación packs en `narrative-intelligence-service.js`, `city-premium-composition-service.js`, `premium-knowledge-service.js`.
 4. Ampliar `REGIONAL_FALLBACK_BAN_MARKERS`.
-5. Smoke dedicado + actualización suite 9.
+5. Smoke dedicado + actualización suite smokes.
 6. **No crear familia nueva en wave territorial** sin completar pasos 3–5.
 
-### Familias rechazadas (F3)
+### Familias creadas / rechazadas
 
 | Propuesta | Decisión | Motivo |
 |-----------|----------|--------|
 | `EAST_AFRICAN` | Rechazada F3.17 | Kenia en AFRICAN_COASTAL; sin fallo de leak |
-| Familia Golfo | Rechazada F3.16 | MEDITERRANEAN absorbió con precedente TR |
+| Familia Golfo (F3) | Rechazada F3.16 | Absorbida temporalmente en MED |
+| **`MENA`** | **Creada F6.0** | Sprint arquitectura; migración F6.1 |
 
 ---
 
@@ -95,23 +99,22 @@ Una familia se considera **saturada** cuando cumple **≥2** de:
 | **Colisión narrativa** | ≥2 pares ciudad-ancla misma familia con conflict text duplicado en smokes dedup |
 | **Leak rate** | >0 hits anti-leak en integración regional tras 2 waves consecutivas en misma familia |
 | **Override ciudad** | >3 entradas en `CITY_EDITORIAL_FAMILY` para corregir país |
-| **Nombre semántico** | Nombre de familia induce error sistemático (ej. COASTAL + país sin costa) **y** leak rate >0 |
+| **Nombre semántico** | Nombre de familia induce error sistemático **y** leak rate >0 |
 
-### Acciones al detectar saturación
-
-1. **No** añadir más países a la familia en la wave actual.
-2. Auditar si el próximo batch requiere **familia nueva** o **override ciudad**.
-3. Documentar en checkpoint wave + actualizar esta política.
-
-### Estado saturación actual (F3.17)
+### Estado saturación actual (@ f6.1 prod)
 
 | Familia | Países | Saturada | Nota |
 |---------|--------|----------|------|
-| MEDITERRANEAN | 9 | ⚠️ vigilancia | Golfo + Magreb + sur Europa; monitorizar leak |
-| WESTERN_EUROPE | 12 | ⚠️ vigilancia | Cerca umbral heterogeneidad |
-| AFRICAN_COASTAL | 5 | ✅ OK | Corredor Este coherente post-F3.17 |
-| WEST_AFRICAN | 10 | ✅ OK | Familia dedicada con packs propios |
-| Resto | ≤6 | ✅ OK | — |
+| WESTERN_EUROPE | 14 | 🔒 congelada | — |
+| WEST_AFRICAN | 13 | 🔒 congelada | — |
+| AFRICAN_COASTAL | 12 | 🔒 congelada | — |
+| LATAM | 12 | 🔒 congelada | — |
+| MEDITERRANEAN | **7** | ✅ OK | Reducida post-F6.1 (era 12) |
+| **MENA** | **5** | ✅ OK | Activa; margen expansión F6.2+ |
+| SOUTHEAST_ASIAN | 11 | ✅ OK | ASEAN completo |
+| ANGLO | 11 | ⚠️ vigilancia | 1 slot Surinam @ 12 |
+| EAST_ASIAN | 5 | ✅ OK | — |
+| SOUTH_ASIAN | 8 | ✅ OK | — |
 
 ---
 
@@ -131,4 +134,4 @@ Una familia se considera **saturada** cuando cumple **≥2** de:
 
 ---
 
-*Política F4.0 · 11 familias @ f3.17*
+*Política F6.1 · 12 familias @ f6.1 prod*

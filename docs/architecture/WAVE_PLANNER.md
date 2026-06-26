@@ -1,7 +1,7 @@
 # WAVE PLANNER
 
 **Fase:** F4.0 — Global Expansion Framework  
-**Modo operativo:** AUTOPILOT v4  
+**Modo operativo:** AUTOPILOT v4/v5  
 **Última revisión:** 26 mayo 2026
 
 > Reglas permanentes para planificar, ejecutar y cerrar waves de expansión.  
@@ -14,9 +14,11 @@
 
 | Tipo | Incrementa países | Incrementa ciudades | Ejemplo |
 |------|-------------------|---------------------|---------|
-| **Territorial** | Sí (+2–3) | Sí (+2–3) | F3.17 Etiopía · Tanzania |
+| **Territorial** | Sí (+2–3) | Sí (+2–3) | F5.2 Mongolia · Timor-Leste |
 | **Densificación** | No | Sí (+1–2) | F3.10 Barcelona |
 | **Runtime editorial** | No | No | F3.3 WEST_AFRICAN packs |
+| **Arquitectura familia** | No | No | F6.0 MENA packs |
+| **Migración resolver** | No | No | F6.1 MED→MENA (5 países) |
 
 F4 prioriza **territorial** salvo entrada explícita en backlog §III (densificación).
 
@@ -66,7 +68,7 @@ Score rápido: **P1** = fuerte en 1–3 · **P2** = fuerte en 2–4 · **P3** = 
 ## V. Gates (máquina de estados)
 
 ```
-AUDIT → IMPLEMENT → SMOKES 9/9 → COMMIT → PUSH → STAGING → QA
+AUDIT → IMPLEMENT → SMOKES 10/10 → COMMIT → PUSH → STAGING → QA
     → READY FOR PROD → [humano: DEPLOY-PROD] → PROD QA → CHECKPOINT DOC → PUSH DOC
     → WAVE COMPLETADA
 ```
@@ -74,7 +76,7 @@ AUDIT → IMPLEMENT → SMOKES 9/9 → COMMIT → PUSH → STAGING → QA
 | Gate | Quién | Condición |
 |------|-------|-----------|
 | `EDITORIAL-OK` | Humano | País sensible (Israel, Líbano, Venezuela, Myanmar, China-level) |
-| `READY FOR PROD` | Autopilot | 9/9 smokes + staging QA curl |
+| `READY FOR PROD` | Autopilot | 10/10 smokes (9 estándar + MENA architecture si aplica) + staging QA curl |
 | `DEPLOY-PROD` | Humano | Única puerta a producción |
 | `WAVE COMPLETADA` | Autopilot | prod + staging + GitHub + checkpoint sincronizados |
 
@@ -99,7 +101,7 @@ AUDIT → IMPLEMENT → SMOKES 9/9 → COMMIT → PUSH → STAGING → QA
 
 ### Fase C — Validación
 
-- Suite **9 smokes** (obligatoria)
+- Suite **10 smokes** cuando MENA architecture aplica (9 estándar + `dev-mena-architecture-smoke.sh`); **9 smokes** en waves sin cambio de familias
 - Split-brain cases += N nuevas ciudades
 - Baselines `EXPECTED_*` en smokes regionales
 
@@ -140,9 +142,9 @@ Detener autopilot y escalar a humano si:
 
 | Artefacto | Patrón |
 |-----------|--------|
-| Wave ID | `F4.N` territorial · `F4.Dn` densificación |
-| Schema catálogo | `3.8f.1-f4.N-0.1` |
-| Schema resolver | `3.8h.2-f4.N-0.1` |
+| Wave ID | `F4.N` territorial · `F4.Dn` densificación · `F6.N` migración/arquitectura |
+| Schema catálogo | `3.8f.1-fX.Y-0.1` |
+| Schema resolver | `3.8h.2-fX.Y-0.1` |
 | Commit runtime | `f4.N resolver expansion <region> (<countries>)` |
 | Checkpoint | `F4.N_<REGION>_PRODUCTION_CHECKPOINT.md` |
 
@@ -158,4 +160,4 @@ Detener autopilot y escalar a humano si:
 
 ---
 
-*Wave Planner F4.0 · AUTOPILOT v4*
+*Wave Planner F6.1 · AUTOPILOT v5*

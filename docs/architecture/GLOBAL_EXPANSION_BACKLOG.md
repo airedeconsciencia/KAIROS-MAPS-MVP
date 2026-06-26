@@ -1,8 +1,8 @@
 # GLOBAL EXPANSION BACKLOG
 
-**Fase:** F5.x — Global Expansion Framework  
+**Fase:** F6.x — Global Expansion Framework  
 **SSOT expansión territorial** · solo documentación  
-**Baseline prod:** `f5.2` · **102 ciudades / 99 países** · **11 familias**  
+**Baseline prod:** `f6.1` · **102 ciudades / 99 países** · **12 familias**  
 **Última revisión:** 26 mayo 2026
 
 > Este documento es la fuente de verdad para **qué falta**, **en qué wave** y **con qué dependencias**.  
@@ -20,14 +20,15 @@
 
 ---
 
-## I. Registro live (99 países — referencia @ f5.2)
+## I. Registro live (99 países — referencia @ f6.1)
 
-Todos con **status: `live`** · waves F2–F5.2 · catálogo + resolver sincronizados @ `f5.2`.
+Todos con **status: `live`** · waves F2–F6.1 · catálogo + resolver sincronizados @ `f6.1`.
 
 | Región | Países live (slug) | Familia |
 |--------|-------------------|---------|
 | Europa occidental/central/nórdica | `france` `germany` `netherlands` `belgium` `switzerland` `austria` `poland` `czech_republic` `denmark` `sweden` `norway` `finland` `ireland` `hungary` | WESTERN_EUROPE |
-| Europa / OM / Levante / Magreb | `spain` `italy` `greece` `croatia` `turkey` `morocco` `tunisia` `united_arab_emirates` `qatar` `saudi_arabia` `israel` `jordan` | MEDITERRANEAN |
+| Europa meridional / Magreb | `spain` `italy` `greece` `croatia` `turkey` `morocco` `tunisia` | MEDITERRANEAN |
+| Golfo / Levante (migrados F6.1) | `united_arab_emirates` `qatar` `saudi_arabia` `israel` `jordan` | **MENA** |
 | Iberia | `portugal` | IBERIAN |
 | Anglo / Caribe / Oceanía | `united_kingdom` `united_states` `canada` `australia` `new_zealand` `jamaica` `trinidad_and_tobago` `barbados` `bahamas` `belize` `guyana` | ANGLO |
 | América Latina | `mexico` `argentina` `brazil` `peru` `colombia` `chile` `uruguay` `ecuador` `costa_rica` `panama` `paraguay` `bolivia` | LATAM |
@@ -43,51 +44,38 @@ Todos con **status: `live`** · waves F2–F5.2 · catálogo + resolver sincroni
 
 ## II. Backlog territorial — países pendientes
 
-Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
+Ordenado por **prioridad arquitectónica** post-F6.1.
 
-### Cerrados F5.2 (live @ f5.2)
+### Cerrados F6.1 — migración resolver (live @ f6.1)
+
+| País | slug | Wave | status | Nota |
+|------|------|------|--------|------|
+| Emiratos Árabes Unidos | `united_arab_emirates` | F6.1 | `live` | MED→MENA · sin catálogo nuevo |
+| Catar | `qatar` | F6.1 | `live` | MED→MENA |
+| Arabia Saudí | `saudi_arabia` | F6.1 | `live` | MED→MENA |
+| Israel | `israel` | F6.1 | `live` | MED→MENA |
+| Jordania | `jordan` | F6.1 | `live` | MED→MENA |
+
+### Cerrados F6.0 — arquitectura editorial (no territorial)
+
+| Item | Wave | status |
+|------|------|--------|
+| Familia **MENA** + 14 packs | F6.0 | `live` |
+
+### Cerrados F5.2 (live @ f6.1 bundle)
 
 | País | slug | Wave | status |
 |------|------|------|--------|
 | Mongolia | `mongolia` | F5.2 | `live` |
 | Timor-Leste | `timor_leste` | F5.2 | `live` |
 
-### Cerrados F5.1 (live @ f5.2 prod bundle)
+### Cerrados F5.1 (live @ f6.1 bundle)
 
 | País | slug | Wave | status |
 |------|------|------|--------|
 | Bahamas | `bahamas` | F5.1 | `live` |
 | Belice | `belize` | F5.1 | `live` |
 | Guyana | `guyana` | F5.1 | `live` |
-
-### Cerrados F4.11 (live @ f5.2 prod bundle)
-
-| País | slug | Wave | status |
-|------|------|------|--------|
-| Madagascar | `madagascar` | F4.11 | `live` |
-| Mauricio | `mauritius` | F4.11 | `live` |
-| Namibia | `namibia` | F4.11 | `live` |
-
-### Cerrados F4.8–F4.10 (live @ f5.2 prod bundle)
-
-| País | slug | Wave | status |
-|------|------|------|--------|
-| Jamaica | `jamaica` | F4.8 | `live` |
-| Trinidad y Tobago | `trinidad_and_tobago` | F4.8 | `live` |
-| Barbados | `barbados` | F4.8 | `live` |
-| Bután | `bhutan` | F4.9 | `live` |
-| Maldivas | `maldives` | F4.9 | `live` |
-| Afganistán | `afghanistan` | F4.9 | `live` |
-| Mali | `mali` | F4.10 | `live` |
-| Burkina Faso | `burkina_faso` | F4.10 | `live` |
-| Níger | `niger` | F4.10 | `live` |
-
-### Cerrados F4.7 (live @ f5.2 prod bundle)
-
-| País | slug | Wave | status |
-|------|------|------|--------|
-| Myanmar | `myanmar` | F4.7 | `live` |
-| Brunéi | `brunei` | F4.7 | `live` |
 
 ### P1 — Reutilizable (familias con margen)
 
@@ -96,16 +84,16 @@ Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 | Surinam | `suriname` | Caribe | ANGLO | Paramaribo | **F5.3** | P1 | último slot ANGLO @ 12 |
 | Corea del Norte | `north_korea` | Asia oriental | EAST_ASIAN | Pyongyang | **F5.4** | P1 | **EDITORIAL-OK** |
 
-### P2 — Requiere familia nueva (F6.0+)
+### P2 — Expansión MENA territorial (familia live F6.0)
 
 | País | slug | Región | Familia propuesta | Ciudad ancla | Wave | Prioridad | Dependencias |
 |------|------|--------|-------------------|--------------|------|-----------|--------------|
-| Líbano | `lebanon` | Levante | **MENA** | Beirut | **F6.1** | P2 | **F6.0** sprint + `EDITORIAL-OK` |
-| Kuwait | `kuwait` | Golfo | **MENA** | Ciudad de Kuwait | **F6.1** | P2 | **F6.0** |
-| Omán | `oman` | Golfo | **MENA** | Mascate | **F6.1** | P2 | **F6.0** |
-| Baréin | `bahrain` | Golfo | **MENA** | Manama | **F6.2** | P2 | **F6.0** |
-| Irak | `iraq` | Golfo | **MENA** | Bagdad | **F6.2** | P2 | **F6.0** |
-| Yemen | `yemen` | Golfo | **MENA** | Saná | **F6.2** | P2 | **F6.0** |
+| Líbano | `lebanon` | Levante | **MENA** | Beirut | **F6.2** | P2 | **EDITORIAL-OK** |
+| Kuwait | `kuwait` | Golfo | **MENA** | Ciudad de Kuwait | **F6.2** | P2 | — |
+| Omán | `oman` | Golfo | **MENA** | Mascate | **F6.2** | P2 | — |
+| Baréin | `bahrain` | Golfo | **MENA** | Manama | **F6.3** | P2 | — |
+| Irak | `iraq` | Golfo | **MENA** | Bagdad | **F6.3** | P2 | — |
+| Yemen | `yemen` | Golfo | **MENA** | Saná | **F6.3** | P2 | — |
 | Kazajistán | `kazakhstan` | Asia Central | **CENTRAL_ASIAN** | Astaná | **F7.1** | P2 | **F7.0** sprint |
 
 ### P3 — Bloqueados (familias congeladas)
@@ -126,15 +114,15 @@ Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 
 ---
 
-## III. Objetivos numéricos F5
+## III. Objetivos numéricos
 
 | Hito | Ciudades | Países | Notas |
 |------|----------|--------|-------|
-| **Actual (F5.2)** | 102 | 99 | ✅ Baseline prod |
+| **Actual (F6.1)** | 102 | 99 | ✅ Baseline prod |
 | **F5 plateau** | ~103 | ~100 | F5.3 Surinam |
-| **F6 MENA** | ~109 | ~106 | +6 tras sprint F6.0 |
+| **F6 MENA expansion** | ~105 | ~102 | F6.2 LB/KW/OM (+3) |
 | **F7 CENTRAL_ASIAN** | ~115 | ~112 | +5 tras sprint F7.0 |
-| **Target 120** | ~123 | ~120 | requiere 2 familias nuevas |
+| **Target 120** | ~123 | ~120 | requiere CENTRAL_ASIAN |
 
 ---
 
@@ -142,9 +130,9 @@ Ordenado por **prioridad arquitectónica** post-auditoría F5.0.
 
 1. Al cerrar una wave en prod, cambiar `planned` → `live` y anotar wave real.
 2. No añadir país sin fila en este backlog.
-3. Familias congeladas (WE · MED · LATAM · WA · AC): no wave territorial sin excepción documentada.
-4. MENA / CENTRAL_ASIAN: sprint arquitectura antes de wave territorial.
+3. Familias congeladas (WE · LATAM · WA · AC): no wave territorial sin excepción documentada.
+4. MENA territorial: familia ya live @ F6.0/F6.1 — solo catálogo+resolver en waves futuras.
 
 ---
 
-*Backlog F5.2 · baseline prod 102/99 @ f5.2*
+*Backlog F6.1 · baseline prod 102/99 @ f6.1*
