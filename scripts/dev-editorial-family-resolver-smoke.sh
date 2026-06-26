@@ -88,12 +88,12 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f6.1',
-  EFR.SCHEMA_VERSION === '3.8h.2-f6.1-0.1',
+  'SCHEMA f6.2',
+  EFR.SCHEMA_VERSION === '3.8h.2-f6.2-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
-  '12 familias registradas (F6.1)',
+  '12 familias registradas (F6.2)',
   EFR.REGISTERED_FAMILIES.length === 12 && EFR.isRegisteredFamily('MENA') === true,
   'count=' + EFR.REGISTERED_FAMILIES.length + ' mena=' + EFR.isRegisteredFamily('MENA')
 );
@@ -104,9 +104,9 @@ const medCountries = Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).filter(function (
   return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MEDITERRANEAN';
 });
 assert(
-  '5 countries MENA (F6.1 migration)',
-  menaCountries.length === 5 &&
-    ['united_arab_emirates', 'qatar', 'saudi_arabia', 'israel', 'jordan'].every(function (slug) {
+  '8 countries MENA (F6.2 expansion)',
+  menaCountries.length === 8 &&
+    ['united_arab_emirates', 'qatar', 'saudi_arabia', 'israel', 'jordan', 'lebanon', 'kuwait', 'oman'].every(function (slug) {
       return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MENA';
     }),
   'count=' + menaCountries.length + ' slugs=' + menaCountries.join(',')
@@ -132,18 +132,18 @@ assert(
   })
 );
 assert(
-  '99 países en COUNTRY_EDITORIAL_FAMILY',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 99,
+  '102 países en COUNTRY_EDITORIAL_FAMILY',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 102,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '102 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 102,
+  '105 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 105,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('99 países en catálogo', countries.length === 99, 'count=' + countries.length);
+assert('102 países en catálogo', countries.length === 102, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -165,8 +165,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '102 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 102,
+  '105 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 105,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -234,6 +234,9 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Dar es Salaam', country: 'Tanzania', expected: 'AFRICAN_COASTAL' },
   { city: 'Tel Aviv', country: 'Israel', expected: 'MENA' },
   { city: 'Amán', country: 'Jordania', expected: 'MENA' },
+  { city: 'Beirut', country: 'Líbano', expected: 'MENA' },
+  { city: 'Ciudad de Kuwait', country: 'Kuwait', expected: 'MENA' },
+  { city: 'Mascate', country: 'Omán', expected: 'MENA' },
   { city: 'Kampala', country: 'Uganda', expected: 'AFRICAN_COASTAL' },
   { city: 'Kigali', country: 'Ruanda', expected: 'AFRICAN_COASTAL' },
   { city: 'Dublín', country: 'Irlanda', expected: 'WESTERN_EUROPE' },
@@ -281,7 +284,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('93 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('96 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 assert(
   'mongolia → EAST_ASIAN (F5.2)',
@@ -401,7 +404,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (91 casos)',
+  'Pipeline knowledge ≡ narrative (96 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );

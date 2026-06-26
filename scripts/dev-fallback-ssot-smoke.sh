@@ -197,9 +197,9 @@ const menaSlugs = Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).filter(function (slu
   return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MENA';
 });
 assert(
-  '5 countries MENA (F6.1 migration)',
-  menaSlugs.length === 5 &&
-    ['united_arab_emirates', 'qatar', 'saudi_arabia', 'israel', 'jordan'].every(function (slug) {
+  '8 countries MENA (F6.2 expansion)',
+  menaSlugs.length === 8 &&
+    ['united_arab_emirates', 'qatar', 'saudi_arabia', 'israel', 'jordan', 'lebanon', 'kuwait', 'oman'].every(function (slug) {
       return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MENA';
     }),
   'slugs=' + menaSlugs.join(',')

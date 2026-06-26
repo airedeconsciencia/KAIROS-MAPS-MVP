@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f6.1-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f6.2-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -25,7 +25,7 @@
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (99 países) */
+  /** @type {Record<string, string>} slug canónico → familia (102 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -85,6 +85,9 @@
     saudi_arabia: 'MENA',
     israel: 'MENA',
     jordan: 'MENA',
+    lebanon: 'MENA',
+    kuwait: 'MENA',
+    oman: 'MENA',
     united_kingdom: 'ANGLO',
     united_states: 'ANGLO',
     canada: 'ANGLO',
@@ -206,6 +209,13 @@
     jo: 'jordan',
     jordan: 'jordan',
     jordania: 'jordan',
+    lb: 'lebanon',
+    lebanon: 'lebanon',
+    libano: 'lebanon',
+    kw: 'kuwait',
+    kuwait: 'kuwait',
+    om: 'oman',
+    oman: 'oman',
     mx: 'mexico',
     mexico: 'mexico',
     ar: 'argentina',

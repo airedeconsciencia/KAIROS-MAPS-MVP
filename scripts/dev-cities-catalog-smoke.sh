@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '102 ciudades (F5.2 East Asia + SEA closure)',
-  Catalog.CITIES.length === 102,
+  '105 ciudades (F6.2 MENA expansion)',
+  Catalog.CITIES.length === 105,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '99 países únicos (F5.2 East Asia + SEA closure)',
-  countries.length === 99,
+  '102 países únicos (F6.2 MENA expansion)',
+  countries.length === 102,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (99)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 99,
+  'COUNTRY_IDS alineados (102)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 102,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -695,9 +695,29 @@ f52Wave.forEach(function (entry) {
 });
 assert('F5.2 EAST_ASIAN + SOUTHEAST_ASIAN closure ciudades + slugs', f52Issues.length === 0, f52Issues.join(' · '));
 
+const f62Wave = [
+  { name: 'Beirut', countryId: 'lebanon', code: 'lb' },
+  { name: 'Ciudad de Kuwait', countryId: 'kuwait', code: 'kw' },
+  { name: 'Mascate', countryId: 'oman', code: 'om' }
+];
+const f62Issues = [];
+f62Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f62Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f62Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f62Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F6.2 MENA expansion ciudades + slugs', f62Issues.length === 0, f62Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f5.2',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f5.2-0.1',
+  'SCHEMA catálogo f6.2',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f6.2-0.1',
   Catalog.SCHEMA_VERSION
 );
 
