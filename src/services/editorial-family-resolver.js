@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '3.8h.2-f6.2-0.1';
+  var SCHEMA_VERSION = '3.8h.2-f6.3-0.1';
   var DEFAULT_FAMILY = 'GLOBAL_NEUTRAL';
 
   var REGISTERED_FAMILIES = [
@@ -25,7 +25,7 @@
     'GLOBAL_NEUTRAL'
   ];
 
-  /** @type {Record<string, string>} slug canónico → familia (102 países) */
+  /** @type {Record<string, string>} slug canónico → familia (103 países) */
   var COUNTRY_EDITORIAL_FAMILY = {
     portugal: 'IBERIAN',
     france: 'WESTERN_EUROPE',
@@ -99,6 +99,7 @@
     bahamas: 'ANGLO',
     belize: 'ANGLO',
     guyana: 'ANGLO',
+    suriname: 'ANGLO',
     japan: 'EAST_ASIAN',
     south_korea: 'EAST_ASIAN',
     china: 'EAST_ASIAN',
@@ -327,6 +328,9 @@
     belice: 'belize',
     gy: 'guyana',
     guyana: 'guyana',
+    sr: 'suriname',
+    suriname: 'suriname',
+    surinam: 'suriname',
     jp: 'japan',
     japan: 'japan',
     japon: 'japan',

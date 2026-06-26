@@ -80,8 +80,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'SCHEMA f6.2',
-  EFR.SCHEMA_VERSION === '3.8h.2-f6.2-0.1',
+  'SCHEMA f6.3',
+  EFR.SCHEMA_VERSION === '3.8h.2-f6.3-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(

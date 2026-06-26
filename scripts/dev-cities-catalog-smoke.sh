@@ -84,15 +84,15 @@ const validation = Catalog.validateCatalog();
 assert('validateCatalog interno', validation.ok, validation.issues.join(' · ') || 'ok');
 
 assert(
-  '105 ciudades (F6.2 MENA expansion)',
-  Catalog.CITIES.length === 105,
+  '106 ciudades (F6.3 ANGLO closure)',
+  Catalog.CITIES.length === 106,
   'count=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
 assert(
-  '102 países únicos (F6.2 MENA expansion)',
-  countries.length === 102,
+  '103 países únicos (F6.3 ANGLO closure)',
+  countries.length === 103,
   countries.map(function (c) { return c.name; }).join(', ')
 );
 
@@ -163,8 +163,8 @@ assert(
 );
 
 assert(
-  'COUNTRY_IDS alineados (102)',
-  Object.keys(Catalog.COUNTRY_IDS).length === 102,
+  'COUNTRY_IDS alineados (103)',
+  Object.keys(Catalog.COUNTRY_IDS).length === 103,
   'sample=' + Catalog.resolveCountryId('Pakistán')
 );
 
@@ -715,9 +715,27 @@ f62Wave.forEach(function (entry) {
 });
 assert('F6.2 MENA expansion ciudades + slugs', f62Issues.length === 0, f62Issues.join(' · '));
 
+const f63Wave = [
+  { name: 'Paramaribo', countryId: 'suriname', code: 'sr' }
+];
+const f63Issues = [];
+f63Wave.forEach(function (entry) {
+  const city = Catalog.findCityByName(entry.name);
+  if (!city) f63Issues.push('missing city ' + entry.name);
+  else {
+    if (Catalog.resolveCountryId(city.country) !== entry.countryId) {
+      f63Issues.push(entry.name + ' countryId=' + Catalog.resolveCountryId(city.country));
+    }
+    if (Catalog.resolveCountryCode(city.country) !== entry.code) {
+      f63Issues.push(entry.name + ' code=' + Catalog.resolveCountryCode(city.country));
+    }
+  }
+});
+assert('F6.3 ANGLO closure ciudades + slugs', f63Issues.length === 0, f63Issues.join(' · '));
+
 assert(
-  'SCHEMA catálogo f6.2',
-  Catalog.SCHEMA_VERSION === '3.8f.1-f6.2-0.1',
+  'SCHEMA catálogo f6.3',
+  Catalog.SCHEMA_VERSION === '3.8f.1-f6.3-0.1',
   Catalog.SCHEMA_VERSION
 );
 

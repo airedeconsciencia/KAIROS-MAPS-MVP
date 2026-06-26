@@ -88,12 +88,12 @@ function assert(label, ok, detail) {
 
 assert('KairosEditorialFamily cargado', !!EFR, 'schema=' + (EFR && EFR.SCHEMA_VERSION));
 assert(
-  'SCHEMA f6.2',
-  EFR.SCHEMA_VERSION === '3.8h.2-f6.2-0.1',
+  'SCHEMA f6.3',
+  EFR.SCHEMA_VERSION === '3.8h.2-f6.3-0.1',
   EFR.SCHEMA_VERSION
 );
 assert(
-  '12 familias registradas (F6.2)',
+  '12 familias registradas (F6.3)',
   EFR.REGISTERED_FAMILIES.length === 12 && EFR.isRegisteredFamily('MENA') === true,
   'count=' + EFR.REGISTERED_FAMILIES.length + ' mena=' + EFR.isRegisteredFamily('MENA')
 );
@@ -104,12 +104,23 @@ const medCountries = Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).filter(function (
   return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MEDITERRANEAN';
 });
 assert(
-  '8 countries MENA (F6.2 expansion)',
+  '8 countries MENA (F6.2 expansion intact)',
   menaCountries.length === 8 &&
     ['united_arab_emirates', 'qatar', 'saudi_arabia', 'israel', 'jordan', 'lebanon', 'kuwait', 'oman'].every(function (slug) {
       return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'MENA';
     }),
   'count=' + menaCountries.length + ' slugs=' + menaCountries.join(',')
+);
+const angloCountries = Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).filter(function (slug) {
+  return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'ANGLO';
+});
+assert(
+  '12 countries ANGLO (F6.3 closure)',
+  angloCountries.length === 12 &&
+    ['united_kingdom', 'united_states', 'canada', 'australia', 'new_zealand', 'jamaica', 'trinidad_and_tobago', 'barbados', 'bahamas', 'belize', 'guyana', 'suriname'].every(function (slug) {
+      return EFR.COUNTRY_EDITORIAL_FAMILY[slug] === 'ANGLO';
+    }),
+  'count=' + angloCountries.length + ' slugs=' + angloCountries.join(',')
 );
 assert(
   '7 countries MEDITERRANEAN post-F6.1',
@@ -132,18 +143,18 @@ assert(
   })
 );
 assert(
-  '102 países en COUNTRY_EDITORIAL_FAMILY',
-  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 102,
+  '103 países en COUNTRY_EDITORIAL_FAMILY',
+  Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length === 103,
   'count=' + Object.keys(EFR.COUNTRY_EDITORIAL_FAMILY).length
 );
 assert(
-  '105 ciudades del catálogo resuelven familia',
-  Catalog.CITIES.length === 105,
+  '106 ciudades del catálogo resuelven familia',
+  Catalog.CITIES.length === 106,
   'cities=' + Catalog.CITIES.length
 );
 
 const countries = Catalog.getCountries();
-assert('102 países en catálogo', countries.length === 102, 'count=' + countries.length);
+assert('103 países en catálogo', countries.length === 103, 'count=' + countries.length);
 
 const countryMismatches = [];
 countries.forEach(function (entry) {
@@ -165,8 +176,8 @@ Catalog.CITIES.forEach(function (city) {
   cityFamilies[city.name] = family;
 });
 assert(
-  '105 ciudades resuelven familia editorial',
-  Object.keys(cityFamilies).length === 105,
+  '106 ciudades resuelven familia editorial',
+  Object.keys(cityFamilies).length === 106,
   Object.keys(cityFamilies).length + ' ciudades'
 );
 
@@ -265,6 +276,7 @@ const SPLIT_BRAIN_CASES = [
   { city: 'Nassau', country: 'Bahamas', expected: 'ANGLO' },
   { city: 'Belmopán', country: 'Belice', expected: 'ANGLO' },
   { city: 'Georgetown', country: 'Guyana', expected: 'ANGLO' },
+  { city: 'Paramaribo', country: 'Surinam', expected: 'ANGLO' },
   { city: 'Ulán Bator', country: 'Mongolia', expected: 'EAST_ASIAN' },
   { city: 'Dili', country: 'Timor-Leste', expected: 'SOUTHEAST_ASIAN' }
 ];
@@ -284,7 +296,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
     splitBrainHits.push(c.city + ' slug/display mismatch ' + fromSlug + ' vs ' + fromDisplay);
   }
 });
-assert('96 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
+assert('97 casos split-brain = 0', splitBrainHits.length === 0, splitBrainHits.join(' · '));
 
 assert(
   'mongolia → EAST_ASIAN (F5.2)',
@@ -404,7 +416,7 @@ SPLIT_BRAIN_CASES.forEach(function (c) {
   }
 });
 assert(
-  'Pipeline knowledge ≡ narrative (96 casos)',
+  'Pipeline knowledge ≡ narrative (97 casos)',
   pipelineSplitBrain.length === 0,
   pipelineSplitBrain.join(' · ')
 );
