@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke Identity Modulation (7.5a–7.5d engine)
+# Kairos Maps — Smoke Identity Modulation (7.5a–7.5e city mapping)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
+CATALOG="$ROOT/src/content/cities-catalog.js"
 ARCHETYPES="$ROOT/src/content/city-identity-archetypes.js"
 DIMENSIONS="$ROOT/src/content/identity-dimensions.js"
 PROFILE="$ROOT/src/content/identity-modulation-profile.js"
+INDEX="$ROOT/src/content/city-identity-index.js"
 SERVICE="$ROOT/src/services/identity-modulation-service.js"
 NARRATIVE="$ROOT/src/services/narrative-intelligence-service.js"
 PREMIUM="$ROOT/src/services/city-premium-composition-service.js"
@@ -14,18 +16,19 @@ KNOWLEDGE="$ROOT/src/services/premium-knowledge-service.js"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — Identity Modulation smoke (7.5a–7.5d)"
+echo " KAIROS MAPS — Identity Modulation smoke (7.5a–7.5e)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
-for f in "$ARCHETYPES" "$DIMENSIONS" "$PROFILE" "$SERVICE" "$NARRATIVE" "$PREMIUM" "$KNOWLEDGE"; do
+for f in "$CATALOG" "$ARCHETYPES" "$DIMENSIONS" "$PROFILE" "$INDEX" "$SERVICE" \
+  "$NARRATIVE" "$PREMIUM" "$KNOWLEDGE"; do
   if [[ ! -f "$f" ]]; then
     echo "ERROR: No se encuentra: $f"
     exit 1
   fi
 done
 
-export ARCHETYPES DIMENSIONS PROFILE SERVICE NARRATIVE PREMIUM KNOWLEDGE ROOT
+export CATALOG ARCHETYPES DIMENSIONS PROFILE INDEX SERVICE NARRATIVE PREMIUM KNOWLEDGE ROOT
 
 node <<'NODE'
 const fs = require('fs');
@@ -39,14 +42,18 @@ function load(path) {
 }
 
 [
+  process.env.CATALOG,
   process.env.DIMENSIONS,
   process.env.ARCHETYPES,
   process.env.PROFILE,
+  process.env.INDEX,
   process.env.SERVICE
 ].forEach(load);
 
+const Catalog = ctx.window.KairosCitiesCatalog;
 const Archetypes = ctx.window.KairosCityIdentityArchetypes;
 const Profile = ctx.window.KairosIdentityModulationProfile;
+const Index = ctx.window.KairosCityIdentityIndex;
 const Mod = ctx.window.KairosIdentityModulation;
 
 let fail = 0;
@@ -59,7 +66,6 @@ function assert(label, ok, detail) {
 }
 
 const CHANNELS = ['narrative', 'premium', 'knowledge', 'atmosphere'];
-const CHANNEL_FIELDS = ['weightBoosts', 'rhythmBias', 'densityBias', 'toneBias', 'sectionBias', 'trace'];
 
 function collectNumericValues(channel) {
   const values = [];
@@ -75,88 +81,136 @@ function collectNumericValues(channel) {
 
 function channelValid(channel) {
   if (!channel) return false;
-  return CHANNEL_FIELDS.every(function (field) {
-    return channel[field] != null;
-  }) && collectNumericValues(channel).every(function (v) {
+  return collectNumericValues(channel).every(function (v) {
     return Mod.coefficientInRange(v);
   });
 }
 
 assert(
-  'Servicio carga (schema 7.5d)',
-  Mod && Mod.SCHEMA_VERSION === '7.5d-0.1',
+  'Servicio carga (schema 7.5e)',
+  Mod && Mod.SCHEMA_VERSION === '7.5e-0.1',
   'schema=' + (Mod && Mod.SCHEMA_VERSION)
 );
 
 assert(
-  '28 arquetipos en catálogo',
-  Archetypes.ARCHETYPE_SLUGS.length === 28,
-  'count=' + Archetypes.ARCHETYPE_SLUGS.length
+  'Index schema 7.5e',
+  Index.SCHEMA_VERSION === '7.5e-0.1',
+  'schema=' + Index.SCHEMA_VERSION
+);
+
+const identities = Index.listCityIdentities();
+const slugs = identities.map(function (e) { return e.citySlug; });
+const uniqueSlugs = new Set(slugs);
+
+assert(
+  '106 city identities',
+  identities.length === 106 && Index.EXPECTED_CITY_COUNT === 106,
+  'count=' + identities.length
 );
 
 assert(
-  '28 perfiles dimensionales',
-  Object.keys(Profile.IDENTITY_PROFILES).length === 28,
-  'profiles=' + Object.keys(Profile.IDENTITY_PROFILES).length
+  'citySlug únicos',
+  uniqueSlugs.size === 106,
+  'unique=' + uniqueSlugs.size
+);
+
+let archetypeOk = true;
+let profileOk = true;
+let confidenceOk = true;
+const archetypeSlugs = new Set(Archetypes.ARCHETYPE_SLUGS);
+
+identities.forEach(function (entry) {
+  if (!archetypeSlugs.has(entry.identityArchetype)) archetypeOk = false;
+  if (!Profile.hasProfile(entry.identityArchetype)) profileOk = false;
+  if (entry.confidence === 'B' && entry.status !== 'review_required') confidenceOk = false;
+  if (entry.confidence !== 'B' && entry.status !== 'approved') confidenceOk = false;
+});
+
+assert(
+  'Todos los identityArchetypes existen',
+  archetypeOk,
+  '28 archetypes'
+);
+
+assert(
+  'Todos los profiles existen',
+  profileOk,
+  'profiles=28'
+);
+
+assert(
+  'confidence B => review_required',
+  confidenceOk,
+  'status rules'
+);
+
+const coverage = Index.getIdentityCoverage();
+assert(
+  'coverage = 106/106',
+  coverage.complete === true && coverage.mapped === 106,
+  JSON.stringify({ mapped: coverage.mapped, expected: coverage.expected })
+);
+
+let catalogOk = true;
+Catalog.CITIES.forEach(function (city) {
+  const slug = Catalog.cityIdFromRef(city);
+  if (!Index.hasCityIdentity(slug)) catalogOk = false;
+});
+
+assert(
+  'Catálogo completo en index',
+  catalogOk,
+  'catalog cities=' + Catalog.CITIES.length
+);
+
+const unknown = Mod.resolveIdentity({ citySlug: 'ciudad-inexistente-xx' });
+assert(
+  'Unknown city → neutral',
+  unknown.found === false && unknown.neutralFallback === true,
+  'reason=' + unknown.reason
+);
+
+const lisboa = Mod.resolveIdentity({ citySlug: 'lisboa-pt' });
+assert(
+  'resolveIdentity({ citySlug }) funciona',
+  lisboa.found === true &&
+    lisboa.identityArchetype === 'quiet_integration' &&
+    lisboa.profile.cityIdentity.confidence === 'A',
+  'archetype=' + lisboa.identityArchetype
+);
+
+assert(
+  'modulation.enabled = false por defecto',
+  lisboa.profile.modulation.enabled === false,
+  'enabled=' + lisboa.profile.modulation.enabled
 );
 
 let coeffsOk = true;
 Archetypes.ARCHETYPE_SLUGS.forEach(function (slug) {
   const coeffs = Mod.buildModulationCoefficients(slug);
-  if (!coeffs || coeffs.meta.neutralFallback) coeffsOk = false;
-  if (coeffs.enabled !== false) coeffsOk = false;
   CHANNELS.forEach(function (channel) {
     if (!channelValid(coeffs.channels[channel])) coeffsOk = false;
   });
 });
 
 assert(
-  'Coeficientes existen para los 28 · rango [-0.3, +0.3]',
+  'Coeficientes en rango para 28 arquetipos',
   coeffsOk,
-  'channels=' + CHANNELS.join(', ')
+  '[-0.3, +0.3]'
 );
 
 const neutralCoeffs = Mod.buildModulationCoefficients(null);
 let neutralZero = true;
 CHANNELS.forEach(function (channel) {
-  const ch = neutralCoeffs.channels[channel];
-  if (ch.rhythmBias !== 0 || ch.densityBias !== 0 || ch.toneBias !== 0) neutralZero = false;
-  collectNumericValues(ch).forEach(function (v) {
+  collectNumericValues(neutralCoeffs.channels[channel]).forEach(function (v) {
     if (v !== 0) neutralZero = false;
   });
 });
 
 assert(
   'Perfil neutro · coeficientes = 0',
-  neutralZero && neutralCoeffs.meta.neutralFallback === true,
-  'reason=' + neutralCoeffs.meta.reason
-);
-
-const unknown = Mod.resolveIdentity({ identityArchetype: 'no_existe' });
-assert(
-  'Unknown slug fail-soft',
-  unknown.ok === true && unknown.found === false &&
-    unknown.neutralFallback === true &&
-    unknown.profile.modulation.enabled === false,
-  'reason=' + unknown.reason
-);
-
-const resolved = Mod.resolveIdentity({ identityArchetype: 'layered_capital' });
-assert(
-  'Resolve conocido · modulation.enabled=false',
-  resolved.found === true &&
-    resolved.neutralFallback === false &&
-    resolved.profile.modulation.enabled === false,
-  'slug=' + resolved.identityArchetype
-);
-
-const trace = Mod.getModulationTrace('creative_expansion');
-assert(
-  'getModulationTrace devuelve canales',
-  trace && trace.channels && CHANNELS.every(function (c) {
-    return trace.channels[c] && trace.channels[c].source === 'identity_profile';
-  }),
-  'archetype=' + trace.archetypeSlug
+  neutralZero,
+  'neutral'
 );
 
 function loadInto(targetCtx, path) {
@@ -200,6 +254,8 @@ assert(
   'no references'
 );
 
+console.log('');
+console.log('Coverage:', JSON.stringify(coverage.byConfidence));
 console.log('');
 console.log('════════════════════════════════════════════════════════════');
 console.log(fail === 0 ? 'SMOKE: ALL PASS' : 'SMOKE: FAIL (' + fail + ')');

@@ -1,14 +1,15 @@
 /**
- * KAIROS MAPS — Identity Modulation Service (Fase 7.5d engine)
+ * KAIROS MAPS — Identity Modulation Service (Fase 7.5e engine)
  *
  * Convierte perfiles dimensionales en coeficientes de modulación.
+ * Resuelve citySlug → identityArchetype → profile → coefficients.
  * Sin aplicación editorial · modulation.enabled=false por defecto.
  * No cableado en narrative / premium / knowledge.
  */
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '7.5d-0.1';
+  var SCHEMA_VERSION = '7.5e-0.1';
   var COEFF_MIN = -0.3;
   var COEFF_MAX = 0.3;
   var NEUTRAL_DIMENSION = 3;
@@ -18,6 +19,7 @@
   var Archetypes = window.KairosCityIdentityArchetypes;
   var Dimensions = window.KairosIdentityDimensions;
   var Profile = window.KairosIdentityModulationProfile;
+  var CityIndex = window.KairosCityIdentityIndex;
 
   function clamp(value, min, max) {
     if (value < min) return min;
@@ -311,24 +313,82 @@
     return Object.assign({}, ctx.profile.dimensions);
   }
 
-  function resolveIdentity(input) {
+  function resolveArchetypeSlugFromInput(input) {
     input = input || {};
     var citySlug = normalizeCitySlug(input);
-    var archetypeSlug = normalizeArchetypeSlug(input);
-    var ctx = resolveArchetypeContext(archetypeSlug);
+    var explicitSlug = normalizeArchetypeSlug(input);
 
+    if (citySlug && CityIndex && typeof CityIndex.hasCityIdentity === 'function' &&
+        CityIndex.hasCityIdentity(citySlug)) {
+      var cityEntry = CityIndex.getCityIdentity(citySlug);
+      return {
+        ok: true,
+        reason: 'city_identity_resolved',
+        slug: cityEntry.identityArchetype,
+        citySlug: citySlug,
+        cityIdentity: cityEntry
+      };
+    }
+
+    if (explicitSlug) {
+      return {
+        ok: true,
+        reason: 'archetype_slug_provided',
+        slug: explicitSlug,
+        citySlug: citySlug,
+        cityIdentity: null
+      };
+    }
+
+    return {
+      ok: false,
+      reason: citySlug ? 'identity_not_curated' : 'missing_city_slug',
+      slug: null,
+      citySlug: citySlug,
+      cityIdentity: null
+    };
+  }
+
+  function buildResolvedProfile(archetypeSlug, options) {
+    options = options || {};
+    var ctx = resolveArchetypeContext(archetypeSlug);
     if (!ctx.ok) {
-      var reason = archetypeSlug ? ctx.reason : 'missing_archetype_slug';
+      return null;
+    }
+    var coefficients = buildModulationCoefficients(ctx.slug, { enabled: false });
+    return {
+      schemaVersion: SCHEMA_VERSION,
+      neutralFallback: false,
+      identity: getIdentityProfile(ctx.slug),
+      dimensions: getDimensionProfile(ctx.slug),
+      cityIdentity: options.cityIdentity || null,
+      modulation: coefficients,
+      meta: {
+        reason: options.reason || 'identity_resolved',
+        citySlug: options.citySlug != null ? options.citySlug : null,
+        modulationEnabled: false,
+        profileConfidence: ctx.profile.metadata && ctx.profile.metadata.confidence,
+        cityConfidence: options.cityIdentity && options.cityIdentity.confidence,
+        cityStatus: options.cityIdentity && options.cityIdentity.status
+      }
+    };
+  }
+
+  function resolveIdentity(input) {
+    input = input || {};
+    var resolvedSlug = resolveArchetypeSlugFromInput(input);
+
+    if (!resolvedSlug.ok) {
       return {
         ok: true,
         found: false,
-        reason: reason,
-        citySlug: citySlug,
-        identityArchetype: archetypeSlug,
+        reason: resolvedSlug.reason,
+        citySlug: resolvedSlug.citySlug,
+        identityArchetype: null,
         neutralFallback: true,
         profile: getNeutralProfile({
-          reason: reason,
-          citySlug: citySlug
+          reason: resolvedSlug.reason,
+          citySlug: resolvedSlug.citySlug
         }),
         meta: {
           schemaVersion: SCHEMA_VERSION,
@@ -338,27 +398,40 @@
       };
     }
 
-    var coefficients = buildModulationCoefficients(ctx.slug, { enabled: false });
+    var profile = buildResolvedProfile(resolvedSlug.slug, {
+      citySlug: resolvedSlug.citySlug,
+      cityIdentity: resolvedSlug.cityIdentity,
+      reason: resolvedSlug.reason
+    });
+
+    if (!profile) {
+      return {
+        ok: true,
+        found: false,
+        reason: 'missing_dimension_profile',
+        citySlug: resolvedSlug.citySlug,
+        identityArchetype: resolvedSlug.slug,
+        neutralFallback: true,
+        profile: getNeutralProfile({
+          reason: 'missing_dimension_profile',
+          citySlug: resolvedSlug.citySlug
+        }),
+        meta: {
+          schemaVersion: SCHEMA_VERSION,
+          neutralFallback: true,
+          modulationEnabled: false
+        }
+      };
+    }
+
     return {
       ok: true,
       found: true,
-      reason: 'identity_resolved',
-      citySlug: citySlug,
-      identityArchetype: ctx.slug,
+      reason: resolvedSlug.reason,
+      citySlug: resolvedSlug.citySlug,
+      identityArchetype: resolvedSlug.slug,
       neutralFallback: false,
-      profile: {
-        schemaVersion: SCHEMA_VERSION,
-        neutralFallback: false,
-        identity: getIdentityProfile(ctx.slug),
-        dimensions: getDimensionProfile(ctx.slug),
-        modulation: coefficients,
-        meta: {
-          reason: 'identity_resolved',
-          citySlug: citySlug,
-          modulationEnabled: false,
-          profileConfidence: ctx.profile.metadata && ctx.profile.metadata.confidence
-        }
-      },
+      profile: profile,
       meta: {
         schemaVersion: SCHEMA_VERSION,
         neutralFallback: false,

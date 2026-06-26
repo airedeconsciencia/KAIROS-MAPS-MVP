@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Kairos Maps — Identity Modulation Engine (7.5d DEV)</title>
+  <title>Kairos Maps — Identity Modulation Engine (7.5e DEV)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -55,20 +55,23 @@
       color: #9ca3af;
     }
     pre { margin: 0; white-space: pre-wrap; color: #d1d5db; font-size: 12px; }
-    .tag-ok { color: #86efac; }
-    .tag-warn { color: #fcd34d; }
   </style>
 </head>
 <body>
-  <div class="dev-banner">DEV ONLY · 7.5d Identity Modulation Engine · coefficients only · not wired</div>
+  <div class="dev-banner">DEV ONLY · 7.5e City Identity Mapping · 106 ciudades · modulation disabled</div>
   <div class="page">
     <h1>Identity Modulation Engine Lab</h1>
-    <p class="sub">Motor F7.5d · coeficientes derivados de dimensiones · modulation.enabled=false · sin aplicación editorial.</p>
+    <p class="sub">citySlug → archetype → dimensions → coefficients · sin aplicación editorial.</p>
 
     <div class="toolbar">
-      <select id="archetype-select" aria-label="Arquetipo"></select>
+      <select id="city-select" aria-label="Ciudad"></select>
       <button type="button" class="primary" id="btn-show">Mostrar</button>
-      <button type="button" id="btn-neutral">Perfil neutro</button>
+      <button type="button" id="btn-unknown">Ciudad desconocida</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">City identity</div>
+      <pre id="city-out">—</pre>
     </div>
 
     <div class="panel">
@@ -87,8 +90,8 @@
     </div>
 
     <div class="panel">
-      <div class="panel-title">Neutral fallback</div>
-      <pre id="fallback-out">—</pre>
+      <div class="panel-title">Confidence / status / fallback</div>
+      <pre id="status-out">—</pre>
     </div>
 
     <div class="panel">
@@ -100,76 +103,67 @@
   <script src="../content/identity-dimensions.js"></script>
   <script src="../content/city-identity-archetypes.js"></script>
   <script src="../content/identity-modulation-profile.js"></script>
+  <script src="../content/city-identity-index.js"></script>
   <script src="../services/identity-modulation-service.js"></script>
 
   <script>
 (function () {
   'use strict';
 
+  var Index = window.KairosCityIdentityIndex;
   var Archetypes = window.KairosCityIdentityArchetypes;
   var Mod = window.KairosIdentityModulation;
-  var select = document.getElementById('archetype-select');
+  var select = document.getElementById('city-select');
 
-  Archetypes.listArchetypeSlugs().forEach(function (slug) {
-    var entry = Archetypes.getArchetype(slug);
-    var opt = document.createElement('option');
-    opt.value = slug;
-    opt.textContent = entry.displayName + ' · ' + slug;
-    select.appendChild(opt);
-  });
+  Index.listCityIdentities()
+    .sort(function (a, b) { return a.catalogName.localeCompare(b.catalogName); })
+    .forEach(function (entry) {
+      var opt = document.createElement('option');
+      opt.value = entry.citySlug;
+      opt.textContent = entry.catalogName + ' · ' + entry.citySlug;
+      select.appendChild(opt);
+    });
 
-  function renderResolved(slug) {
-    var resolved = Mod.resolveIdentity({ identityArchetype: slug });
-    var archetype = Archetypes.getArchetype(slug);
-    var coeffs = Mod.buildModulationCoefficients(slug);
-    var trace = Mod.getModulationTrace(slug);
+  function renderCity(citySlug) {
+    var resolved = Mod.resolveIdentity({ citySlug: citySlug });
+    var profile = resolved.profile;
+    var archetype = resolved.identityArchetype
+      ? Archetypes.getArchetype(resolved.identityArchetype)
+      : null;
+    var trace = resolved.identityArchetype
+      ? Mod.getModulationTrace(resolved.identityArchetype)
+      : Mod.getModulationTrace(null);
 
-    document.getElementById('archetype-out').textContent = JSON.stringify({
-      id: archetype.id,
-      slug: archetype.slug,
-      displayName: archetype.displayName,
-      identity: resolved.profile.identity
-    }, null, 2);
-
-    document.getElementById('dimensions-out').textContent = JSON.stringify(
-      resolved.profile.dimensions, null, 2
+    document.getElementById('city-out').textContent = JSON.stringify(
+      profile.cityIdentity || { citySlug: citySlug, status: 'not_mapped' }, null, 2
     );
 
-    document.getElementById('coefficients-out').textContent = JSON.stringify({
-      enabled: coeffs.enabled,
-      channels: coeffs.channels
+    document.getElementById('archetype-out').textContent = JSON.stringify({
+      slug: resolved.identityArchetype,
+      displayName: archetype && archetype.displayName,
+      identity: profile.identity
     }, null, 2);
 
-    document.getElementById('fallback-out').textContent = JSON.stringify({
+    document.getElementById('dimensions-out').textContent = JSON.stringify(profile.dimensions, null, 2);
+    document.getElementById('coefficients-out').textContent = JSON.stringify(profile.modulation, null, 2);
+    document.getElementById('status-out').textContent = JSON.stringify({
+      confidence: profile.cityIdentity && profile.cityIdentity.confidence,
+      status: profile.cityIdentity && profile.cityIdentity.status,
       neutralFallback: resolved.neutralFallback,
       found: resolved.found,
       reason: resolved.reason,
-      modulationEnabled: resolved.profile.modulation.enabled
-    }, null, 2);
-
-    document.getElementById('trace-out').textContent = JSON.stringify(trace, null, 2);
-  }
-
-  function renderNeutral() {
-    var neutral = Mod.getNeutralProfile();
-    var coeffs = Mod.buildModulationCoefficients(null);
-    var trace = Mod.getModulationTrace(null);
-
-    document.getElementById('archetype-out').textContent = JSON.stringify(neutral.identity, null, 2);
-    document.getElementById('dimensions-out').textContent = JSON.stringify(neutral.dimensions, null, 2);
-    document.getElementById('coefficients-out').textContent = JSON.stringify(coeffs, null, 2);
-    document.getElementById('fallback-out').textContent = JSON.stringify({
-      neutralFallback: true,
-      reason: neutral.meta.reason
+      modulationEnabled: profile.modulation.enabled
     }, null, 2);
     document.getElementById('trace-out').textContent = JSON.stringify(trace, null, 2);
   }
 
   document.getElementById('btn-show').addEventListener('click', function () {
-    renderResolved(select.value);
+    renderCity(select.value);
   });
-  document.getElementById('btn-neutral').addEventListener('click', renderNeutral);
-  renderResolved(select.value);
+  document.getElementById('btn-unknown').addEventListener('click', function () {
+    renderCity('ciudad-inexistente-xx');
+  });
+  renderCity(select.value);
 })();
   </script>
 </body>
