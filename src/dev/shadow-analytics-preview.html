@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Shadow Analytics (7.9c DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: #0f1115;
+      color: #e5e7eb;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .dev-banner {
+      background: rgba(251, 191, 36, 0.1);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.35);
+      color: #fcd34d;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 980px; margin: 0 auto; padding: 20px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 18px; color: #fcd34d; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 12px; margin: 0 0 16px; max-width: 760px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+    button {
+      font: inherit;
+      cursor: pointer;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    button.primary { background: rgba(251, 191, 36, 0.12); border-color: #fcd34d; color: #fde68a; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+    .panel {
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .panel.full { grid-column: 1 / -1; }
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    pre { margin: 0; white-space: pre-wrap; color: #d1d5db; font-size: 12px; }
+    .chart { color: #fde68a; }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV ONLY · 7.9c Shadow Analytics · effective profiles · runtime impact: none</div>
+  <div class="page">
+    <h1>Shadow Analytics Lab</h1>
+    <p class="sub">Instrumentación del Shadow Runtime · solo métricas · sin texto editorial.</p>
+
+    <div class="toolbar">
+      <button type="button" class="primary" id="btn-refresh">Recalcular dataset</button>
+    </div>
+
+    <div class="grid">
+      <div class="panel full">
+        <div class="panel-title">Dataset Summary</div>
+        <pre id="dataset-out">—</pre>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Coverage</div>
+        <pre id="coverage-out">—</pre>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Variance</div>
+        <pre id="variance-out">—</pre>
+      </div>
+
+      <div class="panel full">
+        <div class="panel-title">Distribution · Archetypes (chart)</div>
+        <pre id="archetype-chart-out" class="chart">—</pre>
+      </div>
+
+      <div class="panel full">
+        <div class="panel-title">Distribution · Macro Identity (chart)</div>
+        <pre id="macro-chart-out" class="chart">—</pre>
+      </div>
+
+      <div class="panel full">
+        <div class="panel-title">Distribution · Editorial Family (chart)</div>
+        <pre id="family-chart-out" class="chart">—</pre>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Top Archetypes</div>
+        <pre id="top-archetypes-out">—</pre>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Top Dimensions</div>
+        <pre id="top-dimensions-out">—</pre>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Confidence Statistics</div>
+        <pre id="confidence-out">—</pre>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Dimension Statistics (10)</div>
+        <pre id="dimension-stats-out">—</pre>
+      </div>
+    </div>
+  </div>
+
+  <script src="../content/cities-catalog.js"></script>
+  <script src="../content/identity-dimensions.js"></script>
+  <script src="../content/city-identity-archetypes.js"></script>
+  <script src="../content/identity-modulation-profile.js"></script>
+  <script src="../content/city-identity-index.js"></script>
+  <script src="../content/city-signatures.js"></script>
+  <script src="../services/editorial-family-resolver.js"></script>
+  <script src="../services/identity-modulation-service.js"></script>
+  <script src="../services/identity-shadow-runtime-service.js"></script>
+  <script src="../services/shadow-comparison-service.js"></script>
+  <script src="../services/shadow-analytics-service.js"></script>
+
+  <script>
+(function () {
+  'use strict';
+
+  var Analytics = window.KairosShadowAnalytics;
+
+  function textBarChart(items, maxBars) {
+    maxBars = maxBars || 12;
+    var top = items.slice(0, maxBars);
+    if (!top.length) return '—';
+    var maxCount = top[0].count || 1;
+    return top.map(function (item) {
+      var width = Math.max(1, Math.round((item.count / maxCount) * 24));
+      return String(item.count).padStart(2, ' ') + ' │ ' +
+        '█'.repeat(width) + ' ' + item.key;
+    }).join('\n');
+  }
+
+  function render() {
+    var dataset = Analytics.computeDatasetAnalytics();
+    var archetypes = Analytics.computeArchetypeStatistics();
+    var dimensions = Analytics.computeDimensionStatistics();
+    var confidence = Analytics.computeConfidenceStatistics();
+
+    document.getElementById('dataset-out').textContent = JSON.stringify({
+      schemaVersion: dataset.schemaVersion,
+      datasetSize: dataset.datasetSize,
+      reviewRequired: dataset.reviewRequired,
+      neutralFallbackRate: dataset.neutralFallbackRate,
+      averageDimensionVariance: dataset.averageDimensionVariance,
+      averageCoefficientVariance: dataset.averageCoefficientVariance,
+      signatureAppliedCount: dataset.signatureAppliedCount,
+      signatureAppliedRate: dataset.signatureAppliedRate
+    }, null, 2);
+
+    document.getElementById('coverage-out').textContent = JSON.stringify(dataset.coverage, null, 2);
+
+    document.getElementById('variance-out').textContent = JSON.stringify({
+      averageDimensionVariance: dataset.averageDimensionVariance,
+      averageCoefficientVariance: dataset.averageCoefficientVariance,
+      dominantDimensions: dataset.dominantDimensions.slice(0, 5),
+      dominantChannels: dataset.dominantChannels.slice(0, 4)
+    }, null, 2);
+
+    document.getElementById('archetype-chart-out').textContent =
+      textBarChart(dataset.archetypeDistribution, 15);
+    document.getElementById('macro-chart-out').textContent =
+      textBarChart(dataset.macroIdentityDistribution, 11);
+    document.getElementById('family-chart-out').textContent =
+      textBarChart(dataset.familyDistribution, 12);
+
+    document.getElementById('top-archetypes-out').textContent = JSON.stringify(
+      archetypes
+        .slice()
+        .sort(function (a, b) { return b.cityCount - a.cityCount; })
+        .slice(0, 8)
+        .map(function (item) {
+          return {
+            archetypeSlug: item.archetypeSlug,
+            cityCount: item.cityCount,
+            aggregateVariance: item.variance.aggregate
+          };
+        }),
+      null, 2
+    );
+
+    document.getElementById('top-dimensions-out').textContent = JSON.stringify(
+      dimensions
+        .slice()
+        .sort(function (a, b) { return b.variance - a.variance; })
+        .slice(0, 5),
+      null, 2
+    );
+
+    document.getElementById('confidence-out').textContent = JSON.stringify(confidence, null, 2);
+    document.getElementById('dimension-stats-out').textContent = JSON.stringify(dimensions, null, 2);
+  }
+
+  document.getElementById('btn-refresh').addEventListener('click', render);
+  render();
+})();
+  </script>
+</body>
+</html>

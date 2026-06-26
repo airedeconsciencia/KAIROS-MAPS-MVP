@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Identity Shadow Runtime (7.9c DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: #0f1115;
+      color: #e5e7eb;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .dev-banner {
+      background: rgba(129, 140, 248, 0.12);
+      border-bottom: 1px solid rgba(129, 140, 248, 0.35);
+      color: #a5b4fc;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 960px; margin: 0 auto; padding: 20px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 18px; color: #a5b4fc; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 12px; margin: 0 0 16px; max-width: 760px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+    select, button {
+      font: inherit;
+      cursor: pointer;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    button.primary { background: rgba(129, 140, 248, 0.12); border-color: #a5b4fc; color: #c7d2fe; }
+    .panel {
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    pre { margin: 0; white-space: pre-wrap; color: #d1d5db; font-size: 12px; }
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(129, 140, 248, 0.15);
+      color: #c7d2fe;
+      border: 1px solid rgba(129, 140, 248, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV ONLY · 7.9c Shadow Signature Sync · effective profile · runtime impact: none</div>
+  <div class="page">
+    <h1>Identity Shadow Runtime Lab</h1>
+    <p class="sub">
+      Baseline neutro vs shadow effective profile · archetype + city signature ·
+      <span class="badge">modulation disabled</span>
+    </p>
+
+    <div class="toolbar">
+      <select id="city-select" aria-label="Ciudad"></select>
+      <button type="button" class="primary" id="btn-show">Mostrar</button>
+      <button type="button" id="btn-unknown">Ciudad desconocida</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Editorial Family</div>
+      <pre id="family-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Identity</div>
+      <pre id="identity-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Base Profile</div>
+      <pre id="base-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">City Signature</div>
+      <pre id="signature-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Effective Profile</div>
+      <pre id="effective-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Comparison (neutral vs effective)</div>
+      <pre id="dimensions-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Coefficients (effective)</div>
+      <pre id="coefficients-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Shadow Trace</div>
+      <pre id="trace-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Delta Summary</div>
+      <pre id="delta-out">—</pre>
+    </div>
+  </div>
+
+  <script src="../content/identity-dimensions.js"></script>
+  <script src="../content/city-identity-archetypes.js"></script>
+  <script src="../content/identity-modulation-profile.js"></script>
+  <script src="../content/city-identity-index.js"></script>
+  <script src="../content/city-signatures.js"></script>
+  <script src="../services/editorial-family-resolver.js"></script>
+  <script src="../services/identity-modulation-service.js"></script>
+  <script src="../services/identity-shadow-runtime-service.js"></script>
+  <script src="../services/shadow-comparison-service.js"></script>
+
+  <script>
+(function () {
+  'use strict';
+
+  var Index = window.KairosCityIdentityIndex;
+  var Archetypes = window.KairosCityIdentityArchetypes;
+  var Shadow = window.KairosIdentityShadowRuntime;
+  var Comparison = window.KairosShadowComparison;
+  var select = document.getElementById('city-select');
+
+  Index.listCityIdentities()
+    .sort(function (a, b) { return a.catalogName.localeCompare(b.catalogName); })
+    .forEach(function (entry) {
+      var opt = document.createElement('option');
+      opt.value = entry.citySlug;
+      opt.textContent = entry.catalogName + ' · ' + entry.citySlug;
+      select.appendChild(opt);
+    });
+
+  function renderCity(citySlug) {
+    var shadow = Shadow.computeShadowIdentity(citySlug);
+    var comparison = Comparison.computeComparison(citySlug);
+    var archetype = shadow.identityArchetype
+      ? Archetypes.getArchetype(shadow.identityArchetype)
+      : null;
+
+    document.getElementById('family-out').textContent = JSON.stringify({
+      editorialFamily: comparison.editorialFamily,
+      unchangedFromBaseline: comparison.deltaSummary.editorialFamilyUnchanged
+    }, null, 2);
+
+    document.getElementById('identity-out').textContent = JSON.stringify({
+      baseline: comparison.identityArchetype.baseline,
+      shadow: comparison.identityArchetype.shadow,
+      displayName: archetype && archetype.displayName,
+      changed: comparison.identityArchetype.changed,
+      metadata: shadow.shadowMetadata
+    }, null, 2);
+
+    document.getElementById('base-out').textContent = JSON.stringify(shadow.baseProfile, null, 2);
+    document.getElementById('signature-out').textContent = JSON.stringify(shadow.citySignature, null, 2);
+    document.getElementById('effective-out').textContent = JSON.stringify(shadow.effectiveProfile, null, 2);
+
+    document.getElementById('dimensions-out').textContent = JSON.stringify(
+      comparison.dimensions, null, 2
+    );
+
+    document.getElementById('coefficients-out').textContent = JSON.stringify({
+      baselineEnabled: comparison.coefficients.baseline.enabled,
+      shadowEnabled: comparison.coefficients.shadow.enabled,
+      shadow: comparison.coefficients.shadow,
+      delta: comparison.coefficients.delta
+    }, null, 2);
+
+    document.getElementById('trace-out').textContent = JSON.stringify(shadow.trace, null, 2);
+    document.getElementById('delta-out').textContent = JSON.stringify(comparison.deltaSummary, null, 2);
+  }
+
+  document.getElementById('btn-show').addEventListener('click', function () {
+    renderCity(select.value);
+  });
+  document.getElementById('btn-unknown').addEventListener('click', function () {
+    renderCity('ciudad-inexistente-xx');
+  });
+  renderCity(select.value);
+})();
+  </script>
+</body>
+</html>
