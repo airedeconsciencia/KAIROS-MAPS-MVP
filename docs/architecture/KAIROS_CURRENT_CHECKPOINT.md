@@ -1,9 +1,9 @@
 # KAIROS MAPS — Current Checkpoint
 
 **Fecha:** 26 mayo 2026  
-**HEAD runtime:** `05d77c7` — F6.2 MENA Expansion  
-**Checkpoint prod:** `docs/architecture/F6.2_MENA_EXPANSION_PRODUCTION_CHECKPOINT.md`  
-**Producción / Staging:** catálogo **`3.8f.1-f6.2-0.1`** · resolver **`3.8h.2-f6.2-0.1`** · **105 ciudades / 102 países** · **12 familias**
+**HEAD runtime:** `3c6019a` — F6.3 ANGLO Closure  
+**Checkpoint prod:** `docs/architecture/F6.3_ANGLO_CLOSURE_PRODUCTION_CHECKPOINT.md`  
+**Producción / Staging:** catálogo **`3.8f.1-f6.3-0.1`** · resolver **`3.8h.2-f6.3-0.1`** · **106 ciudades / 103 países** · **12 familias**
 
 ---
 
@@ -16,12 +16,13 @@
 - **F6.0 MENA Architecture Sprint:** cerrada (`f6.0` · packs · 0 países)
 - **Wave F6.1 MENA Migration:** cerrada (`f6.1` · AE/QA/SA/IL/JO)
 - **Wave F6.2 MENA Expansion:** cerrada (`f6.2` · LB/KW/OM)
+- **Wave F6.3 ANGLO Closure:** cerrada (`f6.3` · Surinam/Paramaribo)
 - **F5.0 Family Architecture Audit:** entregada (READ-ONLY)
 - **WA 13/13** · São Paulo NO catálogo · Maó/Menorca aparcado
 
 ---
 
-## F4/F5/F6 — Documentación SSOT
+## F4/F5/F6/F7 — Documentación SSOT
 
 | Documento | Rol |
 |-----------|-----|
@@ -35,13 +36,13 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Ciudades | **105** |
-| Países visibles / resolver | **102** |
+| Ciudades | **106** |
+| Países visibles / resolver | **103** |
+| **ANGLO** países resolver | **12** (⚠️ umbral editorial) |
 | **MENA** países resolver | **8** |
 | **MEDITERRANEAN** países resolver | **7** |
 | EAST_ASIAN países resolver | **5** |
 | SOUTHEAST_ASIAN países resolver | **11** (ASEAN completo) |
-| ANGLO países resolver | **11** (⚠️ vigilancia umbral 12) |
 | SOUTH_ASIAN países resolver | **8** |
 | WEST_AFRICAN países resolver | **13** (🔒 congelada) |
 | AFRICAN_COASTAL países resolver | **12** (🔒 congelada) |
@@ -53,7 +54,7 @@
 
 ## Smokes
 
-Suite **10/10 PASS** (@ F6.2 prod): 9 estándar + `dev-mena-architecture-smoke.sh` · split-brain **96 = 0**
+Suite **10/10 PASS** (@ F6.3 prod): 9 estándar + `dev-mena-architecture-smoke.sh` · split-brain **97 = 0**
 
 ---
 
@@ -61,18 +62,17 @@ Suite **10/10 PASS** (@ F6.2 prod): 9 estándar + `dev-mena-architecture-smoke.s
 
 - Cache browser `cities-catalog.js` / `editorial-family-resolver.js`
 - `dist/` sucio local (rsync deploy-prod; no commitear)
-- Lecturas MENA live — monitorizar anti-leak (Dubái · Tel Aviv · **Beirut**)
+- **ANGLO @ 12** — umbral editorial alcanzado; no añadir países sin F7.0 audit
+- Lecturas MENA live — monitorizar anti-leak (Dubái · Tel Aviv · Beirut)
 - Israel · Líbano — países sensibles; vigilancia editorial continua
-- ANGLO @ 11 — 1 slot Surinam antes de umbral 12
 - Familias congeladas: WE · LATAM · WA · AC
 
 ---
 
 ## Siguiente
 
-**F6.3** — expansión MENA Golfo II (BH/IQ/YE).  
-**F5.3** — Surinam ANGLO (último slot umbral 12).
+**F7.0 GLOBAL EDITORIAL AUDIT READY** — pausa expansión territorial; auditoría READ-ONLY de saturación, gaps y ROI antes de F6.4+ / F7.1.
 
 ---
 
-*Checkpoint F6.2 · Prod 105/102 @ f6.2 · F6.2 COMPLETADA*
+*Checkpoint F6.3 · Prod 106/103 @ f6.3 · F6.3 COMPLETADA · STOP @ F7.0*
