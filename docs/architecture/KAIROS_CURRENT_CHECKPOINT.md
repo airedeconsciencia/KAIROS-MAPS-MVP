@@ -2,7 +2,9 @@
 
 **Fecha:** 26 mayo 2026  
 **HEAD runtime:** `3c6019a` — F6.3 ANGLO Closure  
+**HEAD identity:** `d14bbbc` — F7.9C Shadow Signature Sync  
 **Checkpoint prod:** `docs/architecture/F6.3_ANGLO_CLOSURE_PRODUCTION_CHECKPOINT.md`  
+**Checkpoint identity:** `docs/architecture/CITY_IDENTITY_ARCHITECTURE.md`  
 **Producción / Staging:** catálogo **`3.8f.1-f6.3-0.1`** · resolver **`3.8h.2-f6.3-0.1`** · **106 ciudades / 103 países** · **12 familias**
 
 ---
@@ -19,6 +21,9 @@
 - **Wave F6.3 ANGLO Closure:** cerrada (`f6.3` · Surinam/Paramaribo)
 - **F5.0 Family Architecture Audit:** entregada (READ-ONLY)
 - **WA 13/13** · São Paulo NO catálogo · Maó/Menorca aparcado
+- **F7.5–F7.9C City Identity Stack:** cerrado (`f7.10` checkpoint)
+- **Identity stack:** shadow-ready · `modulation.enabled=false` · sin cableado en producto
+- **Runtime productivo:** intacto (sin cambios F6.3)
 
 ---
 
@@ -29,6 +34,7 @@
 | `GLOBAL_EXPANSION_BACKLOG.md` | Países pendientes · waves · dependencias |
 | `EDITORIAL_FAMILY_POLICY.md` | Reutilizar / crear / saturación familia |
 | `WAVE_PLANNER.md` | Reglas batch · gates · pipeline · STOP |
+| `CITY_IDENTITY_ARCHITECTURE.md` | SSOT Identity F7.5–F7.9C · shadow stack · roadmap F8 |
 
 ---
 
@@ -54,7 +60,15 @@
 
 ## Smokes
 
-Suite **10/10 PASS** (@ F6.3 prod): 9 estándar + `dev-mena-architecture-smoke.sh` · split-brain **97 = 0**
+**Prod (@ F6.3):** suite **10/10 PASS** — 9 estándar + `dev-mena-architecture-smoke.sh` · split-brain **97 = 0**
+
+**Identity (DEV-only @ F7.9C):**
+
+- `dev-identity-modulation-smoke.sh`
+- `dev-identity-shadow-runtime-smoke.sh`
+- `dev-shadow-analytics-smoke.sh`
+- `dev-shadow-analytics-export-smoke.sh`
+- `dev-identity-calibration-smoke.sh`
 
 ---
 
@@ -66,13 +80,16 @@ Suite **10/10 PASS** (@ F6.3 prod): 9 estándar + `dev-mena-architecture-smoke.s
 - Lecturas MENA live — monitorizar anti-leak (Dubái · Tel Aviv · Beirut)
 - Israel · Líbano — países sensibles; vigilancia editorial continua
 - Familias congeladas: WE · LATAM · WA · AC
+- **Identity:** 7 ciudades `review_required` · signatures algorítmicas (no curadas) · riesgo activación sin QA editorial
 
 ---
 
 ## Siguiente
 
-**F7.0 GLOBAL EDITORIAL AUDIT READY** — pausa expansión territorial; auditoría READ-ONLY de saturación, gaps y ROI antes de F6.4+ / F7.1.
+**F8.0 — Feature flag DEV** — gate de activación identity antes de integración narrative/premium.
+
+**Territorial (pausado):** F7.0 GLOBAL EDITORIAL AUDIT — expansión territorial en hold hasta auditoría READ-ONLY.
 
 ---
 
-*Checkpoint F6.3 · Prod 106/103 @ f6.3 · F6.3 COMPLETADA · STOP @ F7.0*
+*Checkpoint F7.10 · Prod 106/103 @ f6.3 · Identity shadow-ready @ f7.9c · STOP @ F8.0*
