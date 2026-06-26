@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Identity Modulation Engine (7.5d DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: #0f1115;
+      color: #e5e7eb;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .dev-banner {
+      background: rgba(52, 211, 153, 0.1);
+      border-bottom: 1px solid rgba(52, 211, 153, 0.35);
+      color: #6ee7b7;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 960px; margin: 0 auto; padding: 20px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 18px; color: #6ee7b7; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 12px; margin: 0 0 16px; max-width: 760px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+    select, button {
+      font: inherit;
+      cursor: pointer;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    button.primary { background: rgba(52, 211, 153, 0.12); border-color: #6ee7b7; color: #a7f3d0; }
+    .panel {
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    pre { margin: 0; white-space: pre-wrap; color: #d1d5db; font-size: 12px; }
+    .tag-ok { color: #86efac; }
+    .tag-warn { color: #fcd34d; }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV ONLY · 7.5d Identity Modulation Engine · coefficients only · not wired</div>
+  <div class="page">
+    <h1>Identity Modulation Engine Lab</h1>
+    <p class="sub">Motor F7.5d · coeficientes derivados de dimensiones · modulation.enabled=false · sin aplicación editorial.</p>
+
+    <div class="toolbar">
+      <select id="archetype-select" aria-label="Arquetipo"></select>
+      <button type="button" class="primary" id="btn-show">Mostrar</button>
+      <button type="button" id="btn-neutral">Perfil neutro</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Archetype</div>
+      <pre id="archetype-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Dimensions</div>
+      <pre id="dimensions-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Modulation coefficients</div>
+      <pre id="coefficients-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Neutral fallback</div>
+      <pre id="fallback-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Trace</div>
+      <pre id="trace-out">—</pre>
+    </div>
+  </div>
+
+  <script src="../content/identity-dimensions.js"></script>
+  <script src="../content/city-identity-archetypes.js"></script>
+  <script src="../content/identity-modulation-profile.js"></script>
+  <script src="../services/identity-modulation-service.js"></script>
+
+  <script>
+(function () {
+  'use strict';
+
+  var Archetypes = window.KairosCityIdentityArchetypes;
+  var Mod = window.KairosIdentityModulation;
+  var select = document.getElementById('archetype-select');
+
+  Archetypes.listArchetypeSlugs().forEach(function (slug) {
+    var entry = Archetypes.getArchetype(slug);
+    var opt = document.createElement('option');
+    opt.value = slug;
+    opt.textContent = entry.displayName + ' · ' + slug;
+    select.appendChild(opt);
+  });
+
+  function renderResolved(slug) {
+    var resolved = Mod.resolveIdentity({ identityArchetype: slug });
+    var archetype = Archetypes.getArchetype(slug);
+    var coeffs = Mod.buildModulationCoefficients(slug);
+    var trace = Mod.getModulationTrace(slug);
+
+    document.getElementById('archetype-out').textContent = JSON.stringify({
+      id: archetype.id,
+      slug: archetype.slug,
+      displayName: archetype.displayName,
+      identity: resolved.profile.identity
+    }, null, 2);
+
+    document.getElementById('dimensions-out').textContent = JSON.stringify(
+      resolved.profile.dimensions, null, 2
+    );
+
+    document.getElementById('coefficients-out').textContent = JSON.stringify({
+      enabled: coeffs.enabled,
+      channels: coeffs.channels
+    }, null, 2);
+
+    document.getElementById('fallback-out').textContent = JSON.stringify({
+      neutralFallback: resolved.neutralFallback,
+      found: resolved.found,
+      reason: resolved.reason,
+      modulationEnabled: resolved.profile.modulation.enabled
+    }, null, 2);
+
+    document.getElementById('trace-out').textContent = JSON.stringify(trace, null, 2);
+  }
+
+  function renderNeutral() {
+    var neutral = Mod.getNeutralProfile();
+    var coeffs = Mod.buildModulationCoefficients(null);
+    var trace = Mod.getModulationTrace(null);
+
+    document.getElementById('archetype-out').textContent = JSON.stringify(neutral.identity, null, 2);
+    document.getElementById('dimensions-out').textContent = JSON.stringify(neutral.dimensions, null, 2);
+    document.getElementById('coefficients-out').textContent = JSON.stringify(coeffs, null, 2);
+    document.getElementById('fallback-out').textContent = JSON.stringify({
+      neutralFallback: true,
+      reason: neutral.meta.reason
+    }, null, 2);
+    document.getElementById('trace-out').textContent = JSON.stringify(trace, null, 2);
+  }
+
+  document.getElementById('btn-show').addEventListener('click', function () {
+    renderResolved(select.value);
+  });
+  document.getElementById('btn-neutral').addEventListener('click', renderNeutral);
+  renderResolved(select.value);
+})();
+  </script>
+</body>
+</html>
