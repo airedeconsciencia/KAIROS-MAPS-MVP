@@ -1,9 +1,9 @@
 # KAIROS MAPS — Current Checkpoint
 
 **Fecha:** 26 mayo 2026  
-**HEAD runtime:** `e7ca4a7` — F6.1 MENA Migration  
-**Checkpoint prod:** `docs/architecture/F6.1_MENA_MIGRATION_PRODUCTION_CHECKPOINT.md`  
-**Producción / Staging:** catálogo **`3.8f.1-f5.2-0.1`** · resolver **`3.8h.2-f6.1-0.1`** · **102 ciudades / 99 países** · **12 familias**
+**HEAD runtime:** `05d77c7` — F6.2 MENA Expansion  
+**Checkpoint prod:** `docs/architecture/F6.2_MENA_EXPANSION_PRODUCTION_CHECKPOINT.md`  
+**Producción / Staging:** catálogo **`3.8f.1-f6.2-0.1`** · resolver **`3.8h.2-f6.2-0.1`** · **105 ciudades / 102 países** · **12 familias**
 
 ---
 
@@ -15,6 +15,7 @@
 - **Wave F5.2 East Asia + SEA Closure:** cerrada (`f5.2`)
 - **F6.0 MENA Architecture Sprint:** cerrada (`f6.0` · packs · 0 países)
 - **Wave F6.1 MENA Migration:** cerrada (`f6.1` · AE/QA/SA/IL/JO)
+- **Wave F6.2 MENA Expansion:** cerrada (`f6.2` · LB/KW/OM)
 - **F5.0 Family Architecture Audit:** entregada (READ-ONLY)
 - **WA 13/13** · São Paulo NO catálogo · Maó/Menorca aparcado
 
@@ -34,9 +35,9 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Ciudades | **102** |
-| Países visibles / resolver | **99** |
-| **MENA** países resolver | **5** |
+| Ciudades | **105** |
+| Países visibles / resolver | **102** |
+| **MENA** países resolver | **8** |
 | **MEDITERRANEAN** países resolver | **7** |
 | EAST_ASIAN países resolver | **5** |
 | SOUTHEAST_ASIAN países resolver | **11** (ASEAN completo) |
@@ -52,7 +53,7 @@
 
 ## Smokes
 
-Suite **10/10 PASS** (@ F6.1 prod): 9 estándar + `dev-mena-architecture-smoke.sh`
+Suite **10/10 PASS** (@ F6.2 prod): 9 estándar + `dev-mena-architecture-smoke.sh` · split-brain **96 = 0**
 
 ---
 
@@ -60,19 +61,18 @@ Suite **10/10 PASS** (@ F6.1 prod): 9 estándar + `dev-mena-architecture-smoke.s
 
 - Cache browser `cities-catalog.js` / `editorial-family-resolver.js`
 - `dist/` sucio local (rsync deploy-prod; no commitear)
-- Lecturas MENA live en Dubái/Tel Aviv — monitorizar anti-leak post-migración
-- Israel — país sensible; vigilancia editorial continua
+- Lecturas MENA live — monitorizar anti-leak (Dubái · Tel Aviv · **Beirut**)
+- Israel · Líbano — países sensibles; vigilancia editorial continua
 - ANGLO @ 11 — 1 slot Surinam antes de umbral 12
 - Familias congeladas: WE · LATAM · WA · AC
-- Líbano requiere `EDITORIAL-OK` antes de F6.2 territorial
 
 ---
 
 ## Siguiente
 
-**F6.2** — expansión territorial MENA (LB/KW/OM).  
+**F6.3** — expansión MENA Golfo II (BH/IQ/YE).  
 **F5.3** — Surinam ANGLO (último slot umbral 12).
 
 ---
 
-*Checkpoint F6.1 · Prod 102/99 @ f6.1 · F6.1 COMPLETADA*
+*Checkpoint F6.2 · Prod 105/102 @ f6.2 · F6.2 COMPLETADA*

@@ -2,7 +2,7 @@
 
 **Fase:** F6.x — Global Expansion Framework  
 **SSOT expansión territorial** · solo documentación  
-**Baseline prod:** `f6.1` · **102 ciudades / 99 países** · **12 familias**  
+**Baseline prod:** `f6.2` · **105 ciudades / 102 países** · **12 familias**  
 **Última revisión:** 26 mayo 2026
 
 > Este documento es la fuente de verdad para **qué falta**, **en qué wave** y **con qué dependencias**.  
@@ -20,15 +20,15 @@
 
 ---
 
-## I. Registro live (99 países — referencia @ f6.1)
+## I. Registro live (102 países — referencia @ f6.2)
 
-Todos con **status: `live`** · waves F2–F6.1 · catálogo + resolver sincronizados @ `f6.1`.
+Todos con **status: `live`** · waves F2–F6.2 · catálogo + resolver sincronizados @ `f6.2`.
 
 | Región | Países live (slug) | Familia |
 |--------|-------------------|---------|
 | Europa occidental/central/nórdica | `france` `germany` `netherlands` `belgium` `switzerland` `austria` `poland` `czech_republic` `denmark` `sweden` `norway` `finland` `ireland` `hungary` | WESTERN_EUROPE |
 | Europa meridional / Magreb | `spain` `italy` `greece` `croatia` `turkey` `morocco` `tunisia` | MEDITERRANEAN |
-| Golfo / Levante (migrados F6.1) | `united_arab_emirates` `qatar` `saudi_arabia` `israel` `jordan` | **MENA** |
+| Golfo / Levante MENA | `united_arab_emirates` `qatar` `saudi_arabia` `israel` `jordan` `lebanon` `kuwait` `oman` | **MENA** |
 | Iberia | `portugal` | IBERIAN |
 | Anglo / Caribe / Oceanía | `united_kingdom` `united_states` `canada` `australia` `new_zealand` `jamaica` `trinidad_and_tobago` `barbados` `bahamas` `belize` `guyana` | ANGLO |
 | América Latina | `mexico` `argentina` `brazil` `peru` `colombia` `chile` `uruguay` `ecuador` `costa_rica` `panama` `paraguay` `bolivia` | LATAM |
@@ -44,7 +44,15 @@ Todos con **status: `live`** · waves F2–F6.1 · catálogo + resolver sincroni
 
 ## II. Backlog territorial — países pendientes
 
-Ordenado por **prioridad arquitectónica** post-F6.1.
+Ordenado por **prioridad arquitectónica** post-F6.2.
+
+### Cerrados F6.2 — expansión territorial MENA (live @ f6.2)
+
+| País | slug | Wave | status | Nota |
+|------|------|------|--------|------|
+| Líbano | `lebanon` | F6.2 | `live` | Beirut · EDITORIAL-OK |
+| Kuwait | `kuwait` | F6.2 | `live` | Ciudad de Kuwait |
+| Omán | `oman` | F6.2 | `live` | Mascate |
 
 ### Cerrados F6.1 — migración resolver (live @ f6.1)
 
@@ -88,9 +96,6 @@ Ordenado por **prioridad arquitectónica** post-F6.1.
 
 | País | slug | Región | Familia propuesta | Ciudad ancla | Wave | Prioridad | Dependencias |
 |------|------|--------|-------------------|--------------|------|-----------|--------------|
-| Líbano | `lebanon` | Levante | **MENA** | Beirut | **F6.2** | P2 | **EDITORIAL-OK** |
-| Kuwait | `kuwait` | Golfo | **MENA** | Ciudad de Kuwait | **F6.2** | P2 | — |
-| Omán | `oman` | Golfo | **MENA** | Mascate | **F6.2** | P2 | — |
 | Baréin | `bahrain` | Golfo | **MENA** | Manama | **F6.3** | P2 | — |
 | Irak | `iraq` | Golfo | **MENA** | Bagdad | **F6.3** | P2 | — |
 | Yemen | `yemen` | Golfo | **MENA** | Saná | **F6.3** | P2 | — |
@@ -118,9 +123,9 @@ Ordenado por **prioridad arquitectónica** post-F6.1.
 
 | Hito | Ciudades | Países | Notas |
 |------|----------|--------|-------|
-| **Actual (F6.1)** | 102 | 99 | ✅ Baseline prod |
-| **F5 plateau** | ~103 | ~100 | F5.3 Surinam |
-| **F6 MENA expansion** | ~105 | ~102 | F6.2 LB/KW/OM (+3) |
+| **Actual (F6.2)** | 105 | 102 | ✅ Baseline prod |
+| **F5 plateau** | ~106 | ~103 | F5.3 Surinam |
+| **F6 MENA expansion II** | ~108 | ~105 | F6.3 BH/IQ/YE (+3) |
 | **F7 CENTRAL_ASIAN** | ~115 | ~112 | +5 tras sprint F7.0 |
 | **Target 120** | ~123 | ~120 | requiere CENTRAL_ASIAN |
 
@@ -135,4 +140,4 @@ Ordenado por **prioridad arquitectónica** post-F6.1.
 
 ---
 
-*Backlog F6.1 · baseline prod 102/99 @ f6.1*
+*Backlog F6.2 · baseline prod 105/102 @ f6.2*

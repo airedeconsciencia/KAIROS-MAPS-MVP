@@ -1,6 +1,6 @@
 # EDITORIAL FAMILY POLICY
 
-**Fase:** F4.0 — Global Expansion Framework (actualizado F6.1)  
+**Fase:** F4.0 — Global Expansion Framework (actualizado F6.2)  
 **Ámbito:** decisiones de familia editorial en expansión territorial  
 **Runtime afectado:** `editorial-family-resolver.js` + servicios narrativa/premium/knowledge  
 **Última revisión:** 26 mayo 2026
@@ -10,13 +10,13 @@
 
 ---
 
-## I. Familias registradas (estado actual @ f6.1)
+## I. Familias registradas (estado actual @ f6.2)
 
 `IBERIAN` · `MEDITERRANEAN` · `ANGLO` · `EAST_ASIAN` · `AFRICAN_COASTAL` · `LATAM` · `WESTERN_EUROPE` · `SOUTHEAST_ASIAN` · `SOUTH_ASIAN` · `WEST_AFRICAN` · **`MENA`** · `GLOBAL_NEUTRAL`
 
 **DEFAULT:** `GLOBAL_NEUTRAL` — países no mapeados (canario: Reykjavik / `iceland`).
 
-**MENA live (5):** `united_arab_emirates` · `qatar` · `saudi_arabia` · `israel` · `jordan`
+**MENA live (8):** `united_arab_emirates` · `qatar` · `saudi_arabia` · `israel` · `jordan` · `lebanon` · `kuwait` · `oman`
 
 ---
 
@@ -38,6 +38,7 @@
 |----------|-----------------|--------|
 | Marruecos · Túnez | MEDITERRANEAN (no AFRICAN_COASTAL) | Corredor mediterráneo; decisión estratégica explícita |
 | UAE · QA · SA · IL · JO | **MENA** (F6.1) | Migrados desde MED; packs MENA F6.0 |
+| LB · KW · OM | **MENA** (F6.2) | Expansión territorial; packs F6.0 reutilizados |
 | China · Taiwán | EAST_ASIAN | Japón/Corea ya anclan |
 | Etiopía · Tanzania | AFRICAN_COASTAL (no EAST_AFRICAN) | Kenia ya ancla; packs AC completos |
 
@@ -101,7 +102,7 @@ Una familia se considera **saturada** cuando cumple **≥2** de:
 | **Override ciudad** | >3 entradas en `CITY_EDITORIAL_FAMILY` para corregir país |
 | **Nombre semántico** | Nombre de familia induce error sistemático **y** leak rate >0 |
 
-### Estado saturación actual (@ f6.1 prod)
+### Estado saturación actual (@ f6.2 prod)
 
 | Familia | Países | Saturada | Nota |
 |---------|--------|----------|------|
@@ -110,7 +111,7 @@ Una familia se considera **saturada** cuando cumple **≥2** de:
 | AFRICAN_COASTAL | 12 | 🔒 congelada | — |
 | LATAM | 12 | 🔒 congelada | — |
 | MEDITERRANEAN | **7** | ✅ OK | Reducida post-F6.1 (era 12) |
-| **MENA** | **5** | ✅ OK | Activa; margen expansión F6.2+ |
+| **MENA** | **8** | ✅ OK | Activa; margen expansión F6.3+ |
 | SOUTHEAST_ASIAN | 11 | ✅ OK | ASEAN completo |
 | ANGLO | 11 | ⚠️ vigilancia | 1 slot Surinam @ 12 |
 | EAST_ASIAN | 5 | ✅ OK | — |
@@ -134,4 +135,4 @@ Una familia se considera **saturada** cuando cumple **≥2** de:
 
 ---
 
-*Política F6.1 · 12 familias @ f6.1 prod*
+*Política F6.2 · 12 familias @ f6.2 prod*
