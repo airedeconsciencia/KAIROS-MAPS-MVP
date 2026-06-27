@@ -23,8 +23,9 @@
 - **WA 13/13** · São Paulo NO catálogo · Maó/Menorca aparcado
 - **F7.5–F7.9C City Identity Stack:** cerrado (`f7.10` checkpoint)
 - **F7.11 Handover Pack:** cerrado — relevo System Architect
-- **Identity stack:** shadow-ready · `modulation.enabled=false` · sin cableado en producto
-- **Runtime productivo:** intacto (sin cambios F6.3)
+- **F8.0 Identity Context Pipeline:** cerrado — `identityContext` transportado · no consumido
+- **Identity stack:** shadow-ready · `modulation.enabled=false` · runtime visual idéntico
+- **Runtime productivo:** intacto (sin cambios F6.3 · sin deploy F8)
 
 ---
 
@@ -67,13 +68,14 @@
 
 **Prod (@ F6.3):** suite **10/10 PASS** — 9 estándar + `dev-mena-architecture-smoke.sh` · split-brain **97 = 0**
 
-**Identity (DEV-only @ F7.9C):**
+**Identity (DEV @ F8.0):**
 
 - `dev-identity-modulation-smoke.sh`
 - `dev-identity-shadow-runtime-smoke.sh`
 - `dev-shadow-analytics-smoke.sh`
 - `dev-shadow-analytics-export-smoke.sh`
 - `dev-identity-calibration-smoke.sh`
+- `dev-identity-context-pipeline-smoke.sh` — F8.0 byte-identical · 106 ciudades · split-brain 0
 
 ---
 
@@ -91,10 +93,10 @@
 
 ## Siguiente
 
-**F8.0 — Feature flag DEV** — gate de activación identity antes de integración narrative/premium.
+**F8.1 — Feature flag DEV** — gate antes de consumo de `identityContext` en narrative/premium.
 
 **Territorial (pausado):** F7.0 GLOBAL EDITORIAL AUDIT — expansión territorial en hold hasta auditoría READ-ONLY.
 
 ---
 
-*Checkpoint F7.11 · Prod 106/103 @ f6.3 · Identity shadow-ready @ f7.10 · Handover pack · STOP @ F8.0*
+*Checkpoint F8.0A · Prod 106/103 @ f6.3 · Identity context transportado · sin activación · STOP @ F8.1*

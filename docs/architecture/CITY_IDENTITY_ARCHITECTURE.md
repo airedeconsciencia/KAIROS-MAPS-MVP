@@ -1,9 +1,9 @@
 # KAIROS MAPS — City Identity Architecture (SSOT)
 
-**Fase:** F7.5–F7.9C · checkpoint F7.10  
+**Fase:** F7.5–F8.0 · checkpoint F8.0A  
 **Fecha:** 26 mayo 2026  
-**HEAD identity:** `d14bbbc` — F7.9C Shadow Signature Sync  
-**Baseline prod:** **106 ciudades / 103 países / 12 familias** — sin cambios
+**HEAD identity code:** `d14bbbc` — F7.9C Shadow Signature Sync · F8.0 context pipeline (local)  
+**Baseline prod:** **106 ciudades / 103 países / 12 familias** — sin cambios visuales
 
 ---
 
@@ -199,7 +199,15 @@ modulationCoefficients  (enabled: false)
 | Sin deploy de identity a prod | ✅ |
 | Shadow/analytics/calibration solo vía DEV previews + smokes | ✅ |
 
-Cualquier integración futura **debe** pasar por feature flag (F8.0) y QA editorial antes de activación (F8.3).
+Cualquier integración futura que **consuma** identity **debe** pasar por QA editorial y gates F8.1+ antes de activación (F8.3).
+
+| Invariante F8.0 | Estado |
+|-----------------|--------|
+| `identityContext` transportado en pipeline | ✅ |
+| `identityContext` no leído por selección/copy | ✅ |
+| Narrative / premium / knowledge text byte-identical | ✅ smoke |
+| `identityContext.enabled = false` | ✅ |
+| `modulation.enabled = false` | ✅ |
 
 ---
 
@@ -212,6 +220,7 @@ Cualquier integración futura **debe** pasar por feature flag (F8.0) y QA editor
 | `scripts/dev-shadow-analytics-smoke.sh` | F7.9C | Analytics agregados · métricas effective |
 | `scripts/dev-shadow-analytics-export-smoke.sh` | F7.8B | Export JSON a `tmp/` |
 | `scripts/dev-identity-calibration-smoke.sh` | F7.9B | Calibration · distancias · nearest/different |
+| `scripts/dev-identity-context-pipeline-smoke.sh` | F8.0 | Context pipeline · 106 ciudades · byte-identical outputs |
 
 **DEV previews (no prod):**
 
@@ -246,9 +255,9 @@ Las 106 firmas en `city-signatures.js` son **algorítmicas** (F7.9B). No han pas
 
 Sobre-asignación detectada en auditoría F7.6. Riesgo de homogeneización regional si se activa modulación sin recalibrar mappings.
 
-### 6.4 Future feature flag
+### 6.4 Feature flag DEV (pendiente F8.1)
 
-F8.0 introducirá flag DEV. Riesgo de activación accidental en staging/prod sin gates — requiere smoke + checklist editorial.
+F8.1 introducirá flag DEV explícito. Riesgo de activación accidental en staging/prod sin gates — requiere smoke + checklist editorial.
 
 ### 6.5 Activación sin QA editorial
 
@@ -263,18 +272,110 @@ Activar `modulation.enabled` o cablear coefficients en narrative/premium **sin**
 
 ## 7. Roadmap F8.x
 
-| Fase | Objetivo | Gate |
-|------|----------|------|
-| **F8.0** | Feature flag DEV (`identity.modulation.enabled` o equivalente) | Solo entornos DEV · default off |
-| **F8.1** | Narrative shadow comparison — preview A/B copy con coefficients shadow | Sin escritura en prod |
-| **F8.2** | Premium modulation preview — preview pesos premium | Sin escritura en prod |
-| **F8.3** | Controlled activation — activación gradual post-QA | review_required = 0 · signatures curadas · sign-off editorial |
+| Fase | Objetivo | Gate | Estado |
+|------|----------|------|--------|
+| **F8.0** | Identity Context Pipeline — transportar `identityContext` sin consumo | DEV · copy byte-identical | ✅ |
+| **F8.1** | Feature flag DEV (`identity.modulation.enabled` o equivalente) | Solo DEV · default off | pendiente |
+| **F8.2** | Narrative shadow comparison — preview A/B copy con coefficients shadow | Sin escritura en prod | pendiente |
+| **F8.3** | Premium modulation preview — preview pesos premium | Sin escritura en prod | pendiente |
+| **F8.4** | Controlled activation — activación gradual post-QA | review_required = 0 · signatures curadas | pendiente |
 
-**STOP actual:** F7.10 cerrado. No activar Identity. No deploy. No integrar con narrative/premium/knowledge.
+**STOP actual:** F8.0A doc cerrado. Identity transportado · no consumido · no activar modulación. No deploy.
 
 ---
 
-## 8. Mapa de archivos
+## 8. Identity Context Pipeline
+
+Integración editorial F8.0: el pipeline de generación **conoce** Identity, pero **no la aplica** todavía.
+
+### 8.1 Origen del contexto
+
+```
+citySlug (canónico vía cities-catalog.cityIdFromRef)
+  → City Identity Index → identityArchetype · confidence · status
+  → Identity Modulation Profile → baseProfile
+  → City Signatures → citySignature
+  → effectiveProfile (clamp 1–5)
+  → Editorial Family Resolver → editorialFamily
+  → Shadow Runtime metadata → shadowMetadata · trace
+  → Identity Context Service → identityContext
+```
+
+**Servicio:** `src/services/identity-context-service.js` (`KairosIdentityContext`, schema `8.0-0.1`)
+
+**API:** `buildIdentityContext(citySlug)` · `buildIdentityContextFromCity(city)`
+
+Delega resolución dimensional a `KairosIdentityShadowRuntime.computeShadowIdentity` con resolución lazy de dependencias (fail-soft si shadow no cargado).
+
+### 8.2 Estructura del objeto
+
+```javascript
+{
+  enabled: false,              // siempre false en F8.0
+  citySlug: "lisboa-pt",       // slug canónico catálogo
+  editorialFamily: "IBERIAN",  // vía resolver + city identity
+  identityArchetype: "quiet_integration",
+  citySignature: { found, adjustments, confidence, revision },
+  effectiveProfile: { activation, tempo, … horizon },
+  confidence: "A",             // del city index o shadow metadata
+  shadowMetadata: { … },       // schema 7.9c · mode shadow · runtimeImpact none
+  trace: { … }                 // trazabilidad pipeline · source identity_context
+}
+```
+
+Fallback neutral si slug ausente, desconocido o shadow unavailable: `identityArchetype: null`, perfiles neutrales, `enabled: false`.
+
+### 8.3 Invariantes F8.0
+
+| Regla | Detalle |
+|-------|---------|
+| Transport only | Adjuntar `identityContext`; prohibido leerlo para copy o selección |
+| `enabled: false` | Campo explícito; no confundir con modulación activa |
+| `modulation.enabled = false` | Sin cambio respecto F7.10 |
+| Fail-soft | Servicio ausente → pipeline sigue sin `identityContext` |
+| Byte-identical | Narrative spine · knowledge blocks · premium sections sin cambio |
+| Split-brain 0 | `editorialFamily` en context ≡ resolver para la ciudad |
+
+### 8.4 Lifecycle
+
+1. **Build** — `deriveNarrativeContext` construye spine + country; luego attach `identityContext`.
+2. **Propagate** — `narrativeContext.identityContext` pasa a `getBlocksForContext` como `ctx.identityContext`.
+3. **Serialize** — premium `meta.narrativeContext` incluye el objeto (payload más grande; sin efecto UX).
+4. **Consume** — **ninguno** en F8.0. Modulación futura requerirá fase F8.2+ con gate explícito.
+
+### 8.5 Modo read-only
+
+F8.0 es **read-only respecto al producto**:
+
+- No altera strings, templates, packs ni pesos de bloques.
+- No activa coeficientes de modulación en narrative/premium/knowledge.
+- No expone UI ni flags al usuario.
+- Scripts identity **no** cargados en `src/index.html` prod (pipeline activo solo cuando el stack DEV está presente).
+
+### 8.6 Servicios consumidores (transportadores)
+
+| Servicio | Propiedad | Momento attach | Lee contexto |
+|----------|-----------|----------------|--------------|
+| `narrative-intelligence-service.js` | `narrativeContext.identityContext` | Post-spine / post-country | ❌ |
+| `premium-knowledge-service.js` | `ctx.identityContext` | Pre-selección bloques | ❌ |
+| `city-premium-composition-service.js` | vía `meta.narrativeContext` | Hereda de narrative | ❌ |
+
+**Nota:** premium composition no importa `KairosIdentityContext` directamente; recibe el objeto por propagación.
+
+### 8.7 Estado actual F8.0
+
+| Dimensión | Valor |
+|-----------|-------|
+| Transportado | ✅ 106 ciudades (smoke) |
+| Consumido | ❌ ningún servicio lee campos para copy |
+| Modulación activa | ❌ `modulation.enabled = false` |
+| Runtime visual | ✅ idéntico — smoke byte-identical Lisboa/Toronto/Cabo |
+| Prod deploy | ❌ sin deploy · sin wiring `index.html` |
+| Activación Identity | ❌ STOP |
+
+---
+
+## 9. Mapa de archivos
 
 | Capa | Archivo | Schema |
 |------|---------|--------|
@@ -288,7 +389,8 @@ Activar `modulation.enabled` o cablear coefficients en narrative/premium **sin**
 | Shadow comparison | `src/services/shadow-comparison-service.js` | `7.9c-0.1` |
 | Shadow analytics | `src/services/shadow-analytics-service.js` | `7.9c-0.1` |
 | Calibration lab | `src/services/identity-calibration-service.js` | `7.9b-0.1` |
+| **Identity context** | `src/services/identity-context-service.js` | **`8.0-0.1`** |
 
 ---
 
-*SSOT City Identity · F7.10 checkpoint · shadow-ready · runtime productivo intacto · next F8.0*
+*SSOT City Identity · F8.0A · context pipeline transportado · runtime visual intacto · next F8.1*
