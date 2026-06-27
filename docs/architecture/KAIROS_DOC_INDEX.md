@@ -284,12 +284,15 @@ Si falla ≥2 respuestas → **rechazar o reordenar**, no implementar.
 ## ÍNDICE DOCUMENTAL — Orden de consulta Cursor
 
 1. **Este documento** — Constitución Viva  
-2. `docs/product/*.md` — Markdown canónico Master  
-3. `docs/Master/*.docx` — fuente Word inmutable (v2 manda sobre v1)  
-4. `docs/architecture/KAIROS_*` · `NATAL_*` — arquitectura técnica Fase 3.x  
-5. `docs/voice_tone.txt` — gate copy  
-6. `docs/*.txt` legacy — solo si alineado con `docs/product/`  
-7. Git log + `NATAL_LITE_STATUS.md` — estado operativo  
+2. `docs/architecture/KAIROS_NEXT_AGENT_BOOTSTRAP.md` — **nuevo agente Architect: leer primero**  
+3. `docs/architecture/KAIROS_CURRENT_CHECKPOINT.md` — snapshot operativo vivo  
+4. `docs/architecture/KAIROS_PROJECT_HANDOVER.md` · `KAIROS_CURRENT_STATE_F7_10.md` · `KAIROS_ARCHITECTURAL_DECISIONS.md` — handover pack F7.11  
+5. `docs/product/*.md` — Markdown canónico Master  
+6. `docs/Master/*.docx` — fuente Word inmutable (v2 manda sobre v1)  
+7. `docs/architecture/KAIROS_*` · `NATAL_*` · `CITY_IDENTITY_ARCHITECTURE.md` — arquitectura técnica  
+8. `docs/voice_tone.txt` — gate copy  
+9. `docs/*.txt` legacy — solo si alineado con `docs/product/`  
+10. Git log + `NATAL_LITE_STATUS.md` — estado operativo  
 
 **No usar como fuente activa:** `VERSION.md`, `PROJECT_CONTEXT.md`, `roadmap.txt` (visión histórica), Master v1 (8, 9, 13, 16).
 

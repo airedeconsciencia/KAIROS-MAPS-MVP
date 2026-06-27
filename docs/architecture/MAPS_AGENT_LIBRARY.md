@@ -3,7 +3,7 @@
 **Documento:** inventario definitivo de lecturas para GPTs MAPS  
 **Fecha:** 26 mayo 2026  
 **Repo:** `KAIROS-MAPS-MVP`  
-**HEAD referencia:** `ae17672` — meta-audit + checkpoint + 3.8f.3  
+**HEAD referencia:** `5df8488` — F7.10 identity checkpoint + handover pack F7.11  
 
 > **Uso:** cada sesión GPT debe cargar primero el **mínimo** de su rol, luego ampliar con **recomendados** según la tarea.  
 > **Regla:** si existe Markdown canónico en `docs/product/`, **no cargar** el `.docx` Master paralelo ni el `.txt` legacy duplicado.
@@ -48,6 +48,11 @@
 |--------|------|---------|-----------|---|---|---|
 | Constitución Viva | `docs/architecture/KAIROS_DOC_INDEX.md` | Puerta única: misión, principios P1–P14, orden construcción, capas congeladas, roadmap ejecutivo | Crítica | ● | ○ | ● |
 | Checkpoint operativo | `docs/architecture/KAIROS_CURRENT_CHECKPOINT.md` | Snapshot post-fase: cerrado/pendiente, git posture, staging, qué NO tocar | Crítica | ● | ○ | ● |
+| Next Agent Bootstrap | `docs/architecture/KAIROS_NEXT_AGENT_BOOTSTRAP.md` | Onboarding Architect: rol, formato respuesta, F8.0 prompt | Crítica | ● | ○ | ○ |
+| Project Handover F7.11 | `docs/architecture/KAIROS_PROJECT_HANDOVER.md` | Qué es KAIROS, capas, ritual Cursor, qué NO tocar | Crítica | ● | ○ | ○ |
+| Current State F7.10 | `docs/architecture/KAIROS_CURRENT_STATE_F7_10.md` | Snapshot exacto métricas, F6/F7, smokes, git, riesgos | Crítica | ● | ○ | ○ |
+| Architectural Decisions | `docs/architecture/KAIROS_ARCHITECTURAL_DECISIONS.md` | ADRs permanentes — familia, identity, dist, deploy | Crítica | ● | ○ | ○ |
+| City Identity SSOT | `docs/architecture/CITY_IDENTITY_ARCHITECTURE.md` | Stack identity F7.5–F7.9C shadow-ready | Importante | ● | ○ | ○ |
 | Master Audit | `docs/architecture/KAIROS_MASTER_AUDIT.md` | Auditoría total, smokes, agentes, inventario runtime, riesgos | Crítica | ● | ○ | ○ |
 | Agent Library | `docs/architecture/MAPS_AGENT_LIBRARY.md` | Este inventario — qué leer cada GPT | Importante | ● | ○ | ○ |
 
@@ -177,14 +182,16 @@
 
 Cargar **en este orden** al iniciar cualquier sesión.
 
-### MAPS Architect (mínimo — 4 docs)
+### MAPS Architect (mínimo — 6 docs)
 
 | # | Documento |
 |---|-----------|
-| 1 | `docs/architecture/KAIROS_DOC_INDEX.md` |
+| 1 | `docs/architecture/KAIROS_NEXT_AGENT_BOOTSTRAP.md` |
 | 2 | `docs/architecture/KAIROS_CURRENT_CHECKPOINT.md` |
-| 3 | `docs/architecture/KAIROS_MASTER_AUDIT.md` |
-| 4 | `docs/voice_tone.txt` |
+| 3 | `docs/architecture/KAIROS_PROJECT_HANDOVER.md` |
+| 4 | `docs/architecture/KAIROS_ARCHITECTURAL_DECISIONS.md` |
+| 5 | `docs/architecture/KAIROS_DOC_INDEX.md` |
+| 6 | `docs/voice_tone.txt` |
 
 ### MAPS Astrocartography Engine (mínimo — 5 docs)
 
@@ -219,7 +226,8 @@ Ampliar según tarea concreta (no cargar todos a la vez).
 |-------|--------|
 | Definir fase premium/country | `COUNTRY_ARCHETYPE_LAYER.md`, `PREMIUM_READING_SOURCE_GROUNDING.md`, `FASE_3_8e_9_DESIGN.md` |
 | Decidir scope producto | `KAIROS_PRODUCT_ARCHITECTURE.md`, `KAIROS_PRODUCT_EXPERIENCE_ARCHITECTURE.md` |
-| Handoff Cursor | `KAIROS_MASTER_AUDIT.md` §15–16, `MAPS_AGENT_LIBRARY.md` |
+| Handoff Cursor | `KAIROS_NEXT_AGENT_BOOTSTRAP.md`, `KAIROS_PROJECT_HANDOVER.md`, `MAPS_AGENT_LIBRARY.md` |
+| Identity F8.x | `CITY_IDENTITY_ARCHITECTURE.md`, `KAIROS_CURRENT_STATE_F7_10.md` |
 | Relocation / 3.9 | `RELOCATION_SCAFFOLD_ARCHITECTURE.md`, `RELOCATION_EDITORIAL_BRIEF.md` |
 | Corpus / conversión | `KAIROS_MASTER_CORPUS_INDEX.md`, `KAIROS_MASTER_CORPUS_AUDIT.md` |
 | Goals / Cities visible | `GOALS_AND_ONBOARDING.md`, `ASTROCARTOGRAPHY_MASTER_BRIEF.md` |
@@ -315,4 +323,4 @@ Estos archivos **no se cargan** en sesiones GPT de arquitectura/producto salvo a
 
 ---
 
-*MAPS Agent Library · Generado 26 mayo 2026 · Sin commit · Sin push · Sin deploy*
+*MAPS Agent Library · Actualizado F7.11 handover pack · 26 mayo 2026*

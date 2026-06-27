@@ -22,6 +22,7 @@
 - **F5.0 Family Architecture Audit:** entregada (READ-ONLY)
 - **WA 13/13** · São Paulo NO catálogo · Maó/Menorca aparcado
 - **F7.5–F7.9C City Identity Stack:** cerrado (`f7.10` checkpoint)
+- **F7.11 Handover Pack:** cerrado — relevo System Architect
 - **Identity stack:** shadow-ready · `modulation.enabled=false` · sin cableado en producto
 - **Runtime productivo:** intacto (sin cambios F6.3)
 
@@ -35,6 +36,10 @@
 | `EDITORIAL_FAMILY_POLICY.md` | Reutilizar / crear / saturación familia |
 | `WAVE_PLANNER.md` | Reglas batch · gates · pipeline · STOP |
 | `CITY_IDENTITY_ARCHITECTURE.md` | SSOT Identity F7.5–F7.9C · shadow stack · roadmap F8 |
+| `KAIROS_PROJECT_HANDOVER.md` | Handover pack F7.11 · visión · capas · ritual Cursor |
+| `KAIROS_CURRENT_STATE_F7_10.md` | Snapshot exacto al cierre F7.10 |
+| `KAIROS_ARCHITECTURAL_DECISIONS.md` | ADRs permanentes F7.11 |
+| `KAIROS_NEXT_AGENT_BOOTSTRAP.md` | Bootstrap nuevo GPT Architect · formato respuesta |
 
 ---
 
@@ -92,4 +97,4 @@
 
 ---
 
-*Checkpoint F7.10 · Prod 106/103 @ f6.3 · Identity shadow-ready @ f7.9c · STOP @ F8.0*
+*Checkpoint F7.11 · Prod 106/103 @ f6.3 · Identity shadow-ready @ f7.10 · Handover pack · STOP @ F8.0*
