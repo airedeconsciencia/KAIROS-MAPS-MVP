@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Identity Context Observer (8.1 DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: #0f1115;
+      color: #e5e7eb;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .dev-banner {
+      background: rgba(52, 211, 153, 0.1);
+      border-bottom: 1px solid rgba(52, 211, 153, 0.35);
+      color: #6ee7b7;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 960px; margin: 0 auto; padding: 20px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 18px; color: #6ee7b7; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 12px; margin: 0 0 16px; max-width: 760px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+    select, button {
+      font: inherit;
+      cursor: pointer;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    button.primary { background: rgba(52, 211, 153, 0.12); border-color: #6ee7b7; color: #a7f3d0; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .chip {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #1a1d24;
+      color: #d1d5db;
+      cursor: pointer;
+    }
+    .chip.active { border-color: #6ee7b7; color: #a7f3d0; }
+    .panel {
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    pre { margin: 0; white-space: pre-wrap; color: #d1d5db; font-size: 12px; }
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(52, 211, 153, 0.12);
+      color: #a7f3d0;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV ONLY · 8.1 Identity Context Observer · read-only · no runtime impact</div>
+  <div class="page">
+    <h1>Identity Context Observer Lab</h1>
+    <p class="sub">
+      Inspecciona cómo viaja <code>identityContext</code> por el pipeline ·
+      <span class="badge">observer only</span>
+    </p>
+
+    <div class="chips" id="sample-chips" aria-label="Ciudades representativas"></div>
+
+    <div class="toolbar">
+      <select id="city-select" aria-label="Ciudad catálogo"></select>
+      <button type="button" class="primary" id="btn-show">Observar</button>
+      <button type="button" id="btn-unknown">Fallback desconocido</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Summary</div>
+      <pre id="summary-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Warnings (non-blocking)</div>
+      <pre id="warnings-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Effective Profile</div>
+      <pre id="effective-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Shadow Metadata</div>
+      <pre id="metadata-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Trace</div>
+      <pre id="trace-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Integrity · Payload</div>
+      <pre id="integrity-out">—</pre>
+    </div>
+  </div>
+
+  <script src="../content/cities-catalog.js"></script>
+  <script src="../content/identity-dimensions.js"></script>
+  <script src="../content/city-identity-archetypes.js"></script>
+  <script src="../content/identity-modulation-profile.js"></script>
+  <script src="../content/city-identity-index.js"></script>
+  <script src="../content/city-signatures.js"></script>
+  <script src="../services/editorial-family-resolver.js"></script>
+  <script src="../services/identity-modulation-service.js"></script>
+  <script src="../services/identity-shadow-runtime-service.js"></script>
+  <script src="../services/identity-context-service.js"></script>
+  <script src="../services/identity-context-observer-service.js"></script>
+
+  <script>
+(function () {
+  'use strict';
+
+  var Catalog = window.KairosCitiesCatalog;
+  var Observer = window.KairosIdentityContextObserver;
+  var select = document.getElementById('city-select');
+  var chipsEl = document.getElementById('sample-chips');
+
+  var SAMPLES = [
+    { label: 'Lisboa', name: 'Lisboa' },
+    { label: 'Toronto', name: 'Toronto' },
+    { label: 'Cape Town', name: 'Ciudad del Cabo' },
+    { label: 'Beirut', name: 'Beirut' },
+    { label: 'Kabul', name: 'Kabul' },
+    { label: 'Reykjavik (GN)', slug: 'reykjavik-is' }
+  ];
+
+  Catalog.CITIES.slice()
+    .sort(function (a, b) { return a.name.localeCompare(b.name); })
+    .forEach(function (city) {
+      var opt = document.createElement('option');
+      opt.value = Catalog.cityIdFromRef(city);
+      opt.textContent = city.name + ' · ' + opt.value;
+      select.appendChild(opt);
+    });
+
+  function slugForSample(sample) {
+    if (sample.slug) return sample.slug;
+    var city = Catalog.findCityByName(sample.name);
+    return city ? Catalog.cityIdFromRef(city) : null;
+  }
+
+  function renderObservation(citySlug) {
+    var report = Observer.observeBuiltContext(citySlug, { source: 'preview' });
+    var ic = report.identityContext;
+
+    document.getElementById('summary-out').textContent = JSON.stringify({
+      ok: report.ok,
+      blocking: report.blocking,
+      citySlug: ic && ic.citySlug,
+      editorialFamily: ic && ic.editorialFamily,
+      identityArchetype: ic && ic.identityArchetype,
+      confidence: ic && ic.confidence,
+      enabled: ic && ic.enabled,
+      mutationDetected: report.mutationDetected
+    }, null, 2);
+
+    document.getElementById('warnings-out').textContent = JSON.stringify(report.warnings || [], null, 2);
+    document.getElementById('effective-out').textContent = JSON.stringify(report.effectiveProfile, null, 2);
+    document.getElementById('metadata-out').textContent = JSON.stringify(report.shadowMetadata, null, 2);
+    document.getElementById('trace-out').textContent = JSON.stringify(report.trace, null, 2);
+    document.getElementById('integrity-out').textContent = JSON.stringify({
+      integrity: report.integrity,
+      payloadBytes: report.payloadBytes,
+      snapshotHash: report.snapshotHash,
+      missingFields: report.missingFields
+    }, null, 2);
+  }
+
+  SAMPLES.forEach(function (sample) {
+    var chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'chip';
+    chip.textContent = sample.label;
+    chip.addEventListener('click', function () {
+      Array.prototype.forEach.call(chipsEl.querySelectorAll('.chip'), function (el) {
+        el.classList.remove('active');
+      });
+      chip.classList.add('active');
+      renderObservation(slugForSample(sample));
+    });
+    chipsEl.appendChild(chip);
+  });
+
+  document.getElementById('btn-show').addEventListener('click', function () {
+    renderObservation(select.value);
+  });
+  document.getElementById('btn-unknown').addEventListener('click', function () {
+    renderObservation('ciudad-inexistente-xx');
+  });
+
+  renderObservation(slugForSample(SAMPLES[0]));
+})();
+  </script>
+</body>
+</html>
