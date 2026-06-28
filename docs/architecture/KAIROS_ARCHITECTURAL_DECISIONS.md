@@ -183,6 +183,55 @@
 
 ---
 
+## ADR-015 — Micro Modulation Lifecycle
+
+**Decisión:** toda **nueva variable** de modulación Identity (o bump semántico de una variable congelada) debe seguir el ciclo oficial de cinco fases antes de considerarse aprobada para canario o activación.
+
+**Ciclo obligatorio:**
+
+```
+Identity Contract v1.0 (especificación)
+        ↓
+Identity Decision Lab (evidencia A/B virtual DEV)
+        ↓
+Identity Impact Analysis (dirección · magnitud · riesgo)
+        ↓
+Editorial Decision Layer (alcance humano · canario · gates)
+        ↓
+Micro Modulation DEV (implementación post-composición aislada)
+        ↓
+Editorial QA (validación lectura · naturalidad · meaningStability)
+        ↓
+Variable Freeze (documentación SSOT + ADR si aplica)
+```
+
+**Fases documentales mínimas por variable:**
+
+| Fase | Entregable |
+|------|------------|
+| Contract | Variable en Nivel A + canales autorizados (ADR-014) |
+| Lab | Evidencia A/B · `meaningStability = 1` · strength=0 idéntico |
+| Impact Analysis | Métricas por ciudad piloto · priorización |
+| Editorial Decision | Alcance V1 · canario · variables excluidas |
+| Micro Modulation | Servicio DEV aislado · smokes · sin wiring prod |
+| Editorial QA | PASS humano/documentado por sección |
+| Freeze | Sección SSOT `CITY_IDENTITY_ARCHITECTURE.md` + checkpoint |
+
+**Primera variable completada:** `toneBias` V1 (Lisboa canario · strength ≤ 0.5 · Lexical Guard · F8.6B PASS · F8.5C freeze).
+
+**Prohibido:**
+
+1. Cablear variable nueva directamente en Narrative / Premium / Knowledge sin ciclo completo.
+2. Ampliar canario o subir `modulationStrength` máx. sin re-QA editorial.
+3. Saltar Lexical Guard o calibración de umbral cuando el replace modal afecte locuciones compuestas.
+4. Activar en prod (F8.8) sin Controlled Activation DEV (F8.7).
+
+**Motivo:** F8.6 detectó bloqueador (`podría que`) que el Lab virtual no capturaba con umbral distinto; el ciclo evita regresiones editoriales en modulación visible.
+
+**Referencias:** `CITY_IDENTITY_ARCHITECTURE.md` § 13 · ADR-014 · F8.5C toneBias V1 Freeze
+
+---
+
 ## Registro de excepciones
 
 | ADR | Excepción documentada | Fecha |
@@ -191,4 +240,4 @@
 
 ---
 
-*ADRs F7.11–F8.1E · vigentes al cierre F8.1E · ADR-014 Identity Contract v1.0*
+*ADRs F7.11–F8.5C · vigentes al cierre F8.5C · ADR-014 Identity Contract v1.0 · ADR-015 Micro Modulation Lifecycle*

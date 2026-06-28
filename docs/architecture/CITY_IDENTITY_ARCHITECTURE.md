@@ -301,14 +301,15 @@ F8.8  Production Activation
 | **F8.0** | Identity Context Pipeline — transportar `identityContext` sin consumo | DEV · copy byte-identical | ✅ |
 | **F8.1** | Identity Context Observer — inspección read-only del payload | DEV · mutación 0 · warnings no bloqueantes | ✅ |
 | **F8.2** | Identity Decision Lab — evidencia A/B virtual Contract v1.0 Nivel A | DEV · astro estable · strength=0 idéntico | ✅ |
-| **F8.3** | Identity Impact Analysis — medir efecto potencial en narrative/premium | Solo DEV | pendiente |
-| **F8.4** | Editorial Decision Layer — criterios humanos antes de modulación | QA editorial | pendiente |
-| **F8.5** | Micro Modulation — coeficientes mínimos en laboratorio | `modulation.enabled` sigue false en prod | pendiente |
-| **F8.6** | Editorial QA — cerrar `review_required` · curar signatures | review_required = 0 | pendiente |
+| **F8.3** | Identity Impact Analysis — medir efecto potencial en narrative/premium | Solo DEV | ✅ análisis |
+| **F8.4** | Editorial Decision Layer — criterios humanos antes de modulación | QA editorial | ✅ decisión |
+| **F8.5** | Micro Modulation — primera variable en DEV (`toneBias` V1) | `modulation.enabled` sigue false en prod | ✅ toneBias V1 frozen |
+| **F8.5B** | Micro Modulation — `rhythmBias` (siguiente variable) | tras freeze toneBias V1 | pendiente |
+| **F8.6** | Editorial QA — validación humana por variable | QA editorial PASS requerido | ✅ toneBias V1 (F8.6B) |
 | **F8.7** | Controlled Activation (DEV) — activación gradual en staging DEV | smokes + checklist | pendiente |
 | **F8.8** | Production Activation — cableado productivo post-gates | deploy explícito · sin sorpresas | pendiente |
 
-**STOP actual:** F8.2A doc cerrado. Decision Lab operativo · contrato v1.0.0 validado en DEV · sin implementación en servicios · no activar modulación. No deploy.
+**STOP actual:** F8.5C doc cerrado · **toneBias V1 frozen** · canario Lisboa DEV · sin activación prod · sin deploy. Siguiente: **F8.5B rhythmBias**.
 
 ---
 
@@ -813,8 +814,127 @@ API principal: `runComparison(input)` · `runCitySample(citySlug, options)`.
 
 **Simulación virtual ≠ implementación real.**
 
-El lab aplica transforms post-composición en memoria. F8.5 Micro Modulation cableará biases **dentro** de los consumidores autorizados. El lab no predice el texto final de implementación; provee **evidencia de dirección y magnitud** bajo Contract v1.0 Nivel A.
+El lab aplica transforms post-composición en memoria. F8.5 Micro Modulation aplica la primera variable congelada (`toneBias` V1) en capa DEV post-composición (`identity-micro-modulation-service.js`). El lab no predice el texto final de implementación; provee **evidencia de dirección y magnitud** bajo Contract v1.0 Nivel A.
 
 ---
 
-*SSOT City Identity · F8.2A · Decision Lab en main · Contract v1.0.0 validado DEV · sin runtime · next F8.3*
+## 13. toneBias V1 Freeze
+
+**Fase:** F8.5A–F8.5C · documentación F8.5C  
+**Estado:** **frozen** · **DEV only** · **sin activación prod** · **sin deploy**  
+**Servicio:** `src/services/identity-micro-modulation-service.js` (`KairosIdentityMicroModulation`, schema `8.5a4-0.1`)  
+**Smoke:** `scripts/dev-identity-micro-modulation-smoke.sh`  
+**Preview:** `src/dev/identity-micro-modulation-preview.html` (DEV local, no wiring prod)
+
+### 13.1 Declaración de freeze
+
+**toneBias V1** es la **primera modulación editorial aprobada y congelada** del stack Identity. Cualquier cambio semántico, de umbral, de léxico guardado o de alcance canario requiere **ADR + bump de versión** (`toneBias V1.x` o promoción de variable distinta).
+
+**Editorial QA:** PASS definitivo F8.6B (26 mayo 2026).
+
+### 13.2 Alcance aprobado
+
+| Dimensión | Valor congelado |
+|-----------|-----------------|
+| Variable | **`toneBias` únicamente** |
+| Transform | Modal determinista `puede` ↔ `podría` (y plural `pueden` ↔ `podrían`) |
+| Canal efectivo | Post-composición sobre secciones premium (`narrative` → síntesis; `premium` → resto) |
+| Pipeline | Texto → **Lexical Guard** → Tone Transform → resultado |
+| Variables excluidas | `rhythmBias`, `densityBias`, `sectionBias`, `selectionBias` |
+| Servicios intactos | Narrative, Premium, Knowledge, Bridge, Goal, Scorer, Resolver, Country, astro |
+
+### 13.3 Canario
+
+| Campo | Valor |
+|-------|-------|
+| Ciudad | **Lisboa** (`lisboa-pt`) |
+| Arquetipo | `quiet_integration` |
+| Goal validado QA | `amor` |
+| `modulationStrength` máx. | **≤ 0.5** |
+| `applyPolicy.allowed` | `true` obligatorio |
+
+Ninguna otra ciudad recibe micro-modulación toneBias V1 en DEV canario.
+
+### 13.4 Threshold Calibration (F8.5A2)
+
+Umbral de activación **escalado por strength**:
+
+```
+threshold_direct  = 0.08 × modulationStrength
+threshold_plural  = 0.15 × modulationStrength
+```
+
+Con `strength = 0.5` y `toneBias ≈ −0.105` (Lisboa): `effectiveTone = −0.0525` activa transform (`threshold_direct = 0.04`).
+
+**Congelado:** no relajar ni endurecer umbrales sin ADR.
+
+### 13.5 Lexical Guard (F8.5A4)
+
+Capa de protección **previa** al Tone Transform. **No reescribe** — solo enmascara locuciones protegidas para evitar sustituciones parciales inválidas.
+
+**Expresiones protegidas v1:**
+
+| ID | Patrón |
+|----|--------|
+| `puede_que` | `puede que` |
+| `pueden_que` | `pueden que` |
+
+**Motivo editorial:** evitar `puede que` → `podría que` (agramatical). Verificado F8.6B en sección `observar`.
+
+Ampliar la lista = ADR + bump `toneBias V1.x`.
+
+### 13.6 Editorial QA (F8.6B) — PASS
+
+| Gate | Resultado |
+|------|-----------|
+| `meaningStability` | **1** |
+| Sin tono oracular | ✅ |
+| Sin agramaticalidad | ✅ (post-guard) |
+| Naturalidad / voz Kairos | ✅ |
+| Secciones moduladas | 4 (`favorece`, `desafia`, `aprovecha`, `integracion`) |
+| `observar` | Sin cambio · sin `podría que` · `puede que` preservado |
+| `sintesis` | Sin cambio (sin modal objetivo en V1) |
+
+**Veredicto oficial:** **toneBias V1 Approved.**
+
+### 13.7 Ciudades bloqueadas
+
+Micro-modulación toneBias V1 **no aplica** cuando:
+
+| Condición | Ciudades ejemplo |
+|-----------|------------------|
+| No canario | Todas excepto `lisboa-pt` → byte-identical |
+| `applyPolicy.allowed = false` | Beirut, Kabul (`review_required`) |
+| `neutralFallback` | Reykjavik (GN) y ciudades sin identidad curada |
+| `modulationStrength = 0` | Cualquier ciudad → byte-identical |
+
+### 13.8 Restricciones permanentes (hasta F8.7+)
+
+1. `contract.enabled = false` en prod · `identityContext.enabled = false`.
+2. Sin cableado en `app.js` / `index.html` / `dist/`.
+3. Sin modificación de spine narrative, bloques knowledge ni corpus literal.
+4. Sin ampliación de canario sin nuevo ciclo Lab → QA → Freeze.
+5. Decision Lab permanece virtual (umbrales fijos) — divergencia documentada vs micro-modulación calibrada.
+
+### 13.9 Mantenimiento futuro
+
+| Acción | Requisito |
+|--------|-----------|
+| Cambiar umbral o guard | ADR + bump `8.5a*.x` + re-QA editorial |
+| Añadir ciudad canario | F8.4 decisión + Lab + Impact + QA + freeze parcial |
+| Activar `rhythmBias` | **F8.5B** — ciclo completo Micro Modulation Lifecycle (ADR-015) |
+| Cableado productivo | F8.7 Controlled Activation → F8.8 Production Activation |
+| Promover `selectionBias` | ADR + F8.6+ por variable |
+
+### 13.10 Commits de referencia
+
+| Fase | Commit | Contenido |
+|------|--------|-----------|
+| F8.5A2 | `e21fff4` | Micro-modulación toneBias + threshold calibration |
+| F8.5A3 | `37e14c4` | Decision Lab smoke stabilization |
+| F8.5A4 | pendiente commit código | Lexical Guard (`8.5a4-0.1`) |
+| F8.5C | este freeze | Documentación toneBias V1 |
+
+---
+
+*SSOT City Identity · F8.5C · toneBias V1 frozen · canario Lisboa DEV · sin runtime prod · next F8.5B rhythmBias*
