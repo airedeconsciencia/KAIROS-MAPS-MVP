@@ -100,6 +100,25 @@ function assert(label, ok, detail) {
   if (!ok) fail += 1;
 }
 
+var VOLATILE_SMOKE_KEYS = ['computedAt'];
+
+function stripVolatileSmokeFields(value) {
+  if (value == null || typeof value !== 'object') return value;
+  if (Array.isArray(value)) {
+    return value.map(stripVolatileSmokeFields);
+  }
+  var out = {};
+  Object.keys(value).forEach(function (key) {
+    if (VOLATILE_SMOKE_KEYS.indexOf(key) !== -1) return;
+    out[key] = stripVolatileSmokeFields(value[key]);
+  });
+  return out;
+}
+
+function normalizeNarrativeContextForSmoke(narrativeContext) {
+  return stripVolatileSmokeFields(narrativeContext);
+}
+
 assert(
   'Decision Lab exists (8.2)',
   Lab && Lab.SCHEMA_VERSION === '8.2-0.1' && Lab.CONTRACT_SCHEMA_VERSION === '1.0.0',
@@ -207,10 +226,12 @@ assert(
 );
 
 const narrativeBefore = Narrative.deriveNarrativeContext(baseInput);
+Lab.runComparison(Object.assign(buildRankedInput(lisboa, 'amor'), { modulationStrength: 1 }));
 const narrativeAfter = Narrative.deriveNarrativeContext(baseInput);
 assert(
   'Runtime narrative idéntico tras lab',
-  JSON.stringify(narrativeBefore.narrativeContext) === JSON.stringify(narrativeAfter.narrativeContext),
+  JSON.stringify(normalizeNarrativeContextForSmoke(narrativeBefore.narrativeContext)) ===
+    JSON.stringify(normalizeNarrativeContextForSmoke(narrativeAfter.narrativeContext)),
   null
 );
 
