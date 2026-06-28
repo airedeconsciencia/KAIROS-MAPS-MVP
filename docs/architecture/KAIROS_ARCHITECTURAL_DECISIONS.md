@@ -219,16 +219,23 @@ Variable Freeze (documentación SSOT + ADR si aplica)
 
 **Primera variable completada:** `toneBias` V1 (Lisboa canario · strength ≤ 0.5 · Lexical Guard · F8.6B PASS · F8.5C freeze).
 
+**Segunda variable completada:** `rhythmBias` V1 (Lisboa canario · strength ≤ 0.5 · T1 Sentence Paragraph Break · sección `sintesis` · CompositionAuthorityGuard · EmDashSpanGuard · F8.5B6 PASS · F8.5C-rhythm freeze).
+
+**Premium Composition Authority Rule:** toda variable de modulación **estructural** (ritmo, densidad, sección) debe definir **autoridad arquitectónica** antes de implementación. **Premium Composition** es autoridad **primaria** de ritmo estructural (`\n\n` entre parts, rayas `—`, párrafos compositivos). **Identity Micro Modulation** es autoridad **secundaria residual** — solo puede insertar pausas donde Premium no marcó respiración explícita. Obligatorio para rhythmBias V1; requisito para T2/T3 y futuras variables estructurales.
+
+**Confirmación ciclo:** rhythmBias V1 valida ADR-015 de extremo a extremo (Impact F8.5B0 → Transform Definition F8.5B1 → Authority F8.5B1A → Implementación F8.5B → QA F8.5B6 → Freeze F8.5C-rhythm).
+
 **Prohibido:**
 
 1. Cablear variable nueva directamente en Narrative / Premium / Knowledge sin ciclo completo.
 2. Ampliar canario o subir `modulationStrength` máx. sin re-QA editorial.
 3. Saltar Lexical Guard o calibración de umbral cuando el replace modal afecte locuciones compuestas.
 4. Activar en prod (F8.8) sin Controlled Activation DEV (F8.7).
+5. Implementar transforms estructurales (T2, T3, density, section) sin **CompositionAuthorityGuard** o regla de autoridad documentada.
 
-**Motivo:** F8.6 detectó bloqueador (`podría que`) que el Lab virtual no capturaba con umbral distinto; el ciclo evita regresiones editoriales en modulación visible.
+**Motivo:** F8.6 detectó bloqueador (`podría que`) que el Lab virtual no capturaba con umbral distinto; F8.5B0 demostró que Premium ya consume la mayor parte del headroom rítmico — rhythmBias V1 solo actúa en superficie residual (`sintesis` sin `\n`).
 
-**Referencias:** `CITY_IDENTITY_ARCHITECTURE.md` § 13 · ADR-014 · F8.5C toneBias V1 Freeze
+**Referencias:** `CITY_IDENTITY_ARCHITECTURE.md` § 13–14 · ADR-014 · F8.5C toneBias V1 Freeze · F8.5C-rhythm rhythmBias V1 Freeze
 
 ---
 
@@ -240,4 +247,4 @@ Variable Freeze (documentación SSOT + ADR si aplica)
 
 ---
 
-*ADRs F7.11–F8.5C · vigentes al cierre F8.5C · ADR-014 Identity Contract v1.0 · ADR-015 Micro Modulation Lifecycle*
+*ADRs F7.11–F8.5C-rhythm · vigentes al cierre F8.5C-rhythm · ADR-014 Identity Contract v1.0 · ADR-015 Micro Modulation Lifecycle*

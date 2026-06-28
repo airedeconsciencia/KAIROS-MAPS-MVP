@@ -304,12 +304,12 @@ F8.8  Production Activation
 | **F8.3** | Identity Impact Analysis — medir efecto potencial en narrative/premium | Solo DEV | ✅ análisis |
 | **F8.4** | Editorial Decision Layer — criterios humanos antes de modulación | QA editorial | ✅ decisión |
 | **F8.5** | Micro Modulation — primera variable en DEV (`toneBias` V1) | `modulation.enabled` sigue false en prod | ✅ toneBias V1 frozen |
-| **F8.5B** | Micro Modulation — `rhythmBias` (siguiente variable) | tras freeze toneBias V1 | pendiente |
-| **F8.6** | Editorial QA — validación humana por variable | QA editorial PASS requerido | ✅ toneBias V1 (F8.6B) |
+| **F8.5B** | Micro Modulation — `rhythmBias` V1 (T1 residual) | tras freeze toneBias V1 | ✅ rhythmBias V1 frozen |
+| **F8.6** | Editorial QA — validación humana por variable | QA editorial PASS requerido | ✅ toneBias V1 (F8.6B) · ✅ rhythmBias V1 (F8.5B6) |
 | **F8.7** | Controlled Activation (DEV) — activación gradual en staging DEV | smokes + checklist | pendiente |
 | **F8.8** | Production Activation — cableado productivo post-gates | deploy explícito · sin sorpresas | pendiente |
 
-**STOP actual:** F8.5C doc cerrado · **toneBias V1 frozen** · canario Lisboa DEV · sin activación prod · sin deploy. Siguiente: **F8.5B rhythmBias**.
+**STOP actual:** F8.5C-rhythm doc cerrado · **toneBias V1 + rhythmBias V1 frozen** · canario Lisboa DEV · sin activación prod · sin deploy. Siguiente: **F8.6 Identity Micro Modulation Baseline Check**.
 
 ---
 
@@ -922,7 +922,7 @@ Micro-modulación toneBias V1 **no aplica** cuando:
 |--------|-----------|
 | Cambiar umbral o guard | ADR + bump `8.5a*.x` + re-QA editorial |
 | Añadir ciudad canario | F8.4 decisión + Lab + Impact + QA + freeze parcial |
-| Activar `rhythmBias` | **F8.5B** — ciclo completo Micro Modulation Lifecycle (ADR-015) |
+| Activar `rhythmBias` T2/T3 | ADR + ciclo ADR-015 + § 14 mantenimiento |
 | Cableado productivo | F8.7 Controlled Activation → F8.8 Production Activation |
 | Promover `selectionBias` | ADR + F8.6+ por variable |
 
@@ -933,8 +933,129 @@ Micro-modulación toneBias V1 **no aplica** cuando:
 | F8.5A2 | `e21fff4` | Micro-modulación toneBias + threshold calibration |
 | F8.5A3 | `37e14c4` | Decision Lab smoke stabilization |
 | F8.5A4 | `eaf356c` | F8.5A4 cerrado · Lexical Guard integrado (`8.5a4-0.1`) |
-| F8.5C | este freeze | Documentación toneBias V1 |
+| F8.5C | `1e67a24` | Documentación toneBias V1 |
 
 ---
 
-*SSOT City Identity · F8.5C · toneBias V1 frozen · canario Lisboa DEV · sin runtime prod · next F8.5B rhythmBias*
+## 14. rhythmBias V1 Freeze
+
+**Fase:** F8.5B–F8.5C-rhythm · documentación F8.5C-rhythm  
+**Estado:** **frozen** · **DEV only** · **sin activación prod** · **sin deploy**  
+**Servicio:** `src/services/identity-micro-modulation-service.js` (`KairosIdentityMicroModulation`, schema `8.5b-0.1`)  
+**Smoke:** `scripts/dev-identity-micro-modulation-smoke.sh`  
+**Preview:** `src/dev/identity-micro-modulation-preview.html` (DEV local, no wiring prod)
+
+### 14.1 Declaración de freeze
+
+**rhythmBias V1** es la **segunda modulación editorial aprobada y congelada** del stack Identity. Convive con **toneBias V1** en la misma capa post-composición DEV. Cualquier cambio de transform, guard, umbral, sección elegible o alcance canario requiere **ADR + bump de versión** (`rhythmBias V1.x`).
+
+**Editorial QA:** PASS definitivo F8.5B6 (26 mayo 2026).
+
+### 14.2 Alcance aprobado
+
+| Dimensión | Valor congelado |
+|-----------|-----------------|
+| Variable | **`rhythmBias` V1** (convive con `toneBias` V1) |
+| Transform | **T1 Sentence Paragraph Break** — insertar `\n\n` entre frases completas |
+| Sección elegible | **`sintesis` únicamente** |
+| Canal efectivo | `narrative.rhythmBias` → sección `sintesis` |
+| Pipeline | Texto → **CompositionAuthorityGuard** → **EmDashSpanGuard** (mask) → **Lexical Guard** (mask) → T1 → unmask |
+| Autoridad | **Premium Composition = primaria** · **Identity rhythmBias = secundaria residual** |
+| Variables excluidas | **T2** Dense Run Split · **T3** Colon Enumeration Split · `sectionBias` · `densityBias` · `selectionBias` |
+| Servicios intactos | Narrative, Premium, Knowledge, Bridge, Goal, Scorer, Resolver, Country, astro |
+
+### 14.3 Canario
+
+| Campo | Valor |
+|-------|-------|
+| Ciudad | **Lisboa** (`lisboa-pt`) |
+| Arquetipo | `quiet_integration` |
+| Goal validado QA | `amor` |
+| Sección crítica | **`sintesis`** |
+| `modulationStrength` máx. | **≤ 0.5** |
+| `applyPolicy.allowed` | `true` obligatorio |
+
+Ninguna otra ciudad ni sección recibe micro-modulación rhythmBias V1 en DEV canario.
+
+### 14.4 Threshold Calibration (F8.5B)
+
+Umbral de activación **escalado por strength** (paralelo toneBias F8.5A2):
+
+```
+rhythm_threshold = 0.05 × modulationStrength
+```
+
+Con `strength = 0.5` y `rhythmBias ≈ −0.0975` (Lisboa): `effectiveRhythm = −0.0487` activa T1 (`rhythm_threshold = 0.025`). Dirección **negativa** únicamente en V1.
+
+**Congelado:** no relajar ni endurecer umbral sin ADR.
+
+### 14.5 Guards
+
+| Guard | Función |
+|-------|---------|
+| **CompositionAuthorityGuard** | rhythmBias solo actúa donde Premium **no** marcó respiración explícita (`\n`, `\n\n`, raya `—`) |
+| **EmDashSpanGuard** | Enmascara incisos `— …` antes del transform; sin splits dentro de rayas |
+| **Lexical Guard** (hermano tone) | Protege `puede que` / `pueden que` si coexisten en la misma sección |
+
+**Zonas prohibidas:** secciones con `\n` existente · incisos con raya · ciudades no canario · `applyPolicy` bloqueada.
+
+**Zonas elegibles:** `sintesis` sin `\n` · ≥2 frases completas · frontera `.!?` + mayúscula · sin raya en la frontera.
+
+### 14.6 Editorial QA (F8.5B6) — PASS
+
+| Gate | Resultado |
+|------|-----------|
+| `meaningStability` | **1** |
+| Solo `sintesis` cambia por rhythm | ✅ |
+| Secciones con `\n` Premium sin cambio estructural | ✅ (`favorece`, `desafia`, `aprovecha`, `observar`, `integracion`) |
+| toneBias V1 sin regresión | ✅ |
+| Sin cambio semántico (rhythm) | ✅ |
+| Naturalidad / voz Kairos | ✅ |
+| No parece corte artificial | ✅ |
+| Premium sigue autoridad principal del ritmo | ✅ |
+
+**Veredicto oficial:** **rhythmBias V1 Approved.**
+
+### 14.7 Ciudades bloqueadas
+
+Micro-modulación rhythmBias V1 **no aplica** cuando:
+
+| Condición | Ciudades ejemplo |
+|-----------|------------------|
+| No canario | Todas excepto `lisboa-pt` → byte-identical (rhythm) |
+| `applyPolicy.allowed = false` | Beirut, Kabul (`review_required`) |
+| `neutralFallback` | Reykjavik (GN) y ciudades sin identidad curada |
+| `modulationStrength = 0` | Cualquier ciudad → byte-identical |
+| Sección ≠ `sintesis` | Sin cambio estructural rhythm |
+| Sección con `\n` existente | CompositionAuthorityGuard bloquea |
+
+### 14.8 Restricciones permanentes (hasta F8.7+)
+
+1. `contract.enabled = false` en prod · `identityContext.enabled = false`.
+2. Sin cableado en `app.js` / `index.html` / `dist/`.
+3. Sin modificación de spine narrative, bloques knowledge ni corpus literal.
+4. Sin T2 (párrafos densos intra-sección) ni T3 (enumeraciones) sin ADR-015 + autoridad intra-part.
+5. Premium Composition permanece autoridad primaria de ritmo estructural.
+
+### 14.9 Mantenimiento futuro
+
+| Acción | Requisito |
+|--------|-----------|
+| Cambiar umbral o guard rhythm | ADR + bump `8.5b*.x` + re-QA editorial |
+| Activar T2 Dense Run Split | ADR intra-part authority + F8.5B1A extensión + ciclo completo |
+| Activar T3 Colon Enumeration Split | ADR + QA estricto · fuera de V1 |
+| Añadir sección canario rhythm | F8.4 decisión + Impact + QA + freeze parcial |
+| Activar `densityBias` / `sectionBias` | Ciclo ADR-015 completo por variable |
+| Cableado productivo | F8.7 Controlled Activation → F8.8 Production Activation |
+
+### 14.10 Commits de referencia
+
+| Fase | Commit | Contenido |
+|------|--------|-----------|
+| F8.5B | local `8.5b-0.1` | rhythmBias T1 + CompositionAuthorityGuard + EmDashSpanGuard |
+| F8.5B6 | QA doc | Editorial QA rhythm PASS |
+| F8.5C-rhythm | este freeze | Documentación rhythmBias V1 |
+
+---
+
+*SSOT City Identity · F8.5C-rhythm · toneBias V1 + rhythmBias V1 frozen · canario Lisboa DEV · sin runtime prod · next F8.6 Baseline Check*
