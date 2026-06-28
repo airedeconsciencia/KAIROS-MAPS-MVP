@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kairos Maps — Smoke Identity Micro Modulation (8.5A toneBias canary)
+# Kairos Maps — Smoke Identity Micro Modulation (8.5A toneBias + 8.5B rhythmBias T1)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -36,7 +36,7 @@ INDEX_HTML="$ROOT/src/index.html"
 
 echo ""
 echo "══════════════════════════════════════════════════════════"
-echo " KAIROS MAPS — Identity Micro Modulation smoke (8.5A)"
+echo " KAIROS MAPS — Identity Micro Modulation smoke (8.5A + 8.5B T1)"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
@@ -101,8 +101,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Micro Modulation service exists (8.5A4)',
-  Micro && Micro.SCHEMA_VERSION === '8.5a4-0.1' && Micro.CONTRACT_SCHEMA_VERSION === '1.0.0',
+  'Micro Modulation service exists (8.5B T1)',
+  Micro && Micro.SCHEMA_VERSION === '8.5b-0.1' && Micro.CONTRACT_SCHEMA_VERSION === '1.0.0',
   'schema=' + (Micro && Micro.SCHEMA_VERSION)
 );
 
@@ -180,13 +180,14 @@ const maxResult = Micro.composeWithMicroModulation(
   { modulationStrength: 0.5 }
 );
 assert(
-  'Lisboa canary · applyPolicy allowed · toneBias only',
+  'Lisboa canary · applyPolicy allowed · toneBias + rhythmBias V1',
   maxResult.ok &&
     maxResult.envelope.applyPolicy.allowed === true &&
     maxResult.meta.canaryApplied === true &&
     maxResult.applied &&
-    maxResult.applied.variables.length === 1 &&
-    maxResult.applied.variables[0] === 'toneBias',
+    maxResult.applied.variables.length === 2 &&
+    maxResult.applied.variables.indexOf('toneBias') !== -1 &&
+    maxResult.applied.variables.indexOf('rhythmBias') !== -1,
   JSON.stringify({
     gate: maxResult.metrics && maxResult.metrics.gate,
     applied: maxResult.applied,
@@ -202,9 +203,10 @@ assert(
 );
 
 assert(
-  'Contract enabled=false · variablesActive toneBias',
+  'Contract enabled=false · variablesActive toneBias + rhythmBias',
   maxResult.envelope.identityModulationContract.enabled === false &&
-    maxResult.envelope.identityModulationContract.meta.variablesActive[0] === 'toneBias',
+    maxResult.envelope.identityModulationContract.meta.variablesActive.indexOf('toneBias') !== -1 &&
+    maxResult.envelope.identityModulationContract.meta.variablesActive.indexOf('rhythmBias') !== -1,
   null
 );
 
@@ -299,6 +301,92 @@ assert(
   null
 );
 
+function countLineBreaks(body) {
+  return (String(body || '').match(/\n/g) || []).length;
+}
+
+const baseSintesis = (maxResult.baseReading.sections || []).find(function (s) { return s.id === 'sintesis'; });
+const modSintesis = (maxResult.reading.sections || []).find(function (s) { return s.id === 'sintesis'; });
+assert(
+  'rhythmBias T1 · sintesis @ 0.5 inserta \\n\\n entre frases',
+  baseSintesis && modSintesis &&
+    baseSintesis.body.indexOf('\n') === -1 &&
+    modSintesis.body.indexOf('\n\n') !== -1 &&
+    modSintesis.body.split('\n\n').length === 2,
+  JSON.stringify({
+    before: baseSintesis && baseSintesis.body,
+    after: modSintesis && modSintesis.body
+  })
+);
+
+assert(
+  'rhythmBias T1 · umbral escalado activo @ 0.5',
+  maxResult.applied &&
+    maxResult.applied.rhythmBias &&
+    maxResult.applied.rhythmBias.threshold === 0.025,
+  JSON.stringify(maxResult.applied && maxResult.applied.rhythmBias)
+);
+
+['favorece', 'desafia', 'aprovecha', 'observar', 'integracion'].forEach(function (sectionId) {
+  const baseSec = (maxResult.baseReading.sections || []).find(function (s) { return s.id === sectionId; });
+  const modSec = (maxResult.reading.sections || []).find(function (s) { return s.id === sectionId; });
+  assert(
+    'rhythmBias sin cambio estructural en ' + sectionId,
+    baseSec && modSec &&
+      countLineBreaks(baseSec.body) === countLineBreaks(modSec.body),
+    JSON.stringify({
+      beforeBreaks: baseSec && countLineBreaks(baseSec.body),
+      afterBreaks: modSec && countLineBreaks(modSec.body)
+    })
+  );
+});
+
+assert(
+  'EmDashSpanGuard · texto con raya sin segunda frase no cambia',
+  Micro.applySentenceParagraphBreakT1(
+    'En Lisboa, la escena — te encuentran en la compañía, no en el personaje.',
+    -0.06,
+    0.5
+  ) === 'En Lisboa, la escena — te encuentran en la compañía, no en el personaje.',
+  null
+);
+
+assert(
+  'CompositionAuthorityGuard · bloquea sección con \\n o fuera de sintesis',
+  Micro.compositionAuthorityAllowsRhythm('sintesis', 'Primera.\n\nSegunda.').allowed === false &&
+    Micro.compositionAuthorityAllowsRhythm('favorece', 'Primera. Segunda.').allowed === false,
+  null
+);
+
+assert(
+  'rhythmBias T1 unitario · sintesis elegible recibe \\n\\n',
+  Micro.applyRhythmTransformT1('Primera frase. Segunda frase.', -0.06, 0.5, 'sintesis') ===
+    'Primera frase.\n\nSegunda frase.',
+  null
+);
+
+const kabul = Catalog.findCityByName('Kabul');
+const kabulInput = buildRankedInput(kabul, 'amor');
+const kabulReading = Premium.composeCityReading(Object.assign({}, kabulInput, { profile: { name: 'Smoke' } }));
+const kabulBlocked = Micro.applyMicroModulation(kabulReading, Object.assign({}, kabulInput, { modulationStrength: 0.5 }));
+assert(
+  'Kabul applyPolicy bloqueada',
+  kabulBlocked.envelope.applyPolicy.allowed === false &&
+    kabulBlocked.comparison.byteIdentical === true,
+  JSON.stringify(kabulBlocked.envelope.applyPolicy)
+);
+
+const reykjavik = resolveCity({ slug: 'reykjavik-is', fallback: { name: 'Reykjavik', country: 'Iceland', lat: 64.1466, lon: -21.9426 }, canary: false });
+const reykjavikInput = buildRankedInput(reykjavik, 'amor');
+const reykjavikReading = Premium.composeCityReading(Object.assign({}, reykjavikInput, { profile: { name: 'Smoke' } }));
+const reykjavikBlocked = Micro.applyMicroModulation(reykjavikReading, Object.assign({}, reykjavikInput, { modulationStrength: 0.5 }));
+assert(
+  'Reykjavik neutral fallback bloqueada',
+  reykjavikBlocked.envelope.applyPolicy.allowed === false &&
+    reykjavikBlocked.comparison.byteIdentical === true,
+  JSON.stringify(reykjavikBlocked.envelope.applyPolicy)
+);
+
 const premiumBefore = Premium.composeCityReading(Object.assign({}, lisboaInput, { profile: { name: 'Smoke' } }));
 const premiumAfter = Premium.composeCityReading(Object.assign({}, lisboaInput, { profile: { name: 'Smoke' } }));
 Micro.composeWithMicroModulation(Object.assign({}, lisboaInput, { profile: { name: 'Smoke' } }), { modulationStrength: 0.5 });
@@ -382,10 +470,11 @@ assert(
   microSrc.indexOf('KairosNatalMapBridge') === -1 &&
     microSrc.indexOf('KairosGoalSignal') === -1 &&
     microSrc.indexOf('KairosCityScorer') === -1 &&
-    microSrc.indexOf('applyRhythm') === -1 &&
+    microSrc.indexOf('DenseRun') === -1 &&
+    microSrc.indexOf('ColonEnumeration') === -1 &&
     microSrc.indexOf('applyDensity') === -1 &&
     microSrc.indexOf('simulateReadingSections') === -1,
-  'toneBias apply only'
+  'toneBias + rhythmBias T1 only'
 );
 
 assert(

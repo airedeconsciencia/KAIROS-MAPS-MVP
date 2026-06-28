@@ -1,21 +1,23 @@
 /**
- * KAIROS MAPS — Identity Micro Modulation (Fase 8.5A–8.5A4)
+ * KAIROS MAPS — Identity Micro Modulation (Fase 8.5A–8.5B)
  *
- * Primera implementación DEV visible: solo toneBias · canario Lisboa.
+ * DEV visible: toneBias V1 + rhythmBias V1 (T1) · canario Lisboa.
  * Post-composición sobre lectura premium · no cableado en prod.
  * No modifica narrative / premium / knowledge / bridge / goal / scorer.
  */
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '8.5a4-0.1';
+  var SCHEMA_VERSION = '8.5b-0.1';
   var TONE_THRESHOLD_DIRECT = 0.08;
   var TONE_THRESHOLD_PLURAL = 0.15;
+  var RHYTHM_THRESHOLD = 0.05;
   var CONTRACT_SCHEMA_VERSION = '1.0.0';
   var COEFF_MIN = -0.3;
   var COEFF_MAX = 0.3;
   var CANARY_CITY_SLUG = 'lisboa-pt';
   var MAX_MODULATION_STRENGTH = 0.5;
+  var RHYTHM_V1_SECTION_ID = 'sintesis';
   var SECTION_IDS = ['favorece', 'desafia', 'observar', 'aprovecha', 'integracion'];
   var PREMIUM_SECTION_MAP = {
     sintesis: 'narrative',
@@ -40,12 +42,15 @@
     { id: 'pueden_que', pattern: /\bpueden que\b/gi }
   ];
 
-  function maskProtectedExpressions(text) {
-    var slots = [];
+  var STRUCTURE_GUARD_TOKEN_PREFIX = '\uE000SG';
+  var STRUCTURE_GUARD_TOKEN_SUFFIX = '\uE001';
+
+  function maskProtectedExpressions(text, prefix, suffix, patterns, slots) {
     var out = String(text || '');
-    LEXICAL_GUARD_PROTECTED.forEach(function (entry) {
+    slots = slots || [];
+    (patterns || []).forEach(function (entry) {
       out = out.replace(entry.pattern, function (match) {
-        var token = LEXICAL_GUARD_TOKEN_PREFIX + slots.length + LEXICAL_GUARD_TOKEN_SUFFIX;
+        var token = prefix + slots.length + suffix;
         slots.push({ id: entry.id, token: token, value: match });
         return token;
       });
@@ -62,11 +67,51 @@
   }
 
   function applyLexicalGuard(text) {
-    return maskProtectedExpressions(text);
+    return maskProtectedExpressions(
+      text,
+      LEXICAL_GUARD_TOKEN_PREFIX,
+      LEXICAL_GUARD_TOKEN_SUFFIX,
+      LEXICAL_GUARD_PROTECTED
+    );
   }
 
   function restoreLexicalGuard(maskedText, guardResult) {
     return unmaskProtectedExpressions(maskedText, guardResult && guardResult.slots);
+  }
+
+  function maskEmDashSpans(text) {
+    var slots = [];
+    var out = String(text || '');
+    out = out.replace(/—[^.!?\n]+(?:[.!?])?/g, function (match) {
+      var token = STRUCTURE_GUARD_TOKEN_PREFIX + slots.length + STRUCTURE_GUARD_TOKEN_SUFFIX;
+      slots.push({ id: 'em_dash_span', token: token, value: match });
+      return token;
+    });
+    return { masked: out, slots: slots };
+  }
+
+  function restoreEmDashGuard(maskedText, guardResult) {
+    return unmaskProtectedExpressions(maskedText, guardResult && guardResult.slots);
+  }
+
+  function splitSentences(text) {
+    return String(text || '').split(/(?<=[.!?…])\s+/).filter(function (s) {
+      return s.trim();
+    });
+  }
+
+  function compositionAuthorityAllowsRhythm(sectionId, body) {
+    if (sectionId !== RHYTHM_V1_SECTION_ID) {
+      return { allowed: false, reason: 'section_not_rhythm_v1' };
+    }
+    var text = String(body || '');
+    if (text.indexOf('\n') !== -1) {
+      return { allowed: false, reason: 'premium_line_break_present' };
+    }
+    if (splitSentences(text).length < 2) {
+      return { allowed: false, reason: 'insufficient_sentences' };
+    }
+    return { allowed: true, reason: null };
   }
 
   function clamp(value, min, max) {
@@ -173,7 +218,7 @@
         archetypeSlug: identityContext && identityContext.identityArchetype,
         neutralFallback: !!(coeffs.meta && coeffs.meta.neutralFallback),
         microModulationDevOnly: true,
-        variablesActive: ['toneBias']
+        variablesActive: ['toneBias', 'rhythmBias']
       }
     };
   }
@@ -188,11 +233,19 @@
     return round(base * strengthUse, 4);
   }
 
+  function scaledRhythmThreshold(base, strength) {
+    return scaledToneThreshold(base, strength);
+  }
+
   function toneThresholdsForStrength(strength) {
     return {
       direct: scaledToneThreshold(TONE_THRESHOLD_DIRECT, strength),
       plural: scaledToneThreshold(TONE_THRESHOLD_PLURAL, strength)
     };
+  }
+
+  function rhythmThresholdForStrength(strength) {
+    return scaledRhythmThreshold(RHYTHM_THRESHOLD, strength);
   }
 
   function applyToneTransformRaw(text, effectiveTone, strength) {
@@ -214,6 +267,34 @@
     var guarded = applyLexicalGuard(text);
     var transformed = applyToneTransformRaw(guarded.masked, effectiveTone, strength);
     return restoreLexicalGuard(transformed, guarded);
+  }
+
+  function applySentenceParagraphBreakT1(text, effectiveRhythm, strength) {
+    if (!text || Math.abs(effectiveRhythm) < 0.0001) return text;
+    var threshold = rhythmThresholdForStrength(strength);
+    if (effectiveRhythm >= -threshold) return text;
+
+    var dashGuard = maskEmDashSpans(text);
+    var lexicalGuard = applyLexicalGuard(dashGuard.masked);
+    var out = lexicalGuard.masked;
+    out = out.replace(/([.!?])\s+(?=[A-ZÁÉÍÓÚÑ])/g, function (match, punct, offset, whole) {
+      var windowText = whole.slice(Math.max(0, offset - 8), offset + match.length + 8);
+      if (windowText.indexOf('—') !== -1 ||
+        windowText.indexOf(STRUCTURE_GUARD_TOKEN_PREFIX) !== -1) {
+        return match;
+      }
+      return punct + '\n\n';
+    });
+    out = restoreLexicalGuard(out, lexicalGuard);
+    out = restoreEmDashGuard(out, dashGuard);
+    return out;
+  }
+
+  function applyRhythmTransformT1(text, effectiveRhythm, strength, sectionId) {
+    if (!text || sectionId !== RHYTHM_V1_SECTION_ID) return text;
+    var authority = compositionAuthorityAllowsRhythm(sectionId, text);
+    if (!authority.allowed) return text;
+    return applySentenceParagraphBreakT1(text, effectiveRhythm, strength);
   }
 
   function channelForSection(sectionId) {
@@ -261,7 +342,7 @@
     return affected;
   }
 
-  function applyToneBiasToSections(sections, contract, strength, applyPolicy, citySlug) {
+  function applyMicroModulationToSections(sections, contract, strength, applyPolicy, citySlug) {
     var clone = deepClone(sections || []);
     var warnings = [];
     var gate = 'blocked';
@@ -304,15 +385,22 @@
     gate = 'canary_applied';
     var narrative = contract.channels.narrative;
     var premium = contract.channels.premium;
-    var thresholds = toneThresholdsForStrength(strengthUse);
+    var toneThresholds = toneThresholdsForStrength(strengthUse);
+    var rhythmThreshold = rhythmThresholdForStrength(strengthUse);
+    var effectiveRhythmNarrative = effectiveScalar(narrative.rhythmBias, strengthUse);
     var applied = {
-      variables: ['toneBias'],
+      variables: ['toneBias', 'rhythmBias'],
       modulationStrength: strengthUse,
       canaryCitySlug: CANARY_CITY_SLUG,
-      thresholds: thresholds,
+      thresholds: toneThresholds,
       toneBias: {
         narrative: effectiveScalar(narrative.toneBias, strengthUse),
         premium: effectiveScalar(premium.toneBias, strengthUse)
+      },
+      rhythmBias: {
+        narrative: effectiveRhythmNarrative,
+        threshold: rhythmThreshold,
+        t1Section: RHYTHM_V1_SECTION_ID
       }
     };
 
@@ -323,6 +411,15 @@
       var tone = effectiveScalar(channel.toneBias, strengthUse);
       var before = section.body;
       var after = applyToneTransform(before, tone, strengthUse);
+
+      if (id === RHYTHM_V1_SECTION_ID) {
+        var rhythmBefore = after;
+        after = applyRhythmTransformT1(after, effectiveRhythmNarrative, strengthUse, id);
+        if (rhythmBefore !== after) {
+          warnings.push('rhythm_changed:' + id);
+        }
+      }
+
       section.body = after;
       if (before !== after) {
         warnings.push('section_changed:' + id);
@@ -337,6 +434,10 @@
       strengthUse: strengthUse,
       byteIdentical: compareSectionBodies(sections, clone) === 0
     };
+  }
+
+  function applyToneBiasToSections(sections, contract, strength, applyPolicy, citySlug) {
+    return applyMicroModulationToSections(sections, contract, strength, applyPolicy, citySlug);
   }
 
   function applyMicroModulation(reading, input) {
@@ -376,7 +477,7 @@
     contract.modulationStrength = modulationStrength;
 
     var baseAstro = extractAstroInvariants(reading);
-    var modulation = applyToneBiasToSections(
+    var modulation = applyMicroModulationToSections(
       reading.sections,
       contract,
       modulationStrength,
@@ -396,7 +497,7 @@
       schemaVersion: SCHEMA_VERSION,
       gate: modulation.gate,
       canaryCitySlug: CANARY_CITY_SLUG,
-      variables: ['toneBias'],
+      variables: ['toneBias', 'rhythmBias'],
       modulationStrength: modulation.strengthUse
     };
 
@@ -475,29 +576,42 @@
     MAX_MODULATION_STRENGTH: MAX_MODULATION_STRENGTH,
     TONE_THRESHOLD_DIRECT: TONE_THRESHOLD_DIRECT,
     TONE_THRESHOLD_PLURAL: TONE_THRESHOLD_PLURAL,
+    RHYTHM_THRESHOLD: RHYTHM_THRESHOLD,
+    RHYTHM_V1_SECTION_ID: RHYTHM_V1_SECTION_ID,
     SECTION_IDS: SECTION_IDS.slice(),
     buildDefaultReadingContext: buildDefaultReadingContext,
     buildApplyPolicy: buildApplyPolicy,
     buildModulationContractV1: buildModulationContractV1,
     applyToneTransform: applyToneTransform,
+    applyRhythmTransformT1: applyRhythmTransformT1,
+    applySentenceParagraphBreakT1: applySentenceParagraphBreakT1,
+    compositionAuthorityAllowsRhythm: compositionAuthorityAllowsRhythm,
     applyLexicalGuard: applyLexicalGuard,
     restoreLexicalGuard: restoreLexicalGuard,
+    maskEmDashSpans: maskEmDashSpans,
+    restoreEmDashGuard: restoreEmDashGuard,
     LEXICAL_GUARD_PROTECTED: LEXICAL_GUARD_PROTECTED.map(function (entry) {
       return { id: entry.id, pattern: entry.pattern.source, flags: entry.pattern.flags };
     }),
     scaledToneThreshold: scaledToneThreshold,
+    scaledRhythmThreshold: scaledRhythmThreshold,
     toneThresholdsForStrength: toneThresholdsForStrength,
+    rhythmThresholdForStrength: rhythmThresholdForStrength,
     applyMicroModulation: applyMicroModulation,
     composeWithMicroModulation: composeWithMicroModulation,
     extractAstroInvariants: extractAstroInvariants,
     _dev: {
       effectiveScalar: effectiveScalar,
       applyToneBiasToSections: applyToneBiasToSections,
+      applyMicroModulationToSections: applyMicroModulationToSections,
       compareSectionBodies: compareSectionBodies,
       scaledToneThreshold: scaledToneThreshold,
+      scaledRhythmThreshold: scaledRhythmThreshold,
       applyToneTransformRaw: applyToneTransformRaw,
+      applySentenceParagraphBreakT1: applySentenceParagraphBreakT1,
       maskProtectedExpressions: maskProtectedExpressions,
-      unmaskProtectedExpressions: unmaskProtectedExpressions
+      unmaskProtectedExpressions: unmaskProtectedExpressions,
+      splitSentences: splitSentences
     }
   };
 })();
