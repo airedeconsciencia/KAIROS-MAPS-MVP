@@ -101,8 +101,8 @@ function assert(label, ok, detail) {
 }
 
 assert(
-  'Micro Modulation service exists (8.5A2)',
-  Micro && Micro.SCHEMA_VERSION === '8.5a2-0.1' && Micro.CONTRACT_SCHEMA_VERSION === '1.0.0',
+  'Micro Modulation service exists (8.5A4)',
+  Micro && Micro.SCHEMA_VERSION === '8.5a4-0.1' && Micro.CONTRACT_SCHEMA_VERSION === '1.0.0',
   'schema=' + (Micro && Micro.SCHEMA_VERSION)
 );
 
@@ -263,6 +263,34 @@ assert(
   'toneBias transform unitario (puede → podría @ strength 0.5)',
   Micro.applyToneTransform('Aquí puede fluir.', -0.0525, 0.5) === 'Aquí podría fluir.',
   null
+);
+
+assert(
+  'Lexical Guard protege "puede que"',
+  Micro.applyToneTransform(
+    'En Portugal, puede que el encuentro se sostenga en presencia tranquila.',
+    -0.0525,
+    0.5
+  ) === 'En Portugal, puede que el encuentro se sostenga en presencia tranquila.',
+  null
+);
+
+assert(
+  'Lexical Guard permite "puede abrir" → "podría abrir"',
+  Micro.applyToneTransform('En Lisboa, la conversación puede abrir antes que la escena.', -0.0525, 0.5) ===
+    'En Lisboa, la conversación podría abrir antes que la escena.',
+  null
+);
+
+assert(
+  'observar sin "podría que" tras micro modulación Lisboa',
+  (function () {
+    var observar = (maxResult.reading.sections || []).find(function (s) { return s.id === 'observar'; });
+    return observar && observar.body.indexOf('podría que') === -1 && observar.body.indexOf('puede que') !== -1;
+  })(),
+  (maxResult.reading.sections || []).find(function (s) { return s.id === 'observar'; })
+    ? (maxResult.reading.sections.find(function (s) { return s.id === 'observar'; }).body.match(/podr[ií]a que/gi) || []).length
+    : 'missing'
 );
 
 assert(

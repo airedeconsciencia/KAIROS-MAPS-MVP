@@ -1,5 +1,5 @@
 /**
- * KAIROS MAPS — Identity Micro Modulation (Fase 8.5A / 8.5A2)
+ * KAIROS MAPS — Identity Micro Modulation (Fase 8.5A–8.5A4)
  *
  * Primera implementación DEV visible: solo toneBias · canario Lisboa.
  * Post-composición sobre lectura premium · no cableado en prod.
@@ -8,7 +8,7 @@
 (function () {
   'use strict';
 
-  var SCHEMA_VERSION = '8.5a2-0.1';
+  var SCHEMA_VERSION = '8.5a4-0.1';
   var TONE_THRESHOLD_DIRECT = 0.08;
   var TONE_THRESHOLD_PLURAL = 0.15;
   var CONTRACT_SCHEMA_VERSION = '1.0.0';
@@ -32,6 +32,42 @@
     couple: true,
     ai_assistant: true
   };
+
+  var LEXICAL_GUARD_TOKEN_PREFIX = '\uE000LG';
+  var LEXICAL_GUARD_TOKEN_SUFFIX = '\uE001';
+  var LEXICAL_GUARD_PROTECTED = [
+    { id: 'puede_que', pattern: /\bpuede que\b/gi },
+    { id: 'pueden_que', pattern: /\bpueden que\b/gi }
+  ];
+
+  function maskProtectedExpressions(text) {
+    var slots = [];
+    var out = String(text || '');
+    LEXICAL_GUARD_PROTECTED.forEach(function (entry) {
+      out = out.replace(entry.pattern, function (match) {
+        var token = LEXICAL_GUARD_TOKEN_PREFIX + slots.length + LEXICAL_GUARD_TOKEN_SUFFIX;
+        slots.push({ id: entry.id, token: token, value: match });
+        return token;
+      });
+    });
+    return { masked: out, slots: slots };
+  }
+
+  function unmaskProtectedExpressions(text, slots) {
+    var out = String(text || '');
+    (slots || []).forEach(function (slot) {
+      out = out.split(slot.token).join(slot.value);
+    });
+    return out;
+  }
+
+  function applyLexicalGuard(text) {
+    return maskProtectedExpressions(text);
+  }
+
+  function restoreLexicalGuard(maskedText, guardResult) {
+    return unmaskProtectedExpressions(maskedText, guardResult && guardResult.slots);
+  }
 
   function clamp(value, min, max) {
     if (value < min) return min;
@@ -159,7 +195,7 @@
     };
   }
 
-  function applyToneTransform(text, effectiveTone, strength) {
+  function applyToneTransformRaw(text, effectiveTone, strength) {
     if (!text || Math.abs(effectiveTone) < 0.0001) return text;
     var thresholds = toneThresholdsForStrength(strength);
     var out = String(text);
@@ -171,6 +207,13 @@
       if (effectiveTone < -thresholds.plural) out = out.replace(/\bpueden\b/g, 'podrían');
     }
     return out;
+  }
+
+  function applyToneTransform(text, effectiveTone, strength) {
+    if (!text || Math.abs(effectiveTone) < 0.0001) return text;
+    var guarded = applyLexicalGuard(text);
+    var transformed = applyToneTransformRaw(guarded.masked, effectiveTone, strength);
+    return restoreLexicalGuard(transformed, guarded);
   }
 
   function channelForSection(sectionId) {
@@ -437,6 +480,11 @@
     buildApplyPolicy: buildApplyPolicy,
     buildModulationContractV1: buildModulationContractV1,
     applyToneTransform: applyToneTransform,
+    applyLexicalGuard: applyLexicalGuard,
+    restoreLexicalGuard: restoreLexicalGuard,
+    LEXICAL_GUARD_PROTECTED: LEXICAL_GUARD_PROTECTED.map(function (entry) {
+      return { id: entry.id, pattern: entry.pattern.source, flags: entry.pattern.flags };
+    }),
     scaledToneThreshold: scaledToneThreshold,
     toneThresholdsForStrength: toneThresholdsForStrength,
     applyMicroModulation: applyMicroModulation,
@@ -446,7 +494,10 @@
       effectiveScalar: effectiveScalar,
       applyToneBiasToSections: applyToneBiasToSections,
       compareSectionBodies: compareSectionBodies,
-      scaledToneThreshold: scaledToneThreshold
+      scaledToneThreshold: scaledToneThreshold,
+      applyToneTransformRaw: applyToneTransformRaw,
+      maskProtectedExpressions: maskProtectedExpressions,
+      unmaskProtectedExpressions: unmaskProtectedExpressions
     }
   };
 })();
