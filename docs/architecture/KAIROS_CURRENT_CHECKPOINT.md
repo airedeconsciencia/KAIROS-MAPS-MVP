@@ -25,7 +25,8 @@
 - **F7.11 Handover Pack:** cerrado — relevo System Architect
 - **F8.0 Identity Context Pipeline:** cerrado — `identityContext` transportado · no consumido
 - **F8.1 Identity Context Observer:** cerrado — observación read-only DEV · mutación 0 · warnings no bloqueantes
-- **F8.1E Identity Contract v1.0:** aprobado — `contractSchemaVersion: 1.0.0` · sin implementación · sin runtime · sin cambios de producto
+- **F8.1E Identity Contract v1.0:** aprobado — `contractSchemaVersion: 1.0.0` · documentado · sin implementación en servicios
+- **F8.2 Identity Decision Lab:** cerrado — evidencia A/B virtual DEV · `fe506c1` · runtime productivo intacto
 - **Identity stack:** shadow-ready · `modulation.enabled=false` · runtime visual idéntico
 - **Runtime productivo:** intacto (sin cambios F6.3 · sin deploy F8)
 
@@ -70,7 +71,7 @@
 
 **Prod (@ F6.3):** suite **10/10 PASS** — 9 estándar + `dev-mena-architecture-smoke.sh` · split-brain **97 = 0**
 
-**Identity (DEV @ F8.1):**
+**Identity (DEV @ F8.2):**
 
 - `dev-identity-modulation-smoke.sh`
 - `dev-identity-shadow-runtime-smoke.sh`
@@ -79,6 +80,7 @@
 - `dev-identity-calibration-smoke.sh`
 - `dev-identity-context-pipeline-smoke.sh` — F8.0 byte-identical · 106 ciudades · split-brain 0
 - `dev-identity-context-observer-smoke.sh` — F8.1 · 106 ciudades · mutación 0 · narrative/premium byte-identical · app/index sin wiring
+- `dev-identity-decision-lab-smoke.sh` — F8.2 · 6 ciudades piloto · Contract v1.0 · strength=0 idéntico · bridge/goal/scorer intactos
 
 ---
 
@@ -96,9 +98,9 @@
 
 ## Siguiente
 
-**F8.2 — Identity Decision Lab** — preview A/B en DEV sobre Nivel A del contrato v1.0.0 · sin escritura en prod.
+**F8.3 — Identity Impact Analysis** — analizar evidencia del Decision Lab y cuantificar impacto editorial potencial.
 
-**Identity Contract v1.0:** ✅ documentado · ❌ no implementado · ❌ no activado
+**Identity Contract v1.0:** ✅ documentado · ✅ validado en lab DEV · ❌ no implementado en servicios · ❌ no activado
 
 **Activación Identity:** ❌ sin activación · `identityContext.enabled=false` · `modulation.enabled=false`
 
@@ -106,4 +108,4 @@
 
 ---
 
-*Checkpoint F8.1E · Prod 106/103 @ f6.3 · Contract v1.0.0 aprobado · sin runtime · STOP @ F8.2*
+*Checkpoint F8.2A · Prod 106/103 @ f6.3 · Decision Lab en main · smokes PASS · sin activación · STOP @ F8.3*

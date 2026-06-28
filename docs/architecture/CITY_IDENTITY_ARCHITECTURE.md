@@ -1,8 +1,8 @@
 # KAIROS MAPS — City Identity Architecture (SSOT)
 
-**Fase:** F7.5–F8.1E · checkpoint F8.1E  
+**Fase:** F7.5–F8.2A · checkpoint F8.2A  
 **Fecha:** 26 mayo 2026  
-**HEAD identity code:** F8.1 Identity Context Observer · Identity Contract v1.0 (doc)  
+**HEAD identity code:** F8.2 Identity Decision Lab · Contract v1.0 (doc)  
 **Baseline prod:** **106 ciudades / 103 países / 12 familias** — sin cambios visuales
 
 ---
@@ -222,6 +222,7 @@ Cualquier integración futura que **consuma** identity **debe** pasar por QA edi
 | `scripts/dev-identity-calibration-smoke.sh` | F7.9B | Calibration · distancias · nearest/different |
 | `scripts/dev-identity-context-pipeline-smoke.sh` | F8.0 | Context pipeline · 106 ciudades · byte-identical outputs |
 | `scripts/dev-identity-context-observer-smoke.sh` | F8.1 | Observer · 106 ciudades · mutación 0 · narrative/premium byte-identical |
+| `scripts/dev-identity-decision-lab-smoke.sh` | F8.2 | Decision Lab · Contract v1.0 · A/B virtual · bridge/goal/scorer intactos |
 
 **DEV previews (no prod):**
 
@@ -230,6 +231,7 @@ Cualquier integración futura que **consuma** identity **debe** pasar por QA edi
 - `src/dev/shadow-analytics-preview.html`
 - `src/dev/identity-calibration-preview.html`
 - `src/dev/identity-context-observer-preview.html`
+- `src/dev/identity-decision-lab-preview.html`
 
 ---
 
@@ -279,7 +281,7 @@ F8.0  Identity Context Pipeline
   ↓
 F8.1  Identity Context Observer
   ↓
-F8.2  Identity Simulation Lab
+F8.2  Identity Decision Lab
   ↓
 F8.3  Identity Impact Analysis
   ↓
@@ -298,7 +300,7 @@ F8.8  Production Activation
 |------|----------|------|--------|
 | **F8.0** | Identity Context Pipeline — transportar `identityContext` sin consumo | DEV · copy byte-identical | ✅ |
 | **F8.1** | Identity Context Observer — inspección read-only del payload | DEV · mutación 0 · warnings no bloqueantes | ✅ |
-| **F8.2** | Identity Simulation Lab — preview A/B sin escritura en prod | Solo DEV | pendiente |
+| **F8.2** | Identity Decision Lab — evidencia A/B virtual Contract v1.0 Nivel A | DEV · astro estable · strength=0 idéntico | ✅ |
 | **F8.3** | Identity Impact Analysis — medir efecto potencial en narrative/premium | Solo DEV | pendiente |
 | **F8.4** | Editorial Decision Layer — criterios humanos antes de modulación | QA editorial | pendiente |
 | **F8.5** | Micro Modulation — coeficientes mínimos en laboratorio | `modulation.enabled` sigue false en prod | pendiente |
@@ -306,7 +308,7 @@ F8.8  Production Activation
 | **F8.7** | Controlled Activation (DEV) — activación gradual en staging DEV | smokes + checklist | pendiente |
 | **F8.8** | Production Activation — cableado productivo post-gates | deploy explícito · sin sorpresas | pendiente |
 
-**STOP actual:** F8.1A doc cerrado. Observer operativo · identity transportado · no consumido · no activar modulación. No deploy.
+**STOP actual:** F8.2A doc cerrado. Decision Lab operativo · contrato v1.0.0 validado en DEV · sin implementación en servicios · no activar modulación. No deploy.
 
 ---
 
@@ -533,6 +535,7 @@ Identity Context Observer → reporte DEV
 | Calibration lab | `src/services/identity-calibration-service.js` | `7.9b-0.1` |
 | **Identity context** | `src/services/identity-context-service.js` | **`8.0-0.1`** |
 | **Identity observer** | `src/services/identity-context-observer-service.js` | **`8.1-0.1`** |
+| **Identity decision lab** | `src/services/identity-decision-lab-service.js` | **`8.2-0.1`** |
 
 ---
 
@@ -683,14 +686,15 @@ Nivel A no se activa sin `ReadingContext` y `applyPolicy` presentes en el envelo
 2. **Bump mayor** (`1.x.0` o `2.0.0`): nueva variable permanente, nuevo `mode` en `ReadingContext`, o cambio de rango → **ADR obligatorio** en `KAIROS_ARCHITECTURAL_DECISIONS.md`.
 3. **Promoción experimental → permanente** (`selectionBias`): ADR + bump de schema + smokes de regresión editorial.
 4. **Prohibido** añadir bias por producto nuevo; nuevo producto = nuevo `ReadingContext.mode`.
-5. **Implementación** de v1.0.0 requiere F8.2 Simulation Lab PASS sobre Nivel A antes de cualquier cableado en servicios.
+5. **Implementación** de v1.0.0 en servicios productivos requiere F8.3 Impact Analysis tras F8.2 Decision Lab PASS (evidencia A/B virtual Nivel A).
 
 ### 11.11 Estado v1.0.0
 
 | Dimensión | Valor |
 |-----------|-------|
 | Contrato documentado | ✅ F8.1E |
-| Implementado en runtime | ❌ |
+| Validación empírica DEV (Decision Lab) | ✅ F8.2 |
+| Implementado en runtime productivo | ❌ |
 | `modulation.enabled` en prod | ❌ `false` |
 | `identityContext.enabled` | ❌ `false` |
 | Nivel B activo | ❌ |
@@ -698,4 +702,119 @@ Nivel A no se activa sin `ReadingContext` y `applyPolicy` presentes en el envelo
 
 ---
 
-*SSOT City Identity · F8.1E · Identity Contract v1.0.0 aprobado · sin implementación · next F8.2*
+## 12. F8.2 — Identity Decision Lab
+
+**Fase:** F8.2 · documentación F8.2A  
+**Estado:** cerrado en `main` · **DEV only** · **sin activación** · **sin cambios de runtime productivo**  
+**Servicio:** `src/services/identity-decision-lab-service.js` (`KairosIdentityDecisionLab`, schema `8.2-0.1`)  
+**Preview:** `src/dev/identity-decision-lab-preview.html`  
+**Smoke:** `scripts/dev-identity-decision-lab-smoke.sh`
+
+### 12.1 Objetivo
+
+Validar **empíricamente** el Identity Contract v1.0 (Nivel A) comparando:
+
+- **A — Lectura base:** `composeCityReading` real, sin modulación aplicada.
+- **B — Lectura simulada:** clone virtual con transforms DEV derivados de biases Nivel A × `modulationStrength`.
+
+El lab produce **evidencia A/B** para decidir si el contrato es seguro antes de F8.3 Impact Analysis o cableado en servicios (F8.5+).
+
+### 12.2 Alcance DEV only
+
+- No modifica `narrative-intelligence-service.js`, `premium-knowledge-service.js` ni `city-premium-composition-service.js`.
+- No escribe resultados en runtime productivo.
+- No cableado en `app.js` ni `index.html`.
+- `identityModulationContract.enabled` permanece **`false`** siempre en pipeline real.
+
+### 12.3 Relación con Identity Contract v1.0
+
+El lab construye el **envelope completo** por ciudad:
+
+```
+ReadingContext
+applyPolicy
+IdentityModulationContract (contractSchemaVersion: 1.0.0)
+```
+
+**Nivel A simulado** (virtual, no consumido por servicios):
+
+| Variable | Uso en lab |
+|----------|------------|
+| `modulationStrength` | Escala global de efecto virtual (`0` … `1`) |
+| `toneBias` | Transform modal determinista (`puede` ↔ `podría`) |
+| `rhythmBias` | Cadencia (saltos de línea) |
+| `densityBias` | Recorte de frase final |
+| `sectionBias` | Énfasis por sección premium |
+
+**Derivado:** `atmosphereWeight` — función de `rhythmBias` + `sectionBias.observar` + canal `atmosphere` (no variable de input).
+
+**Nivel B (`selectionBias`):** fuera de scope F8.2 — no simulado.
+
+### 12.4 ReadingContext
+
+Envelope obligatorio en cada comparación:
+
+| Campo | Default lab |
+|-------|-------------|
+| `mode` | `city_reading` |
+| `locale` | `es` |
+| `subjectScope` | `individual` |
+
+### 12.5 applyPolicy
+
+Gate editorial separado de biases. Si `allowed === false` (p. ej. `review_required`, `neutralFallback`), el lab fuerza `modulationStrength = 0` y B = A.
+
+Ciudades verificadas con policy bloqueada: Beirut, Kabul, Reykjavik (GN).
+
+### 12.6 Ciudades piloto
+
+| Ciudad | slug | Notas lab |
+|--------|------|-----------|
+| Lisboa | `lisboa-pt` | Modulación virtual activa · ~6 secciones afectadas |
+| Toronto | `toronto-ca` | Policy OK · biases bajo umbral textual posible |
+| Cape Town | `ciudad-del-cabo-za` | Modulación virtual activa |
+| Beirut | `beirut-lb` | `applyPolicy` bloquea · B = A |
+| Kabul | `kabul-af` | `applyPolicy` bloquea · B = A |
+| Reykjavik (GN) | `reykjavik-is` | Fallback neutral · B = A |
+
+### 12.7 Métricas A/B
+
+| Métrica | Descripción |
+|---------|-------------|
+| `changePercent` | % cambio aproximado de caracteres entre A y B |
+| `sectionsAffected` | Número de secciones con diff textual |
+| `meanIntensity` | Intensidad media de biases efectivos aplicados |
+| `meaningStability` | `1` si invariantes astro idénticos; `0` si no |
+| `warnings` | `apply_policy_denied`, `section_changed:*`, etc. |
+
+API principal: `runComparison(input)` · `runCitySample(citySlug, options)`.
+
+### 12.8 Invariantes verificadas (smoke F8.2)
+
+| Invariante | Estado |
+|------------|--------|
+| `modulationStrength = 0` → secciones byte-identical | ✅ |
+| `influencesUsed` / `deepInfluenceKeys` / tema dominante sin cambio | ✅ |
+| Narrative / Premium idénticos antes y después del lab | ✅ |
+| Bridge / Goal / Scorer sin mutación | ✅ |
+| Lab aislado (no import en narrative/knowledge/premium) | ✅ |
+| `contract.enabled = false` en runtime | ✅ |
+
+### 12.9 Qué NO modifica
+
+- Narrative Intelligence (spine, copy, selección)
+- Premium Knowledge (bloques, IDs)
+- Premium Composition (pipeline de composición)
+- Bridge, Goal Signal, City Scorer, Editorial Family Resolver
+- Country Archetype
+- Producto visible / `dist/` / producción
+
+### 12.10 Limitación explícita
+
+**Simulación virtual ≠ implementación real.**
+
+El lab aplica transforms post-composición en memoria. F8.5 Micro Modulation cableará biases **dentro** de los consumidores autorizados. El lab no predice el texto final de implementación; provee **evidencia de dirección y magnitud** bajo Contract v1.0 Nivel A.
+
+---
+
+*SSOT City Identity · F8.2A · Decision Lab en main · Contract v1.0.0 validado DEV · sin runtime · next F8.3*
