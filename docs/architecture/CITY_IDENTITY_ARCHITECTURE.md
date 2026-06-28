@@ -305,11 +305,11 @@ F8.8  Production Activation
 | **F8.4** | Editorial Decision Layer — criterios humanos antes de modulación | QA editorial | ✅ decisión |
 | **F8.5** | Micro Modulation — primera variable en DEV (`toneBias` V1) | `modulation.enabled` sigue false en prod | ✅ toneBias V1 frozen |
 | **F8.5B** | Micro Modulation — `rhythmBias` V1 (T1 residual) | tras freeze toneBias V1 | ✅ rhythmBias V1 frozen |
-| **F8.6** | Editorial QA — validación humana por variable | QA editorial PASS requerido | ✅ toneBias V1 (F8.6B) · ✅ rhythmBias V1 (F8.5B6) |
+| **F8.6** | Micro Modulation Baseline V1 — verificación conjunta toneBias + rhythmBias | Contract v1.0 · canario Lisboa · strength ≤ 0.5 | ✅ Baseline V1 aprobado |
 | **F8.7** | Controlled Activation (DEV) — activación gradual en staging DEV | smokes + checklist | pendiente |
 | **F8.8** | Production Activation — cableado productivo post-gates | deploy explícito · sin sorpresas | pendiente |
 
-**STOP actual:** F8.5C-rhythm doc cerrado · **toneBias V1 + rhythmBias V1 frozen** · canario Lisboa DEV · sin activación prod · sin deploy. Siguiente: **F8.6 Identity Micro Modulation Baseline Check**.
+**STOP actual:** F8.6 Baseline V1 aprobado · **toneBias V1 + rhythmBias V1 frozen** · conviven correctamente · canario Lisboa DEV · sin activación prod · sin deploy. Siguiente: **F8.7 Controlled Activation DEV**.
 
 ---
 
@@ -1055,8 +1055,107 @@ Micro-modulación rhythmBias V1 **no aplica** cuando:
 | F8.5B | `7d929e2` | F8.5D cerrado · rhythmBias V1 runtime integrado (`8.5b-0.1`) · T1 + guards |
 | F8.5B6 | QA doc | Editorial QA rhythm PASS |
 | F8.5C-rhythm | `4b9f4ee` | Documentación rhythmBias V1 freeze |
-| F8.5D-doc | este sync | Documentación rhythmBias V1 runtime en `main` |
+| F8.5D-doc | `c5380ca` | Documentación rhythmBias V1 runtime en `main` |
 
 ---
 
-*SSOT City Identity · F8.5D · toneBias V1 + rhythmBias V1 frozen · runtime `8.5b-0.1` en `main` · canario Lisboa DEV · sin runtime prod · next F8.6 Baseline Check*
+## 15. F8.6 — Micro Modulation Baseline V1
+
+**Fase:** F8.6 · Baseline Check (READ-ONLY)  
+**Estado:** **aprobado** · **DEV only** · **sin activación prod** · **sin deploy**  
+**Servicio:** `src/services/identity-micro-modulation-service.js` (`KairosIdentityMicroModulation`, schema `8.5b-0.1`)  
+**Smoke:** `scripts/dev-identity-micro-modulation-smoke.sh`  
+**Contract:** Identity Contract v1.0 (`contractSchemaVersion: 1.0.0`)
+
+### 15.1 Declaración de baseline
+
+**Micro Modulation Baseline V1** es el punto de control operativo DEV que certifica que **toneBias V1** y **rhythmBias V1** conviven correctamente bajo Contract v1.0, sin regresión semántica, sin cableado productivo y con todos los guards activos. Es la línea base oficial previa a cualquier activación controlada (F8.7).
+
+**Veredicto F8.6:** **PASS** — Micro Modulation Baseline V1 aprobado (26 mayo 2026).
+
+### 15.2 Variables congeladas
+
+| Variable | Estado | Freeze doc |
+|----------|--------|------------|
+| **toneBias V1** | frozen · Approved | § 13 |
+| **rhythmBias V1** | frozen · Approved | § 14 |
+
+Ambas variables activas en Contract v1.0: `variablesActive: ['toneBias', 'rhythmBias']`. `contract.enabled = false` en runtime productivo.
+
+### 15.3 Contract v1.0
+
+| Campo | Valor baseline |
+|-------|----------------|
+| `contractSchemaVersion` | `1.0.0` |
+| `variablesActive` | `toneBias`, `rhythmBias` |
+| `enabled` | `false` (prod · sin wiring) |
+| `modulationStrength` máx. | **≤ 0.5** |
+| `meaningStability` | **1** (obligatorio en gates) |
+
+### 15.4 Canario Lisboa
+
+| Campo | Valor |
+|-------|-------|
+| Ciudad | **Lisboa** (`lisboa-pt`) |
+| Goal validado | `amor` |
+| toneBias | 4 secciones (`favorece`, `desafia`, `aprovecha`, `integracion`) |
+| rhythmBias | solo `sintesis` (T1) |
+| `observar` | byte-identical @ 0.5 (tone sin modal objetivo · rhythm sin elegibilidad) |
+
+### 15.5 Guards activos (baseline)
+
+| Guard | Variable | Función |
+|-------|----------|---------|
+| **Lexical Guard** | tone (+ hermano rhythm) | Protege `puede que` / `pueden que` |
+| **CompositionAuthorityGuard** | rhythm | Premium = autoridad primaria de ritmo |
+| **EmDashSpanGuard** | rhythm | Sin splits dentro de incisos `— …` |
+
+### 15.6 Servicios prohibidos — intactos
+
+Sin modificación en baseline F8.6:
+
+- Narrative Intelligence
+- Premium Composition / Knowledge
+- Natal Bridge · Goal Signal · City Scorer
+- Editorial Family Resolver · Country Archetype
+- Astro / chart adapters
+
+**Runtime productivo:** sin wiring en `app.js` / `index.html` / `dist/`. `modulation.enabled=false` · `identityContext.enabled=false`.
+
+### 15.7 Evidencia baseline
+
+| Escenario | Resultado |
+|-----------|-----------|
+| `modulationStrength = 0` | **byte-identical** · `meaningStability = 1` |
+| `modulationStrength = 0.5` (Lisboa @ `amor`) | **aprobado** · tone en 4 secciones · rhythm T1 solo en `sintesis` |
+| Smokes identity (4/4) | **PASS** |
+| Regresión tone ↔ rhythm | **sin regresión** |
+
+### 15.8 Restricciones vigentes (post-baseline)
+
+1. Sin deploy · sin activación prod hasta F8.7 checklist completo.
+2. Sin ampliación de canario ni variables sin ciclo Lab → Impact → QA → Freeze.
+3. `densityBias` / `sectionBias` / `selectionBias` — no implementados · fuera de baseline V1.
+4. Decision Lab permanece virtual — divergencia documentada vs micro-modulación calibrada.
+
+### 15.9 Siguiente fase
+
+| Fase | Objetivo |
+|------|----------|
+| **F8.7** | Controlled Activation DEV — activación gradual en staging DEV · smokes + checklist |
+| **F8.8** | Production Activation — cableado productivo post-gates · deploy explícito |
+
+### 15.10 Commits de referencia
+
+| Fase | Commit | Contenido |
+|------|--------|-----------|
+| F8.6 | doc sync | Micro Modulation Baseline V1 · F8.6 PASS |
+| F8.5D-doc | `c5380ca` | rhythmBias runtime documentation sync |
+| F8.5D | `7d929e2` | rhythmBias V1 runtime (`8.5b-0.1`) |
+| F8.5C-rhythm | `4b9f4ee` | rhythmBias V1 freeze doc |
+| F8.5C tone | `1e67a24` | toneBias V1 freeze doc |
+| F8.5A4 | `eaf356c` | Lexical Guard integrado |
+
+---
+
+*SSOT City Identity · F8.6 · Micro Modulation Baseline V1 aprobado · toneBias V1 + rhythmBias V1 frozen · runtime `8.5b-0.1` en `main` · canario Lisboa DEV · sin runtime prod · next F8.7 Controlled Activation DEV*
