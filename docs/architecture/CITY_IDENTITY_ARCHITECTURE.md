@@ -1052,10 +1052,11 @@ Micro-modulación rhythmBias V1 **no aplica** cuando:
 
 | Fase | Commit | Contenido |
 |------|--------|-----------|
-| F8.5B | local `8.5b-0.1` | rhythmBias T1 + CompositionAuthorityGuard + EmDashSpanGuard |
+| F8.5B | `7d929e2` | F8.5D cerrado · rhythmBias V1 runtime integrado (`8.5b-0.1`) · T1 + guards |
 | F8.5B6 | QA doc | Editorial QA rhythm PASS |
-| F8.5C-rhythm | este freeze | Documentación rhythmBias V1 |
+| F8.5C-rhythm | `4b9f4ee` | Documentación rhythmBias V1 freeze |
+| F8.5D-doc | este sync | Documentación rhythmBias V1 runtime en `main` |
 
 ---
 
-*SSOT City Identity · F8.5C-rhythm · toneBias V1 + rhythmBias V1 frozen · canario Lisboa DEV · sin runtime prod · next F8.6 Baseline Check*
+*SSOT City Identity · F8.5D · toneBias V1 + rhythmBias V1 frozen · runtime `8.5b-0.1` en `main` · canario Lisboa DEV · sin runtime prod · next F8.6 Baseline Check*

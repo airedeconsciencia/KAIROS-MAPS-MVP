@@ -2,9 +2,9 @@
 
 **Fecha:** 26 mayo 2026  
 **HEAD runtime:** `3c6019a` — F6.3 ANGLO Closure  
-**HEAD identity:** `8.5b-0.1` — F8.5B rhythmBias V1 T1 (local)  
-**HEAD toneBias V1:** `eaf356c` + doc `1e67a24` — frozen (`8.5a4-0.1` Lexical Guard)  
-**HEAD rhythmBias V1:** `8.5b-0.1` — frozen (F8.5C-rhythm doc)  
+**HEAD identity:** `7d929e2` — F8.5D rhythmBias V1 runtime (`8.5b-0.1`)  
+**HEAD toneBias V1:** `eaf356c` — frozen · Lexical Guard integrado  
+**HEAD rhythmBias V1:** `7d929e2` — frozen · runtime integrado en `main` (`8.5b-0.1`)  
 **Checkpoint prod:** `docs/architecture/F6.3_ANGLO_CLOSURE_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint identity:** `docs/architecture/CITY_IDENTITY_ARCHITECTURE.md`  
 **Producción / Staging:** catálogo **`3.8f.1-f6.3-0.1`** · resolver **`3.8h.2-f6.3-0.1`** · **106 ciudades / 103 países** · **12 familias**
@@ -35,9 +35,10 @@
 - **F8.5A4 Lexical Guard:** cerrado · commit `eaf356c` · Lexical Guard integrado · `puede que` protegido
 - **F8.6B Editorial QA toneBias:** **PASS** — toneBias V1 Approved
 - **toneBias V1:** **Approved** · **Frozen** (F8.5C doc)
-- **F8.5B rhythmBias V1 T1:** cerrado — `8.5b-0.1` · CompositionAuthorityGuard · EmDashSpanGuard · canario Lisboa · solo `sintesis`
+- **F8.5B rhythmBias V1 T1:** cerrado — `7d929e2` · CompositionAuthorityGuard · EmDashSpanGuard · canario Lisboa · solo `sintesis` · schema `8.5b-0.1`
 - **F8.5B6 Editorial QA rhythmBias:** **PASS** — rhythmBias V1 Approved
-- **rhythmBias V1:** **Approved** · **Frozen** (F8.5C-rhythm doc)
+- **F8.5D rhythmBias Runtime:** cerrado · commit `7d929e2` · rhythmBias V1 runtime integrado en `main`
+- **rhythmBias V1:** **Approved** · **Frozen** (F8.5C-rhythm doc + F8.5D runtime)
 - **F8.5B cerrada** — segunda variable Identity congelada
 - **F8.5A cerrada** — primera variable Identity congelada
 - **Identity stack:** shadow-ready · `modulation.enabled=false` · runtime visual idéntico
@@ -94,7 +95,7 @@
 - `dev-identity-context-pipeline-smoke.sh` — F8.0 byte-identical · 106 ciudades · split-brain 0
 - `dev-identity-context-observer-smoke.sh` — F8.1 · 106 ciudades · mutación 0 · narrative/premium byte-identical · app/index sin wiring
 - `dev-identity-decision-lab-smoke.sh` — F8.2/F8.5A3 · 6 ciudades piloto · Contract v1.0 · strength=0 idéntico · bridge/goal/scorer intactos
-- `dev-identity-micro-modulation-smoke.sh` — F8.5B · toneBias V1 + rhythmBias V1 · Lisboa canario · `sintesis` T1 · meaningStability=1 · no wiring prod
+- `dev-identity-micro-modulation-smoke.sh` — F8.5D · toneBias V1 + rhythmBias V1 · `7d929e2` · Lisboa canario · `sintesis` T1 · meaningStability=1 · no wiring prod
 
 ---
 
@@ -126,4 +127,4 @@
 
 ---
 
-*Checkpoint F8.5C-rhythm · toneBias V1 + rhythmBias V1 frozen · Prod 106/103 @ f6.3 · smokes PASS · sin activación prod · STOP @ F8.6*
+*Checkpoint F8.5D · toneBias V1 + rhythmBias V1 frozen · runtime `7d929e2` @ `8.5b-0.1` · Prod 106/103 @ f6.3 · smokes PASS · sin activación prod · STOP @ F8.6*
