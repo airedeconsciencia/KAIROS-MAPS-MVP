@@ -71,6 +71,7 @@
   }
 
   function resolveEditorialFamily(cityIdentity) {
+    var EditorialFamily = window.KairosEditorialFamily;
     if (!EditorialFamily || typeof EditorialFamily.resolveEditorialFamily !== 'function') {
       return null;
     }

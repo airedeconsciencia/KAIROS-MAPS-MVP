@@ -2908,6 +2908,16 @@
     weaveCountryIntoSpine(narrativeContext, countryContext);
     narrativeContext.countryContext = countryContext;
 
+    var IdentityCtx = window.KairosIdentityContext;
+    if (IdentityCtx && typeof IdentityCtx.buildIdentityContextFromCity === 'function') {
+      narrativeContext.identityContext = IdentityCtx.buildIdentityContextFromCity(input.city);
+    } else if (IdentityCtx && typeof IdentityCtx.buildIdentityContext === 'function') {
+      var identitySlug = cityAtm && cityAtm.citySlug
+        ? cityAtm.citySlug
+        : resolveCitySlug(cityName);
+      narrativeContext.identityContext = IdentityCtx.buildIdentityContext(identitySlug);
+    }
+
     var rulesFired = [
       'deep_influences_' + deepKeys.length,
       'editorial_humanization',

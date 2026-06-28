@@ -843,6 +843,13 @@
       ctx.relocationProfile.angles = ctx.relocationProfile.relocAngles;
     }
 
+    var IdentityCtx = window.KairosIdentityContext;
+    if (input.narrativeContext && input.narrativeContext.identityContext) {
+      ctx.identityContext = input.narrativeContext.identityContext;
+    } else if (IdentityCtx && typeof IdentityCtx.buildIdentityContextFromCity === 'function') {
+      ctx.identityContext = IdentityCtx.buildIdentityContextFromCity(input.city);
+    }
+
     var seed = hash32(
       ctx.cityName + '|' + goalId + '|' + influences.map(function (i) {
         return interpKey(i.line);
