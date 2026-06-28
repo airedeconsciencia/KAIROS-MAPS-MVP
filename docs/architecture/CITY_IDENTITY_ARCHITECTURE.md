@@ -1,8 +1,8 @@
 # KAIROS MAPS — City Identity Architecture (SSOT)
 
-**Fase:** F7.5–F8.0 · checkpoint F8.0A  
+**Fase:** F7.5–F8.1 · checkpoint F8.1A  
 **Fecha:** 26 mayo 2026  
-**HEAD identity code:** `d14bbbc` — F7.9C Shadow Signature Sync · F8.0 context pipeline (local)  
+**HEAD identity code:** F8.1 Identity Context Observer (local) · F8.0 context pipeline  
 **Baseline prod:** **106 ciudades / 103 países / 12 familias** — sin cambios visuales
 
 ---
@@ -199,7 +199,7 @@ modulationCoefficients  (enabled: false)
 | Sin deploy de identity a prod | ✅ |
 | Shadow/analytics/calibration solo vía DEV previews + smokes | ✅ |
 
-Cualquier integración futura que **consuma** identity **debe** pasar por QA editorial y gates F8.1+ antes de activación (F8.3).
+Cualquier integración futura que **consuma** identity **debe** pasar por QA editorial y gates F8.6+ antes de activación controlada (F8.7/F8.8).
 
 | Invariante F8.0 | Estado |
 |-----------------|--------|
@@ -221,6 +221,7 @@ Cualquier integración futura que **consuma** identity **debe** pasar por QA edi
 | `scripts/dev-shadow-analytics-export-smoke.sh` | F7.8B | Export JSON a `tmp/` |
 | `scripts/dev-identity-calibration-smoke.sh` | F7.9B | Calibration · distancias · nearest/different |
 | `scripts/dev-identity-context-pipeline-smoke.sh` | F8.0 | Context pipeline · 106 ciudades · byte-identical outputs |
+| `scripts/dev-identity-context-observer-smoke.sh` | F8.1 | Observer · 106 ciudades · mutación 0 · narrative/premium byte-identical |
 
 **DEV previews (no prod):**
 
@@ -228,6 +229,7 @@ Cualquier integración futura que **consuma** identity **debe** pasar por QA edi
 - `src/dev/identity-shadow-preview.html`
 - `src/dev/shadow-analytics-preview.html`
 - `src/dev/identity-calibration-preview.html`
+- `src/dev/identity-context-observer-preview.html`
 
 ---
 
@@ -255,9 +257,9 @@ Las 106 firmas en `city-signatures.js` son **algorítmicas** (F7.9B). No han pas
 
 Sobre-asignación detectada en auditoría F7.6. Riesgo de homogeneización regional si se activa modulación sin recalibrar mappings.
 
-### 6.4 Feature flag DEV (pendiente F8.1)
+### 6.4 Observer aislado del producto (F8.1)
 
-F8.1 introducirá flag DEV explícito. Riesgo de activación accidental en staging/prod sin gates — requiere smoke + checklist editorial.
+El Observer es DEV-only y no está cableado en `app.js` ni `index.html`. Riesgo residual: importar el servicio en narrative/premium sin gate — smoke F8.1 lo detecta. Activación accidental en staging/prod sigue requiriendo gates F8.7/F8.8.
 
 ### 6.5 Activación sin QA editorial
 
@@ -272,15 +274,39 @@ Activar `modulation.enabled` o cablear coefficients en narrative/premium **sin**
 
 ## 7. Roadmap F8.x
 
+```
+F8.0  Identity Context Pipeline
+  ↓
+F8.1  Identity Context Observer
+  ↓
+F8.2  Identity Simulation Lab
+  ↓
+F8.3  Identity Impact Analysis
+  ↓
+F8.4  Editorial Decision Layer
+  ↓
+F8.5  Micro Modulation
+  ↓
+F8.6  Editorial QA
+  ↓
+F8.7  Controlled Activation (DEV)
+  ↓
+F8.8  Production Activation
+```
+
 | Fase | Objetivo | Gate | Estado |
 |------|----------|------|--------|
 | **F8.0** | Identity Context Pipeline — transportar `identityContext` sin consumo | DEV · copy byte-identical | ✅ |
-| **F8.1** | Feature flag DEV (`identity.modulation.enabled` o equivalente) | Solo DEV · default off | pendiente |
-| **F8.2** | Narrative shadow comparison — preview A/B copy con coefficients shadow | Sin escritura en prod | pendiente |
-| **F8.3** | Premium modulation preview — preview pesos premium | Sin escritura en prod | pendiente |
-| **F8.4** | Controlled activation — activación gradual post-QA | review_required = 0 · signatures curadas | pendiente |
+| **F8.1** | Identity Context Observer — inspección read-only del payload | DEV · mutación 0 · warnings no bloqueantes | ✅ |
+| **F8.2** | Identity Simulation Lab — preview A/B sin escritura en prod | Solo DEV | pendiente |
+| **F8.3** | Identity Impact Analysis — medir efecto potencial en narrative/premium | Solo DEV | pendiente |
+| **F8.4** | Editorial Decision Layer — criterios humanos antes de modulación | QA editorial | pendiente |
+| **F8.5** | Micro Modulation — coeficientes mínimos en laboratorio | `modulation.enabled` sigue false en prod | pendiente |
+| **F8.6** | Editorial QA — cerrar `review_required` · curar signatures | review_required = 0 | pendiente |
+| **F8.7** | Controlled Activation (DEV) — activación gradual en staging DEV | smokes + checklist | pendiente |
+| **F8.8** | Production Activation — cableado productivo post-gates | deploy explícito · sin sorpresas | pendiente |
 
-**STOP actual:** F8.0A doc cerrado. Identity transportado · no consumido · no activar modulación. No deploy.
+**STOP actual:** F8.1A doc cerrado. Observer operativo · identity transportado · no consumido · no activar modulación. No deploy.
 
 ---
 
@@ -341,7 +367,8 @@ Fallback neutral si slug ausente, desconocido o shadow unavailable: `identityArc
 1. **Build** — `deriveNarrativeContext` construye spine + country; luego attach `identityContext`.
 2. **Propagate** — `narrativeContext.identityContext` pasa a `getBlocksForContext` como `ctx.identityContext`.
 3. **Serialize** — premium `meta.narrativeContext` incluye el objeto (payload más grande; sin efecto UX).
-4. **Consume** — **ninguno** en F8.0. Modulación futura requerirá fase F8.2+ con gate explícito.
+4. **Observe** — F8.1: `KairosIdentityContextObserver` inspecciona el objeto sin mutarlo (DEV).
+5. **Consume** — **ninguno** en F8.0/F8.1. Modulación futura requerirá F8.5+ con gates F8.6–F8.8.
 
 ### 8.5 Modo read-only
 
@@ -375,7 +402,122 @@ F8.0 es **read-only respecto al producto**:
 
 ---
 
-## 9. Mapa de archivos
+## 9. F8.1 — Identity Context Observer
+
+Capa DEV **read-only** para inspeccionar cómo viaja `identityContext` por el pipeline. Registra oficialmente la capacidad de observación sin añadir funcionalidad de producto.
+
+### 9.1 Propósito
+
+Responder, en laboratorio y sin tocar copy ni runtime visible:
+
+- ¿El `identityContext` llega completo al pipeline?
+- ¿Tiene la forma esperada (campos, `enabled: false`, metadata shadow)?
+- ¿Cuánto pesa el payload?
+- ¿Alguien lo mutó al pasarlo?
+
+### 9.2 Filosofía read-only
+
+El Observer **solo lee**. No escribe en el objeto observado, no decide selección de bloques, no genera texto, no activa modulación, no expone UI al usuario final.
+
+| Hace | No hace |
+|------|---------|
+| Observa | Consumir Identity para copy |
+| Valida integridad | Modificar Narrative |
+| Resume payload | Modificar Premium |
+| Mide tamaño aproximado (`payloadBytes`) | Modificar runtime productivo |
+| Expone trazabilidad (`trace`, `shadowMetadata`) | Modificar producto |
+| Detecta mutaciones o pérdida de campos | Activar `modulation.enabled` |
+| Genera warnings **no bloqueantes** (`blocking: false`) | Cablearse en `app.js` / `index.html` |
+
+### 9.3 Responsabilidades
+
+1. **Recibir** `identityContext` (directo, construido o desde pipeline).
+2. **Validar** campos requeridos y flags de seguridad (`enabled === false`, `runtimeImpact: none`, etc.).
+3. **Resumir** `citySlug`, `editorialFamily`, `identityArchetype`, `confidence`, dimensiones efectivas.
+4. **Medir** `payloadBytes` y `snapshotHash` (fingerprint estable del serializado).
+5. **Exponer** `trace`, `shadowMetadata`, `effectiveProfile` en el reporte (copia de lectura).
+6. **Detectar mutaciones** comparando antes/después de la observación.
+7. **Emitir warnings** (`review_required_city`, `neutral_fallback:*`, `missing_field_*`, etc.) sin abortar el pipeline.
+
+### 9.4 Servicio y artefactos
+
+| Campo | Valor |
+|-------|-------|
+| Archivo | `src/services/identity-context-observer-service.js` |
+| Global | `window.KairosIdentityContextObserver` |
+| Schema | `8.1-0.1` |
+| Preview | `src/dev/identity-context-observer-preview.html` |
+| Smoke | `scripts/dev-identity-context-observer-smoke.sh` |
+
+Ciudades representativas en preview: Lisboa, Toronto, Cape Town, Beirut, Kabul, Reykjavik (GN — fallback neutral).
+
+### 9.5 APIs públicas
+
+| API | Uso |
+|-----|-----|
+| `observeIdentityContext(identityContext, options?)` | Observación directa de un objeto ya construido |
+| `observeBuiltContext(citySlug, options?)` | Construye vía `KairosIdentityContext.buildIdentityContext` y observa |
+| `observePipelineIdentityContext(identityContext, options?)` | Observa el objeto adjunto en `narrativeContext` post-F8.0 |
+| `observeAllCatalogCities()` | Barrido 106 ciudades — agregados `mutationCount`, `enabledViolations` |
+| `verifyIdentityContextUnchanged(before, after)` | Comparación byte-serializada sin mutación |
+
+Constantes expuestas: `SCHEMA_VERSION`, `REQUIRED_FIELDS`.
+
+### 9.6 Invariantes F8.1
+
+| Invariante | Estado |
+|------------|--------|
+| Observer no muta `identityContext` | ✅ smoke · `mutationCount: 0` |
+| Warnings siempre no bloqueantes | ✅ `blocking: false` |
+| `enabled: false` en 106 ciudades | ✅ smoke |
+| Narrative / premium byte-identical tras observar | ✅ smoke |
+| Sin import en narrative / premium / knowledge | ✅ smoke |
+| Sin wiring en `app.js` / `index.html` | ✅ smoke |
+| Sin deploy · sin UI productiva | ✅ |
+
+### 9.7 Relación con F8.0 (Identity Context)
+
+F8.0 **transporta** `identityContext` en el pipeline. F8.1 **observa** ese transporte sin participar en él:
+
+```
+F8.0 buildIdentityContext(citySlug)
+  → attach en narrativeContext / ctx (transport only)
+  → F8.1 observePipelineIdentityContext(...)   [DEV · paralelo · no side effects]
+```
+
+El Observer puede llamar a `buildIdentityContext` para laboratorio (`observeBuiltContext`) pero **no** es requerido en el path productivo.
+
+### 9.8 Relación con Shadow Runtime
+
+`identityContext` delega dimensionalmente en `KairosIdentityShadowRuntime` (F8.0). El Observer **lee** los campos derivados (`effectiveProfile`, `shadowMetadata`, `trace`) que Shadow ya calculó; **no** recalcula perfiles ni coefficients.
+
+```
+Shadow Runtime → effectiveProfile + shadowMetadata + trace
+       ↓ (vía Identity Context Service)
+identityContext
+       ↓ (read-only)
+Identity Context Observer → reporte DEV
+```
+
+### 9.9 Limitaciones
+
+- Solo útil cuando el stack identity DEV está cargado (previews / smokes / laboratorio).
+- `snapshotHash` es fingerprint de conveniencia (FNV-32 sobre JSON), no criptografía.
+- Warnings documentan riesgo editorial; no bloquean ni corrigen datos.
+- No sustituye F8.2+ (simulación, impacto, decisión editorial).
+- No valida calidad editorial de arquetipos o signatures — solo forma e integridad estructural.
+
+### 9.10 Qué NO hace (explícito)
+
+- **NO consume Identity** para selección, scoring ni copy.
+- **NO modifica Narrative** ni su spine.
+- **NO modifica Premium** ni knowledge blocks.
+- **NO modifica runtime** visible ni `modulation.enabled`.
+- **NO modifica producto** — cero impacto UX en prod.
+
+---
+
+## 10. Mapa de archivos
 
 | Capa | Archivo | Schema |
 |------|---------|--------|
@@ -390,7 +532,8 @@ F8.0 es **read-only respecto al producto**:
 | Shadow analytics | `src/services/shadow-analytics-service.js` | `7.9c-0.1` |
 | Calibration lab | `src/services/identity-calibration-service.js` | `7.9b-0.1` |
 | **Identity context** | `src/services/identity-context-service.js` | **`8.0-0.1`** |
+| **Identity observer** | `src/services/identity-context-observer-service.js` | **`8.1-0.1`** |
 
 ---
 
-*SSOT City Identity · F8.0A · context pipeline transportado · runtime visual intacto · next F8.1*
+*SSOT City Identity · F8.1A · observer read-only · context transportado · runtime visual intacto · next F8.2*

@@ -24,6 +24,7 @@
 - **F7.5–F7.9C City Identity Stack:** cerrado (`f7.10` checkpoint)
 - **F7.11 Handover Pack:** cerrado — relevo System Architect
 - **F8.0 Identity Context Pipeline:** cerrado — `identityContext` transportado · no consumido
+- **F8.1 Identity Context Observer:** cerrado — observación read-only DEV · mutación 0 · warnings no bloqueantes
 - **Identity stack:** shadow-ready · `modulation.enabled=false` · runtime visual idéntico
 - **Runtime productivo:** intacto (sin cambios F6.3 · sin deploy F8)
 
@@ -68,7 +69,7 @@
 
 **Prod (@ F6.3):** suite **10/10 PASS** — 9 estándar + `dev-mena-architecture-smoke.sh` · split-brain **97 = 0**
 
-**Identity (DEV @ F8.0):**
+**Identity (DEV @ F8.1):**
 
 - `dev-identity-modulation-smoke.sh`
 - `dev-identity-shadow-runtime-smoke.sh`
@@ -76,6 +77,7 @@
 - `dev-shadow-analytics-export-smoke.sh`
 - `dev-identity-calibration-smoke.sh`
 - `dev-identity-context-pipeline-smoke.sh` — F8.0 byte-identical · 106 ciudades · split-brain 0
+- `dev-identity-context-observer-smoke.sh` — F8.1 · 106 ciudades · mutación 0 · narrative/premium byte-identical · app/index sin wiring
 
 ---
 
@@ -93,10 +95,12 @@
 
 ## Siguiente
 
-**F8.1 — Feature flag DEV** — gate antes de consumo de `identityContext` en narrative/premium.
+**F8.2 — Identity Simulation Lab** — preview A/B en DEV sin escritura en prod.
+
+**Activación Identity:** ❌ sin activación · `identityContext.enabled=false` · `modulation.enabled=false`
 
 **Territorial (pausado):** F7.0 GLOBAL EDITORIAL AUDIT — expansión territorial en hold hasta auditoría READ-ONLY.
 
 ---
 
-*Checkpoint F8.0A · Prod 106/103 @ f6.3 · Identity context transportado · sin activación · STOP @ F8.1*
+*Checkpoint F8.1A · Prod 106/103 @ f6.3 · Observer integrado · context transportado · sin activación · STOP @ F8.2*
