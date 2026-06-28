@@ -2,8 +2,8 @@
 
 **Fecha:** 26 mayo 2026  
 **HEAD runtime:** `3c6019a` — F6.3 ANGLO Closure  
-**HEAD identity:** `37e14c4` — F8.5A3 Decision Lab Smoke Stabilization  
-**HEAD toneBias V1:** `e21fff4` + F8.5A4 local (`8.5a4-0.1` Lexical Guard)  
+**HEAD identity:** `eaf356c` — F8.5A4 Lexical Guard  
+**HEAD toneBias V1:** `eaf356c` — toneBias V1 frozen (`8.5a4-0.1` Lexical Guard integrado)  
 **Checkpoint prod:** `docs/architecture/F6.3_ANGLO_CLOSURE_PRODUCTION_CHECKPOINT.md`  
 **Checkpoint identity:** `docs/architecture/CITY_IDENTITY_ARCHITECTURE.md`  
 **Producción / Staging:** catálogo **`3.8f.1-f6.3-0.1`** · resolver **`3.8h.2-f6.3-0.1`** · **106 ciudades / 103 países** · **12 familias**
@@ -31,7 +31,7 @@
 - **F8.5A Micro Modulation toneBias:** cerrado — `e21fff4` · canario Lisboa · post-composición DEV
 - **F8.5A2 Threshold Calibration:** cerrado — umbral escalado · Lisboa @ 0.5 ≥3 secciones
 - **F8.5A3 Decision Lab Smoke Stabilization:** cerrado — `37e14c4` · sin flake `computedAt`
-- **F8.5A4 Lexical Guard:** implementado local · `puede que` protegido · commit código pendiente
+- **F8.5A4 Lexical Guard:** cerrado · commit `eaf356c` · Lexical Guard integrado · `puede que` protegido
 - **F8.6B Editorial QA toneBias:** **PASS** — toneBias V1 Approved
 - **toneBias V1:** **Approved** · **Frozen** (F8.5C doc)
 - **F8.5A cerrada** — primera variable Identity congelada
@@ -110,8 +110,6 @@
 **F8.5B — rhythmBias** — segunda variable Micro Modulation; ciclo ADR-015 completo antes de freeze.
 
 **toneBias V1:** ✅ Approved · ✅ Frozen · canario Lisboa DEV · `modulationStrength ≤ 0.5` · sin activación prod.
-
-**Pendiente código:** commit F8.5A4 Lexical Guard (`8.5a4-0.1`) si no en `main`.
 
 **Identity Contract v1.0:** ✅ documentado · ✅ toneBias V1 frozen · ❌ `rhythmBias`+ sin implementar · ❌ no activado prod
 

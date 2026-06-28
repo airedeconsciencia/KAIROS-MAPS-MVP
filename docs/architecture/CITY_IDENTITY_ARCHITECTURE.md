@@ -932,7 +932,7 @@ Micro-modulación toneBias V1 **no aplica** cuando:
 |------|--------|-----------|
 | F8.5A2 | `e21fff4` | Micro-modulación toneBias + threshold calibration |
 | F8.5A3 | `37e14c4` | Decision Lab smoke stabilization |
-| F8.5A4 | pendiente commit código | Lexical Guard (`8.5a4-0.1`) |
+| F8.5A4 | `eaf356c` | F8.5A4 cerrado · Lexical Guard integrado (`8.5a4-0.1`) |
 | F8.5C | este freeze | Documentación toneBias V1 |
 
 ---
