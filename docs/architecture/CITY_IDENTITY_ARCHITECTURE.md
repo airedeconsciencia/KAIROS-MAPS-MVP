@@ -1,8 +1,8 @@
 # KAIROS MAPS — City Identity Architecture (SSOT)
 
-**Fase:** F7.5–F8.1 · checkpoint F8.1A  
+**Fase:** F7.5–F8.1E · checkpoint F8.1E  
 **Fecha:** 26 mayo 2026  
-**HEAD identity code:** F8.1 Identity Context Observer (local) · F8.0 context pipeline  
+**HEAD identity code:** F8.1 Identity Context Observer · Identity Contract v1.0 (doc)  
 **Baseline prod:** **106 ciudades / 103 países / 12 familias** — sin cambios visuales
 
 ---
@@ -536,4 +536,166 @@ Identity Context Observer → reporte DEV
 
 ---
 
-*SSOT City Identity · F8.1A · observer read-only · context transportado · runtime visual intacto · next F8.2*
+## 11. Identity Contract v1.0
+
+**Fase:** F8.1E · documentación arquitectónica  
+**Estado:** aprobado · **sin implementación** · **sin activación** · **sin cambios de runtime**  
+**contractSchemaVersion:** `1.0.0`
+
+Primera versión estable del **lenguaje interno de modulación** Identity. Define qué variables podrán modular el pipeline editorial en el futuro. No implementa código. No activa `modulation.enabled`. Complementa F8.1B (especificación), F8.1C (freeze review) y F8.1D (decisiones).
+
+### 11.1 Propósito
+
+Establecer un contrato permanente, mínimo y auditable entre:
+
+- la capa Identity (perfil dimensional → coeficientes derivados), y
+- los consumidores editoriales autorizados (narrative, knowledge, composition, atmosphere).
+
+El contrato responde: *cómo puede una ciudad modular intensidad, ritmo, densidad y énfasis seccional* sin alterar astro, territorio, corpus literal ni scoring geo.
+
+### 11.2 Filosofía
+
+- **Identity modula intensidad y énfasis, no hechos ni territorio.**
+- **Micro modulación:** efectos perceptibles pero acotados; reversible en DEV.
+- **Derivación única:** solo Identity Modulation Service traduce `effectiveProfile` → contrato; consumidores **nunca** leen `effectiveProfile` directamente.
+- **Fail-soft:** contrato neutro (todos los biases = 0) si `neutralFallback`, política denegada o `modulationStrength = 0`.
+- **Determinismo:** mismo `citySlug` + mismo `ReadingContext` + misma versión de contrato → mismos coeficientes derivados.
+
+### 11.3 Principios permanentes
+
+| # | Principio |
+|---|-----------|
+| P1 | Consumidores leen **solo** `IdentityModulationContract` (y sobres obligatorios), nunca dimensiones fuente |
+| P2 | **Gate doble:** aplicación requiere `enabled === true` **y** `applyPolicy.allowed === true` |
+| P3 | Efecto efectivo = `bias × modulationStrength`, con `modulationStrength ∈ [0, 1]` |
+| P4 | Rango canónico de biases: **`−0.3` … `+0.3`** · neutral = **`0`** |
+| P5 | Corpus literal (`premium-blocks`), astro, bridge, goal, scorer, resolver y country archetype: **zona roja** — fuera del contrato |
+| P6 | Cada consumidor declara **un canal** autorizado; no mezcla canales en una misma pasada |
+| P7 | Evolución del contrato solo vía **ADR** + bump de `contractSchemaVersion` |
+
+### 11.4 Envelope (estructura permanente)
+
+El contrato se entrega siempre dentro de un **envelope** de tres capas. Solo la tercera contiene biases de efecto.
+
+```
+IdentityEnvelope
+├── ReadingContext          (sobre producto — no bias)
+├── applyPolicy             (sobre editorial — no bias)
+└── IdentityModulationContract
+    ├── contractSchemaVersion
+    ├── enabled
+    ├── modulationStrength
+    └── channels.{narrative|atmosphere|knowledge|premium}
+```
+
+#### 11.4.1 ReadingContext (permanente · no bias)
+
+Declara **qué producto** y **qué sujeto** interpretan el contrato. No modula intensidad.
+
+| Campo | Valores iniciales | Responsabilidad |
+|-------|-------------------|-----------------|
+| `mode` | `city_reading` · `relocation` · `couple` · `ai_assistant` | Producto que consume la lectura |
+| `locale` | `es` (extensible) | Idioma de aplicación de pools editoriales |
+| `subjectScope` | `individual` · `dyad` | Sujeto de la lectura (Couple = dyad) |
+
+Ampliación de `mode` solo vía ADR. Nuevo producto → nuevo `mode`, no nuevo bias.
+
+#### 11.4.2 applyPolicy (permanente · no bias)
+
+Política editorial separada del mapa de biases. Decide si los coeficientes calculados **pueden aplicarse**.
+
+| Campo | Default | Regla |
+|-------|---------|-------|
+| `allowed` | `false` si `status === review_required'` o `neutralFallback` | Gate humano/editorial |
+
+`enabled` = gate técnico. `applyPolicy.allowed` = gate editorial. Ambos deben ser `true` para efecto en producto.
+
+#### 11.4.3 IdentityModulationContract
+
+Contenedor de biases y controles de aplicación. `contractSchemaVersion: "1.0.0"`.
+
+### 11.5 Nivel A — variables permanentes (congeladas v1.0.0)
+
+Variables de **efecto** y **control** incluidas en el freeze definitivo. Suficientes para la primera modulación editorial (voz, ritmo, densidad, énfasis seccional) sin tocar selección de bloques.
+
+| Variable | Tipo | Rango | Default | Canales |
+|----------|------|-------|---------|---------|
+| `enabled` | bool | `false` \| `true` | `false` | global |
+| `modulationStrength` | scalar | `0.0` … `1.0` | `0.0` | global |
+| `toneBias` | scalar | `−0.3` … `+0.3` | `0` | `narrative`, `premium` |
+| `rhythmBias` | scalar | `−0.3` … `+0.3` | `0` | `narrative`, `atmosphere` |
+| `densityBias` | scalar | `−0.3` … `+0.3` | `0` | `premium` |
+| `sectionBias` | mapa (5 claves) | cada clave `−0.3` … `+0.3` | todas `0` | `knowledge`, `premium` |
+
+Claves `sectionBias`: `favorece`, `desafia`, `observar`, `aprovecha`, `integracion`.
+
+**Semántica resumida:**
+
+- `toneBias` — intensidad emocional / franqueza vs intimidad del lenguaje
+- `rhythmBias` — cadencia y ritmo narrativo
+- `densityBias` — extensión y densidad informativa de la lectura
+- `sectionBias` — énfasis relativo entre secciones premium
+
+### 11.6 Nivel B — variables experimentales (fuera del freeze v1.0.0)
+
+| Variable | Canal | Estado | Promoción |
+|----------|-------|--------|-----------|
+| `selectionBias` | `knowledge` | experimental | Solo tras F8.6 Editorial QA + smokes de selección estables |
+
+Mapa de 10 claves alineadas con dimensiones de perfil (`activation` … `horizon`). **Solo** Premium Knowledge puede leerla. Modula **selección** de bloques, no texto literal. Ausente del schema congelado `1.0.0` hasta promoción explícita vía ADR.
+
+### 11.7 Valores derivados (no serializables como input)
+
+| Derivado | Fórmula conceptual | Consumidores |
+|----------|-------------------|--------------|
+| `atmosphereWeight` | función canónica de `rhythmBias` + `sectionBias.observar` + canal `atmosphere` | Narrative, Composition, Atmosphere |
+
+`atmospherePresence` **no es variable del contrato**. Fue eliminada como miembro independiente (decisión F8.1D). Una sola fórmula canónica; consumidores no reinterpretan.
+
+### 11.8 Consumidores autorizados
+
+| Servicio | Canal | Variables Nivel A |
+|----------|-------|-------------------|
+| Narrative Intelligence | `narrative`, `atmosphere` | `toneBias`, `rhythmBias`, `atmosphereWeight` (derivado) |
+| Premium Knowledge | `knowledge` | `sectionBias` |
+| Premium Composition | `premium` | `toneBias`, `densityBias`, `sectionBias`, `atmosphereWeight` (derivado) |
+| City Atmosphere (subcapa narrative) | `atmosphere` | `rhythmBias`, `atmosphereWeight` (derivado) |
+| Identity Observer | todos | lectura / trazabilidad (sin aplicación) |
+| Identity Simulation Lab (F8.2+) | todos | lectura comparativa A/B (DEV) |
+
+Nivel A no se activa sin `ReadingContext` y `applyPolicy` presentes en el envelope.
+
+### 11.9 Consumidores prohibidos (zona roja permanente)
+
+| Servicio | Motivo |
+|----------|--------|
+| Editorial Family Resolver | SSOT territorial; Identity no redefine familia |
+| Bridge | Natal del usuario ≠ identidad urbana |
+| Goal Signal | Objetivo humano = elección del usuario |
+| City Scorer | Ranking geo/astro sagrado |
+| Country Archetype Service | Capa macro nacional aislada |
+| `premium-blocks.js` (corpus) | Texto literal congelado |
+| Motores astro / WASM | Hechos astrológicos invariantes |
+
+### 11.10 Reglas de evolución mediante ADR
+
+1. **Bump menor** (`1.0.x`): clarificaciones documentales sin cambio semántico.
+2. **Bump mayor** (`1.x.0` o `2.0.0`): nueva variable permanente, nuevo `mode` en `ReadingContext`, o cambio de rango → **ADR obligatorio** en `KAIROS_ARCHITECTURAL_DECISIONS.md`.
+3. **Promoción experimental → permanente** (`selectionBias`): ADR + bump de schema + smokes de regresión editorial.
+4. **Prohibido** añadir bias por producto nuevo; nuevo producto = nuevo `ReadingContext.mode`.
+5. **Implementación** de v1.0.0 requiere F8.2 Simulation Lab PASS sobre Nivel A antes de cualquier cableado en servicios.
+
+### 11.11 Estado v1.0.0
+
+| Dimensión | Valor |
+|-----------|-------|
+| Contrato documentado | ✅ F8.1E |
+| Implementado en runtime | ❌ |
+| `modulation.enabled` en prod | ❌ `false` |
+| `identityContext.enabled` | ❌ `false` |
+| Nivel B activo | ❌ |
+| Cambio UX visible | ❌ ninguno |
+
+---
+
+*SSOT City Identity · F8.1E · Identity Contract v1.0.0 aprobado · sin implementación · next F8.2*

@@ -25,6 +25,7 @@
 - **F7.11 Handover Pack:** cerrado — relevo System Architect
 - **F8.0 Identity Context Pipeline:** cerrado — `identityContext` transportado · no consumido
 - **F8.1 Identity Context Observer:** cerrado — observación read-only DEV · mutación 0 · warnings no bloqueantes
+- **F8.1E Identity Contract v1.0:** aprobado — `contractSchemaVersion: 1.0.0` · sin implementación · sin runtime · sin cambios de producto
 - **Identity stack:** shadow-ready · `modulation.enabled=false` · runtime visual idéntico
 - **Runtime productivo:** intacto (sin cambios F6.3 · sin deploy F8)
 
@@ -95,7 +96,9 @@
 
 ## Siguiente
 
-**F8.2 — Identity Simulation Lab** — preview A/B en DEV sin escritura en prod.
+**F8.2 — Identity Decision Lab** — preview A/B en DEV sobre Nivel A del contrato v1.0.0 · sin escritura en prod.
+
+**Identity Contract v1.0:** ✅ documentado · ❌ no implementado · ❌ no activado
 
 **Activación Identity:** ❌ sin activación · `identityContext.enabled=false` · `modulation.enabled=false`
 
@@ -103,4 +106,4 @@
 
 ---
 
-*Checkpoint F8.1A · Prod 106/103 @ f6.3 · Observer integrado · context transportado · sin activación · STOP @ F8.2*
+*Checkpoint F8.1E · Prod 106/103 @ f6.3 · Contract v1.0.0 aprobado · sin runtime · STOP @ F8.2*

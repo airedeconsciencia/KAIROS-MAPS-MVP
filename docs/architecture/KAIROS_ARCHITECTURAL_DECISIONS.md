@@ -149,6 +149,40 @@
 
 ---
 
+## ADR-014 — Identity Contract v1.0
+
+**Decisión:** la modulación editorial Identity queda gobernada por **Identity Contract v1.0.0** (`contractSchemaVersion: "1.0.0"`), documentado en `CITY_IDENTITY_ARCHITECTURE.md` § 11. El contrato es **especificación arquitectónica permanente** hasta ADR de evolución.
+
+**Envelope obligatorio (no biases):**
+
+- `ReadingContext` — `mode` (`city_reading` | `relocation` | `couple` | `ai_assistant`), `locale`, `subjectScope` (`individual` | `dyad`)
+- `applyPolicy` — `allowed` (gate editorial, separado de biases)
+
+**Nivel A congelado (permanente v1.0.0):** `enabled`, `modulationStrength`, `toneBias`, `rhythmBias`, `densityBias`, `sectionBias`.
+
+**Nivel B experimental (fuera del freeze v1.0.0):** `selectionBias` (ex `weightBoosts`) — solo Knowledge; promoción tras F8.6 Editorial QA.
+
+**Derivado canónico (no input):** `atmosphereWeight` — sustituye `atmospherePresence` como variable independiente.
+
+**Renombramientos adoptados:** `strength` → `modulationStrength`; `weightBoosts` → `selectionBias` (tier experimental).
+
+**Principios no negociables:**
+
+1. Consumidores **nunca** leen `effectiveProfile` directamente.
+2. Aplicación requiere `enabled ∧ applyPolicy.allowed`; efecto = `bias × modulationStrength`.
+3. Rango biases: `−0.3` … `+0.3`; `modulationStrength`: `0` … `1`.
+4. Zona roja intacta: resolver, bridge, goal, scorer, country archetype, corpus literal, motores astro.
+5. Nuevo producto → `ReadingContext.mode`; **prohibido** nuevo bias por conveniencia.
+6. Evolución del contrato solo vía ADR + bump de `contractSchemaVersion`.
+
+**Estado al aprobar ADR:** documentado F8.1E · **sin implementación** · **sin activación** · **sin cambios de runtime**.
+
+**Gate implementación:** F8.2 Identity Decision Lab PASS sobre Nivel A antes de cablear servicios.
+
+**Referencias:** `CITY_IDENTITY_ARCHITECTURE.md` § 11 · ADR-003 · ADR-004
+
+---
+
 ## Registro de excepciones
 
 | ADR | Excepción documentada | Fecha |
@@ -157,4 +191,4 @@
 
 ---
 
-*ADRs F7.11 · vigentes al cierre F7.10 · revisar al cerrar F8.0*
+*ADRs F7.11–F8.1E · vigentes al cierre F8.1E · ADR-014 Identity Contract v1.0*
