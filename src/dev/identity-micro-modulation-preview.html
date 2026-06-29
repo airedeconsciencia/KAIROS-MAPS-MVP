@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Kairos Maps — Identity Micro Modulation (8.7 DEV)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: #0f1115;
+      color: #e5e7eb;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .dev-banner {
+      background: rgba(52, 211, 153, 0.1);
+      border-bottom: 1px solid rgba(52, 211, 153, 0.35);
+      color: #6ee7b7;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+    }
+    .page { max-width: 1100px; margin: 0 auto; padding: 20px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 18px; color: #6ee7b7; font-weight: 600; }
+    .sub { color: #9ca3af; font-size: 12px; margin: 0 0 16px; max-width: 860px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+    select, button, input[type="range"] {
+      font: inherit;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    button { cursor: pointer; }
+    button.primary { background: rgba(52, 211, 153, 0.12); border-color: #6ee7b7; color: #a7f3d0; }
+    .panel {
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .panel-title {
+      margin: 0 0 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    pre { margin: 0; white-space: pre-wrap; color: #d1d5db; font-size: 12px; }
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(52, 211, 153, 0.12);
+      color: #a7f3d0;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+    label { font-size: 11px; color: #9ca3af; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="dev-banner">DEV ONLY · F8.7 Controlled Activation · toneBias + rhythmBias V1 · canario Lisboa · max 0.5</div>
+  <div class="page">
+    <h1>Identity Micro Modulation</h1>
+    <p class="sub">
+      Baseline V1 post-composición: <strong>toneBias</strong> + <strong>rhythmBias T1</strong> ·
+      canario <strong>lisboa-pt</strong> · feature flag <strong>default OFF</strong> ·
+      <span class="badge">no prod wiring</span>
+    </p>
+
+    <div class="toolbar">
+      <select id="city-select"></select>
+      <select id="goal-select">
+        <option value="amor">amor</option>
+        <option value="trabajo">trabajo</option>
+        <option value="descanso">descanso</option>
+      </select>
+      <label>strength <input type="range" id="strength" min="0" max="50" value="50"></label>
+      <span id="strength-val">0.5</span>
+      <label><input type="checkbox" id="activation-toggle"> Controlled Activation</label>
+      <button type="button" class="primary" id="btn-apply">Aplicar baseline</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Métricas · Envelope</div>
+      <pre id="metrics-out">—</pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Significado estable (astro)</div>
+      <pre id="identical-out">—</pre>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-title">Base (sin micro modulación)</div>
+        <pre id="base-out">—</pre>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Modulada (toneBias + rhythmBias)</div>
+        <pre id="mod-out">—</pre>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Warnings</div>
+      <pre id="warnings-out">—</pre>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+  <script src="../content/cities-catalog.js"></script>
+  <script src="../content/goal-signal.js"></script>
+  <script src="../content/natal-lite.js"></script>
+  <script src="../services/natal-composition-service.js"></script>
+  <script src="../services/natal-map-bridge-service.js"></script>
+  <script src="../content/city-scorer.js"></script>
+  <script src="../engines/astro.js"></script>
+  <script src="../content/interpretations.js"></script>
+  <script src="../content/premium-blocks.js"></script>
+  <script src="../content/country-archetypes.js"></script>
+  <script src="../services/country-archetype-service.js"></script>
+  <script src="../services/editorial-family-resolver.js"></script>
+  <script src="../content/identity-dimensions.js"></script>
+  <script src="../content/city-identity-archetypes.js"></script>
+  <script src="../content/identity-modulation-profile.js"></script>
+  <script src="../content/city-identity-index.js"></script>
+  <script src="../content/city-signatures.js"></script>
+  <script src="../services/identity-modulation-service.js"></script>
+  <script src="../services/identity-shadow-runtime-service.js"></script>
+  <script src="../services/identity-context-service.js"></script>
+  <script src="../services/narrative-intelligence-service.js"></script>
+  <script src="../services/premium-knowledge-service.js"></script>
+  <script src="../services/city-premium-composition-service.js"></script>
+  <script src="../services/identity-micro-modulation-service.js"></script>
+  <script src="../services/identity-micro-modulation-dev-activation.js"></script>
+
+  <script>
+(function () {
+  'use strict';
+
+  var Catalog = window.KairosCitiesCatalog;
+  var Micro = window.KairosIdentityMicroModulation;
+  var DevActivation = window.KairosIdentityMicroModulationDevActivation;
+  var Astro = window.KairosAstro;
+  var GS = window.KairosGoalSignal;
+  var Bridge = window.KairosNatalMapBridge;
+  var Scorer = window.KairosCityScorer;
+  var compose = window.KairosNatalComposition.composeNatalLiteReading;
+
+  var select = document.getElementById('city-select');
+  var strength = document.getElementById('strength');
+  var strengthVal = document.getElementById('strength-val');
+  var activationToggle = document.getElementById('activation-toggle');
+
+  Catalog.CITIES.slice()
+    .sort(function (a, b) { return a.name.localeCompare(b.name); })
+    .forEach(function (city) {
+      var opt = document.createElement('option');
+      opt.value = Catalog.cityIdFromRef(city);
+      opt.textContent = city.name + ' · ' + opt.value;
+      select.appendChild(opt);
+    });
+
+  select.value = Catalog.cityIdFromRef(Catalog.findCityByName('Lisboa')) || select.value;
+
+  strength.addEventListener('input', function () {
+    strengthVal.textContent = (Number(strength.value) / 100).toFixed(2);
+  });
+
+  function buildInput(city, goalId) {
+    var utc = new Date('1973-05-29T05:30:00.000Z');
+    var lines = Astro.computeAllLines(utc);
+    var bp = compose({ sun: 'gemini', moon: 'aries', asc: 'cancer' }).meta.bridgeProfile;
+    var g = GS.buildContext({ mainGoal: goalId });
+    var br = Bridge.buildBridge({
+      tags: bp.tags,
+      themes: bp.themes,
+      tensionMode: false,
+      mapLines: lines.map(function (l) { return { id: l.id, planet: l.planet, angle: l.angle }; }),
+      goalContext: g
+    });
+    var ranked = Scorer.rankInfluences(city, {
+      lines: lines,
+      goalContext: g,
+      bridgeResult: br,
+      options: {
+        proxKm: Scorer.PROX_KM,
+        maxSuggestions: 3,
+        minScore: 0.28,
+        enabledPlanets: new Set(Astro.PLANETS.map(function (p) { return p.id; })),
+        enabledAngles: new Set(Astro.ANGLES)
+      }
+    });
+    return {
+      city: city,
+      goal: goalId,
+      relevantInfluences: ranked.slice(0, 5),
+      bridgeProfile: bp,
+      profile: { name: 'Preview' },
+      readingContext: { mode: 'city_reading', locale: 'es', subjectScope: 'individual' }
+    };
+  }
+
+  function sectionPreview(sections) {
+    return (sections || []).map(function (s) {
+      return '## ' + s.id + '\n' + (s.body || '').slice(0, 280);
+    }).join('\n\n');
+  }
+
+  function runMicro() {
+    var slug = select.value;
+    var city = Catalog.CITIES.find(function (c) { return Catalog.cityIdFromRef(c) === slug; });
+    if (!city) return;
+    var goalId = document.getElementById('goal-select').value;
+    var str = Number(strength.value) / 100;
+    var input = buildInput(city, goalId);
+    var activationEnabled = activationToggle.checked === true;
+    var result = DevActivation.composeReadingWithControlledActivation(input, {
+      controlledActivationEnabled: activationEnabled,
+      modulationStrength: str
+    });
+
+    document.getElementById('metrics-out').textContent = JSON.stringify({
+      gate: result.metrics && result.metrics.gate,
+      modulationStrength: result.metrics && result.metrics.modulationStrength,
+      meaningStability: result.metrics && result.metrics.meaningStability,
+      sectionsAffected: result.metrics && result.metrics.sectionsAffected,
+      canaryApplied: result.meta && result.meta.canaryApplied,
+      controlledActivationEnabled: result.activation && result.activation.controlledActivationEnabled,
+      applyPolicy: result.envelope && result.envelope.applyPolicy,
+      applied: result.applied
+    }, null, 2);
+
+    document.getElementById('identical-out').textContent = JSON.stringify(
+      result.comparison && result.comparison.identical,
+      null,
+      2
+    );
+
+    document.getElementById('base-out').textContent = sectionPreview(
+      result.baseReading && result.baseReading.sections
+    );
+    document.getElementById('mod-out').textContent = sectionPreview(
+      result.reading && result.reading.sections
+    );
+    document.getElementById('warnings-out').textContent = JSON.stringify(
+      result.warnings || [],
+      null,
+      2
+    );
+  }
+
+  activationToggle.addEventListener('change', runMicro);
+  document.getElementById('btn-apply').addEventListener('click', runMicro);
+  runMicro();
+})();
+  </script>
+</body>
+</html>
