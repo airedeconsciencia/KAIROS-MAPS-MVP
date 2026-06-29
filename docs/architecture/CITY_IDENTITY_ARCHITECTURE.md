@@ -306,10 +306,10 @@ F8.8  Production Activation
 | **F8.5** | Micro Modulation — primera variable en DEV (`toneBias` V1) | `modulation.enabled` sigue false en prod | ✅ toneBias V1 frozen |
 | **F8.5B** | Micro Modulation — `rhythmBias` V1 (T1 residual) | tras freeze toneBias V1 | ✅ rhythmBias V1 frozen |
 | **F8.6** | Micro Modulation Baseline V1 — verificación conjunta toneBias + rhythmBias | Contract v1.0 · canario Lisboa · strength ≤ 0.5 | ✅ Baseline V1 aprobado |
-| **F8.7** | Controlled Activation (DEV) — activación gradual en staging DEV | smokes + checklist | pendiente |
+| **F8.7** | Controlled Activation (DEV) — gate DEV-only · feature flag default OFF | preview + smokes · sin wiring prod | ✅ cerrado (`abd880d`) |
 | **F8.8** | Production Activation — cableado productivo post-gates | deploy explícito · sin sorpresas | pendiente |
 
-**STOP actual:** F8.6 Baseline V1 aprobado · **toneBias V1 + rhythmBias V1 frozen** · conviven correctamente · canario Lisboa DEV · sin activación prod · sin deploy. Siguiente: **F8.7 Controlled Activation DEV**.
+**STOP actual:** F8.7 Controlled Activation DEV cerrado · **toneBias V1 + rhythmBias V1 frozen** · gate DEV-only · feature flag default OFF · canario Lisboa · sin wiring prod · sin deploy. Siguiente: **F8.8 Production Activation Gate**.
 
 ---
 
@@ -1133,7 +1133,7 @@ Sin modificación en baseline F8.6:
 
 ### 15.8 Restricciones vigentes (post-baseline)
 
-1. Sin deploy · sin activación prod hasta F8.7 checklist completo.
+1. Sin deploy · sin activación prod hasta F8.8 checklist completo.
 2. Sin ampliación de canario ni variables sin ciclo Lab → Impact → QA → Freeze.
 3. `densityBias` / `sectionBias` / `selectionBias` — no implementados · fuera de baseline V1.
 4. Decision Lab permanece virtual — divergencia documentada vs micro-modulación calibrada.
@@ -1142,14 +1142,13 @@ Sin modificación en baseline F8.6:
 
 | Fase | Objetivo |
 |------|----------|
-| **F8.7** | Controlled Activation DEV — activación gradual en staging DEV · smokes + checklist |
 | **F8.8** | Production Activation — cableado productivo post-gates · deploy explícito |
 
 ### 15.10 Commits de referencia
 
 | Fase | Commit | Contenido |
 |------|--------|-----------|
-| F8.6 | doc sync | Micro Modulation Baseline V1 · F8.6 PASS |
+| F8.6 | `40cad96` | Micro Modulation Baseline V1 · F8.6 PASS |
 | F8.5D-doc | `c5380ca` | rhythmBias runtime documentation sync |
 | F8.5D | `7d929e2` | rhythmBias V1 runtime (`8.5b-0.1`) |
 | F8.5C-rhythm | `4b9f4ee` | rhythmBias V1 freeze doc |
@@ -1158,4 +1157,98 @@ Sin modificación en baseline F8.6:
 
 ---
 
-*SSOT City Identity · F8.6 · Micro Modulation Baseline V1 aprobado · toneBias V1 + rhythmBias V1 frozen · runtime `8.5b-0.1` en `main` · canario Lisboa DEV · sin runtime prod · next F8.7 Controlled Activation DEV*
+## 16. F8.7 — Controlled Activation DEV
+
+**Fase:** F8.7 · Controlled Activation DEV  
+**Estado:** **cerrado** · **DEV only** · **sin activación prod** · **sin deploy**  
+**Runtime commit:** `abd880d` — `f8.7 controlled activation dev`  
+**Servicio gate:** `src/services/identity-micro-modulation-dev-activation.js` (`KairosIdentityMicroModulationDevActivation`, schema `8.7-0.1`)  
+**Servicio baseline:** `src/services/identity-micro-modulation-service.js` (`8.5b-0.1`)  
+**Preview:** `src/dev/identity-micro-modulation-preview.html`  
+**Smoke:** `scripts/dev-identity-micro-modulation-activation-smoke.sh`
+
+### 16.1 Declaración
+
+**Controlled Activation DEV** es la capa de gate que permite activar **Micro Modulation Baseline V1** únicamente en entorno DEV, con **feature flag default OFF** y opt-in explícito. No cablea producción. No modifica motores, Bridge, Goal, Scorer, Resolver, Country ni copy source.
+
+**Veredicto F8.7:** **PASS** — Controlled Activation DEV cerrado en `main` (26 mayo 2026).
+
+### 16.2 Gate DEV-only
+
+| Dimensión | Valor |
+|-----------|-------|
+| Feature flag | `DEFAULT_ENABLED = false` |
+| Activación | `controlledActivationEnabled: true` explícito |
+| Default OFF | byte-identical aunque `modulationStrength > 0` |
+| Controlled ON | delega a `composeWithMicroModulation` (Baseline V1) |
+| Prod wiring | **ninguno** — `app.js` / `index.html` sin referencias |
+
+### 16.3 Alcance activable (Controlled ON)
+
+| Dimensión | Valor congelado |
+|-----------|-----------------|
+| Variables | **toneBias V1** + **rhythmBias V1** únicamente |
+| Canario | **Lisboa** (`lisboa-pt`) |
+| `modulationStrength` máx. | **≤ 0.5** |
+| Contract | v1.0 · `enabled = false` |
+| Guards | Lexical Guard · CompositionAuthorityGuard · EmDashSpanGuard |
+| applyPolicy | obligatorio · bloquea `review_required` y `neutral_fallback` |
+| ReadingContext | `city_reading` · locale `es` · scope `individual` |
+
+### 16.4 Preview DEV
+
+`identity-micro-modulation-preview.html` incluye:
+
+- Toggle **Controlled Activation** (default OFF)
+- Selector ciudad · goal · strength slider (0–0.5)
+- Vista base vs modulada · métricas · warnings
+- Banner DEV ONLY · sin wiring prod
+
+### 16.5 Ciudades bloqueadas / no canario
+
+| Condición | Comportamiento @ Controlled ON |
+|-----------|-------------------------------|
+| No canario (ej. Toronto) | byte-identical · `gate: not_canary` |
+| Beirut / Kabul | `applyPolicy` bloqueada · byte-identical |
+| Reykjavik (GN) | `neutral_fallback` · byte-identical |
+| `modulationStrength = 0` | byte-identical · `meaningStability = 1` |
+
+### 16.6 Producción intacta
+
+| Invariante | Estado |
+|------------|--------|
+| `app.js` sin micro-modulation | ✅ |
+| `index.html` sin micro-modulation | ✅ |
+| `dist/` sin cambios F8.7 | ✅ |
+| `modulation.enabled = false` | ✅ |
+| `identityContext.enabled = false` | ✅ |
+| Sin deploy | ✅ |
+
+### 16.7 Smokes PASS
+
+| Smoke | Resultado |
+|-------|-----------|
+| `dev-identity-micro-modulation-activation-smoke.sh` | **PASS** (F8.7) |
+| `dev-identity-micro-modulation-smoke.sh` | **PASS** |
+| `dev-identity-context-pipeline-smoke.sh` | **PASS** |
+| `dev-identity-context-observer-smoke.sh` | **PASS** |
+| `dev-identity-decision-lab-smoke.sh` | **PASS** |
+
+### 16.8 Siguiente fase
+
+| Fase | Objetivo |
+|------|----------|
+| **F8.8** | Production Activation Gate — cableado productivo post-checklist · deploy explícito |
+
+### 16.9 Commits de referencia
+
+| Fase | Commit | Contenido |
+|------|--------|-----------|
+| F8.7 | `abd880d` | Controlled Activation DEV runtime · gate `8.7-0.1` · preview · smoke |
+| F8.7A | doc sync | Documentación Controlled Activation DEV |
+| F8.6 | `40cad96` | Micro Modulation Baseline V1 doc |
+| F8.5D | `7d929e2` | rhythmBias V1 runtime (`8.5b-0.1`) |
+
+---
+
+*SSOT City Identity · F8.7 · Controlled Activation DEV cerrado · runtime `abd880d` @ `8.7-0.1` · Baseline V1 `8.5b-0.1` · feature flag default OFF · canario Lisboa DEV · sin runtime prod · next F8.8 Production Activation Gate*

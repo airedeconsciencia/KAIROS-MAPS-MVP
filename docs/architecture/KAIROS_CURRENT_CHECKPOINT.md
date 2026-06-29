@@ -2,7 +2,7 @@
 
 **Fecha:** 26 mayo 2026  
 **HEAD runtime:** `3c6019a` — F6.3 ANGLO Closure  
-**HEAD identity:** `c5380ca` — F8.5D-doc · F8.6 baseline doc (este commit)  
+**HEAD identity:** `abd880d` — F8.7 Controlled Activation DEV runtime  
 **HEAD toneBias V1:** `eaf356c` — frozen · Lexical Guard integrado  
 **HEAD rhythmBias V1:** `7d929e2` — frozen · runtime integrado en `main` (`8.5b-0.1`)  
 **Checkpoint prod:** `docs/architecture/F6.3_ANGLO_CLOSURE_PRODUCTION_CHECKPOINT.md`  
@@ -40,6 +40,7 @@
 - **F8.5D rhythmBias Runtime:** cerrado · commit `7d929e2` · rhythmBias V1 runtime integrado en `main`
 - **rhythmBias V1:** **Approved** · **Frozen** (F8.5C-rhythm doc + F8.5D runtime)
 - **F8.6 Micro Modulation Baseline V1:** **PASS** — toneBias + rhythmBias conviven correctamente · Contract v1.0 · canario Lisboa · `modulationStrength ≤ 0.5` · `meaningStability = 1` · baseline @ 0 byte-identical · baseline @ 0.5 aprobado · sin deploy · sin prod wiring
+- **F8.7 Controlled Activation DEV:** **cerrado** — commit `abd880d` · gate DEV-only · feature flag default OFF · preview con toggle explícito · Controlled ON solo Lisboa · producción intacta · sin deploy
 - **F8.5B cerrada** — segunda variable Identity congelada
 - **F8.5A cerrada** — primera variable Identity congelada
 - **Identity stack:** shadow-ready · `modulation.enabled=false` · runtime visual idéntico
@@ -86,7 +87,7 @@
 
 **Prod (@ F6.3):** suite **10/10 PASS** — 9 estándar + `dev-mena-architecture-smoke.sh` · split-brain **97 = 0**
 
-**Identity (DEV @ F8.6):**
+**Identity (DEV @ F8.7):**
 
 - `dev-identity-modulation-smoke.sh`
 - `dev-identity-shadow-runtime-smoke.sh`
@@ -97,6 +98,7 @@
 - `dev-identity-context-observer-smoke.sh` — F8.1 · 106 ciudades · mutación 0 · narrative/premium byte-identical · app/index sin wiring
 - `dev-identity-decision-lab-smoke.sh` — F8.2/F8.5A3 · 6 ciudades piloto · Contract v1.0 · strength=0 idéntico · bridge/goal/scorer intactos
 - `dev-identity-micro-modulation-smoke.sh` — F8.6 baseline · toneBias V1 + rhythmBias V1 · Lisboa canario · `sintesis` T1 · meaningStability=1 · no wiring prod
+- `dev-identity-micro-modulation-activation-smoke.sh` — F8.7 · Controlled Activation DEV · `abd880d` · default OFF byte-identical · Controlled ON Lisboa · no wiring prod
 
 ---
 
@@ -114,9 +116,11 @@
 
 ## Siguiente
 
-**F8.7 — Controlled Activation DEV** — activación gradual en staging DEV · smokes + checklist editorial.
+**F8.8 — Production Activation Gate** — cableado productivo post-checklist · deploy explícito · sin sorpresas.
 
-**Micro Modulation Baseline V1:** ✅ PASS · toneBias V1 + rhythmBias V1 conviven correctamente · canario Lisboa · `modulationStrength ≤ 0.5` · `meaningStability = 1` · baseline @ 0 byte-identical · baseline @ 0.5 aprobado.
+**Controlled Activation DEV:** ✅ cerrado · commit `abd880d` · gate `8.7-0.1` · feature flag default OFF · preview toggle · sin wiring `app.js`/`index.html`.
+
+**Micro Modulation Baseline V1:** ✅ PASS · toneBias V1 + rhythmBias V1 · canario Lisboa · `modulationStrength ≤ 0.5` · `meaningStability = 1`.
 
 **toneBias V1:** ✅ Approved · ✅ Frozen · Lexical Guard activo · sin activación prod.
 
@@ -124,10 +128,10 @@
 
 **Identity Contract v1.0:** ✅ documentado · ✅ toneBias V1 frozen · ✅ rhythmBias V1 frozen · ❌ `densityBias` / `sectionBias` sin implementar · ❌ no activado prod
 
-**Activación Identity:** ❌ sin activación · `identityContext.enabled=false` · `modulation.enabled=false` · sin deploy
+**Activación Identity:** ❌ prod sin activación · `identityContext.enabled=false` · `modulation.enabled=false` · DEV Controlled ON solo en preview · sin deploy
 
 **Territorial (pausado):** F7.0 GLOBAL EDITORIAL AUDIT — expansión territorial en hold hasta auditoría READ-ONLY.
 
 ---
 
-*Checkpoint F8.6 · Micro Modulation Baseline V1 aprobado · toneBias V1 + rhythmBias V1 frozen · runtime `7d929e2` @ `8.5b-0.1` · Prod 106/103 @ f6.3 · smokes PASS · sin activación prod · sin deploy · STOP @ F8.7*
+*Checkpoint F8.7 · Controlled Activation DEV cerrado · runtime `abd880d` @ `8.7-0.1` · Baseline `7d929e2` @ `8.5b-0.1` · Prod 106/103 @ f6.3 · smokes PASS · sin activación prod · sin deploy · STOP @ F8.8*
